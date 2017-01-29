@@ -1,8 +1,6 @@
 package Domain.Navigation;
 
-import Domain.Map.Destination;
-import Domain.Map.Node;
-import Domain.Map.NodeEdge;
+import Domain.Map.*;
 
 import java.util.Iterator;
 import java.util.LinkedList;
