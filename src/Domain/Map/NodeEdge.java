@@ -17,6 +17,8 @@ public class NodeEdge
 
     public NodeEdge(Node nodeA, Node nodeB)
     {
+        this();
+
         this.nodeA = nodeA;
         this.nodeB = nodeB;
     }
