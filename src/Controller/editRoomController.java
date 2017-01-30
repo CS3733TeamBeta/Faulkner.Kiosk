@@ -1,4 +1,4 @@
-package sample;
+package Controller;
 
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -6,7 +6,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.fxml.FXML;
 
-public class Controller {
+public class editRoomController {
     @FXML
     TextField roomNumber;
     @FXML

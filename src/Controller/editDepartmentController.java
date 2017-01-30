@@ -1,4 +1,4 @@
-package sample;
+package Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -7,7 +7,7 @@ import javafx.scene.control.ComboBox;
 
 import java.awt.*;
 
-public class Controller {
+public class editDepartmentController {
     @FXML
     Button logout;
     @FXML
