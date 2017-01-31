@@ -2,6 +2,7 @@
 
 package Controller;
 
+import Domain.ViewElements.DraggableNodeEdge;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -32,7 +33,8 @@ public class DragWindowController
     @FXML
     protected void initialize() {
 
-        GraphicalNodeEdge e = new GraphicalNodeEdge(); //Graphical node edge
+        DraggableNodeEdge e = new DraggableNodeEdge(); //Draggable Node Edge. Should auto connect to others
+        //and form bonds
 
         root.getChildren().add(e.getViewNode());
 

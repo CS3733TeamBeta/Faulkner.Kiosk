@@ -10,5 +10,4 @@ public class MapNode
 {
     Floor myFloor;
     HashSet<NodeEdge> edges;
-
 }

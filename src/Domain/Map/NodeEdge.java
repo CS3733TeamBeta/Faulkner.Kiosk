@@ -7,8 +7,8 @@ public class NodeEdge
 {
     protected float cost;
 
-    MapNode nodeA;
-    MapNode nodeB;
+    protected MapNode nodeA;
+    protected MapNode nodeB;
 
     public NodeEdge()
     {
