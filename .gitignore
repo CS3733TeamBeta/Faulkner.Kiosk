@@ -8,3 +8,4 @@ build/
 
 #Don't ignore these
 !.gitignore
+!.travis.yml

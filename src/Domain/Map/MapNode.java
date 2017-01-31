@@ -1,5 +1,7 @@
 package Domain.Map;
 
+import javafx.scene.image.Image;
+
 import java.util.HashSet;
 
 /**
@@ -10,6 +12,8 @@ public class MapNode
 {
     int posX;
     int posY;
+
+    Image node = null;
 
     Floor myFloor;
     HashSet<NodeEdge> edges;

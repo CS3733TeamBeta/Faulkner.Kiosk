@@ -8,6 +8,11 @@ import javafx.scene.Node;
  */
 public class GraphicalMapNode extends MapNode implements DrawableMapEntity
 {
+    public GraphicalMapNode(MapNode n)
+    {
+
+    }
+
     @Override
     public Node getDrawableNode()
     {
