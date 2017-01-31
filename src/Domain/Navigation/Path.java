@@ -14,7 +14,7 @@ public class Path implements Iterable
 
     public Path (Destination start, Destination end)
     {
-        //@TODO: calculate path with A*
+
     }
 
     public Iterator iterator()

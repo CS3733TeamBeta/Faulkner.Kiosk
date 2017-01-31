@@ -36,7 +36,7 @@ public class Elevator extends Domain.Map.Destination
     }
 
     /*
-    public MapNode goToFloor(Floor f)
+    public Node goToFloor(Floor f)
     {
         return null;
     }*/
