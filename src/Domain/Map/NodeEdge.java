@@ -7,21 +7,23 @@ public class NodeEdge
 {
     protected float cost;
 
-    Node nodeA;
-    Node nodeB;
+    protected MapNode nodeA;
+    protected MapNode nodeB;
 
     public NodeEdge()
     {
 
     }
 
-    public NodeEdge(Node nodeA, Node nodeB)
+    public NodeEdge(MapNode nodeA, MapNode nodeB)
     {
+        this();
+
         this.nodeA = nodeA;
         this.nodeB = nodeB;
     }
 
-    Node getOtherNode(Node n)
+    MapNode getOtherNode(MapNode n)
     {
         if(nodeA.equals(n))
         {
