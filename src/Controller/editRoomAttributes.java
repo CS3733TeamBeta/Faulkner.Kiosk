@@ -8,7 +8,7 @@ import javafx.scene.control.TextField;
 
 public class editRoomAttributes {
     @FXML
-    Button backButton;
+    Button exitButton;
     @FXML
     Button saveButton;
     @FXML
@@ -16,4 +16,13 @@ public class editRoomAttributes {
     @FXML
     TextField addDoctorsToRoom; //lists doctors assigned to this department
 
+    @FXML
+    private void exitButton(){
+
+    }
+
+    @FXML
+    private void saveButton(){
+
+    }
 }

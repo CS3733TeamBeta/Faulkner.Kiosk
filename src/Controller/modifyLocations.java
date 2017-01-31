@@ -13,5 +13,25 @@ public class modifyLocations {
     @FXML
     Button changeRoomAssignments;
     @FXML
-    ComboBox back;
+    Button back;
+
+    @FXML
+    private void backButton(){
+
+    }
+
+    @FXML
+    private void changeFloorLayoutButton(){
+
+    }
+
+    @FXML
+    private void changeRoomAssignments(){
+
+    }
+
+    @FXML
+    private void logoutButton(){
+
+    }
 }

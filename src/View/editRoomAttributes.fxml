@@ -10,8 +10,8 @@
 fx:controller="Controller.editRoomAttributes">
    <children>
       <Label layoutX="231.0" layoutY="41.0" text="Edit Room Attributes" />
-      <Button layoutX="199.0" layoutY="330.0" mnemonicParsing="false" text="Exit" />
-      <Button layoutX="345.0" layoutY="330.0" mnemonicParsing="false" text="Save" />
+      <Button layoutX="199.0" onAction="#exitButton" fx:id="exitButton" layoutY="330.0" mnemonicParsing="false" text="Exit" />
+      <Button layoutX="345.0" onAction="#saveButton" fx:id="saveButton" layoutY="330.0" mnemonicParsing="false" text="Save" />
       <Label layoutX="118.0" layoutY="139.0" prefHeight="21.0" prefWidth="103.0" text="Room Number:" />
       <Label layoutX="73.0" layoutY="190.0" text="Add Doctors to Room:" />
       <TextField layoutX="231.0" layoutY="134.0" prefHeight="31.0" prefWidth="322.0" />

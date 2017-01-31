@@ -8,10 +8,10 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
 fx:controller="Controller.modifyLocations">
    <children>
-      <Button layoutX="134.0" layoutY="126.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="332.0" text="Change Room Assignments" />
-      <Button layoutX="134.0" layoutY="241.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="332.0" text="Change Floor Layout" />
+      <Button layoutX="134.0" fx:id="changeRoomAssignments" onAction="#changeRoomAssignments" layoutY="126.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="332.0" text="Change Room Assignments" />
+      <Button layoutX="134.0" fx:id="changeFloorLayout" onAction="#changeFloorLayoutButton" layoutY="241.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="332.0" text="Change Floor Layout" />
       <Label layoutX="243.0" layoutY="41.0" text="Modify Locations" />
-      <Button layoutX="27.0" layoutY="36.0" mnemonicParsing="false" text="Logout" />
-      <Button layoutX="29.0" layoutY="344.0" mnemonicParsing="false" text="Back" />
+      <Button layoutX="27.0" fx:id="logout" onAction="#logoutButton" layoutY="36.0" mnemonicParsing="false" text="Logout" />
+      <Button layoutX="29.0" fx:id="back" onAction="#backButton" layoutY="344.0" mnemonicParsing="false" text="Back" />
    </children>
 </AnchorPane>
