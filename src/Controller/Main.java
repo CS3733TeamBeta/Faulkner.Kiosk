@@ -13,7 +13,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        URL url = new File("src/View/DragWindow.fxml").toURL();
+        URL url = getClass().getResource("../DragWindow.fxml");
 
         Parent root = FXMLLoader.load(url);
         primaryStage.setTitle("Hello World");
