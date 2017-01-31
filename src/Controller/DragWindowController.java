@@ -36,7 +36,7 @@ public class DragWindowController
         DraggableNodeEdge e = new DraggableNodeEdge(); //Draggable Node Edge. Should auto connect to others
         //and form bonds
 
-        root.getChildren().add(e.getViewNode());
+        root.getChildren().add(e.getDrawableNode());
 
         //edgeA.setOnMousePressed(pressMouse());
       //  edgeA.setOnMouseDragged(dragMouse());

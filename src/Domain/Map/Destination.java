@@ -11,6 +11,4 @@ public class Destination extends MapNode
     Info myInfo;
     Image icon;
     Image destinationView;
-
-
 }

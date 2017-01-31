@@ -13,7 +13,7 @@ import jfxtras.labs.util.event.MouseControlUtil;
  *
  * @TODO Make this code not janky
  */
-public class GraphicalNodeEdge extends NodeEdge
+public class GraphicalNodeEdge extends NodeEdge implements DrawableMapEntity
 {
     Line l;
 
@@ -33,7 +33,8 @@ public class GraphicalNodeEdge extends NodeEdge
         edgeWithNodes = g;
     }
 
-    public Node getViewNode()
+    @Override
+    public Node getDrawableNode()
     {
         return edgeWithNodes;
     }

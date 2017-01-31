@@ -18,6 +18,7 @@ public class Info
         this.description = description;
         this.hours = hours;
     }
+
     @Override
     public String toString()
     {

@@ -8,6 +8,9 @@ import java.util.HashSet;
 
 public class MapNode
 {
+    int posX;
+    int posY;
+
     Floor myFloor;
     HashSet<NodeEdge> edges;
 }
