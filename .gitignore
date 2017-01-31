@@ -1,0 +1,10 @@
+#Ignore these
+
+.idea/
+.gradle
+build/
+.DS_Store
+.*
+
+#Don't ignore these
+!.gitignore

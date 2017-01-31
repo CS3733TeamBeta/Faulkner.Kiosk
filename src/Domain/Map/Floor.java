@@ -7,7 +7,7 @@ import java.util.LinkedList;
  */
 public class Floor {
 
-    LinkedList<Node> floorNodes;
+    LinkedList<MapNode> floorNodes;
     LinkedList<NodeEdge> floorEdges;
 
 }
