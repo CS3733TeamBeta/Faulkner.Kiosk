@@ -19,6 +19,6 @@ public class editDepartmentController {
     @FXML
     ChoiceBox doctorsAssigned; //lists doctors assigned to this department
     @FXML
-    ChoiceBox listDepts; //lists departments to choose from for editing??
+    ComboBox listDepts;
 
 }
