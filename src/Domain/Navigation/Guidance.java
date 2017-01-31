@@ -8,12 +8,15 @@ import Domain.Map.*;
 /**
  * Direction tells you how to get from
  */
-public class Guidance
+public class Guidance extends Path
 {
     Path p;
     LinkedList<String> textDirections;
 
-    Guidance (Destination start, Destination end) {
+    public Guidance (Destination start, Destination end)
+    {
+        super(start, end);
+
         this.p = new Path(start, end);
     }
 

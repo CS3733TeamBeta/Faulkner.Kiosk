@@ -1,16 +1,8 @@
 package Domain.Map;
 
-import java.util.LinkedList;
-
 /**
- * Created by IanCJ on 1/29/2017.
+ * Created by benhylak on 1/29/17.
  */
-public class Hospital {
-
-    LinkedList<Building> hospitalBuildings;
-    LinkedList<Doctor> hospitalDirectory; //Change this to type directory
-
-    Hospital() {
-
-    }
+public class Hospital
+{
 }

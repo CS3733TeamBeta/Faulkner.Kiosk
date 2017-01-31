@@ -6,7 +6,7 @@ package Domain.Map;
  */
 public class LinkEdge extends NodeEdge
 {
-    public LinkEdge(Node nodeA, Node nodeB)
+    public LinkEdge(MapNode nodeA, MapNode nodeB)
     {
         super(nodeA, nodeB);
 
