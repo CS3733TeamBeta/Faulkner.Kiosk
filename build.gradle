@@ -12,7 +12,7 @@ sourceSets {
             srcDirs = ["src"];
         }
         resources {
-            srcDirs "src/View"
+            srcDirs "src/View", "src/View/view_resources"
             includes = ["**/*.fxml", "**/*.png", "**/*.properties", "**/*.json", "**/*.css"]
         }
     }

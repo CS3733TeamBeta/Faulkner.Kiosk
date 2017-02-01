@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="64.0" styleClass="dragicon" stylesheets="@application.css" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox prefHeight="42.0" prefWidth="64.0" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <GridPane prefHeight="12.0" prefWidth="12.0" styleClass="node-overlay">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="25.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label fx:id="close_button" alignment="TOP_RIGHT" text="X" textAlignment="RIGHT" GridPane.columnIndex="1">
+                     <padding>
+                        <Insets right="10.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="title_bar" text="Label" />
+               </children>
+            </GridPane>
+            <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" prefWidth="64.0">
+               <children>
+                  <AnchorPane fx:id="left_link_handle" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="8.0" styleClass="left-link-handle" />
+                  <AnchorPane fx:id="right_link_handle" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="8.0" styleClass="right-link-handle">
+                     <HBox.margin>
+                        <Insets left="48.0" />
+                     </HBox.margin></AnchorPane>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</fx:root>
