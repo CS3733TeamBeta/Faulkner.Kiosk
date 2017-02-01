@@ -23,7 +23,7 @@
                <children>
                   <ImageView fitHeight="611.0" fitWidth="1041.0" layoutX="136.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="87.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
                      <image>
-                        <Image url="@../../../../../../Desktop/floor3.png" />
+                        <Image url="@floor3.png" />
                      </image>
                   </ImageView>
                </children></AnchorPane>
