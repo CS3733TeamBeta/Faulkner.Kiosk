@@ -9,10 +9,10 @@ sourceCompatibility = 1.8
 sourceSets {
     main {
         java {
-            srcDirs = ["src"];
+            srcDirs = ["src"]
         }
         resources {
-            srcDirs "src/View", "src/View/view_resources"
+            srcDirs "src/View"
             includes = ["**/*.fxml", "**/*.png", "**/*.properties", "**/*.json", "**/*.css"]
         }
     }
