@@ -14,4 +14,15 @@ public class profileToModifyController {
 
     @FXML
     ScrollPane filteredProfiles;
+
+    @FXML
+    private void logoutHit(){
+        Main.thisStage.setScene(Main.changingDirectoryView);
+    }
+
+    @FXML
+    private void backHit(){
+        Main.thisStage.setScene(Main.changingDirectoryView);
+    }
+
 }

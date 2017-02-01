@@ -16,9 +16,9 @@
                 <Font size="18.0" />
             </font>
         </Label>
-        <Button fx:id="logout" layoutX="20.0" layoutY="16.0" mnemonicParsing="false" text="Logout" />
-        <Button fx:id="backButton" layoutX="20.0" layoutY="362.0" mnemonicParsing="false" text="Back" />
-        <Button fx:id="saveButton" layoutX="536.0" layoutY="363.0" mnemonicParsing="false" text="Save" />
+        <Button fx:id="logout" onAction="#logoutHit" layoutX="20.0" layoutY="16.0" mnemonicParsing="false" text="Logout" />
+        <Button fx:id="backButton" onAction="#backHit" layoutX="20.0" layoutY="362.0" mnemonicParsing="false" text="Back" />
+        <Button fx:id="saveButton" onAction="#saveHit" layoutX="536.0" layoutY="363.0" mnemonicParsing="false" text="Save" />
         <Label id="assignDocLab" layoutX="115.0" layoutY="184.0" text="Assign Doctor to Department" />
         <ComboBox fx:id="addToDept" layoutX="286.0" layoutY="182.0" prefHeight="21.0" prefWidth="200.0">
             <items>

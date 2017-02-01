@@ -18,11 +18,11 @@ public class editRoomAttributes {
 
     @FXML
     private void exitButton(){
-
+        Main.thisStage.setScene(Main.modifyLocations);
     }
 
     @FXML
     private void saveButton(){
-
+        Main.thisStage.setScene(Main.modifyLocations);
     }
 }

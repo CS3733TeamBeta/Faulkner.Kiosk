@@ -15,8 +15,8 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Button fx:id="logout" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Logout" />
-      <Button fx:id="back" layoutX="14.0" layoutY="361.0" mnemonicParsing="false" text="Back" />
+      <Button fx:id="logout" onAction="#logoutHit" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Logout" />
+      <Button fx:id="back" onAction="#backHit" layoutX="14.0" layoutY="361.0" mnemonicParsing="false" text="Back" />
       <Label layoutX="55.0" layoutY="93.0" text="Search: " />
       <TextField fx:id="searchModDoc" layoutX="105.0" layoutY="89.0" prefHeight="25.0" prefWidth="409.0" promptText="Search doctor" />
       <ScrollPane fx:id="filteredProfiles" layoutX="105.0" layoutY="140.0" prefHeight="204.0" prefWidth="409.0">

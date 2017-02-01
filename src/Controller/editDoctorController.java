@@ -27,8 +27,26 @@ public class editDoctorController {
     TextField nameLast;
     @FXML
     TextField docRoom; //room doctor is located in
-    @FXML
-    ImageView profImage; //displays doctor's image
 
+
+    @FXML
+    private void logoutHit(){
+        Main.thisStage.setScene(Main.adminLogin);
+    }
+
+    @FXML
+    private void backHit(){
+        Main.thisStage.setScene(Main.changingDirectoryView);
+    }
+
+    @FXML
+    private void saveHit(){
+        Main.thisStage.setScene(Main.changingDirectoryView);
+    }
+
+    @FXML
+    private void assignDeptHit(){
+        //what to put here...?
+    }
 
 }

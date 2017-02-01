@@ -10,21 +10,21 @@ public class ChangingDirectoryController
     @FXML
     Button btnAddNewProfile;
     @FXML
-    Button btnModifyExistingProject;
+    Button btnModifyExistingProfile;
     @FXML
     private void clickedBack()
     {
-
+        Main.thisStage.setScene(Main.adminWelcome);
     }
     @FXML
     private void clickedAddNewProfile()
     {
-
+        Main.thisStage.setScene(Main.addNewProfile);
     }
     @FXML
     private void clickedModifyExistingProfile()
     {
-
+        Main.thisStage.setScene(Main.chooseProfileToModify);
     }
 }
 

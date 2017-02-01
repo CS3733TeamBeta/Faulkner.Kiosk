@@ -14,16 +14,16 @@ public class AdminWelcomeController
     @FXML
     private void clickedBack()
     {
-
+        Main.thisStage.setScene(Main.adminLogin);
     }
     @FXML
     private void clickedModifyDirectory()
     {
-
+        Main.thisStage.setScene(Main.changingDirectoryView);
     }
     @FXML
     private void clickedChangeFloorplan()
     {
-
+        Main.thisStage.setScene(Main.modifyLocations);
     }
 }

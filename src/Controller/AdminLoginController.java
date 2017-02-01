@@ -18,7 +18,7 @@ public class AdminLoginController
     @FXML
     private void clickedLogin()
     {
-
+        Main.thisStage.setScene(Main.adminWelcome);
     }
 
     @FXML

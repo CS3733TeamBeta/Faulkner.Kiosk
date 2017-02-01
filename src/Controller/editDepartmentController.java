@@ -21,4 +21,24 @@ public class editDepartmentController {
     @FXML
     ComboBox listDepts;
 
+    @FXML
+    private void logoutHit(){
+
+    }
+
+    @FXML
+    private void backHit(){
+
+    }
+
+    @FXML
+    private void saveHit(){
+
+    }
+
+    @FXML
+    private void addToDptHit(){
+
+    }
+
 }

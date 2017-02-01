@@ -31,4 +31,26 @@ public class addNewProfileController {
 
     @FXML
     ImageView profilePic;
+
+    @FXML
+    private void logoutHit(){
+        Main.thisStage.setScene(Main.adminLogin);
+    }
+
+    @FXML
+    private void backHit(){
+        Main.thisStage.setScene(Main.changingDirectoryView);
+    }
+
+    @FXML
+    private void saveHit(){
+        Main.thisStage.setScene(Main.changingDirectoryView);
+    }
+
+    @FXML
+    private void assignLocHit(){
+        //where does this go...?
+    }
+
+
 }

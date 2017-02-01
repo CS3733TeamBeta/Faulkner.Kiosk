@@ -17,21 +17,21 @@ public class modifyLocations {
 
     @FXML
     private void backButton(){
-
+        Main.thisStage.setScene(Main.adminWelcome);
     }
 
     @FXML
     private void changeFloorLayoutButton(){
-
+        Main.thisStage.setScene(Main.editNodeGraph);
     }
 
     @FXML
     private void changeRoomAssignments(){
-
+        Main.thisStage.setScene(Main.editRoomAttributes);
     }
 
     @FXML
     private void logoutButton(){
-
+        Main.thisStage.setScene(Main.adminLogin);
     }
 }

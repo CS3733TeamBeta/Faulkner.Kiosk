@@ -9,7 +9,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.editNodeGraph">
    <children>
       <ScrollPane layoutX="230.0" layoutY="28.0" prefHeight="345.0" prefWidth="356.0">
         <content>
@@ -32,9 +33,9 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button layoutX="-1.0" layoutY="-1.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Room" />
-                        <Button layoutX="-1.0" layoutY="30.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Intersection" />
-                        <Button layoutX="-1.0" layoutY="61.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Connection" />
+                        <Button fx:id="addRoom" onAction="#addRoomHit" layoutX="-1.0" layoutY="-1.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Room" />
+                        <Button fx:id="addIntersection" onAction="#addIntersectionHit" layoutX="-1.0" layoutY="30.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Intersection" />
+                        <Button fx:id="addConnection" onAction="#addConnectionHit" layoutX="-1.0" layoutY="61.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Connection" />
                      </children>
                   </AnchorPane>
             </content>
@@ -43,9 +44,9 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button layoutX="-1.0" layoutY="-1.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Room" />
-                        <Button layoutX="-1.0" layoutY="30.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Intersection" />
-                        <Button layoutX="-1.0" layoutY="61.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Connection" />
+                        <Button fx:id="editRoom" onAction="#editRoomHit" layoutX="-1.0" layoutY="-1.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Room" />
+                        <Button fx:id="editIntersection" onAction="#editIntersectionHit" layoutX="-1.0" layoutY="30.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Intersection" />
+                        <Button fx:id="editConnection" onAction="#editConnectionHit" layoutX="-1.0" layoutY="61.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Connection" />
                      </children>
                   </AnchorPane>
             </content>
@@ -54,16 +55,16 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="133.0">
                      <children>
-                        <Button layoutX="-2.0" layoutY="-1.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Room" />
-                        <Button layoutX="-1.0" layoutY="61.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Room" />
-                        <Button layoutX="-2.0" layoutY="30.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Intersection" />
+                        <Button fx:id="removeRoom" onAction="#removeRoomHit" layoutX="-2.0" layoutY="-1.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Room" />
+                        <Button fx:id="removeIntersection" onAction="#removeIntersectionHit" layoutX="-1.0" layoutY="61.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Room" />
+                        <Button fx:id="removeConnection" onAction="#removeConnectionHit" layoutX="-2.0" layoutY="30.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="202.0" text="Intersection" />
                      </children>
                   </AnchorPane>
             </content>
           </TitledPane>
         </panes>
       </Accordion>
-      <Button layoutX="14.0" layoutY="329.0" mnemonicParsing="false" text="Save" />
-      <Button layoutX="158.0" layoutY="329.0" mnemonicParsing="false" text="Exit" />
+      <Button fx:id="saveHit" onAction="#saveHit" layoutX="14.0" layoutY="329.0" mnemonicParsing="false" text="Save" />
+      <Button fx:id="exitHit" onAction="#exitHit" layoutX="158.0" layoutY="329.0" mnemonicParsing="false" text="Exit" />
    </children>
 </AnchorPane>
