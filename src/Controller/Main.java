@@ -17,6 +17,8 @@ public class Main extends Application {
             editDepartmentView, editDoctorView, editNodeGraph,
             editRoomAttributes, editRoomView, modifyLocations;
 
+    public static adminList admins;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         thisStage = primaryStage;
@@ -51,6 +53,11 @@ public class Main extends Application {
 
         thisStage.setScene(adminLogin);
         thisStage.show();
+
+        admins = new adminList();
+
+        admins.addAdmin("ADMIN", "ADMIN");
+        admins.devEnabled = true;
     }
 
     public static void main(String[] args) {

@@ -18,7 +18,9 @@ public class AdminLoginController
     @FXML
     private void clickedLogin()
     {
-        Main.thisStage.setScene(Main.adminWelcome);
+        if(Main.admins.checkValidity(txtUsername.getText(), txtPassword.getText())) {
+            Main.thisStage.setScene(Main.adminWelcome);
+        }
     }
 
     @FXML
