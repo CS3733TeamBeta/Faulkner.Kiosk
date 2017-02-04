@@ -3,6 +3,7 @@
 package Controller.Admin;
 
 import Controller.Main;
+import Model.DoctorProfile;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;

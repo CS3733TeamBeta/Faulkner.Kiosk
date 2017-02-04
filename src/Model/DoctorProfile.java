@@ -1,6 +1,6 @@
-package Controller.Admin;
+package Model;
 
-import Controller.RoomInfo;
+import Model.RoomInfo;
 
 import java.util.HashSet;
 
