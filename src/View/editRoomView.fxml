@@ -8,6 +8,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
+<?import java.net.URL?>
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
             fx:controller="Controller.editRoomController">
     <children>
@@ -42,4 +43,7 @@
         </ChoiceBox>
         <Label id="assignDocLab" fx:id="doctorsassignedLab" layoutX="107.0" layoutY="185.0" prefWidth="150.0" text="Doctors Assigned to Room" />
     </children>
+    <stylesheets>
+        <URL value ="@genstyle.css" />
+    </stylesheets>
 </AnchorPane>

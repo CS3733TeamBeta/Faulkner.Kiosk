@@ -9,6 +9,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
+<?import java.net.URL?>
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
             fx:controller="Controller.editDoctorController">
   <children>
@@ -45,4 +46,7 @@
     <TextField fx:id="nameLast" layoutX="276.0" layoutY="100.0" prefWidth="200.0" />
     <TextField fx:id="docRoom" layoutX="276.0" layoutY="129.0" prefWidth="200.0" />
   </children>
+  <stylesheets>
+    <URL value ="@genstyle.css" />
+  </stylesheets>
 </AnchorPane>
