@@ -3,6 +3,8 @@ package Domain.Navigation;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import Domain.Exception.PathFindingErrorException;
 import Domain.Map.*;
 import
 
@@ -11,14 +13,12 @@ import
  */
 public class Guidance extends Path
 {
-    Path p;
+  //  Path p;
     LinkedList<String> textDirections;
 
-    public Guidance (Destination start, Destination end) throws PathFindingErrorException {
+    public Guidance (Destination start, Destination end) throws PathFindingErrorException
+    {
             super(start, end);
-        try {
-            this.p = new Path(start, end);
-        } catch (Exception e) {}
     }
 
     public List getTextDirections()
