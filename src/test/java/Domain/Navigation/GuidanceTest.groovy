@@ -9,9 +9,9 @@ import java.rmi.server.UID
 
 
 /**
- * Created by IanCJ on 2/2/2017.
+ * Created by IanCJ on 2/4/2017.
  */
-class PathTest extends GroovyTestCase {
+class GuidanceTest extends GroovyTestCase {
 
     MapNode nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG, nodeH, nodeI, nodeJ, nodeK, nodeL, nodeM, nodeN, nodeO, nodeP, nodeQ, nodeR, nodeS, nodeT, nodeX, nodeY, nodeZ
     NodeEdge edgeAB, edgeBC, edgeCD, edgeBE, edgeCF, edgeDG, edgeEJ, edgeGK, edgeAH, edgeHI, edgeIJ, edgeJK, edgeLM, edgeMN, edgeMP, edgeNQ, edgeOP, edgePZ, edgePS, edgeQT, edgeLR, edgeRS, edgeST, edgeYX, edgeEZ
@@ -106,51 +106,6 @@ class PathTest extends GroovyTestCase {
         myBuilding.addFloor(floor2)
 
         myHospital.addBuilding(myBuilding)
-    }
-
-    //Tests that UIDs are working properly
-    @Test
-    void testUID() {
-        UID id = nodeA.getNodeUID()
-        //System.out.println(id.toString())
-        assertEquals(nodeA, nodeA)
-        assertEquals(nodeB, nodeB)
-        assertNotSame(nodeA, nodeB)
-    }
-
-    //Tests that IsValidPath is properly testing path validity
-    @Test
-    void testIsValidPath() {
-        LinkedList<MapNode> listOfNodes = new LinkedList<MapNode>()
-        LinkedList<MapNode> listOfInvalidNodes = new LinkedList<MapNode>()
-        listOfNodes.add(nodeA)
-        listOfNodes.add(nodeB)
-        listOfInvalidNodes.add(nodeA)
-        listOfInvalidNodes.add(nodeE)
-        LinkedList<NodeEdge> listOfEdges = new LinkedList<NodeEdge>()
-        listOfEdges.add(edgeAB)
-        Path manPathValid = new Path(listOfEdges, listOfNodes)
-        Path manPathInvalid = new Path(listOfEdges, listOfInvalidNodes);
-        assertTrue(manPathValid.isValidPath());
-        assertFalse(manPathInvalid.isValidPath())
-    }
-
-
-    @Test
-    void testNoValidPathException() {
-        try {
-            Path p = new Path(nodeA, nodeX)
-            fail("Failed to notice no possible path")
-        } catch (Exception e) {
-            assertTrue(e instanceof PathFindingNoPathException)
-        }
-        try {
-            Path p = new Path(nodeY, nodeL)
-            fail("Failed to notice no possible path")
-        } catch (Exception e) {
-            assertTrue(e instanceof PathFindingNoPathException)
-        }
-
     }
 
     @Test
