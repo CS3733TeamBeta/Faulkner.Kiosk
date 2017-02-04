@@ -39,6 +39,8 @@ public class Main extends Application {
         Parent editRoomViewRoot = FXMLLoader.load(getClass().getResource("../Admin/EditRoomView.fxml"));
         Parent modifyLocationsRoot = FXMLLoader.load(getClass().getResource("../Admin/ModifyLocations.fxml"));
 
+        departments.addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+
         thisStage.setTitle("Hello World");
 
         addNewProfile = new Scene(addNewProfileRoot);
