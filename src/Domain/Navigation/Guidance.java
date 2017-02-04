@@ -2,7 +2,6 @@ package Domain.Navigation;
 
 
 import java.util.LinkedList;
-import java.util.List;
 
 import Domain.Map.*;
 import Exceptions.*;
