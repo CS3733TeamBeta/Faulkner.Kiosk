@@ -1,6 +1,8 @@
 package Model;
 
 import Model.DoctorProfile;
+import Exceptions.AddFoundException;
+import Exceptions.RemoveNotFoundException;
 
 import java.util.HashSet;
 
@@ -17,25 +19,24 @@ public class RoomInfo
         this.doctors.clear();
     }
 
-    public int changeRoomNum(String newRoomNum) {
+    public void changeRoomNum(String newRoomNum) {
         this.roomNum = newRoomNum;
-        return 0;
     }
 
-    public int addDoctor(DoctorProfile doctor) {
+    public void addDoctor(DoctorProfile doctor) throws AddFoundException {
         if (this.doctors.add(doctor)) {
-            return 0;
-        } else {
-            return 1; // Exception
+            return;
         }
+
+        throw new AddFoundException();
     }
 
-    public int removeDoctor(DoctorProfile doctor) {
+    public void removeDoctor(DoctorProfile doctor) throws RemoveNotFoundException {
         if (this.doctors.remove(doctor)) {
-            return 0;
-        } else {
-            return 1; // Exception
+            return;
         }
+
+        throw new RemoveNotFoundException();
     }
 
     public String getRoomNum() {
