@@ -109,7 +109,7 @@ public class MapNode
 
     public boolean equals(Object obj) {
         if (obj instanceof MapNode) {
-            return (this.nodeUID.equals(((MapNode) obj).getNodeUID()));
+            return this.equals((MapNode) obj);
         } else {
             return false;
         }
@@ -120,6 +120,6 @@ public class MapNode
     }
 
     public boolean equals(MapNode aNode) {
-        return (this.nodeID == ((MapNode) aNode).nodeID);
+        return (this.nodeUID.equals(aNode.getNodeUID()));
     }
 }
