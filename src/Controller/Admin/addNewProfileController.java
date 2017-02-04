@@ -1,7 +1,9 @@
 // Create and edit by Joan Wong
 
-package Controller;
+package Controller.Admin;
 
+import Controller.Admin.doctorProfile;
+import Controller.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
