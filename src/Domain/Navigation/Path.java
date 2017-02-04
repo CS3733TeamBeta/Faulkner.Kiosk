@@ -105,12 +105,18 @@ public class Path implements Iterable
 
 
         }
+
         //Set all nodes in the open and closed set back to default values
         for (MapNode n: openSet) {
             n.resetTempValues();
         }
         for (MapNode n: closedSet) {
             n.resetTempValues();
+        }
+
+        //If the loop exited without flagDone, it must have searched all nodes and found nothing
+        if (!flagDone) {
+            throw new PathFindingErrorException("No valid path found");
         }
 
         //Determine pathNodes from pathEdges
@@ -123,6 +129,7 @@ public class Path implements Iterable
         if (!this.isValidPath()) {
             throw new PathFindingErrorException("Path invalid as generated");
         }
+
 
     }
 

@@ -1,6 +1,10 @@
 package Domain.Navigation
 
+import Domain.Exception.PathFindingErrorException
 import Domain.Map.*
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.ExpectedException
 
 import javax.xml.soap.Node
 import java.rmi.server.UID
@@ -11,8 +15,8 @@ import java.rmi.server.UID
  */
 class PathTest extends GroovyTestCase {
 
-    MapNode nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG, nodeH, nodeI, nodeJ, nodeK, nodeL, nodeM, nodeN, nodeO, nodeP, nodeQ, nodeR, nodeS, nodeT, nodeZ
-    NodeEdge edgeAB, edgeBC, edgeCD, edgeBE, edgeCF, edgeDG, edgeEJ, edgeGK, edgeAH, edgeHI, edgeIJ, edgeJK, edgeLM, edgeMN, edgeMP, edgeNQ, edgeOP, edgePZ, edgePS, edgeQT, edgeLR, edgeRS, edgeST, edgeEZ
+    MapNode nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG, nodeH, nodeI, nodeJ, nodeK, nodeL, nodeM, nodeN, nodeO, nodeP, nodeQ, nodeR, nodeS, nodeT, nodeX, nodeY, nodeZ
+    NodeEdge edgeAB, edgeBC, edgeCD, edgeBE, edgeCF, edgeDG, edgeEJ, edgeGK, edgeAH, edgeHI, edgeIJ, edgeJK, edgeLM, edgeMN, edgeMP, edgeNQ, edgeOP, edgePZ, edgePS, edgeQT, edgeLR, edgeRS, edgeST, edgeYX, edgeEZ
 
     Hospital myHospital
     Building myBuilding
@@ -45,6 +49,8 @@ class PathTest extends GroovyTestCase {
         nodeR = new MapNode(18, 0, 0)
         nodeS = new MapNode(19, 10, 0)
         nodeT = new MapNode(20, 10, 0)
+        nodeX = new MapNode(22, 25, 0)
+        nodeY = new MapNode(23, 25, 5)
         nodeZ = new MapNode(24, 15, 5)
         edgeAB = new NodeEdge(nodeA, nodeB, 8)
         edgeBC = new NodeEdge(nodeB, nodeC, 5)
@@ -69,6 +75,7 @@ class PathTest extends GroovyTestCase {
         edgeLR = new NodeEdge(nodeL, nodeR, 6)
         edgeRS = new NodeEdge(nodeR, nodeS, 9)
         edgeST = new NodeEdge(nodeS, nodeT, 8)
+        edgeYX = new NodeEdge(nodeY, nodeX, 3)
         edgeEZ = new NodeEdge(nodeE, nodeZ, 0)
 
         floor1.addNode(nodeA)
@@ -93,6 +100,8 @@ class PathTest extends GroovyTestCase {
         floor2.addNode(nodeR)
         floor2.addNode(nodeS)
         floor2.addNode(nodeT)
+        floor2.addNode(nodeY)
+        floor2.addNode(nodeX)
 
         myBuilding.addFloor(floor1)
         myBuilding.addFloor(floor2)
@@ -101,6 +110,7 @@ class PathTest extends GroovyTestCase {
     }
 
     //Tests that UIDs are working properly
+    @Test
     void testUID() {
         UID id = nodeA.getNodeUID()
         System.out.println(id.toString())
@@ -110,6 +120,7 @@ class PathTest extends GroovyTestCase {
     }
 
     //Tests that IsValidPath is properly testing path validity
+    @Test
     void testIsValidPath() {
         LinkedList<MapNode> listOfNodes = new LinkedList<MapNode>()
         LinkedList<MapNode> listOfInvalidNodes = new LinkedList<MapNode>()
@@ -123,6 +134,24 @@ class PathTest extends GroovyTestCase {
         Path manPathInvalid = new Path(listOfEdges, listOfInvalidNodes);
         assertTrue(manPathValid.isValidPath());
         assertFalse(manPathInvalid.isValidPath())
+    }
+
+
+    @Test
+    void testNoValidPathException() {
+        try {
+            Path p = new Path(nodeA, nodeX)
+            fail("Failed to notice no possible path")
+        } catch (Exception e) {
+            assertTrue(e instanceof PathFindingErrorException)
+        }
+        try {
+            Path p = new Path(nodeY, nodeL)
+            fail("Failed to notice no possible path")
+        } catch (Exception e) {
+            assertTrue(e instanceof PathFindingErrorException)
+        }
+
     }
 
 }

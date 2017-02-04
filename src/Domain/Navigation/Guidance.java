@@ -10,13 +10,11 @@ import Domain.Map.*;
 /**
  * Direction tells you how to get from
  */
-public class Guidance extends Path
-{
-  //  Path p;
+public class Guidance extends Path {
+
     LinkedList<String> textDirections;
 
-    public Guidance (Destination start, Destination end) throws PathFindingErrorException
-    {
+    public Guidance (Destination start, Destination end) throws PathFindingErrorException {
             super(start, end);
     }
 
