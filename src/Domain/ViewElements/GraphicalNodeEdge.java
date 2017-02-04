@@ -1,6 +1,7 @@
 
 package Domain.ViewElements;
 
+import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.When;
@@ -21,17 +22,22 @@ import java.util.UUID;
  */
 public class GraphicalNodeEdge extends AnchorPane
 {
+
     @FXML
     Line node_link;
 
     NodeEdge nodeEdge = null;
 
+
     public GraphicalNodeEdge()
     {
-        nodeEdge
+        if(nodeEdge == null)
+        {
+            nodeEdge = new NodeEdge();
+        }
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("../resources/GraphicalNodeEdge.fxml")
+                getClass().getResource("/Admin/MapBuilder/NodeLink.fxml")
         );
 
         fxmlLoader.setRoot(this);
@@ -48,28 +54,15 @@ public class GraphicalNodeEdge extends AnchorPane
         setId(UUID.randomUUID().toString());
     }
 
-    public GraphicalNodeEdge() {
-
-        FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("../resources/GraphicalNodeEdge.fxml")
-        );
-
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
-
-        //provide a universally unique identifier for this object
-        setId(UUID.randomUUID().toString());
+    public GraphicalNodeEdge(MapNode a, MapNode b)
+    {
+        nodeEdge = new NodeEdge(a, b);
+       // node_link.setStart(a.getLocation);
     }
 
     @FXML
     private void initialize() {
+
 
     }
 

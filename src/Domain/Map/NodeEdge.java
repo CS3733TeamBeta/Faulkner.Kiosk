@@ -5,10 +5,18 @@ package Domain.Map;
  */
 public class NodeEdge
 {
+    public static class EdgeEndPoint
+    {
+
+    }
+
     protected float cost;
 
     protected MapNode nodeA;
     protected MapNode nodeB;
+
+    protected EdgeEndPoint a;
+    protected EdgeEndPoint b;
 
     public NodeEdge()
     {

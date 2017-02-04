@@ -28,7 +28,7 @@ public class DragIcon extends AnchorPane{
 	public DragIcon() {
 
 		FXMLLoader fxmlLoader = new FXMLLoader(
-				getClass().getResource("../resources/DragIcon.fxml")
+				getClass().getResource("/Admin/MapBuilder/DragIcon.fxml")
 				);
 		
 		fxmlLoader.setRoot(this); 
