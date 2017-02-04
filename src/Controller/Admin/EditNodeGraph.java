@@ -7,7 +7,8 @@ import javafx.scene.control.Button;
 /**
  * Created by Pattop on 1/31/2017.
  */
-public class editNodeGraph {
+public class EditNodeGraph
+{
     @FXML
     Button addRoom, addIntersection, addConnection,
             editRoom, editIntersection, editConnection,

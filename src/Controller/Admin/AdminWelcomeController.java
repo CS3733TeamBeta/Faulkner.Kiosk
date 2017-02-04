@@ -4,8 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
 
-public class AdminWelcomeController
-{
+public class AdminWelcomeController {
     @FXML
     Button btnBack;
     @FXML
@@ -27,4 +26,6 @@ public class AdminWelcomeController
     {
         Main.thisStage.setScene(Main.modifyLocations);
     }
+
+
 }
