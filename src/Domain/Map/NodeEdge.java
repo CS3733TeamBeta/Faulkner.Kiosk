@@ -15,6 +15,10 @@ public class NodeEdge
 
     }
 
+    public float getCost() {
+        return cost;
+    }
+
     public NodeEdge(MapNode nodeA, MapNode nodeB)
     {
         this();

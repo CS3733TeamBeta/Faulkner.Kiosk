@@ -1,6 +1,6 @@
 package Domain.Navigation
 
-import Domain.Map.Destination
+import Domain.Map.*
 
 
 /**
@@ -8,9 +8,7 @@ import Domain.Map.Destination
  */
 class PathTest extends GroovyTestCase {
 
-    Destination myDest1 = new Destination(1);
-    Destination myDest2 = new Destination(1);
-    Destination myDest3 = new Destination(2);
+    Hospital myHospital = new Hospital()
 
     void testDummy() {
         assertEquals(myDest1, myDest2);
