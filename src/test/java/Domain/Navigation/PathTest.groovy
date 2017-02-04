@@ -25,8 +25,8 @@ class PathTest extends GroovyTestCase {
     void setUp() {
         myHospital = new Hospital()
         myBuilding = new Building()
-        floor1 = new Floor()
-        floor2 = new Floor()
+        floor1 = new Floor(1)
+        floor2 = new Floor(2)
         nodeA = new MapNode(1, 0, 10)
         nodeB = new MapNode(2, 10, 10)
         nodeC = new MapNode(3, 15, 10)

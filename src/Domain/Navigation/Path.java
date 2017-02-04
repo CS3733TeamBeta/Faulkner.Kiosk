@@ -8,6 +8,7 @@ import Domain.Map.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+
 /**
  * Path is the path from one Destination to another
  */
@@ -16,6 +17,8 @@ public class Path implements Iterable
 
     LinkedList<NodeEdge> pathEdges;
     LinkedList<MapNode> pathNodes;
+
+    private static final double FLOOR_HEIGHT_CONSTANT = 2;
 
     public Path (LinkedList<NodeEdge> pathEdges, LinkedList<MapNode> pathNodes) {
         this.pathEdges = pathEdges;
@@ -168,9 +171,11 @@ public class Path implements Iterable
     public static double findHeuristic(MapNode currentNode, MapNode endNode){
         double currentNodeX = (double)currentNode.getPosX();
         double currentNodeY = (double)currentNode.getPosY();
+        double currentNodeZ = ( ((double)currentNode.getMyFloor().getFloorNumber()) * FLOOR_HEIGHT_CONSTANT);
         double endNodeX = (double)endNode.getPosX();
         double endNodeY = (double)endNode.getPosY();
-        return Math.sqrt(Math.pow(endNodeY - currentNodeY, 2) + Math.pow(endNodeX - currentNodeX, 2));
+        double endNodeZ = ( ((double)endNode.getMyFloor().getFloorNumber()) * FLOOR_HEIGHT_CONSTANT);
+        return Math.sqrt(Math.pow(endNodeX - currentNodeX, 2) + Math.pow(endNodeY - currentNodeY, 2) + Math.pow(endNodeZ - currentNodeZ, 2));
     }
 
     //Given a list of MapNodes, removes and returns the one with the smallest F value
