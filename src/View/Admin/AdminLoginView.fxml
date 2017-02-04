@@ -30,6 +30,6 @@
     </children>
     <stylesheets>
         <URL value="@/genstyle.css"/>
-        <URL value="@/adminloginstyle.css"/>
+        <URL value="@/Admin/adminloginstyle.css"/>
     </stylesheets>
 </AnchorPane>
