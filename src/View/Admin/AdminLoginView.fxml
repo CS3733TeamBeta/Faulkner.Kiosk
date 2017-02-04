@@ -11,7 +11,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
             prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Controller.AdminLoginController">
+            fx:controller="Controller.Admin.AdminLoginController">
     <children>
         <!--<Rectangle fill="#d8dfe5" layoutX="125" layoutY="225" height="140" width="450"/>-->
         <!--<Rectangle fill="#cfd8dc" layoutX="80" layoutY="25" height="300.0" width="180.0"/>-->
