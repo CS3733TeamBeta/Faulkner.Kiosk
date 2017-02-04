@@ -18,7 +18,7 @@ public class Main extends Application {
             editDepartmentView, editDoctorView, editNodeGraph,
             editRoomAttributes, editRoomView, modifyLocations;
 
-    public static adminList admins;    // For testing purposes
+    public static AdminList admins;    // For testing purposes
     public static final ObservableList<String> departments =
             FXCollections.observableArrayList();
 
@@ -26,18 +26,18 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         thisStage = primaryStage;
 
-        Parent addNewProfileRoot = FXMLLoader.load(getClass().getResource("../AddNewProfile.fxml"));
-        Parent adminLoginRoot = FXMLLoader.load(getClass().getResource("../AdminLoginView.fxml"));
-        Parent adminWelcomeRoot = FXMLLoader.load(getClass().getResource("../AdminWelcomeView.fxml"));
-        Parent changingDirectoryViewRoot = FXMLLoader.load(getClass().getResource("../ChangingDirectoryView.fxml"));
-        Parent chooseProfileToModifyRoot = FXMLLoader.load(getClass().getResource("../ChooseProfileToModify.fxml"));
-        Parent dragWindowRoot = FXMLLoader.load(getClass().getResource("../dragWindow.fxml"));
-        Parent editDepartmentViewRoot = FXMLLoader.load(getClass().getResource("../editDepartmentView.fxml"));
-        Parent editDoctorViewRoot = FXMLLoader.load(getClass().getResource("../editDoctorView.fxml"));
-        Parent editNodeGraphRoot = FXMLLoader.load(getClass().getResource("../editNodeGraph.fxml"));
-        Parent editRoomAttributesRoot = FXMLLoader.load(getClass().getResource("../editRoomAttributes.fxml"));
-        Parent editRoomViewRoot = FXMLLoader.load(getClass().getResource("../editRoomView.fxml"));
-        Parent modifyLocationsRoot = FXMLLoader.load(getClass().getResource("../modifyLocations.fxml"));
+        Parent addNewProfileRoot = FXMLLoader.load(getClass().getResource("../Admin/AddNewProfile.fxml"));
+        Parent adminLoginRoot = FXMLLoader.load(getClass().getResource("../Admin/AdminLoginView.fxml"));
+        Parent adminWelcomeRoot = FXMLLoader.load(getClass().getResource("../Admin/AdminWelcomeView.fxml"));
+        Parent changingDirectoryViewRoot = FXMLLoader.load(getClass().getResource("../Admin/ChangingDirectoryView.fxml"));
+        Parent chooseProfileToModifyRoot = FXMLLoader.load(getClass().getResource("../Admin/ChooseProfileToModify.fxml"));
+        Parent dragWindowRoot = FXMLLoader.load(getClass().getResource("../Admin/dragWindow.fxml"));
+        Parent editDepartmentViewRoot = FXMLLoader.load(getClass().getResource("../Admin/editDepartmentView.fxml"));
+        Parent editDoctorViewRoot = FXMLLoader.load(getClass().getResource("../Admin/editDoctorView.fxml"));
+        Parent editNodeGraphRoot = FXMLLoader.load(getClass().getResource("../Admin/editNodeGraph.fxml"));
+        Parent editRoomAttributesRoot = FXMLLoader.load(getClass().getResource("../Admin/editRoomAttributes.fxml"));
+        Parent editRoomViewRoot = FXMLLoader.load(getClass().getResource("../Admin/editRoomView.fxml"));
+        Parent modifyLocationsRoot = FXMLLoader.load(getClass().getResource("../Admin/modifyLocations.fxml"));
 
         thisStage.setTitle("Hello World");
 
@@ -56,10 +56,10 @@ public class Main extends Application {
 
         thisStage.setScene(adminLogin);
         thisStage.show();
-        admins = new adminList();
+        admins = new AdminList();
 
         admins.addAdmin("ADMIN", "ADMIN");
-        admins.devEnabled = true;
+        admins.setDevEnabled(true);
 
     }
 

@@ -1,5 +1,7 @@
 package Controller;
 
+import Controller.Admin.doctorProfile;
+
 import java.util.HashMap;
 
 /**
