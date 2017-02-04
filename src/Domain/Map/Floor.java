@@ -9,14 +9,21 @@ public class Floor {
     LinkedList<MapNode> floorNodes;
     LinkedList<NodeEdge> floorEdges;
 
-    public Floor() {
+    int floorNumber;
+
+    public Floor(int floorNumber) {
         floorNodes = new LinkedList<MapNode>();
         floorEdges = new LinkedList<NodeEdge>();
+        this.floorNumber = floorNumber;
     }
 
     public void addNode(MapNode n) {
         floorNodes.add(n);
         n.setFloor(this);
+    }
+
+    public int getFloorNumber() {
+        return floorNumber;
     }
 
     public void addEdge(NodeEdge e) {

@@ -4,17 +4,32 @@ import Domain.Map.*;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import Exceptions.*;
+
 
 /**
  * Path is the path from one Destination to another
  */
-public class Path implements Iterable
-{
+public class Path implements Iterable {
 
     LinkedList<NodeEdge> pathEdges;
     LinkedList<MapNode> pathNodes;
 
-    public Path (MapNode start, MapNode end) {
+    //Set to true for verbose debugging
+    private boolean devFlag;
+
+    private static final double FLOOR_HEIGHT_CONSTANT = 1.812;
+
+    public Path() {}
+
+    public Path(MapNode start, MapNode end) throws PathFindingException {
+        this(start, end, false);
+    }
+
+
+    public Path(MapNode start, MapNode end, boolean devFlag) throws PathFindingException{
+
+        this.devFlag = devFlag;
 
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
@@ -72,9 +87,9 @@ public class Path implements Iterable
                 if (!closedSet.contains(aNode)) {
 
                     //Calculate what the F value would be
-                    float tentativeNewHeuristic = (float)findHeuristic(aNode, end);
-                    float tentativeNewGValue = currentNode.getG() + aEdge.getCost();
-                    float tentativeNewFValue = tentativeNewHeuristic + tentativeNewGValue;
+                    double tentativeNewHeuristic = findHeuristic(aNode, end);
+                    double tentativeNewGValue = currentNode.getG() + aEdge.getCost();
+                    double tentativeNewFValue = tentativeNewHeuristic + tentativeNewGValue;
 
                     //If the new F value is better
                     if(tentativeNewFValue < aNode.getF()) {
@@ -99,6 +114,7 @@ public class Path implements Iterable
 
 
         }
+
         //Set all nodes in the open and closed set back to default values
         for (MapNode n: openSet) {
             n.resetTempValues();
@@ -107,18 +123,38 @@ public class Path implements Iterable
             n.resetTempValues();
         }
 
+
+
         //Determine pathNodes from pathEdges
         nodesFromEdges(start, end);
 
-        //Print the edges and nodes for bugfixing
-        printPathEdges();
-        printPathNodes();
+        //If the loop exited without flagDone, it must have searched all nodes and found nothing
+        if (!flagDone) {
+            throw new PathFindingNoPathException("No valid path found", this.pathNodes, this.pathEdges);
+        }
 
+        //Print the edges and nodes for bugfixing
+        if (devFlag) {
+            printPathEdges();
+            printPathNodes();
+        }
+
+        if (!this.isValidPath()) {
+            throw new PathFindingInvalidPathException("Path generated is invalid", this.pathNodes, this.pathEdges);
+        }
+
+
+    }
+
+    public Path (LinkedList<NodeEdge> pathEdges, LinkedList<MapNode> pathNodes) {
+        this.pathEdges = pathEdges;
+        this.pathNodes = pathNodes;
     }
 
     public LinkedList<NodeEdge> getPathEdges() {
         return pathEdges;
     }
+    public LinkedList<MapNode> getPathNodes() { return pathNodes; }
 
     //Given the start and ending nodes, fill pathNodes from pathEdges
     public void nodesFromEdges(MapNode start, MapNode end) {
@@ -132,13 +168,27 @@ public class Path implements Iterable
 
     }
 
+    //Returns true if for every node in pathNodes, it has a path to the next node.
+    public boolean isValidPath() {
+        boolean isValid = true;
+        for(int i = 1; i < pathNodes.size() - 0; i++) {
+            if ( !(pathNodes.get(i-1).hasEdgeTo(pathNodes.get(i))) ) {
+                isValid = false;
+            }
+
+        }
+        return isValid;
+    }
+
     //Find the heuristic (aprox. distance) from currentNode to endNode
     public static double findHeuristic(MapNode currentNode, MapNode endNode){
-        double currentNodeX = (double)currentNode.getPosX();
-        double currentNodeY = (double)currentNode.getPosY();
-        double endNodeX = (double)endNode.getPosX();
-        double endNodeY = (double)endNode.getPosY();
-        return Math.sqrt(Math.pow(endNodeY - currentNodeY, 2) + Math.pow(endNodeX - currentNodeX, 2));
+        double currentNodeX = currentNode.getPosX();
+        double currentNodeY = currentNode.getPosY();
+        double currentNodeZ = ( (currentNode.getMyFloor().getFloorNumber()) * FLOOR_HEIGHT_CONSTANT);
+        double endNodeX = endNode.getPosX();
+        double endNodeY = endNode.getPosY();
+        double endNodeZ = ( (endNode.getMyFloor().getFloorNumber()) * FLOOR_HEIGHT_CONSTANT);
+        return Math.sqrt(Math.pow(endNodeX - currentNodeX, 2) + Math.pow(endNodeY - currentNodeY, 2) + Math.pow(endNodeZ - currentNodeZ, 2));
     }
 
     //Given a list of MapNodes, removes and returns the one with the smallest F value
@@ -177,8 +227,48 @@ public class Path implements Iterable
         }
     }
 
-    public Iterator iterator()
-    {
-        return pathEdges.iterator();
+
+    //
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Path) {
+            return this.equals((Path) obj);
+        } else {
+            return false;
+        }
     }
+
+    public boolean equals(Path that) {
+        LinkedList<MapNode> thisNodes = this.pathNodes;
+        LinkedList<NodeEdge> thisEdges = this.pathEdges;
+        LinkedList<MapNode> thatNodes = that.getPathNodes();
+        LinkedList<NodeEdge> thatEdges = that.getPathEdges();
+        if ((thisNodes.size() != thatNodes.size()) || (thisEdges.size() != thatEdges.size())) {
+            return false;
+        }
+        boolean areEqual = true;
+        for (int i = 0; i < thisNodes.size(); i++) {
+            if (!(thisNodes.get(i).equals(thatNodes.get(i)))) {
+                areEqual = false;
+            }
+        }
+        for (int i = 0; i < thisEdges.size(); i++) {
+            if (!(thisEdges.get(i).equals(thatEdges.get(i)))) {
+                areEqual = false;
+            }
+        }
+        return areEqual;
+    }
+
+
+    public int hashCode() {
+        final int primeNum = 31;
+        int totalHash = 1;
+        for (MapNode n: pathNodes) {
+            totalHash = totalHash * primeNum + n.hashCode();
+        }
+        return totalHash;
+    }
+
+    public Iterator iterator() {return pathEdges.iterator();}
 }

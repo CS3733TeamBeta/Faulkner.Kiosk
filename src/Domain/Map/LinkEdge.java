@@ -8,8 +8,6 @@ public class LinkEdge extends NodeEdge
 {
     public LinkEdge(MapNode nodeA, MapNode nodeB)
     {
-        super(nodeA, nodeB);
-
-        cost = 0;
+        super(nodeA, nodeB, 0);
     }
 }

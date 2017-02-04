@@ -2,6 +2,7 @@ package Domain.Map;
 
 import javafx.scene.image.Image;
 
+import java.rmi.server.UID;
 import java.util.HashSet;
 
 /**
@@ -13,9 +14,10 @@ public class MapNode
     int posX;
     int posY;
     int nodeID;
-    float g = 0;
-    float heuristic = Float.MAX_VALUE;
-    float f = Float.MAX_VALUE;
+    UID nodeUID;
+    double g = 0;
+    double heuristic = Double.MAX_VALUE;
+    double f = Double.MAX_VALUE;
     NodeEdge parent = null;
     Image node = null;
     Floor myFloor;
@@ -24,44 +26,41 @@ public class MapNode
     public int getPosX() {
         return posX;
     }
-
     public int getPosY() {
         return posY;
     }
-
-    public float getG() {
+    public double getG() {
         return g;
     }
-
-    public float getHeuristic() {
+    public double getHeuristic() {
         return heuristic;
     }
-
-    public float getF() {
+    public double getF() {
         return f;
     }
-
     public NodeEdge getParent() {
         return parent;
     }
-
-    public HashSet<NodeEdge> getEdges() {
-        return edges;
-    }
-
-    public void setG(float g) {
+    public HashSet<NodeEdge> getEdges() {return edges;}
+    public void setG(double g) {
         this.g = g;
     }
+    public void setFloor(Floor f) {this.myFloor = f;}
 
-    public void setFloor(Floor f) {
-        this.myFloor = f;
+    public boolean hasEdgeTo(MapNode n) {
+        for (NodeEdge e: edges) {
+            if (e.getOtherNode(this).equals(n)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void setHeuristic(float heuristic) {
+    public void setHeuristic(double heuristic) {
         this.heuristic = heuristic;
     }
 
-    public void setF(float f) {
+    public void setF(double f) {
         this.f = f;
     }
 
@@ -75,8 +74,13 @@ public class MapNode
 
     public int getNodeID(){ return this.nodeID; }
 
+    public UID getNodeUID() {
+        return this.nodeUID;
+    }
+
     public MapNode() {
         this.edges = new HashSet<NodeEdge>();
+        this.nodeUID = new UID();
     }
 
 
@@ -98,24 +102,24 @@ public class MapNode
 
     public void resetTempValues() {
         this.g = 0;
-        this.heuristic = Float.MAX_VALUE;
-        this.f = Float.MAX_VALUE;
+        this.heuristic = Double.MAX_VALUE;
+        this.f = Double.MAX_VALUE;
         this.parent = null;
     }
 
     public boolean equals(Object obj) {
         if (obj instanceof MapNode) {
-            return (this.nodeID == ((MapNode) obj).nodeID);
+            return this.equals((MapNode) obj);
         } else {
             return false;
         }
     }
 
     public int hashCode() {
-        return (nodeID*11);
+        return (nodeUID.hashCode());
     }
 
     public boolean equals(MapNode aNode) {
-        return (this.nodeID == ((MapNode) aNode).nodeID);
+        return (this.nodeUID.equals(aNode.getNodeUID()));
     }
 }
