@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.net.URL;
@@ -17,7 +19,9 @@ public class Main extends Application {
             editDepartmentView, editDoctorView, editNodeGraph,
             editRoomAttributes, editRoomView, modifyLocations;
 
-    public static adminList admins;
+    public static adminList admins;    // For testing purposes
+    public static final ObservableList<String> departments =
+            FXCollections.observableArrayList();
 
     @Override
     public void start(Stage primaryStage) throws Exception{

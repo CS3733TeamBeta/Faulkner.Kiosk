@@ -1,6 +1,6 @@
 package Controller;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 
 /**
  * Created by jw97 on 2/2/2017.
@@ -9,37 +9,37 @@ import java.util.LinkedList;
 public class doctorProfile {
     private String firstName;
     private String lastName;
-    private String roomNum;
+    private roomInfo room;
     // Should I include roomNum, phoneNum, etc.
-    // Discussion: LinkedList?
-    private LinkedList<String> departments;
+    private HashSet<String> departments = new HashSet<String>();
 
     public doctorProfile(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.departments = new LinkedList<String>();
+        room = new roomInfo("00");
+        this.departments.clear();
     }
 
     // Would it be relevant to have methods that change the doctor's first and last name?
 
     public int addDepartment(String department) {
-        // Checks if the doctor is currently in the department
-        if (this.departments.contains(department)) {
-            return 1; // Exception
+        if (this.departments.add(department)) {
+            return 0;
+        } else {
+            return 1;
         }
-
-        this.departments.add(department);
-        return 0;
     }
 
     public int removeDepartment(String department) {
-        if (this.departments.contains(department)) {
-            this.departments.remove(department);
+        if (this.departments.remove(department)) {
+            return 0;
         } else {
-            return 1; // Exception
+            return 1;
         }
+    }
 
-        return 0;
+    public int assignRoom(String roomNum) {
+        return this.room.changeRoomNum(roomNum);
     }
 
     public String getFirstName() {
@@ -50,7 +50,11 @@ public class doctorProfile {
         return this.lastName;
     }
 
-    public LinkedList<String> getDepartments() {
+    public HashSet<String> getDepartments() {
         return this.departments;
+    }
+
+    public roomInfo getRoomNum() {
+        return this.room;
     }
 }
