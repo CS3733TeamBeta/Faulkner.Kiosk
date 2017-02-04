@@ -5,21 +5,24 @@ package Domain.Map;
  */
 public class NodeEdge
 {
-    protected double cost;
+    protected double cost = 0;
 
     protected MapNode nodeA;
     protected MapNode nodeB;
 
-    public NodeEdge() {
-    }
+    public NodeEdge() {}
 
-    public NodeEdge(MapNode nodeA, MapNode nodeB, double cost) {
+    public NodeEdge(MapNode nodeA, MapNode nodeB) {
         this();
         this.nodeA = nodeA;
         this.nodeB = nodeB;
-        this.cost = cost;
         nodeA.addEdge(this);
         nodeB.addEdge(this);
+    }
+
+    public NodeEdge(MapNode nodeA, MapNode nodeB, double cost) {
+        this(nodeA, nodeB);
+        this.cost = cost;
 
     }
 
