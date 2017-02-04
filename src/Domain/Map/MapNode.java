@@ -2,6 +2,7 @@ package Domain.Map;
 
 import javafx.scene.image.Image;
 
+import java.rmi.server.UID;
 import java.util.HashSet;
 
 /**
@@ -13,6 +14,7 @@ public class MapNode
     int posX;
     int posY;
     int nodeID;
+    UID nodeUID;
     float g = 0;
     float heuristic = Float.MAX_VALUE;
     float f = Float.MAX_VALUE;
@@ -75,8 +77,13 @@ public class MapNode
 
     public int getNodeID(){ return this.nodeID; }
 
+    public UID getNodeUID() {
+        return this.nodeUID;
+    }
+
     public MapNode() {
         this.edges = new HashSet<NodeEdge>();
+        this.nodeUID = new UID();
     }
 
 
@@ -105,14 +112,14 @@ public class MapNode
 
     public boolean equals(Object obj) {
         if (obj instanceof MapNode) {
-            return (this.nodeID == ((MapNode) obj).nodeID);
+            return (this.nodeUID.equals(((MapNode) obj).getNodeUID()));
         } else {
             return false;
         }
     }
 
     public int hashCode() {
-        return (nodeID*11);
+        return (nodeUID.hashCode());
     }
 
     public boolean equals(MapNode aNode) {
