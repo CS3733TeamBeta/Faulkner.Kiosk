@@ -25,8 +25,7 @@ public class addNewProfileController {
     ListView deptList;
 
     @FXML
-    TextArea deptIn; // Shows the list of department(s) in which the doctor is in
-
+    TextArea deptAdded; // Shows the list of department(s) in which the doctor is in
 
     @FXML
     ImageView profilePic;
