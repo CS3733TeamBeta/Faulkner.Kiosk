@@ -1,12 +1,10 @@
 package Domain.Navigation
 
-import Domain.Exception.PathFindingErrorException
+import Domain.Exception.PathFindingInvalidPathException
+import Domain.Exception.PathFindingNoPathException
 import Domain.Map.*
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
 
-import javax.xml.soap.Node
 import java.rmi.server.UID
 
 
@@ -143,13 +141,13 @@ class PathTest extends GroovyTestCase {
             Path p = new Path(nodeA, nodeX)
             fail("Failed to notice no possible path")
         } catch (Exception e) {
-            assertTrue(e instanceof PathFindingErrorException)
+            assertTrue(e instanceof PathFindingNoPathException)
         }
         try {
             Path p = new Path(nodeY, nodeL)
             fail("Failed to notice no possible path")
         } catch (Exception e) {
-            assertTrue(e instanceof PathFindingErrorException)
+            assertTrue(e instanceof PathFindingNoPathException)
         }
 
     }

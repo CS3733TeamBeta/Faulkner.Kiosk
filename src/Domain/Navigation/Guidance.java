@@ -4,7 +4,7 @@ package Domain.Navigation;
 import java.util.LinkedList;
 import java.util.List;
 
-import Domain.Exception.PathFindingErrorException;
+import Domain.Exception.PathFindingException;
 import Domain.Map.*;
 
 /**
@@ -14,7 +14,7 @@ public class Guidance extends Path {
 
     LinkedList<String> textDirections;
 
-    public Guidance (Destination start, Destination end) throws PathFindingErrorException {
+    public Guidance (Destination start, Destination end) throws PathFindingException {
             super(start, end);
     }
 

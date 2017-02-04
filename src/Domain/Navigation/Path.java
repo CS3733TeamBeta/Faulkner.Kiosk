@@ -1,6 +1,8 @@
 package Domain.Navigation;
 
-import Domain.Exception.PathFindingErrorException;
+import Domain.Exception.PathFindingException;
+import Domain.Exception.PathFindingInvalidPathException;
+import Domain.Exception.PathFindingNoPathException;
 import Domain.Map.*;
 
 import java.util.Iterator;
@@ -20,7 +22,7 @@ public class Path implements Iterable
         this.pathNodes = pathNodes;
     }
 
-    public Path (MapNode start, MapNode end) throws PathFindingErrorException{
+    public Path (MapNode start, MapNode end) throws PathFindingException{
 
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
@@ -114,20 +116,22 @@ public class Path implements Iterable
             n.resetTempValues();
         }
 
-        //If the loop exited without flagDone, it must have searched all nodes and found nothing
-        if (!flagDone) {
-            throw new PathFindingErrorException("No valid path found");
-        }
+
 
         //Determine pathNodes from pathEdges
         nodesFromEdges(start, end);
+
+        //If the loop exited without flagDone, it must have searched all nodes and found nothing
+        if (!flagDone) {
+            throw new PathFindingNoPathException("No valid path found", this.pathNodes, this.pathEdges);
+        }
 
         //Print the edges and nodes for bugfixing
         printPathEdges();
         printPathNodes();
 
         if (!this.isValidPath()) {
-            throw new PathFindingErrorException("Path invalid as generated");
+            throw new PathFindingInvalidPathException("Path generated is invalid", this.pathNodes, this.pathEdges);
         }
 
 
