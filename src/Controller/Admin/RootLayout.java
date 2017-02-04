@@ -63,21 +63,28 @@ public class RootLayout extends AnchorPane{
 			right_pane.setOnMouseMoved(null);
 
 			GraphicalNodeEdge newEdge = new GraphicalNodeEdge();
+
 			right_pane.getChildren().add(newEdge);
 
 			newEdge.setSource(event.getNodeEdge().getSource());
 			newEdge.setTarget(event.getNodeEdge().getTarget());
+
+
 
 			MouseControlUtil.makeDraggable(event.getNodeEdge().getSource(),
 					ev->{
 
 					},
 					ev
-					 ->{
+					 ->{;
 
 					});
 
 			MouseControlUtil.makeDraggable(event.getNodeEdge().getTarget());
+
+
+			drawingEdge.toBack();
+			newEdge.toBack();
 
 			drawingEdge.resetEdge();
 		});
