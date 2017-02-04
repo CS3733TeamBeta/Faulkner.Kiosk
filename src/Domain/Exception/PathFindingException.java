@@ -1,7 +1,6 @@
 package Domain.Exception;
 
 import Domain.Map.*;
-import sun.awt.image.ImageWatched;
 
 import java.util.LinkedList;
 

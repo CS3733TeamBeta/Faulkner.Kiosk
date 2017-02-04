@@ -18,7 +18,7 @@ public class Path implements Iterable
     LinkedList<NodeEdge> pathEdges;
     LinkedList<MapNode> pathNodes;
 
-    private static final double FLOOR_HEIGHT_CONSTANT = 2;
+    private static final double FLOOR_HEIGHT_CONSTANT = 1.812;
 
     public Path (LinkedList<NodeEdge> pathEdges, LinkedList<MapNode> pathNodes) {
         this.pathEdges = pathEdges;
@@ -83,9 +83,9 @@ public class Path implements Iterable
                 if (!closedSet.contains(aNode)) {
 
                     //Calculate what the F value would be
-                    float tentativeNewHeuristic = (float)findHeuristic(aNode, end);
-                    float tentativeNewGValue = currentNode.getG() + aEdge.getCost();
-                    float tentativeNewFValue = tentativeNewHeuristic + tentativeNewGValue;
+                    double tentativeNewHeuristic = findHeuristic(aNode, end);
+                    double tentativeNewGValue = currentNode.getG() + aEdge.getCost();
+                    double tentativeNewFValue = tentativeNewHeuristic + tentativeNewGValue;
 
                     //If the new F value is better
                     if(tentativeNewFValue < aNode.getF()) {
@@ -156,6 +156,7 @@ public class Path implements Iterable
 
     }
 
+    //Returns true if for every node in pathNodes, it has a path to the next node.
     public boolean isValidPath() {
         boolean isValid = true;
         for(int i = 1; i < pathNodes.size() - 0; i++) {
@@ -169,12 +170,12 @@ public class Path implements Iterable
 
     //Find the heuristic (aprox. distance) from currentNode to endNode
     public static double findHeuristic(MapNode currentNode, MapNode endNode){
-        double currentNodeX = (double)currentNode.getPosX();
-        double currentNodeY = (double)currentNode.getPosY();
-        double currentNodeZ = ( ((double)currentNode.getMyFloor().getFloorNumber()) * FLOOR_HEIGHT_CONSTANT);
-        double endNodeX = (double)endNode.getPosX();
-        double endNodeY = (double)endNode.getPosY();
-        double endNodeZ = ( ((double)endNode.getMyFloor().getFloorNumber()) * FLOOR_HEIGHT_CONSTANT);
+        double currentNodeX = currentNode.getPosX();
+        double currentNodeY = currentNode.getPosY();
+        double currentNodeZ = ( (currentNode.getMyFloor().getFloorNumber()) * FLOOR_HEIGHT_CONSTANT);
+        double endNodeX = endNode.getPosX();
+        double endNodeY = endNode.getPosY();
+        double endNodeZ = ( (endNode.getMyFloor().getFloorNumber()) * FLOOR_HEIGHT_CONSTANT);
         return Math.sqrt(Math.pow(endNodeX - currentNodeX, 2) + Math.pow(endNodeY - currentNodeY, 2) + Math.pow(endNodeZ - currentNodeZ, 2));
     }
 
