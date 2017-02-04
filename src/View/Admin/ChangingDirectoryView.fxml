@@ -57,6 +57,6 @@
       </Label>
    </children>
     <stylesheets>
-        <URL value ="@genstyle.css" />
+        <URL value ="@/genstyle.css" />
     </stylesheets>
 </GridPane>

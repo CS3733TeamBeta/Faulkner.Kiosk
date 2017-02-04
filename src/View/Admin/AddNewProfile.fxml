@@ -10,7 +10,7 @@
 
 <?import java.net.URL?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="568.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Controller.Admin.addNewProfileController">
+            fx:controller="Controller.Admin.AddNewProfileController">
    <children>
       <Button fx:id="logout" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#logoutHit" text="Logout" />
       <Button fx:id="back" layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#backHit" text="Back" />
@@ -33,6 +33,6 @@
       <Button fx:id="showDeptList" layoutX="51.0" layoutY="184.0" mnemonicParsing="false" onAction="#showDeptList" text="Show Departments List" />
    </children>
    <stylesheets>
-      <URL value ="@genstyle.css" />
+      <URL value ="@/genstyle.css" />
    </stylesheets>
 </AnchorPane>

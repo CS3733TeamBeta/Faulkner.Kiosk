@@ -6,7 +6,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.fxml.FXML;
 
-public class editRoomController {
+public class EditRoomController
+{
     @FXML
     TextField roomNumber;
     @FXML

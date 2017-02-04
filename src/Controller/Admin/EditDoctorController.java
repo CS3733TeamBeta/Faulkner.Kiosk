@@ -9,7 +9,8 @@ import javafx.scene.control.TextField;
 
 import javax.swing.text.html.ImageView;
 
-public class editDoctorController {
+public class EditDoctorController
+{
     @FXML
     Button logout;
     @FXML

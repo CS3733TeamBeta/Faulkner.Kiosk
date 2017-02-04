@@ -7,7 +7,8 @@ import javafx.scene.control.ComboBox;
 
 import java.awt.*;
 
-public class editDepartmentController {
+public class EditDepartmentController
+{
     @FXML
     Button logout;
     @FXML

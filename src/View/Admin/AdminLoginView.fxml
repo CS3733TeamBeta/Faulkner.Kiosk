@@ -29,7 +29,7 @@
         <Pane prefHeight="200.0" prefWidth="200.0"/>
     </children>
     <stylesheets>
-        <URL value="@genstyle.css"/>
-        <URL value="@adminloginstyle.css"/>
+        <URL value="@/genstyle.css"/>
+        <URL value="@/adminloginstyle.css"/>
     </stylesheets>
 </AnchorPane>

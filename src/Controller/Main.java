@@ -31,13 +31,13 @@ public class Main extends Application {
         Parent adminWelcomeRoot = FXMLLoader.load(getClass().getResource("../Admin/AdminWelcomeView.fxml"));
         Parent changingDirectoryViewRoot = FXMLLoader.load(getClass().getResource("../Admin/ChangingDirectoryView.fxml"));
         Parent chooseProfileToModifyRoot = FXMLLoader.load(getClass().getResource("../Admin/ChooseProfileToModify.fxml"));
-        Parent dragWindowRoot = FXMLLoader.load(getClass().getResource("../Admin/dragWindow.fxml"));
-        Parent editDepartmentViewRoot = FXMLLoader.load(getClass().getResource("../Admin/editDepartmentView.fxml"));
-        Parent editDoctorViewRoot = FXMLLoader.load(getClass().getResource("../Admin/editDoctorView.fxml"));
-        Parent editNodeGraphRoot = FXMLLoader.load(getClass().getResource("../Admin/editNodeGraph.fxml"));
-        Parent editRoomAttributesRoot = FXMLLoader.load(getClass().getResource("../Admin/editRoomAttributes.fxml"));
-        Parent editRoomViewRoot = FXMLLoader.load(getClass().getResource("../Admin/editRoomView.fxml"));
-        Parent modifyLocationsRoot = FXMLLoader.load(getClass().getResource("../Admin/modifyLocations.fxml"));
+        Parent dragWindowRoot = FXMLLoader.load(getClass().getResource("../Admin/DragWindow.fxml"));
+        Parent editDepartmentViewRoot = FXMLLoader.load(getClass().getResource("../Admin/EditDepartmentView.fxml"));
+        Parent editDoctorViewRoot = FXMLLoader.load(getClass().getResource("../Admin/EditDoctorView.fxml"));
+        Parent editNodeGraphRoot = FXMLLoader.load(getClass().getResource("../Admin/EditNodeGraph.fxml"));
+        Parent editRoomAttributesRoot = FXMLLoader.load(getClass().getResource("../Admin/EditRoomAttributes.fxml"));
+        Parent editRoomViewRoot = FXMLLoader.load(getClass().getResource("../Admin/EditRoomView.fxml"));
+        Parent modifyLocationsRoot = FXMLLoader.load(getClass().getResource("../Admin/ModifyLocations.fxml"));
 
         thisStage.setTitle("Hello World");
 

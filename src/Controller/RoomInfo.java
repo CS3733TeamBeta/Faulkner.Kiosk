@@ -1,17 +1,18 @@
 package Controller;
 
-import Controller.Admin.doctorProfile;
+import Controller.Admin.DoctorProfile;
 
 import java.util.HashSet;
 
 /**
  * Created by jw97 on 2/3/2017.
  */
-public class roomInfo {
+public class RoomInfo
+{
     String roomNum;
-    HashSet<doctorProfile> doctors = new HashSet<doctorProfile>();
+    HashSet<DoctorProfile> doctors = new HashSet<DoctorProfile>();
 
-    public roomInfo(String roomNum) {
+    public RoomInfo(String roomNum) {
         this.roomNum = roomNum;
         this.doctors.clear();
     }
@@ -21,7 +22,7 @@ public class roomInfo {
         return 0;
     }
 
-    public int addDoctor(doctorProfile doctor) {
+    public int addDoctor(DoctorProfile doctor) {
         if (this.doctors.add(doctor)) {
             return 0;
         } else {
@@ -29,7 +30,7 @@ public class roomInfo {
         }
     }
 
-    public int removeDoctor(doctorProfile doctor) {
+    public int removeDoctor(DoctorProfile doctor) {
         if (this.doctors.remove(doctor)) {
             return 0;
         } else {
@@ -41,7 +42,7 @@ public class roomInfo {
         return this.roomNum;
     }
 
-    public HashSet<doctorProfile> getDoctorsList() {
+    public HashSet<DoctorProfile> getDoctorsList() {
         return this.doctors;
     }
 }
