@@ -6,7 +6,7 @@ import java.util.HashSet;
  * Created by jw97 on 2/3/2017.
  */
 public class Directory {
-    HashSet<doctorProfile> doctors;
+    HashSet<doctorProfile> doctors = new HashSet<doctorProfile>();
 
     public Directory() {
         doctors.clear();
