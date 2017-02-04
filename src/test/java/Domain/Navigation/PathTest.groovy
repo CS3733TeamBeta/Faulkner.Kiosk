@@ -173,7 +173,9 @@ class PathTest extends GroovyTestCase {
 
     @Test
     void testTextual() {
-        g1 = new Guidance(nodeA, nodeB, true)
+        g1 = new Guidance(nodeA, nodeB, false)
+        g2 = new Guidance(nodeA, nodeR, false)
+        g2.printTextDirections()
         assertTrue(true)
 
     }

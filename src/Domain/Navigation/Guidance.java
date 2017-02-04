@@ -19,19 +19,29 @@ public class Guidance extends Path {
 
     public Guidance (MapNode start, MapNode end, boolean flag) throws PathFindingException {
         super(start, end, flag);
-        createTextualDirections();
-    }
+        textDirections = new LinkedList<String>();
+        createTextDirections();
 
-    public void createTextualDirections() {
-        System.out.println("");
-        System.out.println("Creating Textual Directions");
-        System.out.println("");
-        for (MapNode n: this.pathNodes) {
-            System.out.println("Go to " + n.getNodeID());
+        if (flag) {
+            printTextDirections();
         }
     }
 
+    public void createTextDirections() {
+        for (MapNode n: this.pathNodes) {
+            String s = "Go to " + n.getNodeID();
+            textDirections.add(s);
+        }
+    }
 
+    public void printTextDirections() {
+        System.out.println("");
+        System.out.println("Printing Textual Directions");
+        System.out.println("");
+        for (String s: textDirections) {
+            System.out.println(s);
+        }
+    }
 
     public LinkedList<String> getTextDirections()
     {
