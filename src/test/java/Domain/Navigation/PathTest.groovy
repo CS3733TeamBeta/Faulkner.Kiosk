@@ -15,7 +15,8 @@ class PathTest extends GroovyTestCase {
 
     MapNode nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG, nodeH, nodeI, nodeJ, nodeK, nodeL, nodeM, nodeN, nodeO, nodeP, nodeQ, nodeR, nodeS, nodeT, nodeX, nodeY, nodeZ
     NodeEdge edgeAB, edgeBC, edgeCD, edgeBE, edgeCF, edgeDG, edgeEJ, edgeGK, edgeAH, edgeHI, edgeIJ, edgeJK, edgeLM, edgeMN, edgeMP, edgeNQ, edgeOP, edgePZ, edgePS, edgeQT, edgeLR, edgeRS, edgeST, edgeYX, edgeEZ
-    Path p1, p2, p3, p4, p5;
+    Path p1, p2, p3, p4, p5
+    Guidance g1, g2, g3, g4, g5
 
     Hospital myHospital
     Building myBuilding
@@ -31,7 +32,7 @@ class PathTest extends GroovyTestCase {
         nodeA = new MapNode(1, 0, 10)
         nodeB = new MapNode(2, 10, 10)
         nodeC = new MapNode(3, 15, 10)
-        nodeD = new MapNode(4, 20, 10,)
+        nodeD = new MapNode(4, 20, 10)
         nodeE = new MapNode(5, 10, 5)
         nodeF = new MapNode(6, 15, 5)
         nodeG = new MapNode(7, 20, 5)
@@ -168,10 +169,12 @@ class PathTest extends GroovyTestCase {
         assertFalse(p5.equals(p4))
         assertFalse(p3.equals(p5))
         assertFalse(p5.equals(p3))
-
-
-
-
     }
 
+    @Test
+    void testTextual() {
+        g1 = new Guidance(nodeA, nodeB, true)
+        assertTrue(true)
+
+    }
 }
