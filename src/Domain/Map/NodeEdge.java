@@ -1,5 +1,7 @@
 package Domain.Map;
 
+import java.util.Map;
+
 /**
  * An edge that connects two nodes and has a cost (edge length)
  */
@@ -29,6 +31,26 @@ public class NodeEdge
 
         this.nodeA = nodeA;
         this.nodeB = nodeB;
+    }
+
+    public void setNodeA(MapNode nodeA)
+    {
+        this.nodeA = nodeA;
+    }
+
+    public void setNodeB(MapNode nodeB)
+    {
+        this.nodeB = nodeB;
+    }
+
+    public MapNode getNodeA()
+    {
+        return nodeA;
+    }
+
+    public MapNode getNodeB()
+    {
+        return nodeB;
     }
 
     MapNode getOtherNode(MapNode n)

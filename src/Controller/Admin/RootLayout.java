@@ -2,13 +2,13 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
-import Domain.ViewElements.DragContainer;
-import Domain.ViewElements.DragIcon;
-import Domain.ViewElements.DragIconType;
-import Domain.ViewElements.GraphicalNodeEdge;
+import Domain.ViewElements.*;
+import Domain.ViewElements.Events.EdgeCompleteEvent;
+import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
@@ -32,7 +32,9 @@ public class RootLayout extends AnchorPane{
 	private EventHandler<DragEvent> mIconDragDropped = null;
 	private EventHandler<DragEvent> mIconDragOverRightPane = null;
 
-	GraphicalNodeEdge link;
+	private LinkedList<EdgeCompleteEventHandler> edgeCompleteHandlers;
+
+	GraphicalNodeEdge drawingEdge;
 
 	public RootLayout() {
 		
@@ -49,11 +51,28 @@ public class RootLayout extends AnchorPane{
 		} catch (IOException exception) {
 		    throw new RuntimeException(exception);
 		}
+
+		edgeCompleteHandlers = new LinkedList<EdgeCompleteEventHandler>(); //instantiate empty linked list for handlers;
+
+		edgeCompleteHandlers.add(event->
+		{
+			getChildren().add(event.getNodeEdge());
+			this.setOnMouseMoved(null);
+		});
+
+		drawingEdge = new GraphicalNodeEdge();
 	}
-	
+
+	public void onEdgeComplete()
+	{
+		for(EdgeCompleteEventHandler handler : edgeCompleteHandlers)
+		{
+			handler.handle(new EdgeCompleteEvent(drawingEdge));
+		}
+	}
+
 	@FXML
 	private void initialize() {
-		link = new GraphicalNodeEdge();
 		
 		//Add one icon that will be used for the drag-drop process
 		//This is added as a child to the root anchorpane so it can be visible
@@ -76,7 +95,9 @@ public class RootLayout extends AnchorPane{
 			left_pane.getChildren().add(icn);
 		}
 
-		right_pane.getChildren().add(link);
+		drawingEdge = new GraphicalNodeEdge();
+
+		//right_pane.getChildren().add(drawingEdge);
 
 		buildDragHandlers();
 	}
@@ -191,60 +212,67 @@ public class RootLayout extends AnchorPane{
 				if (container != null) {
 
 					if (container.getValue("scene_coords") != null) {
-					
-						DragIcon droppedIcon = new DragIcon();
-						MouseControlUtil.makeDraggable(droppedIcon);
+
+						GraphicalMapNode droppedNode = new GraphicalMapNode();
+						MouseControlUtil.makeDraggable(droppedNode);
 						
-						droppedIcon.setType(DragIconType.valueOf(container.getValue("type")));
-						right_pane.getChildren().add(droppedIcon);
+						droppedNode.setType(DragIconType.valueOf(container.getValue("type")));
+						right_pane.getChildren().add(droppedNode);
 
 						Point2D cursorPoint = container.getValue("scene_coords");
 
-						droppedIcon.relocateToPoint(
+						droppedNode.relocateToPoint(
 								new Point2D(cursorPoint.getX() - 32, cursorPoint.getY() - 32)
 								);
 
-						droppedIcon.setOnMouseClicked(ev ->
+						droppedNode.setOnMouseClicked(ev ->
 						{
 							if(ev.getButton() == MouseButton.SECONDARY)
 							{
-								droppedIcon.setOnMouseDragEntered(null);
-								droppedIcon.setOnMouseDragged(null);
+								//drawingEdge = new GraphicalNodeEdge();
+								right_pane.getChildren().add(drawingEdge);
 
-								Bounds boundsInScene = droppedIcon.getBoundsInLocal();
+								droppedNode.setOnMouseDragEntered(null);
+								droppedNode.setOnMouseDragged(null);
+
+								Bounds boundsInScene = droppedNode.getBoundsInLocal();
 
 								Point2D startPoint = new Point2D(
 										boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
 										boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
 								);
 
-								link.setStart(droppedIcon.localToParent(startPoint));
-								link.setEnd(droppedIcon.localToParent(startPoint));
+								drawingEdge.setSource(droppedNode);
 
-								link.getParent().setOnMouseMoved(mouseEvent->{
+								right_pane.setOnMouseMoved(mouseEvent->{
+
 									Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
-									Point2D mouseCoords = link.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
-									link.setEnd(mouseCoords);
+									Point2D mouseCoords = drawingEdge.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
+									drawingEdge.setEnd(mouseCoords);
 
-									getParent().setOnKeyPressed(keyEvent->
+									/*getParent().setOnKeyPressed(keyEvent->
 									{
 										if (keyEvent.getCode() == KeyCode.ESCAPE) {
-											link.setEnd(droppedIcon.localToParent(startPoint));
-											link.setStart(droppedIcon.localToParent(startPoint));
+											drawingEdge.setEnd(droppedNode.localToParent(startPoint));
+											drawingEdge.setStart(droppedNode.localToParent(startPoint));
 										}
-									});
+									});*/
 								});
 							}
+							/*else if (drawingEdge != null && !drawingEdge.getSource().equals(droppedNode))
+							{
+								drawingEdge.setTarget(droppedNode);
+							}*/
 						});
 
-						droppedIcon.setOnMouseEntered(ev->
+						droppedNode.setOnMouseEntered(ev->
 						{
-							droppedIcon.setOpacity(.65);
+							droppedNode.setOpacity(.65);
 						});
 
-						droppedIcon.setOnMouseExited(ev->
+						droppedNode.setOnMouseExited(ev->
 						{
-							droppedIcon.setOpacity(1);
+							droppedNode.setOpacity(1);
 						});
 					}
 				}

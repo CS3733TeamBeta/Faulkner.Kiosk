@@ -23,7 +23,6 @@ public class DragIcon extends AnchorPane{
 	@FXML AnchorPane root_pane;
 
 	private DragIconType mType = null;
-	private GraphicalNodeEdge edgeLine;
 
 	public DragIcon() {
 
@@ -40,10 +39,6 @@ public class DragIcon extends AnchorPane{
 		} catch (IOException exception) {
 		    throw new RuntimeException(exception);
 		}
-
-		edgeLine = new GraphicalNodeEdge();
-
-		this.getChildren().add(edgeLine);
 
 		/*this.setOnMouseClicked(event->{
 
@@ -67,8 +62,6 @@ public class DragIcon extends AnchorPane{
 				});
 			}
 		});*/
-
-		edgeLine.setVisible(false);
 	}
 	
 	@FXML

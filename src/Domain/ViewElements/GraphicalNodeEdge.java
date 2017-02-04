@@ -9,6 +9,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
@@ -22,20 +23,14 @@ import java.util.UUID;
  */
 public class GraphicalNodeEdge extends AnchorPane
 {
-
     @FXML
-    Line node_link;
+    Line edgeLine;
 
-    NodeEdge nodeEdge = null;
-
+    protected GraphicalMapNode source = null;
+    protected GraphicalMapNode target = null;
 
     public GraphicalNodeEdge()
     {
-        if(nodeEdge == null)
-        {
-            nodeEdge = new NodeEdge();
-        }
-
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/Admin/MapBuilder/NodeLink.fxml")
         );
@@ -50,38 +45,82 @@ public class GraphicalNodeEdge extends AnchorPane
             throw new RuntimeException(exception);
         }
 
+      //  edgeLine = new Line();
+       // this.getChildren().add(edgeLine);
+
         //provide a universally unique identifier for this object
         setId(UUID.randomUUID().toString());
     }
 
-    public GraphicalNodeEdge(MapNode a, MapNode b)
+    public GraphicalNodeEdge(GraphicalMapNode source, GraphicalMapNode target)
     {
-        nodeEdge = new NodeEdge(a, b);
+        this.source = source;
+        this.target = target;
        // node_link.setStart(a.getLocation);
     }
 
     @FXML
     private void initialize() {
 
-
     }
 
-    public NodeEdge getNodeEdge()
+    /**
+     *
+     * @return source of edge
+     */
+    public GraphicalMapNode getSource()
     {
-        return nodeEdge;
+        return source;
     }
 
+    /**
+     *
+     * @return target of edge
+     */
+    public GraphicalMapNode getTarget()
+    {
+        return target;
+    }
+
+    public void setSource(GraphicalMapNode source)
+    {
+        this.source = source;
+
+        Bounds boundsInScene = source.getBoundsInLocal();
+
+        Point2D startPoint = new Point2D(
+                boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
+                boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
+        );
+
+        setStart(source.localToParent(startPoint));
+        setEnd(source.localToParent(startPoint)); //makes sure the line starts/ends at the same point
+    }
+
+    public void setTarget(GraphicalMapNode target)
+    {
+        this.source = source;
+
+        Bounds boundsInScene = source.getBoundsInLocal();
+
+        Point2D startPoint = new Point2D(
+                boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
+                boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
+        );
+
+        setEnd(source.localToParent(startPoint));
+    }
 
     public void setStart(Point2D startPoint) {
 
-        node_link.setStartX(startPoint.getX());
-        node_link.setStartY(startPoint.getY());
+        edgeLine.setStartX(startPoint.getX());
+        edgeLine.setStartY(startPoint.getY());
     }
 
     public void setEnd(Point2D endPoint) {
 
-        node_link.setEndX(endPoint.getX());
-        node_link.setEndY(endPoint.getY());
+        edgeLine.setEndX(endPoint.getX());
+        edgeLine.setEndY(endPoint.getY());
     }
 
 
