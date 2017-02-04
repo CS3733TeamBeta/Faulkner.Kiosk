@@ -15,14 +15,6 @@ public class Path implements Iterable {
     LinkedList<NodeEdge> pathEdges;
     LinkedList<MapNode> pathNodes;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    public Path (Destination start, Destination end)
-    {
-
-=======
-    public Path (MapNode start, MapNode end) {
-=======
     //Set to true for verbose debugging
     private boolean devFlag;
 
@@ -38,8 +30,6 @@ public class Path implements Iterable {
     public Path(MapNode start, MapNode end, boolean devFlag) throws PathFindingException{
 
         this.devFlag = devFlag;
->>>>>>> f849918ed5c6c50d1ecb03b1e8e5b899259c5ae9
-
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
 
@@ -234,7 +224,6 @@ public class Path implements Iterable {
         for (MapNode n: this.pathNodes) {
             System.out.println("Node of id " + n.getNodeID());
         }
->>>>>>> UI_Scene_Integration
     }
 
 

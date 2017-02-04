@@ -3,21 +3,13 @@ package Domain.Map;
 /**
  * An edge that connects two nodes and has a cost (edge length)
  */
-public class NodeEdge
-{
+public class NodeEdge {
 /*
     public static class EdgeEndPoint
     {
 
     }
-
-*/
-    protected double cost;
-
-    Node nodeA;
-    Node nodeB;
-
-/*
+    /*
     protected EdgeEndPoint a;
     protected EdgeEndPoint b;
 
@@ -32,14 +24,24 @@ public class NodeEdge
         this.nodeA = nodeA;
         this.nodeB = nodeB;
 */
-    public NodeEdge() {
-    }
 
-    // Node getOtherNode(Node n)
-    public NodeEdge(MapNode nodeA, MapNode nodeB, double cost) {
+
+    protected double cost;
+
+    MapNode nodeA;
+    MapNode nodeB;
+
+
+    public NodeEdge() {}
+
+    public NodeEdge(MapNode nodeA, MapNode nodeB) {
         this();
         this.nodeA = nodeA;
         this.nodeB = nodeB;
+    }
+
+    public NodeEdge(MapNode nodeA, MapNode nodeB, double cost) {
+        this(nodeA, nodeB);
         this.cost = cost;
         nodeA.addEdge(this);
         nodeB.addEdge(this);
