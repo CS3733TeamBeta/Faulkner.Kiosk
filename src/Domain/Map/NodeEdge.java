@@ -40,13 +40,11 @@ public class NodeEdge
         this.nodeA = nodeA;
         this.nodeB = nodeB;
         this.cost = cost;
-
-    }
-
-    public void addToNodes() {
         nodeA.addEdge(this);
         nodeB.addEdge(this);
+
     }
+
 
     public MapNode getOtherNode(MapNode n)
     {

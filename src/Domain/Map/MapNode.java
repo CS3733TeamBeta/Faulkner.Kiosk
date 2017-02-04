@@ -96,6 +96,13 @@ public class MapNode
         this.edges.add(e);
     }
 
+    public void resetTempValues() {
+        this.g = 0;
+        this.heuristic = Float.MAX_VALUE;
+        this.f = Float.MAX_VALUE;
+        this.parent = null;
+    }
+
     public boolean equals(Object obj) {
         if (obj instanceof MapNode) {
             return (this.nodeID == ((MapNode) obj).nodeID);

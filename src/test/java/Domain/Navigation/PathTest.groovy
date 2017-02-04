@@ -46,19 +46,15 @@ class PathTest extends GroovyTestCase {
         nodeT = new MapNode(20, 10, 0)
         nodeZ = new MapNode(24, 15, 5)
         edgeAB = new NodeEdge(nodeA, nodeB, 8)
-        edgeAB.addToNodes()
         edgeBC = new NodeEdge(nodeB, nodeC, 5)
-        edgeBC.addToNodes()
         edgeCD = new NodeEdge(nodeC, nodeD, 5)
         edgeBE = new NodeEdge(nodeB, nodeE, 3)
-        edgeBE.addToNodes()
         edgeCF = new NodeEdge(nodeC, nodeF, 2)
         edgeDG = new NodeEdge(nodeD, nodeG, 6)
         edgeEJ = new NodeEdge(nodeE, nodeJ, 2)
         edgeGK = new NodeEdge(nodeG, nodeK, 1)
         edgeAH = new NodeEdge(nodeA, nodeH, 5)
-        edgeAH.addToNodes()
-        edgeHI = new NodeEdge(nodeH, nodeJ, 3)
+        edgeHI = new NodeEdge(nodeH, nodeI, 3)
         edgeIJ = new NodeEdge(nodeI, nodeJ, 5)
         edgeJK = new NodeEdge(nodeJ, nodeK, 10)
         edgeLM = new NodeEdge(nodeL, nodeM, 5)
@@ -111,7 +107,7 @@ class PathTest extends GroovyTestCase {
             System.out.println("From " + Integer.toString(e.getNodeA().getNodeID()) + "to " + Integer.toString(e.getNodeB().getNodeID()));
         }
         */
-        Path p = new Path(nodeA, nodeC);
+        Path p = new Path(nodeA, nodeT);
         assertTrue(true);
     }
 
