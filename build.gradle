@@ -4,12 +4,12 @@ version '1.0-ADMIN'
 apply plugin: 'java'
 apply plugin: 'idea'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.5
 
 sourceSets {
     main {
         java {
-            srcDirs = ["src"];
+            srcDirs = ["src"]
         }
         resources {
             srcDirs "src/View"
@@ -37,7 +37,7 @@ repositories {
 dependencies {
     //compile sourceSets.main.output
     compile 'org.jfxtras:jfxtras-labs:8.0-r5', 'org.hibernate:hibernate-core:5.2.7.Final'
-    
+
     testCompile group: 'junit', name: 'junit', version: '4.11'
 
 

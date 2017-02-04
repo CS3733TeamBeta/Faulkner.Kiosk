@@ -3,24 +3,22 @@ package Domain.Navigation;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import Domain.Map.*;
+import Exceptions.*;
 
 /**
  * Direction tells you how to get from
  */
-public class Guidance extends Path
-{
-    Path p;
+public class Guidance extends Path {
+
     LinkedList<String> textDirections;
 
-    public Guidance (Destination start, Destination end)
-    {
-        super(start, end);
-
-        this.p = new Path(start, end);
+    public Guidance (Destination start, Destination end) throws PathFindingException {
+            super(start, end);
     }
 
-    public List getTextDirections()
+    public LinkedList<String> getTextDirections()
     {
         return textDirections;
     }

@@ -9,7 +9,7 @@ import java.sql.DriverManager;
 public class CreateDBTest24 {
     public static void main(String[] args) {
 
-        final String DB_URL = "jdbc:derby://localhost:1527/DBTest24";
+        final String DB_URL = "jdbc:derby:/localhost:1527/DBTest24";
 
         try {
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
