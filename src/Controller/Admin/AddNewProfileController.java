@@ -3,6 +3,7 @@
 package Controller.Admin;
 
 import Controller.Main;
+import Exceptions.AddFoundException;
 import Model.DoctorProfile;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -69,7 +70,13 @@ public class AddNewProfileController
             System.out.println("You have assigned him/her to this room:" + newDoctor.getRoomNum());
 
             for (String dept: addedDept) {
-                newDoctor.addDepartment(dept);
+
+                try {
+                    newDoctor.addDepartment(dept);
+                } catch (AddFoundException e) {
+                    System.out.println("This doctor is assigned to a department(s) multiple times.");
+                    break;
+                }
             }
 
             System.out.println("The new doctor is assigned to the following departments: " + newDoctor.getDepartments());
