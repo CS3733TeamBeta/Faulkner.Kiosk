@@ -3,6 +3,7 @@ package Domain.Navigation
 import Domain.Map.*
 
 import javax.xml.soap.Node
+import java.rmi.server.UID
 
 
 /**
@@ -97,6 +98,12 @@ class PathTest extends GroovyTestCase {
         myBuilding.addFloor(floor2)
 
         myHospital.addBuilding(myBuilding)
+    }
+
+    void testUID() {
+        UID id = nodeA.getNodeUID()
+        System.out.println(id.toString())
+        assertTrue(true);
     }
 
 
