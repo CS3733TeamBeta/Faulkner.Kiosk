@@ -13,7 +13,7 @@ public class GraphicalMapNode extends MapNode implements DrawableMapEntity
 
     }
 
-    @Override
+    //@Override
     public Node getDrawableNode()
     {
         return null;

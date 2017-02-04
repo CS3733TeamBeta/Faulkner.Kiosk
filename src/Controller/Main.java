@@ -1,5 +1,7 @@
+//Testing
 package Controller;
 
+import Controller.Admin.AdminList;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,9 +9,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import java.io.File;
-import java.net.URL;
 
 public class Main extends Application {
 
@@ -40,7 +39,7 @@ public class Main extends Application {
         Parent editRoomViewRoot = FXMLLoader.load(getClass().getResource("../editRoomView.fxml"));
         Parent modifyLocationsRoot = FXMLLoader.load(getClass().getResource("../modifyLocations.fxml"));
 
-        thisStage.setTitle("Faulkner Hospital");
+        thisStage.setTitle("Hello World");
 
         addNewProfile = new Scene(addNewProfileRoot);
         adminLogin = new Scene(adminLoginRoot);
