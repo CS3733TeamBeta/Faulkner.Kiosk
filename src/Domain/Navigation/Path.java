@@ -1,5 +1,6 @@
 package Domain.Navigation;
 
+import Domain.Exception.PathFindingErrorException;
 import Domain.Map.*;
 
 import java.util.Iterator;
@@ -14,7 +15,12 @@ public class Path implements Iterable
     LinkedList<NodeEdge> pathEdges;
     LinkedList<MapNode> pathNodes;
 
-    public Path (MapNode start, MapNode end) {
+    public Path (LinkedList<NodeEdge> pathEdges, LinkedList<MapNode> pathNodes) {
+        this.pathEdges = pathEdges;
+        this.pathNodes = pathNodes;
+    }
+
+    public Path (MapNode start, MapNode end) throws PathFindingErrorException{
 
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
@@ -114,6 +120,10 @@ public class Path implements Iterable
         printPathEdges();
         printPathNodes();
 
+        if (!this.isValidPath()) {
+            throw new PathFindingErrorException("Path invalid as generated");
+        }
+
     }
 
     public LinkedList<NodeEdge> getPathEdges() {
@@ -130,6 +140,17 @@ public class Path implements Iterable
         }
         pathNodes.add(end);
 
+    }
+
+    public boolean isValidPath() {
+        boolean isValid = true;
+        for(int i = 1; i < pathNodes.size() - 0; i++) {
+            if ( !(pathNodes.get(i-1).hasEdgeTo(pathNodes.get(i))) ) {
+                isValid = false;
+            }
+
+        }
+        return isValid;
     }
 
     //Find the heuristic (aprox. distance) from currentNode to endNode

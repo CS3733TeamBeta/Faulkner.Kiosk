@@ -100,22 +100,29 @@ class PathTest extends GroovyTestCase {
         myHospital.addBuilding(myBuilding)
     }
 
+    //Tests that UIDs are working properly
     void testUID() {
         UID id = nodeA.getNodeUID()
         System.out.println(id.toString())
-        assertTrue(true);
+        assertEquals(nodeA, nodeA)
+        assertEquals(nodeB, nodeB)
+        assertNotSame(nodeA, nodeB)
     }
 
-
-    void testDummy() {
-        /*
-        System.out.print(nodeA.edges.size())
-        for (NodeEdge e: nodeA.getEdges()) {
-            System.out.println("From " + Integer.toString(e.getNodeA().getNodeID()) + "to " + Integer.toString(e.getNodeB().getNodeID()));
-        }
-        */
-        Path p = new Path(nodeA, nodeT);
-        assertTrue(true);
+    //Tests that IsValidPath is properly testing path validity
+    void testIsValidPath() {
+        LinkedList<MapNode> listOfNodes = new LinkedList<MapNode>()
+        LinkedList<MapNode> listOfInvalidNodes = new LinkedList<MapNode>()
+        listOfNodes.add(nodeA)
+        listOfNodes.add(nodeB)
+        listOfInvalidNodes.add(nodeA)
+        listOfInvalidNodes.add(nodeE)
+        LinkedList<NodeEdge> listOfEdges = new LinkedList<NodeEdge>()
+        listOfEdges.add(edgeAB)
+        Path manPathValid = new Path(listOfEdges, listOfNodes)
+        Path manPathInvalid = new Path(listOfEdges, listOfInvalidNodes);
+        assertTrue(manPathValid.isValidPath());
+        assertFalse(manPathInvalid.isValidPath())
     }
 
 }

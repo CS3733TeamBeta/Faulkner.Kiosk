@@ -59,6 +59,15 @@ public class MapNode
         this.myFloor = f;
     }
 
+    public boolean hasEdgeTo(MapNode n) {
+        for (NodeEdge e: edges) {
+            if (e.getOtherNode(this).equals(n)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setHeuristic(float heuristic) {
         this.heuristic = heuristic;
     }
