@@ -19,6 +19,13 @@ public class NodeEdge
         return cost;
     }
 
+    public MapNode getNodeA() {
+        return nodeA;
+    }
+    public MapNode getNodeB() {
+        return nodeB;
+    }
+
     public NodeEdge(MapNode nodeA, MapNode nodeB)
     {
         this();
@@ -33,6 +40,10 @@ public class NodeEdge
         this.nodeA = nodeA;
         this.nodeB = nodeB;
         this.cost = cost;
+
+    }
+
+    public void addToNodes() {
         nodeA.addEdge(this);
         nodeB.addEdge(this);
     }

@@ -11,7 +11,7 @@ import javax.xml.soap.Node
 class PathTest extends GroovyTestCase {
 
     MapNode nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG, nodeH, nodeI, nodeJ, nodeK, nodeL, nodeM, nodeN, nodeO, nodeP, nodeQ, nodeR, nodeS, nodeT, nodeZ
-    NodeEdge edgeAB, edgeBC, edgeCD, edgeBE, edgeCF, edgeDG, edgeEJ, edgeGK, edgeHI, edgeIJ, edgeJK, edgeLM, edgeMN, edgeMP, edgeNQ, edgeOP, edgePZ, edgePS, edgeQT, edgeLR, edgeRS, edgeST, edgeEZ
+    NodeEdge edgeAB, edgeBC, edgeCD, edgeBE, edgeCF, edgeDG, edgeEJ, edgeGK, edgeAH, edgeHI, edgeIJ, edgeJK, edgeLM, edgeMN, edgeMP, edgeNQ, edgeOP, edgePZ, edgePS, edgeQT, edgeLR, edgeRS, edgeST, edgeEZ
 
     Hospital myHospital
     Building myBuilding
@@ -24,35 +24,40 @@ class PathTest extends GroovyTestCase {
         myBuilding = new Building()
         floor1 = new Floor()
         floor2 = new Floor()
-        nodeA = new MapNode(1)
-        nodeB = new MapNode(2)
-        nodeC = new MapNode(3)
-        nodeD = new MapNode(4)
-        nodeE = new MapNode(5)
-        nodeF = new MapNode(6)
-        nodeG = new MapNode(7)
-        nodeH = new MapNode(8)
-        nodeI = new MapNode(9)
-        nodeJ = new MapNode(10)
-        nodeK = new MapNode(11)
-        nodeL = new MapNode(12)
-        nodeM = new MapNode(13)
-        nodeN = new MapNode(14)
-        nodeO = new MapNode(15)
-        nodeP = new MapNode(16)
-        nodeQ = new MapNode(17)
-        nodeR = new MapNode(18)
-        nodeS = new MapNode(19)
-        nodeT = new MapNode(20)
-        nodeZ = new MapNode(24)
+        nodeA = new MapNode(1, 0, 10)
+        nodeB = new MapNode(2, 10, 10)
+        nodeC = new MapNode(3, 15, 10)
+        nodeD = new MapNode(4, 20, 10,)
+        nodeE = new MapNode(5, 10, 5)
+        nodeF = new MapNode(6, 15, 5)
+        nodeG = new MapNode(7, 20, 5)
+        nodeH = new MapNode(8, 0, 0)
+        nodeI = new MapNode(9, 5, 0)
+        nodeJ = new MapNode(10, 10, 0)
+        nodeK = new MapNode(11, 20, 0)
+        nodeL = new MapNode(12, 0, 10)
+        nodeM = new MapNode(13, 10, 10)
+        nodeN = new MapNode(14, 20, 10)
+        nodeO = new MapNode(15, 5, 5)
+        nodeP = new MapNode(16, 10, 5)
+        nodeQ = new MapNode(17, 20, 5)
+        nodeR = new MapNode(18, 0, 0)
+        nodeS = new MapNode(19, 10, 0)
+        nodeT = new MapNode(20, 10, 0)
+        nodeZ = new MapNode(24, 15, 5)
         edgeAB = new NodeEdge(nodeA, nodeB, 8)
-        edgeBC = new NodeEdge(nodeA, nodeC, 5)
+        edgeAB.addToNodes()
+        edgeBC = new NodeEdge(nodeB, nodeC, 5)
+        edgeBC.addToNodes()
         edgeCD = new NodeEdge(nodeC, nodeD, 5)
         edgeBE = new NodeEdge(nodeB, nodeE, 3)
+        edgeBE.addToNodes()
         edgeCF = new NodeEdge(nodeC, nodeF, 2)
         edgeDG = new NodeEdge(nodeD, nodeG, 6)
         edgeEJ = new NodeEdge(nodeE, nodeJ, 2)
         edgeGK = new NodeEdge(nodeG, nodeK, 1)
+        edgeAH = new NodeEdge(nodeA, nodeH, 5)
+        edgeAH.addToNodes()
         edgeHI = new NodeEdge(nodeH, nodeJ, 3)
         edgeIJ = new NodeEdge(nodeI, nodeJ, 5)
         edgeJK = new NodeEdge(nodeJ, nodeK, 10)
@@ -98,8 +103,15 @@ class PathTest extends GroovyTestCase {
         myHospital.addBuilding(myBuilding)
     }
 
+
     void testDummy() {
-        Path(nodeA, nodeB);
+        /*
+        System.out.print(nodeA.edges.size())
+        for (NodeEdge e: nodeA.getEdges()) {
+            System.out.println("From " + Integer.toString(e.getNodeA().getNodeID()) + "to " + Integer.toString(e.getNodeB().getNodeID()));
+        }
+        */
+        Path p = new Path(nodeA, nodeC);
         assertTrue(true);
     }
 

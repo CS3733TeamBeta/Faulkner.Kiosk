@@ -10,10 +10,13 @@ import java.util.LinkedList;
  */
 public class Path implements Iterable
 {
+    public LinkedList<NodeEdge> getPathEdges() {
+        return pathEdges;
+    }
+
     LinkedList<NodeEdge> pathEdges;
 
-    public Path (Destination start, Destination end) {
-
+    public Path (MapNode start, MapNode end) {
         boolean flagDone = false;
 
         LinkedList<MapNode> openSet = new LinkedList<MapNode>();
@@ -21,8 +24,13 @@ public class Path implements Iterable
 
         openSet.add(start);
 
+        MapNode currentNode;
+
         while (openSet.size() > 0 && !flagDone) {
-            MapNode currentNode = popSmallest(openSet);
+            //System.out.println("Open set is size: " + Integer.toString(openSet.size()));
+            currentNode = popSmallest(openSet);
+
+            //System.out.println(currentNode.getNodeID());
 
             //openSet.remove(0);
             closedSet.add(currentNode);
@@ -37,18 +45,20 @@ public class Path implements Iterable
                     currentInPath = currentInPath.getParent().getOtherNode(currentInPath);
                     length++;
                 }
-
+                /*
                 //now invert the inverted list to get the path from start to finish:
                 for(int i = 0; i < length; i++){
                     pathEdges.add(length - i - 1, invertedList.get(0));
                     invertedList.remove(0);
-                }
+                } */
+                pathEdges = invertedList;
 
                 flagDone = true;
 
             }
 
             for (NodeEdge aEdge: currentNode.edges) {
+                //System.out.println("From " + Integer.toString(aEdge.getNodeA().getNodeID()) + "to " + Integer.toString(aEdge.getNodeB().getNodeID()));
                 MapNode aNode = aEdge.getOtherNode(currentNode);
                 if (!closedSet.contains(aNode)) { //If errors, make this more explicit
                     float tentativeNewHeuristic = (float)findHeuristic(aNode, end);
@@ -60,7 +70,7 @@ public class Path implements Iterable
                         aNode.setParent(aEdge);
                     }
 
-                    if(!openSet.contains(aNode)) {
+                    if(!openSet.contains(aNode) && !closedSet.contains(aNode)) {
                         openSet.add(aNode);
                     }
 
@@ -71,6 +81,8 @@ public class Path implements Iterable
 
         }
         //TODO: When done, set all nodes back to default values
+        printPath();
+
     }
 
     public static double findHeuristic(MapNode currentNode, MapNode endNode){
@@ -82,15 +94,24 @@ public class Path implements Iterable
     }
 
     public static MapNode popSmallest(LinkedList<MapNode> listOfNodes){
-        MapNode smallestNode = new MapNode();
+        //System.out.println(listOfNodes.size());
+        MapNode smallestNode = listOfNodes.get(0);
+        int indexSmallest = 0;
         for(int i = 0; i < listOfNodes.size(); i++){
             if(listOfNodes.get(i).getF() < smallestNode.getF()){
+                indexSmallest = i;
                 smallestNode = listOfNodes.get(i);
             }
         }
         listOfNodes.remove(smallestNode);
         return smallestNode;
 
+    }
+
+    public void printPath(){
+        for (NodeEdge e: this.pathEdges) {
+            System.out.println("From " + Integer.toString(e.getNodeA().getNodeID()) + "to " + Integer.toString(e.getNodeB().getNodeID()));
+        }
     }
 
     public Iterator iterator()

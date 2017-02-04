@@ -45,6 +45,10 @@ public class MapNode
         return parent;
     }
 
+    public HashSet<NodeEdge> getEdges() {
+        return edges;
+    }
+
     public void setG(float g) {
         this.g = g;
     }
@@ -69,13 +73,23 @@ public class MapNode
         return myFloor;
     }
 
+    public int getNodeID(){ return this.nodeID; }
+
     public MapNode() {
         this.edges = new HashSet<NodeEdge>();
     }
 
+
     public MapNode(int nodeID) {
         this();
         this.nodeID = nodeID;
+    }
+
+    public MapNode(int nodeID, int posX, int posY) {
+        this();
+        this.nodeID = nodeID;
+        this.posX = posX;
+        this.posY = posY;
     }
 
     public void addEdge(NodeEdge e) {
@@ -84,13 +98,14 @@ public class MapNode
 
     public boolean equals(Object obj) {
         if (obj instanceof MapNode) {
-            return obj.equals(this);
+            return (this.nodeID == ((MapNode) obj).nodeID);
+        } else {
+            return false;
         }
-        return false;
     }
 
     public int hashCode() {
-        return (nodeID*11 +posX);
+        return (nodeID*11);
     }
 
     public boolean equals(MapNode aNode) {
