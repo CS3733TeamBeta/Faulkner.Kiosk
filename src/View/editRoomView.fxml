@@ -8,11 +8,12 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="Controller.editRoomController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
+            fx:controller="Controller.editRoomController">
     <children>
-        <Button id="logout" fx:id="logoutButton" layoutX="14.0" layoutY="20.0" mnemonicParsing="false" text="Logout" />
-        <Button fx:id="backButton" layoutX="14.0" layoutY="366.0" mnemonicParsing="false" text="Back" />
-        <Button fx:id="saveButton" layoutX="530.0" layoutY="367.0" mnemonicParsing="false" text="Save" />
+        <Button id="logout" fx:id="logoutButton" onAction="#logoutHit" layoutX="14.0" layoutY="20.0" mnemonicParsing="false" text="Logout" />
+        <Button fx:id="backButton" onAction="#backHit" layoutX="14.0" layoutY="366.0" mnemonicParsing="false" text="Back" />
+        <Button fx:id="saveButton" onAction="#saveHit" layoutX="530.0" layoutY="367.0" mnemonicParsing="false" text="Save" />
         <Label id="title" fx:id="titleLab" layoutX="259.0" layoutY="20.0" text="Edit Room">
             <font>
                 <Font size="18.0" />
