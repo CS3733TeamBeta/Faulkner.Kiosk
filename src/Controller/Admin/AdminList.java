@@ -1,31 +1,42 @@
-package Controller;
+package Controller.Admin;
 
 import java.util.HashMap;
 
 /**
  * Created by Pattop on 2/1/2017.
  */
-public class adminList {
-    HashMap<String, adminProfile> listOfAdmins = new HashMap<String, adminProfile>();
+public class AdminList
+{
+    HashMap<String, AdminProfile> listOfAdmins = new HashMap<String, AdminProfile>();
 
     Boolean devEnabled = false;
 
-    public adminList(){
+    public AdminList(){
         listOfAdmins.clear();
     }
 
     public int addAdmin(String username, String password){
         System.out.println("Adding admin with the following credentials: " + username + " " + password);
-        adminProfile newProfile = new adminProfile(username, password);
+        AdminProfile newProfile = new AdminProfile(username, password);
         System.out.println("Adding admin with the following credentials: " + newProfile.username + " " + newProfile.password);
         listOfAdmins.put(username, newProfile);
         return 0;
     }
 
+    public boolean getDevEnabled()
+    {
+        return devEnabled;
+    }
+
+    public void setDevEnabled(boolean devEnabled)
+    {
+        this.devEnabled = devEnabled;
+    }
+
     public int changeUsername(String oldUsername, String newUsername){
         if (listOfAdmins.containsKey(oldUsername)){
             //get the info associated with the old username
-            adminProfile oldProfileInfo = listOfAdmins.get(oldUsername);
+            AdminProfile oldProfileInfo = listOfAdmins.get(oldUsername);
             //set the username equal to the new one
             oldProfileInfo.username = newUsername;
             listOfAdmins.put(newUsername, oldProfileInfo);
@@ -42,7 +53,7 @@ public class adminList {
     public int changePassword(String username, String oldPassword, String newPassword){
         if (listOfAdmins.containsKey(username)){
             //get the info associated with the old username
-            adminProfile profileInfo = listOfAdmins.get(username);
+            AdminProfile profileInfo = listOfAdmins.get(username);
             //validate the change
             if(profileInfo.getPassword().equals(oldPassword)){
                 //update the struct with the new password

@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Controller.profileToModifyController">
+            fx:controller="Controller.Admin.profileToModifyController">
 <children>
       <Label layoutX="170.0" layoutY="31.0" text="Choose Profile to Modify">
          <font>

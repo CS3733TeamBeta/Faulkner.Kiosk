@@ -1,4 +1,4 @@
-package Controller;
+package Controller.Admin;
 
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;

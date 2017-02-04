@@ -1,4 +1,4 @@
-package Controller;
+package Controller.Admin;
 
 import java.util.LinkedList;
 

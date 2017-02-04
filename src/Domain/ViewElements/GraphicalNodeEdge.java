@@ -1,41 +1,88 @@
+
 package Domain.ViewElements;
 
-import Domain.Map.Destination;
 import Domain.Map.NodeEdge;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.shape.Circle;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.When;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
-import jfxtras.labs.util.event.MouseControlUtil;
+
+import java.io.IOException;
+import java.util.UUID;
+
 
 /**
- * Test class for a drawable Node edge. Probably will change this in the future.
- *
- * @TODO Make this code not janky
+ * Created by benhylak on 2/3/17.
  */
-public class GraphicalNodeEdge extends NodeEdge implements DrawableMapEntity
+public class GraphicalNodeEdge extends AnchorPane
 {
-    Line l;
+    @FXML
+    Line node_link;
+    NodeEdge nodeEdge;
 
-    boolean displayNodes = false;
+    public GraphicalNodeEdge() {
 
-    Group edgeWithNodes;
+        FXMLLoader fxmlLoader = new FXMLLoader(
+                getClass().getResource("../resources/GraphicalNodeEdge.fxml")
+        );
 
-    public GraphicalNodeEdge()
-    {
-        l = new Line(50, 50, 150, 150);
-        l.setStrokeWidth(10);
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
 
+        try {
+            fxmlLoader.load();
 
-        Group g = new Group();
-        g.getChildren().add(l);
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
 
-        edgeWithNodes = g;
+        //provide a universally unique identifier for this object
+        setId(UUID.randomUUID().toString());
     }
 
-    @Override
-    public Node getDrawableNode()
-    {
-        return edgeWithNodes;
+    @FXML
+    private void initialize() {
+
     }
+
+    public NodeEdge getNodeEdge()
+    {
+        return nodeEdge;
+    }
+
+
+    public void setStart(Point2D startPoint) {
+
+        node_link.setStartX(startPoint.getX());
+        node_link.setStartY(startPoint.getY());
+    }
+
+    public void setEnd(Point2D endPoint) {
+
+        node_link.setEndX(endPoint.getX());
+        node_link.setEndY(endPoint.getY());
+    }
+
+
+/*public void bindEnds (DraggableNode source, DraggableNode target) {
+    node_link.startXProperty().bind(
+            Bindings.add(source.layoutXProperty(), (source.getWidth() / 2.0)));
+
+    node_link.startYProperty().bind(
+            Bindings.add(source.layoutYProperty(), (source.getWidth() / 2.0)));
+
+    node_link.endXProperty().bind(
+            Bindings.add(target.layoutXProperty(), (target.getWidth() / 2.0)));
+
+    node_link.endYProperty().bind(
+            Bindings.add(target.layoutYProperty(), (target.getWidth() / 2.0)));
+
+    source.registerLink (getId());
+    target.registerLink (getId());
+}*/
 }

@@ -1,4 +1,4 @@
-package Controller;
+package Controller.Admin;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

@@ -1,13 +1,11 @@
 package Controller;
 
+import Controller.Admin.AdminList;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.File;
-import java.net.URL;
 
 public class Main extends Application {
 
@@ -17,7 +15,7 @@ public class Main extends Application {
             editDepartmentView, editDoctorView, editNodeGraph,
             editRoomAttributes, editRoomView, modifyLocations;
 
-    public static adminList admins;
+    public static AdminList admins;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -54,10 +52,10 @@ public class Main extends Application {
         thisStage.setScene(adminLogin);
         thisStage.show();
 
-        admins = new adminList();
+        admins = new AdminList();
 
         admins.addAdmin("ADMIN", "ADMIN");
-        admins.devEnabled = true;
+        admins.setDevEnabled(true);
     }
 
     public static void main(String[] args) {
