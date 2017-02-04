@@ -86,11 +86,13 @@ public class addNewProfileController {
 
         if (deptSelected != null) {
             deptListView.getSelectionModel().clearSelection();
+            deptList.remove(deptSelected);
             addedDept.add(deptSelected);
         } else {
             return;
         }
 
+        deptListView.setItems(FXCollections.observableList(deptList));
         deptAddedListView.setItems(FXCollections.observableList(addedDept));
     }
 
@@ -101,10 +103,12 @@ public class addNewProfileController {
         if (deptToBeRemoved != null) {
             deptAddedListView.getSelectionModel().clearSelection();
             addedDept.remove(deptToBeRemoved);
+            deptList.add(deptToBeRemoved);
         } else {
             return;
         }
 
+        deptListView.setItems(FXCollections.observableList(deptList));
         deptAddedListView.setItems(FXCollections.observableList(addedDept));
     }
 }
