@@ -7,7 +7,8 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-public class editRoomAttributes {
+public class EditRoomAttributes
+{
     @FXML
     Button exitButton;
     @FXML

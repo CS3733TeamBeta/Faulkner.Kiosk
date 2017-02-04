@@ -1,18 +1,20 @@
 package Controller;
 
+import Controller.Admin.DoctorProfile;
+
 import java.util.HashMap;
 
 /**
  * Created by jw97 on 2/3/2017.
  */
 public class Directory {
-    HashMap<doctorProfile, roomInfo> doctors = new HashMap<doctorProfile, roomInfo>();
+    HashMap<DoctorProfile, RoomInfo> doctors = new HashMap<DoctorProfile, RoomInfo>();
 
     public Directory() {
         doctors.clear();
     }
 
-    public int addToDirectory(doctorProfile doctor, roomInfo room) {
+    public int addToDirectory(DoctorProfile doctor, RoomInfo room) {
         if (this.doctors.containsKey(doctor)){
             return 1; // Exception
         }
@@ -21,7 +23,7 @@ public class Directory {
         return 0;
     }
 
-    public int removeFromDirectory(doctorProfile doctor) {
+    public int removeFromDirectory(DoctorProfile doctor) {
         if (this.doctors.containsKey(doctor)) {
             this.doctors.remove(doctor);
             return 0;

@@ -1,22 +1,25 @@
 package Controller.Admin;
 
+import Controller.RoomInfo;
+
 import java.util.HashSet;
 
 /**
  * Created by jw97 on 2/2/2017.
  */
 
-public class doctorProfile {
+public class DoctorProfile
+{
     private String firstName;
     private String lastName;
-    private roomInfo room;
+    private RoomInfo room;
     // Should I include roomNum, phoneNum, etc.
     private HashSet<String> departments = new HashSet<String>();
 
-    public doctorProfile(String firstName, String lastName) {
+    public DoctorProfile(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-        room = new roomInfo("00");
+        room = new RoomInfo("00");
         room.addDoctor(this);
         this.departments.clear();
     }
@@ -55,7 +58,7 @@ public class doctorProfile {
         return this.departments;
     }
 
-    public roomInfo getRoomNum() {
+    public RoomInfo getRoomNum() {
         return this.room;
     }
 }

@@ -11,7 +11,7 @@
 
 <?import java.net.URL?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Controller.Admin.editNodeGraph">
+            fx:controller="Controller.Admin.EditNodeGraph">
    <children>
       <ScrollPane layoutX="230.0" layoutY="28.0" prefHeight="345.0" prefWidth="356.0">
         <content>
@@ -69,6 +69,6 @@
       <Button fx:id="exitHit" onAction="#exitHit" layoutX="158.0" layoutY="329.0" mnemonicParsing="false" text="Exit" />
    </children>
     <stylesheets>
-        <URL value ="@genstyle.css" />
+        <URL value ="@/genstyle.css" />
     </stylesheets>
 </AnchorPane>

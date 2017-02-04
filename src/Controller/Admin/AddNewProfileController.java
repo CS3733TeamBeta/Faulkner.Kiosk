@@ -1,7 +1,8 @@
 // Create and edit by Joan Wong
 
-package Controller;
+package Controller.Admin;
 
+import Controller.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -11,7 +12,8 @@ import javafx.scene.image.ImageView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class addNewProfileController {
+public class AddNewProfileController
+{
     ObservableList<String> addedDept = FXCollections.observableArrayList();
     ObservableList<String> deptList = FXCollections.observableArrayList();
 
@@ -59,7 +61,7 @@ public class addNewProfileController {
     @FXML
     private void saveHit(){
         if (isProcessable()) {
-            doctorProfile newDoctor = new doctorProfile(firstName.getText(), lastName.getText());
+            DoctorProfile newDoctor = new DoctorProfile(firstName.getText(), lastName.getText());
             System.out.println("You have added a new profile of name: " + newDoctor.getFirstName() + " "
                     + newDoctor.getLastName());
             newDoctor.assignRoom(roomNum.getText());
