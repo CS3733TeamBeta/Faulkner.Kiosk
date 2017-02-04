@@ -1,7 +1,5 @@
 package Controller;
 
-import Domain.Navigation.Path;
-
 import java.util.LinkedList;
 
 /**
