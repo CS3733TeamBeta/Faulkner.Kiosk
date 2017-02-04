@@ -18,7 +18,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import jfxtras.labs.util.event.MouseControlUtil;
-
+import javafx.scene.input.KeyCode;
 
 public class RootLayout extends AnchorPane{
 
@@ -52,8 +52,7 @@ public class RootLayout extends AnchorPane{
 	}
 	
 	@FXML
-	private void initialize()
-	{
+	private void initialize() {
 		link = new GraphicalNodeEdge();
 		
 		//Add one icon that will be used for the drag-drop process
@@ -187,10 +186,10 @@ public class RootLayout extends AnchorPane{
 								
 				mDragOverIcon.setVisible(false);
 				
-				DragContainer container = 
-						(DragContainer) event.getDragboard().getContent(DragContainer.AddNode);
+				DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.AddNode);
 				
 				if (container != null) {
+
 					if (container.getValue("scene_coords") != null) {
 					
 						DragIcon droppedIcon = new DragIcon();
@@ -226,6 +225,14 @@ public class RootLayout extends AnchorPane{
 									Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
 									Point2D mouseCoords = link.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 									link.setEnd(mouseCoords);
+
+									getParent().setOnKeyPressed(keyEvent->
+									{
+										if (keyEvent.getCode() == KeyCode.ESCAPE) {
+											link.setEnd(droppedIcon.localToParent(startPoint));
+											link.setStart(droppedIcon.localToParent(startPoint));
+										}
+									});
 								});
 							}
 						});
