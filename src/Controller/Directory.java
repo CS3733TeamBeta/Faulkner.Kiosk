@@ -13,6 +13,10 @@ public class Directory {
     }
 
     public int addToDirectory(doctorProfile doctor) {
+        if (this.doctors.contains(doctor)) {
+            return 1; // Exception
+        }
+
         this.doctors.add(doctor);
 
         return 0;
