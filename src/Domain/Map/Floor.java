@@ -16,6 +16,7 @@ public class Floor {
 
     public void addNode(MapNode n) {
         floorNodes.add(n);
+        n.setFloor(this);
     }
 
     public void addEdge(NodeEdge e) {
