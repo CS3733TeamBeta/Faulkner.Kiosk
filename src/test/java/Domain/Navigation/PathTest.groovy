@@ -16,5 +16,4 @@ class PathTest extends GroovyTestCase {
         assertEquals(myDest1, myDest2);
     }
 
-    void test
 }

@@ -20,9 +20,13 @@ public class MapNode
     public HashSet<NodeEdge> edges;
 
     public boolean equals(Object obj) {
-        if (obj instanceof Destination) {
-            return (this.nodeID == ((MapNode) obj).nodeID);
+        if (obj instanceof MapNode) {
+            return obj.equals(this);
         }
         return false;
+    }
+
+    public boolean equals(MapNode aNode) {
+        return (this.nodeID == ((MapNode) aNode).nodeID);
     }
 }
