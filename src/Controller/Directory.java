@@ -1,34 +1,30 @@
 package Controller;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 
 /**
  * Created by jw97 on 2/3/2017.
  */
 public class Directory {
-    LinkedList<doctorProfile> doctors;
+    HashSet<doctorProfile> doctors;
 
     public Directory() {
-        doctors = new LinkedList<doctorProfile>();
+        doctors.clear();
     }
 
     public int addToDirectory(doctorProfile doctor) {
-        if (this.doctors.contains(doctor)) {
-            return 1; // Exception
-        }
-
-        this.doctors.add(doctor);
-
-        return 0;
-    }
-
-    public int removeFromDirectory(doctorProfile doctor) {
-        if (this.doctors.contains(doctor)) {
-            this.doctors.remove(doctor);
+        if (this.doctors.add(doctor)) {
+            return 0; // Adds the doctor to the directory
         } else {
             return 1; // Exception
         }
+    }
 
-        return 0;
+    public int removeFromDirectory(doctorProfile doctor) {
+        if (this.doctors.remove(doctor)) {
+            return 0; // Removes the doctor from the director if it is present
+        } else {
+            return 1; // Exception
+        }
     }
 }
