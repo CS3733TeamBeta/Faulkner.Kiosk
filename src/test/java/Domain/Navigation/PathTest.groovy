@@ -192,7 +192,7 @@ class PathTest extends GroovyTestCase {
         g2 = new Guidance(nodeA, nodeR, false)
         LinkedList<String> directions = g1.getEmpDirections()
         for (String s: directions) {
-            //System.out.println()
+            System.out.println(s)
         }
         assertTrue(true)
     }

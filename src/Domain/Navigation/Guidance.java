@@ -41,7 +41,7 @@ public class Guidance extends Path {
             MapNode toNode = pathNodes.get(i+1);
             double angle;
             angle = Math.toDegrees(Math.atan2(toNode.getPosX() - fromNode.getPosX(), toNode.getPosY() - fromNode.getPosY()));
-            System.out.println("Angle from " + fromNode.getNodeID() + " to " + toNode.getNodeID() + " is " + angle);
+            empDir.add("Go " + angle + " degrees toward node " + toNode.getNodeID());
         }
         return empDir;
     }
