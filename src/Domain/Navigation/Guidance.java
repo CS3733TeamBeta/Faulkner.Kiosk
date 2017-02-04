@@ -18,7 +18,7 @@ public class Guidance extends Path {
             super(start, end);
     }
 
-    public List getTextDirections()
+    public LinkedList<String> getTextDirections()
     {
         return textDirections;
     }

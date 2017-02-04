@@ -10,20 +10,26 @@ import Exceptions.*;
 /**
  * Path is the path from one Destination to another
  */
-public class Path implements Iterable
-{
+public class Path implements Iterable {
 
     LinkedList<NodeEdge> pathEdges;
     LinkedList<MapNode> pathNodes;
 
+    //Set to true for verbose debugging
+    private boolean devFlag;
+
     private static final double FLOOR_HEIGHT_CONSTANT = 1.812;
 
-    public Path (LinkedList<NodeEdge> pathEdges, LinkedList<MapNode> pathNodes) {
-        this.pathEdges = pathEdges;
-        this.pathNodes = pathNodes;
+    public Path() {}
+
+    public Path(MapNode start, MapNode end) throws PathFindingException {
+        this(start, end, false);
     }
 
-    public Path (MapNode start, MapNode end) throws PathFindingException{
+
+    public Path(MapNode start, MapNode end, boolean devFlag) throws PathFindingException{
+
+        this.devFlag = devFlag;
 
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
@@ -128,14 +134,21 @@ public class Path implements Iterable
         }
 
         //Print the edges and nodes for bugfixing
-        printPathEdges();
-        printPathNodes();
+        if (devFlag) {
+            printPathEdges();
+            printPathNodes();
+        }
 
         if (!this.isValidPath()) {
             throw new PathFindingInvalidPathException("Path generated is invalid", this.pathNodes, this.pathEdges);
         }
 
 
+    }
+
+    public Path (LinkedList<NodeEdge> pathEdges, LinkedList<MapNode> pathNodes) {
+        this.pathEdges = pathEdges;
+        this.pathNodes = pathNodes;
     }
 
     public LinkedList<NodeEdge> getPathEdges() {
@@ -226,7 +239,6 @@ public class Path implements Iterable
     }
 
     public boolean equals(Path that) {
-
         LinkedList<MapNode> thisNodes = this.pathNodes;
         LinkedList<NodeEdge> thisEdges = this.pathEdges;
         LinkedList<MapNode> thatNodes = that.getPathNodes();
@@ -234,27 +246,18 @@ public class Path implements Iterable
         if ((thisNodes.size() != thatNodes.size()) || (thisEdges.size() != thatEdges.size())) {
             return false;
         }
-        boolean removeSuccess = true;
-        for (MapNode n: thisNodes) {
-            removeSuccess = thatNodes.remove(n);
-            thisNodes.remove(n);
-            if (!removeSuccess) {
-                return false;
+        boolean areEqual = true;
+        for (int i = 0; i < thisNodes.size(); i++) {
+            if (!(thisNodes.get(i).equals(thatNodes.get(i)))) {
+                areEqual = false;
             }
         }
-        for (NodeEdge e: thisEdges) {
-            removeSuccess = thatEdges.remove(e);
-            thisNodes.remove(e);
-            if (!removeSuccess) {
-                return false;
+        for (int i = 0; i < thisEdges.size(); i++) {
+            if (!(thisEdges.get(i).equals(thatEdges.get(i)))) {
+                areEqual = false;
             }
         }
-
-        if (thisNodes.size() == 0 && thisEdges.size() == 0 && thatNodes.size() == 0 && thatEdges.size() == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return areEqual;
     }
 
 
@@ -267,8 +270,5 @@ public class Path implements Iterable
         return totalHash;
     }
 
-    public Iterator iterator()
-    {
-        return pathEdges.iterator();
-    }
+    public Iterator iterator() {return pathEdges.iterator();}
 }

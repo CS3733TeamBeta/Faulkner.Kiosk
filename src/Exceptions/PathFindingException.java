@@ -19,4 +19,8 @@ public class PathFindingException extends Exception {
         this.badPathNodes = badPathNodes;
         this.badPathEdge = badPathEdge;
     }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 }

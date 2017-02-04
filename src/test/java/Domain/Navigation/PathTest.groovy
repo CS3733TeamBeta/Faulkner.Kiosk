@@ -15,6 +15,7 @@ class PathTest extends GroovyTestCase {
 
     MapNode nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG, nodeH, nodeI, nodeJ, nodeK, nodeL, nodeM, nodeN, nodeO, nodeP, nodeQ, nodeR, nodeS, nodeT, nodeX, nodeY, nodeZ
     NodeEdge edgeAB, edgeBC, edgeCD, edgeBE, edgeCF, edgeDG, edgeEJ, edgeGK, edgeAH, edgeHI, edgeIJ, edgeJK, edgeLM, edgeMN, edgeMP, edgeNQ, edgeOP, edgePZ, edgePS, edgeQT, edgeLR, edgeRS, edgeST, edgeYX, edgeEZ
+    //Path p1, p2, p3, p4, p5;
 
     Hospital myHospital
     Building myBuilding
@@ -111,7 +112,7 @@ class PathTest extends GroovyTestCase {
     @Test
     void testUID() {
         UID id = nodeA.getNodeUID()
-        System.out.println(id.toString())
+        //System.out.println(id.toString())
         assertEquals(nodeA, nodeA)
         assertEquals(nodeB, nodeB)
         assertNotSame(nodeA, nodeB)
@@ -149,6 +150,27 @@ class PathTest extends GroovyTestCase {
         } catch (Exception e) {
             assertTrue(e instanceof PathFindingNoPathException)
         }
+
+    }
+
+    @Test
+    void testEquals() {
+        Path p1 = new Path(nodeA, nodeL)
+        Path p2 = new Path(nodeA, nodeL)
+        Path p3 = new Path(nodeL, nodeA)
+        Path p4 = new Path(nodeB, nodeD)
+        Path p5 = new Path(nodeA, nodeD)
+        assertTrue(p1.equals(p2))
+        assertTrue(p2.equals(p1))
+        assertFalse(p1.equals(p3))
+        assertFalse(p3.equals(p1))
+        assertFalse(p4.equals(p5))
+        assertFalse(p5.equals(p4))
+        assertFalse(p3.equals(p5))
+        assertFalse(p5.equals(p3))
+
+
+
 
     }
 
