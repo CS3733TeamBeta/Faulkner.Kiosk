@@ -1,4 +1,4 @@
-package Controller;
+package Controller.Admin;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -19,6 +19,26 @@ public class editDepartmentController {
     @FXML
     ChoiceBox doctorsAssigned; //lists doctors assigned to this department
     @FXML
-    ChoiceBox listDepts; //lists departments to choose from for editing??
+    ComboBox listDepts;
+
+    @FXML
+    private void logoutHit(){
+
+    }
+
+    @FXML
+    private void backHit(){
+
+    }
+
+    @FXML
+    private void saveHit(){
+
+    }
+
+    @FXML
+    private void addToDptHit(){
+
+    }
 
 }

@@ -1,4 +1,4 @@
-package Controller;
+package Controller.Admin;
 
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -10,7 +10,7 @@ public class editRoomController {
     @FXML
     TextField roomNumber;
     @FXML
-    Button logout;
+    Button logoutButton;
     @FXML
     Button backButton;
     @FXML
@@ -23,5 +23,20 @@ public class editRoomController {
     @FXML
     ChoiceBox doctorsAssigned; //this box lists all the doctors that are currently assigned to the room
     //needs listbox choices
+
+    @FXML
+    private void logoutHit(){
+
+    }
+
+    @FXML
+    private void backHit(){
+
+    }
+
+    @FXML
+    private void saveHit(){
+
+    }
 }
 
