@@ -1,6 +1,6 @@
 package Domain.Navigation;
 
-
+import java.lang.Math;
 import java.util.LinkedList;
 
 import Domain.Map.*;
@@ -32,6 +32,18 @@ public class Guidance extends Path {
             String s = "Go to " + n.getNodeID();
             textDirections.add(s);
         }
+    }
+
+    public LinkedList<String> getEmpDirections() {
+        LinkedList<String> empDir = new LinkedList<String>();
+        for (int i = 0; i < this.pathNodes.size() - 1; i++) {
+            MapNode fromNode = pathNodes.get(i);
+            MapNode toNode = pathNodes.get(i+1);
+            double angle;
+            angle = Math.toDegrees(Math.atan2(toNode.getPosX() - fromNode.getPosX(), toNode.getPosY() - fromNode.getPosY()));
+            System.out.println("Angle from " + fromNode.getNodeID() + " to " + toNode.getNodeID() + " is " + angle);
+        }
+        return empDir;
     }
 
     public void printTextDirections() {
