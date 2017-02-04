@@ -1,9 +1,9 @@
 package Domain.Navigation
 
-import Domain.Exception.PathFindingInvalidPathException
-import Domain.Exception.PathFindingNoPathException
+
 import Domain.Map.*
 import org.junit.Test
+import Exceptions.*
 
 import java.rmi.server.UID
 

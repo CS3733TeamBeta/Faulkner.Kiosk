@@ -1,4 +1,4 @@
-package Domain.Exception;
+package Exceptions;
 
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;

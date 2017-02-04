@@ -1,12 +1,10 @@
 package Domain.Navigation;
 
-import Domain.Exception.PathFindingException;
-import Domain.Exception.PathFindingInvalidPathException;
-import Domain.Exception.PathFindingNoPathException;
 import Domain.Map.*;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import Exceptions.*;
 
 
 /**
@@ -143,6 +141,7 @@ public class Path implements Iterable
     public LinkedList<NodeEdge> getPathEdges() {
         return pathEdges;
     }
+    public LinkedList<MapNode> getPathNodes() { return pathNodes; }
 
     //Given the start and ending nodes, fill pathNodes from pathEdges
     public void nodesFromEdges(MapNode start, MapNode end) {
@@ -213,6 +212,59 @@ public class Path implements Iterable
         for (MapNode n: this.pathNodes) {
             System.out.println("Node of id " + n.getNodeID());
         }
+    }
+
+
+    //
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Path) {
+            return this.equals((Path) obj);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean equals(Path that) {
+
+        LinkedList<MapNode> thisNodes = this.pathNodes;
+        LinkedList<NodeEdge> thisEdges = this.pathEdges;
+        LinkedList<MapNode> thatNodes = that.getPathNodes();
+        LinkedList<NodeEdge> thatEdges = that.getPathEdges();
+        if ((thisNodes.size() != thatNodes.size()) || (thisEdges.size() != thatEdges.size())) {
+            return false;
+        }
+        boolean removeSuccess = true;
+        for (MapNode n: thisNodes) {
+            removeSuccess = thatNodes.remove(n);
+            thisNodes.remove(n);
+            if (!removeSuccess) {
+                return false;
+            }
+        }
+        for (NodeEdge e: thisEdges) {
+            removeSuccess = thatEdges.remove(e);
+            thisNodes.remove(e);
+            if (!removeSuccess) {
+                return false;
+            }
+        }
+
+        if (thisNodes.size() == 0 && thisEdges.size() == 0 && thatNodes.size() == 0 && thatEdges.size() == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public int hashCode() {
+        final int primeNum = 31;
+        int totalHash = 1;
+        for (MapNode n: pathNodes) {
+            totalHash = totalHash * primeNum + n.hashCode();
+        }
+        return totalHash;
     }
 
     public Iterator iterator()

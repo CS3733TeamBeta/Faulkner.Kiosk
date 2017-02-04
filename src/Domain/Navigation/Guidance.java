@@ -4,8 +4,8 @@ package Domain.Navigation;
 import java.util.LinkedList;
 import java.util.List;
 
-import Domain.Exception.PathFindingException;
 import Domain.Map.*;
+import Exceptions.*;
 
 /**
  * Direction tells you how to get from
