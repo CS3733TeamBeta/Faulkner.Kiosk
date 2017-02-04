@@ -12,7 +12,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class addNewProfileController {
-    Boolean noEmptyFields = true; // Checks if the fields are empty; true, for testing purposes
     ObservableList<String> addedDept = FXCollections.observableArrayList();
     ObservableList<String> deptList = FXCollections.observableArrayList();
 
@@ -59,12 +58,20 @@ public class addNewProfileController {
 
     @FXML
     private void saveHit(){
-        if (noEmptyFields) {
+        if (isProcessable()) {
             doctorProfile newDoctor = new doctorProfile(firstName.getText(), lastName.getText());
             System.out.println("You have added a new profile of name: " + newDoctor.getFirstName() + " "
                     + newDoctor.getLastName());
             newDoctor.assignRoom(roomNum.getText());
             System.out.println("You have assigned him/her to this room:" + newDoctor.getRoomNum());
+
+            for (String dept: addedDept) {
+                newDoctor.addDepartment(dept);
+            }
+
+            System.out.println("The new doctor is assigned to the following departments: " + newDoctor.getDepartments());
+
+            System.out.println(newDoctor);
 
         } else {
             return; // Exception
@@ -115,5 +122,9 @@ public class addNewProfileController {
     private void updateLists() {
         deptListView.setItems(FXCollections.observableList(deptList));
         deptAddedListView.setItems(FXCollections.observableList(addedDept));
+    }
+
+    private Boolean isProcessable() {
+        return true;
     }
 }
