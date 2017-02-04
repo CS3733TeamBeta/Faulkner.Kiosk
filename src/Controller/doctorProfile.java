@@ -17,6 +17,7 @@ public class doctorProfile {
         this.firstName = firstName;
         this.lastName = lastName;
         room = new roomInfo("00");
+        room.addDoctor(this);
         this.departments.clear();
     }
 
