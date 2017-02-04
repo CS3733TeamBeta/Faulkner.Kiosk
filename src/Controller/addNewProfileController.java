@@ -77,7 +77,6 @@ public class addNewProfileController {
     private void showDeptList() {
         deptList = Main.departments;
         deptListView.setItems(FXCollections.observableList(deptList));
-
     }
 
     @FXML
@@ -86,14 +85,12 @@ public class addNewProfileController {
 
         if (deptSelected != null) {
             deptListView.getSelectionModel().clearSelection();
-            deptList.remove(deptSelected);
-            addedDept.add(deptSelected);
+            makeChanges(deptSelected, deptList, addedDept);
         } else {
             return;
         }
 
-        deptListView.setItems(FXCollections.observableList(deptList));
-        deptAddedListView.setItems(FXCollections.observableList(addedDept));
+        updateLists();
     }
 
     @FXML
@@ -102,12 +99,20 @@ public class addNewProfileController {
 
         if (deptToBeRemoved != null) {
             deptAddedListView.getSelectionModel().clearSelection();
-            addedDept.remove(deptToBeRemoved);
-            deptList.add(deptToBeRemoved);
+            makeChanges(deptToBeRemoved, addedDept, deptList);
         } else {
             return;
         }
 
+        updateLists();
+    }
+
+    private void makeChanges(String department, ObservableList<String> removedFrom, ObservableList<String> addedTo) {
+        removedFrom.remove(department);
+        addedTo.add(department);
+    }
+
+    private void updateLists() {
         deptListView.setItems(FXCollections.observableList(deptList));
         deptAddedListView.setItems(FXCollections.observableList(addedDept));
     }
