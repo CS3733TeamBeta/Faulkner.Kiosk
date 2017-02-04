@@ -55,6 +55,6 @@
    </children>
     <stylesheets>
         <URL value ="@/genstyle.css" />
-        <URL value="@/adminwelcomestyle.css" />
+        <URL value="@/Admin/adminwelcomestyle.css" />
     </stylesheets>
 </GridPane>
