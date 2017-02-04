@@ -12,9 +12,17 @@ public class MapNode
 {
     int posX;
     int posY;
+    int nodeID;
 
     Image node = null;
 
     Floor myFloor;
-    HashSet<NodeEdge> edges;
+    public HashSet<NodeEdge> edges;
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Destination) {
+            return (this.nodeID == ((MapNode) obj).nodeID);
+        }
+        return false;
+    }
 }

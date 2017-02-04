@@ -23,7 +23,7 @@ public class NodeEdge
         this.nodeB = nodeB;
     }
 
-    MapNode getOtherNode(MapNode n)
+    public MapNode getOtherNode(MapNode n)
     {
         if(nodeA.equals(n))
         {

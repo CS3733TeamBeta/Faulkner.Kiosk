@@ -12,8 +12,8 @@ public class Path implements Iterable
 {
     LinkedList<NodeEdge> pathEdges;
 
-    public Path (Destination start, Destination end)
-    {
+    public Path (Destination start, Destination end) {
+
         //@TODO: calculate path with A*
     }
 
