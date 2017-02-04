@@ -100,7 +100,7 @@ class PathTest extends GroovyTestCase {
     }
 
     void testDummy() {
-        assertEquals(myDest1, myDest2);
+        Path(nodeA, nodeB);
     }
 
 }
