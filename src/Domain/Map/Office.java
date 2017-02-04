@@ -7,6 +7,7 @@ import java.util.HashSet;
  */
 public class Office extends Destination
 {
+    int id;
     HashSet<Doctor> occupants;
 
 }
