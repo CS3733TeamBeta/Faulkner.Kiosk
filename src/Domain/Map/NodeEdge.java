@@ -23,6 +23,17 @@ public class NodeEdge
 
     }
 
+    public float getCost() {
+        return cost;
+    }
+
+    public MapNode getNodeA() {
+        return nodeA;
+    }
+    public MapNode getNodeB() {
+        return nodeB;
+    }
+
     public NodeEdge(MapNode nodeA, MapNode nodeB)
     {
         this();
@@ -31,7 +42,19 @@ public class NodeEdge
         this.nodeB = nodeB;
     }
 
-    MapNode getOtherNode(MapNode n)
+    public NodeEdge(MapNode nodeA, MapNode nodeB, float cost) {
+        this();
+
+        this.nodeA = nodeA;
+        this.nodeB = nodeB;
+        this.cost = cost;
+        nodeA.addEdge(this);
+        nodeB.addEdge(this);
+
+    }
+
+
+    public MapNode getOtherNode(MapNode n)
     {
         if(nodeA.equals(n))
         {
