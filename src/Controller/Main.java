@@ -40,9 +40,7 @@ public class Main extends Application {
         Parent editRoomViewRoot = FXMLLoader.load(getClass().getResource("../editRoomView.fxml"));
         Parent modifyLocationsRoot = FXMLLoader.load(getClass().getResource("../modifyLocations.fxml"));
 
-        departments.addAll("Addiction Recovery Program", "Allergy", "Arthritis Center", "Audiology");
-
-        thisStage.setTitle("Hello World");
+        thisStage.setTitle("Faulkner Hospital");
 
         addNewProfile = new Scene(addNewProfileRoot);
         adminLogin = new Scene(adminLoginRoot);
@@ -59,11 +57,11 @@ public class Main extends Application {
 
         thisStage.setScene(adminLogin);
         thisStage.show();
-
         admins = new adminList();
 
         admins.addAdmin("ADMIN", "ADMIN");
         admins.devEnabled = true;
+
     }
 
     public static void main(String[] args) {

@@ -26,4 +26,5 @@ public class AdminWelcomeController {
         Main.thisStage.setScene(Main.modifyLocations);
     }
 
+
 }

@@ -8,7 +8,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="568.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.addNewProfileController">
+<?import java.net.URL?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="568.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.addNewProfileController">
    <children>
       <Button fx:id="logout" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#logoutHit" text="Logout" />
       <Button fx:id="back" layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#backHit" text="Back" />
@@ -30,4 +32,7 @@
       <ListView fx:id="deptAddedListView" layoutX="294.0" layoutY="210.0" prefHeight="119.0" prefWidth="219.0" />
       <Button fx:id="showDeptList" layoutX="51.0" layoutY="184.0" mnemonicParsing="false" onAction="#showDeptList" text="Show Departments List" />
    </children>
+   <stylesheets>
+      <URL value ="@genstyle.css" />
+   </stylesheets>
 </AnchorPane>
