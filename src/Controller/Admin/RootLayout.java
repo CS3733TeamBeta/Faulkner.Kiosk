@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
+import com.sun.corba.se.impl.orbutil.graph.Graph;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +37,8 @@ public class RootLayout extends AnchorPane{
 
 	GraphicalNodeEdge drawingEdge;
 
+	boolean isDrawingEdge = false;
+
 	public RootLayout() {
 		
 		FXMLLoader fxmlLoader = new FXMLLoader(
@@ -56,11 +59,29 @@ public class RootLayout extends AnchorPane{
 
 		edgeCompleteHandlers.add(event->
 		{
-			getChildren().add(event.getNodeEdge());
-			this.setOnMouseMoved(null);
+
+			right_pane.setOnMouseMoved(null);
+
+			GraphicalNodeEdge newEdge = new GraphicalNodeEdge();
+			right_pane.getChildren().add(newEdge);
+
+			newEdge.setSource(event.getNodeEdge().getSource());
+			newEdge.setTarget(event.getNodeEdge().getTarget());
+
+			MouseControlUtil.makeDraggable(event.getNodeEdge().getSource(),
+					ev->{
+
+					},
+					ev
+					 ->{
+
+					});
+
+			MouseControlUtil.makeDraggable(event.getNodeEdge().getTarget());
+
+			drawingEdge.resetEdge();
 		});
 
-		drawingEdge = new GraphicalNodeEdge();
 	}
 
 	public void onEdgeComplete()
@@ -96,8 +117,7 @@ public class RootLayout extends AnchorPane{
 		}
 
 		drawingEdge = new GraphicalNodeEdge();
-
-		//right_pane.getChildren().add(drawingEdge);
+		right_pane.getChildren().add(drawingEdge);
 
 		buildDragHandlers();
 	}
@@ -229,8 +249,12 @@ public class RootLayout extends AnchorPane{
 						{
 							if(ev.getButton() == MouseButton.SECONDARY)
 							{
-								//drawingEdge = new GraphicalNodeEdge();
-								right_pane.getChildren().add(drawingEdge);
+								isDrawingEdge = true;
+
+								drawingEdge.setVisible(true);
+
+								/*drawingEdge = new GraphicalNodeEdge(); CAUTION: Breaks code for unknown reasons
+								right_pane.getChildren().add(drawingEdge);*/ //Uncomment to strategically destroy code
 
 								droppedNode.setOnMouseDragEntered(null);
 								droppedNode.setOnMouseDragged(null);
@@ -243,6 +267,7 @@ public class RootLayout extends AnchorPane{
 								);
 
 								drawingEdge.setSource(droppedNode);
+								//drawingEdge.setStart(startPoint);
 
 								right_pane.setOnMouseMoved(mouseEvent->{
 
@@ -250,19 +275,25 @@ public class RootLayout extends AnchorPane{
 									Point2D mouseCoords = drawingEdge.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 									drawingEdge.setEnd(mouseCoords);
 
-									/*getParent().setOnKeyPressed(keyEvent->
+									getParent().setOnKeyPressed(keyEvent->
 									{
 										if (keyEvent.getCode() == KeyCode.ESCAPE) {
-											drawingEdge.setEnd(droppedNode.localToParent(startPoint));
-											drawingEdge.setStart(droppedNode.localToParent(startPoint));
+											right_pane.setOnMouseMoved(null);
+											drawingEdge.setVisible(false);
 										}
-									});*/
+
+										isDrawingEdge = false;
+									});
+
 								});
 							}
-							/*else if (drawingEdge != null && !drawingEdge.getSource().equals(droppedNode))
+							else if (isDrawingEdge && !drawingEdge.getSource().equals(droppedNode))
 							{
+								isDrawingEdge = false;
 								drawingEdge.setTarget(droppedNode);
-							}*/
+
+								onEdgeComplete();
+							}
 						});
 
 						droppedNode.setOnMouseEntered(ev->

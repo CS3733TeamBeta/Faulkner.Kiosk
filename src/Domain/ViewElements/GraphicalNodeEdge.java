@@ -54,8 +54,8 @@ public class GraphicalNodeEdge extends AnchorPane
 
     public GraphicalNodeEdge(GraphicalMapNode source, GraphicalMapNode target)
     {
-        this.source = source;
-        this.target = target;
+       this.source = source;
+       this.target = target;
        // node_link.setStart(a.getLocation);
     }
 
@@ -99,16 +99,16 @@ public class GraphicalNodeEdge extends AnchorPane
 
     public void setTarget(GraphicalMapNode target)
     {
-        this.source = source;
+        this.target = target;
 
-        Bounds boundsInScene = source.getBoundsInLocal();
+        Bounds boundsInScene = target.getBoundsInLocal();
 
-        Point2D startPoint = new Point2D(
+        Point2D endPoint = new Point2D(
                 boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
                 boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
         );
 
-        setEnd(source.localToParent(startPoint));
+        setEnd(target.localToParent(endPoint));
     }
 
     public void setStart(Point2D startPoint) {
@@ -123,21 +123,26 @@ public class GraphicalNodeEdge extends AnchorPane
         edgeLine.setEndY(endPoint.getY());
     }
 
+    public void resetEdge()
+    {
+        this.target = null;
+        this.source =null;
+    }
 
-/*public void bindEnds (DraggableNode source, DraggableNode target) {
-    node_link.startXProperty().bind(
+    public void bindEnds (GraphicalMapNode source, GraphicalMapNode target) {
+        edgeLine.startXProperty().bind(
             Bindings.add(source.layoutXProperty(), (source.getWidth() / 2.0)));
 
-    node_link.startYProperty().bind(
+    edgeLine.startYProperty().bind(
             Bindings.add(source.layoutYProperty(), (source.getWidth() / 2.0)));
 
-    node_link.endXProperty().bind(
+    edgeLine.endXProperty().bind(
             Bindings.add(target.layoutXProperty(), (target.getWidth() / 2.0)));
 
-    node_link.endYProperty().bind(
+    edgeLine.endYProperty().bind(
             Bindings.add(target.layoutYProperty(), (target.getWidth() / 2.0)));
 
-    source.registerLink (getId());
-    target.registerLink (getId());
-}*/
+    //source.registerLink (getId());
+   // target.registerLink (getId());
+    }
 }
