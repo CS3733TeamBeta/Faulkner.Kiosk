@@ -23,7 +23,30 @@ public class GraphicalNodeEdge extends AnchorPane
 {
     @FXML
     Line node_link;
-    NodeEdge nodeEdge;
+
+    NodeEdge nodeEdge = null;
+
+    public GraphicalNodeEdge()
+    {
+        nodeEdge
+
+        FXMLLoader fxmlLoader = new FXMLLoader(
+                getClass().getResource("../resources/GraphicalNodeEdge.fxml")
+        );
+
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+
+        try {
+            fxmlLoader.load();
+
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+
+        //provide a universally unique identifier for this object
+        setId(UUID.randomUUID().toString());
+    }
 
     public GraphicalNodeEdge() {
 
