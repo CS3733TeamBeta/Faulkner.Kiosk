@@ -14,7 +14,15 @@ public class Path implements Iterable
 
     public Path (Destination start, Destination end) {
 
+        LinkedList<MapNode> openSet = new LinkedList<MapNode>();
+        LinkedList<MapNode> closedSet = new LinkedList<MapNode>();
+
+        openSet.add(start);
+
+
         //@TODO: calculate path with A*
+
+        //When done, set all nodes back to default values
     }
 
     public Iterator iterator()

@@ -13,10 +13,10 @@ public class MapNode
     int posX;
     int posY;
     int nodeID;
-    int g;
-    int heuristic;
+    int g = 0;
+    int heuristic = Integer.MAX_VALUE;
     int f = Integer.MAX_VALUE;
-    MapNode parent = null;
+    NodeEdge parent = null;
     Image node = null;
 
     Floor myFloor;
@@ -24,8 +24,8 @@ public class MapNode
 
 
 
-    public MapNode() {
-
+    public MapNode(int nodeID) {
+        this.nodeID = nodeID;
     }
 
     public boolean equals(Object obj) {
