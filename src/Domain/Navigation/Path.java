@@ -22,7 +22,7 @@ public class Path implements Iterable
         while (openSet.size() > 0) {
             MapNode currentNode = openSet.getFirst();
 
-            openSet.remove(0);
+            //openSet.remove(0);
             closedSet.add(currentNode);
 
             if (currentNode.equals(end)) {
@@ -32,11 +32,23 @@ public class Path implements Iterable
             for (NodeEdge aEdge: currentNode.edges) {
                 MapNode aNode = aEdge.getOtherNode(currentNode);
                 if (!closedSet.contains(aNode)) { //If errors, make this more explicit
-                    aNode.setHeuristic((float)findHeuristic(aNode, end));
-                    aNode.setG(currentNode.getG() + aEdge.getCost());
-                    aNode.setF(aNode.getHeuristic() + aNode.getG());
+                    float tentativeNewHeuristic = (float)findHeuristic(aNode, end);
+                    float tentativeNewGValue = currentNode.getG() + aEdge.getCost();
+                    if(tentativeNewHeuristic + tentativeNewGValue < aNode.getF()) {
+                        aNode.setHeuristic(tentativeNewHeuristic);
+                        aNode.setG(tentativeNewGValue);
+                        aNode.setF(tentativeNewHeuristic + tentativeNewGValue);
+                        aNode.setParent(aEdge);
+                    }
+
+                    if(!openSet.contains(aNode)) {
+                        openSet.add(aNode);
+                    }
+
                 }
             }
+            //sort the list
+
 
         }
 
@@ -54,6 +66,20 @@ public class Path implements Iterable
         return Math.sqrt(Math.pow(endNodeY - currentNodeY, 2) + Math.pow(endNodeX - currentNodeX, 2));
     }
 
+    public MapNode popSmallestF(LinkedList<MapNode> openSet) {
+        int indexSmallest = 0;
+        MapNode smallestNode = new MapNode();
+        int indexCurrent;
+        for (indexCurrent = 0; indexCurrent < openSet.size(); indexCurrent++) {
+            MapNode currentNode = openSet.get(indexCurrent);
+            if (currentNode.getF() < smallestNode.getF()) {
+                indexSmallest = indexCurrent;
+                smallestNode = currentNode;
+            }
+        }
+        openSet.remove(indexCurrent);
+        return smallestNode;
+    }
 
     public Iterator iterator()
     {

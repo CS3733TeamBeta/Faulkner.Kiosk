@@ -49,6 +49,10 @@ public class MapNode
         this.g = g;
     }
 
+    public void setFloor(Floor f) {
+        this.myFloor = f;
+    }
+
     public void setHeuristic(float heuristic) {
         this.heuristic = heuristic;
     }
@@ -65,15 +69,17 @@ public class MapNode
         return myFloor;
     }
 
-
-
-
     public MapNode() {
-
+        this.edges = new HashSet<NodeEdge>();
     }
 
     public MapNode(int nodeID) {
+        this();
         this.nodeID = nodeID;
+    }
+
+    public void addEdge(NodeEdge e) {
+        this.edges.add(e);
     }
 
     public boolean equals(Object obj) {

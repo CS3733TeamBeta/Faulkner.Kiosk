@@ -27,6 +27,16 @@ public class NodeEdge
         this.nodeB = nodeB;
     }
 
+    public NodeEdge(MapNode nodeA, MapNode nodeB, float cost) {
+        this();
+
+        this.nodeA = nodeA;
+        this.nodeB = nodeB;
+        this.cost = cost;
+        nodeA.addEdge(this);
+        nodeB.addEdge(this);
+    }
+
     public MapNode getOtherNode(MapNode n)
     {
         if(nodeA.equals(n))
