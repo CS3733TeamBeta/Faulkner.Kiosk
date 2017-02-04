@@ -1,17 +1,17 @@
 package Controller;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 
 /**
  * Created by jw97 on 2/3/2017.
  */
 public class roomInfo {
     String roomNum;
-    LinkedList<doctorProfile> doctors;
+    HashSet<doctorProfile> doctors = new HashSet<doctorProfile>();
 
     public roomInfo(String roomNum) {
         this.roomNum = roomNum;
-        doctors = new LinkedList<doctorProfile>();
+        this.doctors.clear();
     }
 
     public int changeRoomNum(String newRoomNum) {
@@ -20,31 +20,26 @@ public class roomInfo {
     }
 
     public int addDoctor(doctorProfile doctor) {
-        // Checks if the doctor is currently in the room
-        if (this.doctors.contains(doctor)) {
-            return 1; // Exception
-        }
-
-        this.doctors.add(doctor);
-        return 0;
-    }
-
-    public int removeDoctor(doctorProfile doctor) {
-        // Checks if the doctor is currently in the room
-        if (this.doctors.contains(doctor)) {
-            this.doctors.remove(doctor);
+        if (this.doctors.add(doctor)) {
+            return 0;
         } else {
             return 1; // Exception
         }
+    }
 
-        return 0;
+    public int removeDoctor(doctorProfile doctor) {
+        if (this.doctors.remove(doctor)) {
+            return 0;
+        } else {
+            return 1; // Exception
+        }
     }
 
     public String getRoomNum() {
         return this.roomNum;
     }
 
-    public LinkedList<doctorProfile> getDoctorsList() {
+    public HashSet<doctorProfile> getDoctorsList() {
         return this.doctors;
     }
 }
