@@ -1,6 +1,6 @@
 package Model;
 
-import Controller.AdminList;
+import Controller.Admin.AdminList;
 
 /**
  * Created by Lukezebrowski on 2/4/17.
