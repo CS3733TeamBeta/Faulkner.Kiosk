@@ -1,7 +1,11 @@
 package Controller.Admin;
+
+import Controller.Admin.*;
 import Controller.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
@@ -28,19 +32,55 @@ public class AdminWelcomeController {
     }
 
     @FXML
-    private void clickedBack()
+    private void clickedBack() throws IOException
     {
-        new AdminLoginController();
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../AdminLoginView.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        AdminLoginController controller = loader.getController();
+        controller.setStage(primaryStage);
     }
     @FXML
-    private void clickedModifyDirectory()
+    private void clickedModifyDirectory() throws IOException
     {
-        new ChangingDirectoryController();
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../ChangingDirectoryView.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        ChangingDirectoryController controller = loader.getController();
+        controller.setStage(primaryStage);
     }
     @FXML
-    private void clickedChangeFloorplan()
+    private void clickedChangeFloorplan() throws IOException
     {
-        new ModifyLocations();
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../modifyLocations.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        ModifyLocations controller = loader.getController();
+        controller.setStage(primaryStage);
     }
 
     @FXML

@@ -5,7 +5,7 @@
 
 
 <?import java.net.URL?>
-<<<<<<< HEAD:src/View/Admin/ModifyLocations.fxml
+<!--
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
 fx:controller="Controller.Admin.ModifyLocations">
    <children>
@@ -19,13 +19,13 @@ fx:controller="Controller.Admin.ModifyLocations">
       <URL value ="@/genstyle.css" />
    </stylesheets>
 </AnchorPane>
-=======
+-->
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.RowConstraints?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111"
-          xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.modifyLocations">
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.ModifyLocations">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
@@ -97,7 +97,7 @@ fx:controller="Controller.Admin.ModifyLocations">
     </children>
     <stylesheets>
         <URL value="@genstyle.css"/>
-        <URL value="@modifyLocationsStyle.css"/>
+        <URL value="@../modifyLocationsStyle.css"/>
     </stylesheets>
 </GridPane>
->>>>>>> f98466861a41afd0fe07c1eacc11ed99798413e8:src/View/modifyLocations.fxml
+<!-- end merge conflict -->

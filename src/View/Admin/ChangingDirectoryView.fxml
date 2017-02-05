@@ -10,7 +10,7 @@
 <?import javafx.scene.control.Label?>
 
 <?import java.net.URL?>
-<<<<<<< HEAD:src/View/Admin/ChangingDirectoryView.fxml
+<!--
 <GridPane fx:id="grdGrid" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="Controller.Admin.ChangingDirectoryController">
   <columnConstraints>
@@ -59,10 +59,10 @@
    </children>
     <stylesheets>
         <URL value ="@/genstyle.css" />
-=======
+-->
 <GridPane fx:id="grdGrid" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="Controller.ChangingDirectoryController">
+          fx:controller="Controller.Admin.ChangingDirectoryController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
@@ -130,7 +130,7 @@
     </children>
     <stylesheets>
         <URL value="@genstyle.css"/>
-        <URL value="@changingDirectoryStyle.css"/>
->>>>>>> f98466861a41afd0fe07c1eacc11ed99798413e8:src/View/ChangingDirectoryView.fxml
+        <URL value="@../changingDirectoryStyle.css"/>
+<!--end merge conflict -->
     </stylesheets>
 </GridPane>

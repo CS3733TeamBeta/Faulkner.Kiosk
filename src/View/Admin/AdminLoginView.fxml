@@ -8,18 +8,18 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<<<<<<< HEAD:src/View/Admin/AdminLoginView.fxml
+<!--
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
             prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="Controller.Admin.AdminLoginController">
-=======
+-->
 
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.RowConstraints?>
 <GridPane fx:id="gridPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
           prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="Controller.AdminLoginController">
+          fx:controller="Controller.Admin.AdminLoginController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
@@ -71,7 +71,9 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
     <!--20 columns 26 rows-->
->>>>>>> f98466861a41afd0fe07c1eacc11ed99798413e8:src/View/AdminLoginView.fxml
+
+    <!--merge conflict ends here -->
+
     <children>
         <Button fx:id="btnLogin" alignment="CENTER" layoutX="488.0" layoutY="316.0" maxHeight="1.7976931348623157E308"
                 maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#clickedLogin" text="Login"

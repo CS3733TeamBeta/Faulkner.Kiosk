@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 
 <?import java.net.URL?>
-<<<<<<< HEAD:src/View/Admin/AddNewProfile.fxml
+<!--
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="568.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="Controller.Admin.AddNewProfileController">
    <children>
@@ -37,13 +37,13 @@
       <URL value ="@/genstyle.css" />
    </stylesheets>
 </AnchorPane>
-=======
+-->
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111"
-          xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.addNewProfileController">
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.AddNewProfileController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
@@ -126,7 +126,7 @@
     </children>
     <stylesheets>
         <URL value="@genstyle.css"/>
-        <URL value="@newProfileStyle.css" />
+        <URL value="@../newProfileStyle.css" />
     </stylesheets>
 </GridPane>
->>>>>>> f98466861a41afd0fe07c1eacc11ed99798413e8:src/View/AddNewProfile.fxml
+

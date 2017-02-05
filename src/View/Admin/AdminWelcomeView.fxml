@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 <?import java.net.URL?>
-<<<<<<< HEAD:src/View/Admin/AdminWelcomeView.fxml
+<!--
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="Controller.Admin.AdminWelcomeController">
   <columnConstraints>
@@ -57,10 +57,10 @@
     <stylesheets>
         <URL value ="@/genstyle.css" />
         <URL value="@/Admin/adminwelcomestyle.css" />
-=======
+-->
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
           prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="Controller.AdminWelcomeController">
+          fx:controller="Controller.Admin.AdminWelcomeController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
@@ -132,6 +132,6 @@
     <stylesheets>
         <URL value="@genstyle.css"/>
         <URL value="@adminwelcomestyle.css"/>
->>>>>>> f98466861a41afd0fe07c1eacc11ed99798413e8:src/View/AdminWelcomeView.fxml
+<!--end merge conflict -->
     </stylesheets>
 </GridPane>

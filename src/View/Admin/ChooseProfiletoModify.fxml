@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 
 <?import java.net.URL?>
-<<<<<<< HEAD:src/View/Admin/ChooseProfiletoModify.fxml
+<!--
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="Controller.Admin.ProfileToModifyController">
 <children>
@@ -22,13 +22,13 @@
       <Label layoutX="55.0" layoutY="93.0" text="Search: " />
       <TextField fx:id="searchModDoc" layoutX="105.0" layoutY="89.0" prefHeight="25.0" prefWidth="409.0" promptText="Search doctor" />
       <ScrollPane fx:id="filteredProfiles" layoutX="105.0" layoutY="140.0" prefHeight="204.0" prefWidth="409.0">
-=======
+-->
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111"
-          xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.profileToModifyController">
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.ProfileToModifyController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
@@ -91,7 +91,7 @@
                  prefWidth="409.0" promptText="Search doctor" />
       <ScrollPane fx:id="filteredProfiles" layoutX="105.0" layoutY="140.0" prefHeight="204.0"
                   prefWidth="409.0">
->>>>>>> f98466861a41afd0fe07c1eacc11ed99798413e8:src/View/ChooseProfiletoModify.fxml
+<!-- end merge conflict -->
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
         </content>

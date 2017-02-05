@@ -42,7 +42,10 @@ public class Main extends Application {
         Parent modifyLocationsRoot = FXMLLoader.load(getClass().getResource("../Admin/ModifyLocations.fxml"));
 
         departments.addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
-<<<<<<< HEAD
+
+       // Stage stage;
+
+        FXMLLoader loader = new FXMLLoader((getClass().getResource("../AdminLoginView.fxml")));
 
         thisStage.setTitle("Hello World");
 

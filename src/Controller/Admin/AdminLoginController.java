@@ -37,20 +37,8 @@ public class AdminLoginController
     Stage primaryStage;
 
     public AdminLoginController(){
-
-        //FXMLLoader fxmlLoader;
-
-        /*
-        try {
-            root = FXMLLoader.load(getClass().getResource("../AdminLoginView.fxml"));
-        }catch (IOException exception){
-            throw new RuntimeException(exception);
-        }
-
-        Stage stage = (Stage) gridPane.getScene().getWindow();
-        stage.setScene(scene);*/
-
         infoForLoggingIn = new AdminLoginModel();
+        infoForLoggingIn.admins.devEnabled = true;
     }
 
     public void setStage(Stage stage)
@@ -77,7 +65,6 @@ public class AdminLoginController
 
             AdminWelcomeController controller = loader.getController();
             controller.setStage(primaryStage);
-            //primaryStage.show();
         }
     }
 
