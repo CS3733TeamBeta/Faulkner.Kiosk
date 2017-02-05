@@ -72,14 +72,14 @@ public class RootLayout extends AnchorPane{
 			event.getNodeEdge().getSource().addEdge(newEdge); // add the current drawing edge to the list of this node's edges
 			event.getNodeEdge().getTarget().addEdge(newEdge); // add the current drawing edge to the list of this node's edges
 
-			MouseControlUtil.makeDraggable(event.getNodeEdge().getSource(),
+			/*MouseControlUtil.makeDraggable(event.getNodeEdge().getSource(),
 					ev->{
 
 					},
 					ev
 					 ->{;
 
-					});
+					});*/
 
 			MouseControlUtil.makeDraggable(event.getNodeEdge().getTarget());
 
@@ -310,11 +310,10 @@ public class RootLayout extends AnchorPane{
 
 									 */
 
-									System.out.println("Removing Edges: ");
 									for (GraphicalNodeEdge edge: droppedNode.getEdges())
 									{
 										System.out.print("Removing Edge: ");
-										System.out.println(droppedNode.getChildren().remove(edge.getEdgeLine()));
+										//System.out.println(droppedNode.getChildren().remove(edge.getEdgeLine()));
 										System.out.println(right_pane.getChildren().remove(edge.getEdgeLine()));
 									}
 
