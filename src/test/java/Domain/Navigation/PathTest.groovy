@@ -15,7 +15,8 @@ class PathTest extends GroovyTestCase {
 
     MapNode nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG, nodeH, nodeI, nodeJ, nodeK, nodeL, nodeM, nodeN, nodeO, nodeP, nodeQ, nodeR, nodeS, nodeT, nodeX, nodeY, nodeZ
     NodeEdge edgeAB, edgeBC, edgeCD, edgeBE, edgeCF, edgeDG, edgeEJ, edgeGK, edgeAH, edgeHI, edgeIJ, edgeJK, edgeLM, edgeMN, edgeMP, edgeNQ, edgeOP, edgePZ, edgePS, edgeQT, edgeLR, edgeRS, edgeST, edgeYX, edgeEZ
-    //Path p1, p2, p3, p4, p5;
+    Path p1, p2, p3, p4, p5
+    Guidance g1, g2, g3, g4, g5
 
     Hospital myHospital
     Building myBuilding
@@ -31,7 +32,7 @@ class PathTest extends GroovyTestCase {
         nodeA = new MapNode(1, 0, 10)
         nodeB = new MapNode(2, 10, 10)
         nodeC = new MapNode(3, 15, 10)
-        nodeD = new MapNode(4, 20, 10,)
+        nodeD = new MapNode(4, 20, 10)
         nodeE = new MapNode(5, 10, 5)
         nodeF = new MapNode(6, 15, 5)
         nodeG = new MapNode(7, 20, 5)
@@ -47,7 +48,7 @@ class PathTest extends GroovyTestCase {
         nodeQ = new MapNode(17, 20, 5)
         nodeR = new MapNode(18, 0, 0)
         nodeS = new MapNode(19, 10, 0)
-        nodeT = new MapNode(20, 10, 0)
+        nodeT = new MapNode(20, 20, 0)
         nodeX = new MapNode(22, 25, 0)
         nodeY = new MapNode(23, 25, 5)
         nodeZ = new MapNode(24, 15, 5)
@@ -155,11 +156,11 @@ class PathTest extends GroovyTestCase {
 
     @Test
     void testEquals() {
-        Path p1 = new Path(nodeA, nodeL)
-        Path p2 = new Path(nodeA, nodeL)
-        Path p3 = new Path(nodeL, nodeA)
-        Path p4 = new Path(nodeB, nodeD)
-        Path p5 = new Path(nodeA, nodeD)
+        p1 = new Path(nodeA, nodeL)
+        p2 = new Path(nodeA, nodeL)
+        p3 = new Path(nodeL, nodeA)
+        p4 = new Path(nodeB, nodeD)
+        p5 = new Path(nodeA, nodeD)
         assertTrue(p1.equals(p2))
         assertTrue(p2.equals(p1))
         assertFalse(p1.equals(p3))
@@ -168,10 +169,12 @@ class PathTest extends GroovyTestCase {
         assertFalse(p5.equals(p4))
         assertFalse(p3.equals(p5))
         assertFalse(p5.equals(p3))
-
-
-
-
     }
 
+    @Test
+    void testGuidance() {
+        g1 = new Guidance(nodeT, nodeH, true)
+        g2 = new Guidance(nodeO, nodeI, false)
+        assertTrue(true);
+    }
 }
