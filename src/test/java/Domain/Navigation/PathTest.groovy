@@ -173,8 +173,8 @@ class PathTest extends GroovyTestCase {
 
     @Test
     void testEmp() {
-        g1 = new Guidance(nodeA, nodeB, false)
-        g2 = new Guidance(nodeO, nodeI, true)
+        g1 = new Guidance(nodeA, nodeT, false)
+        g2 = new Guidance(nodeO, nodeI, false)
         LinkedList<String> directions = new LinkedList<String>()
         directions.add("Go East toward node 16")
         directions.add("Go East toward node 24")
