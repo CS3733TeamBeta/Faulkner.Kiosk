@@ -65,11 +65,17 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
     <children>
-      <Label fx:id="chooseLabel" layoutX="170.0" layoutY="31.0" text="Choose Profile to Modify"/>
+      <Label fx:id="chooseLabel" text="Choose Profile to Modify"
+             GridPane.columnIndex="2" GridPane.columnSpan="16"
+             maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+             GridPane.rowIndex="3" alignment="CENTER" />
       <Button fx:id="logout" onAction="#logoutHit" layoutX="14.0" layoutY="14.0"
-              mnemonicParsing="false" text="Logout" />
-      <Button fx:id="btnBack" onAction="#backHit" layoutX="14.0" layoutY="361.0"
-              mnemonicParsing="false" text="Back" />
+              mnemonicParsing="false" text="Logout" maxHeight="1.7976931348623157E308"
+              maxWidth="1.7976931348623157E308"
+              GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1"/>
+      <Button fx:id="btnBack" onAction="#backHit" GridPane.rowIndex="23"
+              mnemonicParsing="false" text="Back" GridPane.columnIndex="1" GridPane.columnSpan="2"
+              maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
     <!--should the onAction for btnBack be the same as the others? -->
       <Label fx:id="searchLabel" layoutX="55.0" layoutY="93.0" text="Search: " />
       <TextField fx:id="searchModDoc" layoutX="105.0" layoutY="89.0" prefHeight="25.0"
