@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<?import java.net.URL?>
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
+            fx:controller="Controller.Admin.EditDoctorController">
+  <children>
+    <Button fx:id="logout" onAction="#logoutHit" layoutX="20.0" layoutY="16.0" mnemonicParsing="false" text="Logout" />
+    <Button fx:id="backButton" onAction="#backHit" layoutX="20.0" layoutY="362.0" mnemonicParsing="false" text="Back" />
+    <Button fx:id="saveButton" onAction="#saveHit" layoutX="536.0" layoutY="363.0" mnemonicParsing="false" text="Save" />
+    <Label id="title" layoutX="223.0" layoutY="15.0" prefWidth="154.0" text="Edit Doctor Profile">
+      <font>
+        <Font size="18.0" />
+      </font>
+    </Label>
+    <Label id="assignDocDept" layoutX="105.0" layoutY="250.0" text="Assign Doctor to Departments" />
+    <ComboBox id="chooseDocBox" fx:id="assignDept" layoutX="276.0" layoutY="248.0" prefHeight="21.0" prefWidth="200.0">
+      <items>
+        <FXCollections fx:factory="observableArrayList">
+          <String fx:value="Item 1" />
+          <String fx:value="Item 2" />
+          <String fx:value="Item 3" />
+        </FXCollections>
+      </items>
+    </ComboBox>
+    <ChoiceBox id="doctorsAssigned" fx:id="doctorDept" layoutX="276.0" layoutY="278.0" prefWidth="200.0">
+      <items>
+        <FXCollections fx:factory="observableArrayList">
+          <String fx:value="Item 1" />
+          <String fx:value="Item 2" />
+          <String fx:value="Item 3" />
+        </FXCollections>
+      </items>
+    </ChoiceBox>
+    <Label id="assignDocLab" layoutX="141.0" layoutY="281.0" prefWidth="125.0" text="Doctor's Department(s)" />
+    <ImageView fitHeight="143.0" fitWidth="190.6666621208191" layoutX="65.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true" />
+    <TextField fx:id="nameFirst" layoutX="276.0" layoutY="70.0" prefWidth="200.0" />
+    <TextField fx:id="nameLast" layoutX="276.0" layoutY="100.0" prefWidth="200.0" />
+    <TextField fx:id="docRoom" layoutX="276.0" layoutY="129.0" prefWidth="200.0" />
+  </children>
+  <stylesheets>
+    <URL value ="@/genstyle.css" />
+  </stylesheets>
+</AnchorPane>

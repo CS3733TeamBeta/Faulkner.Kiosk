@@ -10,6 +10,10 @@ public class Building {
     LinkedList<Floor> buildingFloors;
 
     public Building() {
+        this.buildingFloors = new LinkedList<Floor>();
+    }
 
+    public void addFloor(Floor f) {
+        buildingFloors.add(f);
     }
 }

@@ -12,8 +12,14 @@ sourceSets {
             srcDirs = ["src"]
         }
         resources {
-            srcDirs = ["resources", "src/View"]
+            srcDirs "src/View"
             includes = ["**/*.fxml", "**/*.png", "**/*.properties", "**/*.json", "**/*.css"]
+        }
+    }
+
+    test {
+        java {
+            srcDirs = ["src/test/java"];
         }
     }
 }
