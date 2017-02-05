@@ -120,4 +120,15 @@ public class DragIcon extends AnchorPane{
 				break;
 		}
 	}
+
+	public Point2D getIconCenterPoint(DragIcon dragIcon){
+		Bounds boundsInScene = dragIcon.getBoundsInLocal();
+
+		Point2D centerPoint = new Point2D(
+				boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
+				boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
+		);
+
+		return centerPoint;
+	}
 }
