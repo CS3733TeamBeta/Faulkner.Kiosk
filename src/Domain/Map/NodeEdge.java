@@ -46,6 +46,14 @@ public class NodeEdge
 
     }
 
+    public NodeEdge(MapNode nodeA, MapNode nodeB) {
+        this();
+        this.nodeA = nodeA;
+        this.nodeB = nodeB;
+        nodeA.addEdge(this);
+        nodeB.addEdge(this);
+    }
+
     public double getCost() {
         return cost;
     }

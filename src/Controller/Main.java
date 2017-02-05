@@ -12,15 +12,17 @@ import javafx.collections.ObservableList;
 
 public class Main extends Application {
 
-    public static Stage thisStage;
-    public static Scene adminLogin, adminWelcome, addNewProfile,
-            changingDirectoryView,  chooseProfileToModify, dragWindow,
-            editDepartmentView, editDoctorView, editNodeGraph,
-            editRoomAttributes, editRoomView, modifyLocations;
+    public static Parent adminLoginRoot;
+
+    public static Scene testScene;
 
     public static AdminList admins;    // For testing purposes
     public static final ObservableList<String> departments =
             FXCollections.observableArrayList();
+
+    public static Stage thisStage;
+    public static Scene addNewProfile, adminLogin, adminWelcome, changingDirectoryView, chooseProfileToModify, dragWindow, editDepartmentView, editDoctorView;
+    public static Scene editNodeGraph, editRoomAttributes, editRoomView, modifyLocations;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -43,6 +45,9 @@ public class Main extends Application {
 
         thisStage.setTitle("Hello World");
 
+        Scene addNewProfile, adminLogin, adminWelcome, changingDirectoryView, chooseProfileToModify, dragWindow, editDepartmentView, editDoctorView;
+        Scene editNodeGraph, editRoomAttributes, editRoomView, modifyLocations;
+
         addNewProfile = new Scene(addNewProfileRoot);
         adminLogin = new Scene(adminLoginRoot);
         adminWelcome = new Scene(adminWelcomeRoot);
@@ -62,7 +67,6 @@ public class Main extends Application {
 
         admins.addAdmin("ADMIN", "ADMIN");
         admins.setDevEnabled(true);
-
     }
 
     public static void main(String[] args) {

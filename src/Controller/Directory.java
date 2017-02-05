@@ -1,6 +1,6 @@
 package Controller;
 
-import Controller.Admin.DoctorProfile;
+import Model.DoctorProfile;
 
 import java.util.HashMap;
 
