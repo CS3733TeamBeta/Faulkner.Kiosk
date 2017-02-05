@@ -88,9 +88,6 @@ public class MapEditorController extends AnchorPane{
 
 					});
 
-			//MouseControlUtil.makeDraggable(event.getNodeEdge().getSource());
-			//MouseControlUtil.makeDraggable(event.getNodeEdge().getTarget());
-
 			drawingEdge.toBack(); //send drawing edge to back
 			drawingEdge = null;
 
