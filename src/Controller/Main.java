@@ -33,6 +33,7 @@ public class Main extends Application {
         controller.setStage(primaryStage); // or what you want to do*/
 
        // Stage stage;
+
         FXMLLoader loader = new FXMLLoader((getClass().getResource("../AdminLoginView.fxml")));
 
         Parent root = (Parent)loader.load();

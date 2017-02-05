@@ -2,7 +2,10 @@ package Controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -15,34 +18,69 @@ public class ChangingDirectoryController
     @FXML
     Button btnModifyExistingProfile;
 
+    Stage primaryStage;
+
+    public void setStage(Stage s)
+    {
+        primaryStage = s;
+    }
+
+
     public ChangingDirectoryController(){
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Admin/ChangingDirectoryView.fxml"));
 
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
     }
 
     @FXML
-    private void clickedBack()
+    private void clickedBack() throws IOException
     {
-        new AdminWelcomeController();
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../AdminWelcomeView.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        AdminWelcomeController controller = loader.getController();
+        controller.setStage(primaryStage);
     }
     @FXML
-    private void clickedAddNewProfile()
+    private void clickedAddNewProfile() throws IOException
     {
-        new AddNewProfileController();
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../AddNewProfile.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        AddNewProfileController controller = loader.getController();
+        controller.setStage(primaryStage);
     }
     @FXML
-    private void clickedModifyExistingProfile()
+    private void clickedModifyExistingProfile() throws IOException
     {
-        new ProfileToModifyController();
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../ChooseProfiletoModify.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        ProfileToModifyController controller = loader.getController();
+        controller.setStage(primaryStage);
+
     }
 }
 

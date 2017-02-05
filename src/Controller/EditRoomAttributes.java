@@ -2,8 +2,11 @@ package Controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -18,27 +21,48 @@ public class EditRoomAttributes
     @FXML
     TextField addDoctorsToRoom; //lists doctors assigned to this department
 
+    Stage primaryStage;
+
+    public void setStage(Stage s)
+    {
+        primaryStage = s;
+    }
+
     public EditRoomAttributes(){
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Admin/EditRoomAttributes.fxml"));
 
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
     }
 
     @FXML
-    private void exitButton(){
-        new ModifyLocations();
+    private void exitButton() throws IOException{
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../modifyLocations.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        ModifyLocations controller = loader.getController();
+        controller.setStage(primaryStage);
     }
 
     @FXML
-    private void saveButton(){
-        new ModifyLocations();
+    private void saveButton() throws IOException{
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../modifyLocations.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        ModifyLocations controller = loader.getController();
+        controller.setStage(primaryStage);
     }
 }
