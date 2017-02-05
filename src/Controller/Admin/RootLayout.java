@@ -95,8 +95,7 @@ public class RootLayout extends AnchorPane{
 
 	}
 
-	public void onEdgeComplete()
-	{
+	public void onEdgeComplete() {
 		for(EdgeCompleteEventHandler handler : edgeCompleteHandlers)
 		{
 			handler.handle(new EdgeCompleteEvent(drawingEdge));
@@ -201,6 +200,7 @@ public class RootLayout extends AnchorPane{
 				//the parent of mDragIcon.  Since mDragIcon is a child of the root
 				//pane, coodinates must be in the root pane's coordinate system to work
 				//properly.
+
 				mDragOverIcon.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
 				event.consume();
 			}
@@ -250,8 +250,7 @@ public class RootLayout extends AnchorPane{
 
 						droppedNode.relocateToPoint(new Point2D(cursorPoint.getX() - 32, cursorPoint.getY() - 32));
 
-						droppedNode.setOnMouseClicked(ev ->
-						{
+						droppedNode.setOnMouseClicked(ev -> {
 							if(ev.getButton() == MouseButton.SECONDARY)
 							{
 								isDrawingEdge = true;
@@ -279,8 +278,7 @@ public class RootLayout extends AnchorPane{
 									Point2D mouseCoords = drawingEdge.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 									drawingEdge.setEnd(mouseCoords);
 
-									getParent().setOnKeyPressed(keyEvent->
-									{
+									getParent().setOnKeyPressed(keyEvent-> {
 										if (keyEvent.getCode() == KeyCode.ESCAPE) {
 											isDrawingEdge = false;
 											drawingEdge.setVisible(false);
@@ -292,8 +290,8 @@ public class RootLayout extends AnchorPane{
 
 								});
 							}
-							else if (ev.getButton() == MouseButton.PRIMARY) // deal with other types of mouse buttons
-							{
+							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse buttons
+
 								if(ev.getClickCount() == 2){ // double click
 
 									System.out.println("Removing node and edges");
@@ -334,6 +332,7 @@ public class RootLayout extends AnchorPane{
 			}
 		});
 	}
+
 	/*
 	public void buildSplitPaneDragHandlers() {
 		
@@ -419,5 +418,6 @@ public class RootLayout extends AnchorPane{
 				event.consume();
 			}
 		};		
-	}		*/
+	}
+	*/
 }
