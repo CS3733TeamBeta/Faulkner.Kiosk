@@ -94,7 +94,7 @@ public class GraphicalNodeEdge extends AnchorPane
         );
 
         setStart(source.localToParent(startPoint));
-        setEnd(source.localToParent(startPoint)); //makes sure the line starts/ends at the same point
+        setEnd(source.localToParent(startPoint));
     }
 
     public void setTarget(GraphicalMapNode target)

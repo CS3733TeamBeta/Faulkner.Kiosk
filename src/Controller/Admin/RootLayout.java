@@ -285,8 +285,10 @@ public class RootLayout extends AnchorPane{
 									getParent().setOnKeyPressed(keyEvent->
 									{
 										if (keyEvent.getCode() == KeyCode.ESCAPE) {
+											isDrawingEdge = false;
 											right_pane.setOnMouseMoved(null);
 											drawingEdge.setVisible(false);
+											onEdgeComplete();
 										}
 
 										isDrawingEdge = false;
@@ -294,11 +296,27 @@ public class RootLayout extends AnchorPane{
 
 								});
 							}
-							else if (isDrawingEdge && !drawingEdge.getSource().equals(droppedNode))
+							// death with other types of mouse buttons
+							else if (ev.getButton() == MouseButton.PRIMARY)
+							{
+								if(ev.getClickCount() == 2){ // double click
+
+									/*
+									for edge in node edges:
+										edge.delete
+
+									node.delete()
+
+									 */
+
+									System.out.println("Double clicked node");
+								}
+							}
+
+							if (isDrawingEdge && !drawingEdge.getSource().equals(droppedNode))
 							{
 								isDrawingEdge = false;
 								drawingEdge.setTarget(droppedNode);
-
 								onEdgeComplete();
 							}
 						});
