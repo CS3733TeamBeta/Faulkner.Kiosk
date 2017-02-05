@@ -14,8 +14,8 @@ public class NodeEdge
 */
     protected double cost;
 
-    Node nodeA;
-    Node nodeB;
+    //MapNode nodeA;
+    //MapNode nodeB;
 
 /*
     protected EdgeEndPoint a;
