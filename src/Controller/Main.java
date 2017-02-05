@@ -26,7 +26,20 @@ public class Main extends Application {
         //thisStage.setTitle("Hello World");
         //thisStage.setScene(adminLogin);
         //thisStage.show();
-        new AdminLoginController();
+
+       /* FXMLLoader loader = new FXMLLoader(getClass().getResource("MyGui.fxml"));
+        Parent root = (Parent)loader.load();
+        AdminLoginController controller = (AdminLoginController) loader.getController();
+        controller.setStage(primaryStage); // or what you want to do*/
+
+       // Stage stage;
+        Parent root;
+        root = FXMLLoader.load(getClass().getResource("../AdminLoginView.fxml"));
+
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     public static void main(String[] args) {

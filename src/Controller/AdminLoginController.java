@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 
@@ -25,20 +26,27 @@ public class AdminLoginController
     @FXML
     PasswordField txtPassword;
 
+    @FXML
+    GridPane gridPane;
+
     AdminLoginModel infoForLoggingIn;
 
     public AdminLoginController(){
-        Parent newRoot;
-        Stage newStage = new Stage();
 
+        //FXMLLoader fxmlLoader;
+
+        Parent root;
+
+        /*
         try {
-            newRoot = FXMLLoader.load(getClass().getResource("../AdminLoginView.fxml"));
+            root = FXMLLoader.load(getClass().getResource("../AdminLoginView.fxml"));
         }catch (IOException exception){
             throw new RuntimeException(exception);
         }
 
-        new Scene(newRoot);
 
+        Stage stage = (Stage) gridPane.getScene().getWindow();
+        stage.setScene(scene);*/
 
         infoForLoggingIn = new AdminLoginModel();
     }
