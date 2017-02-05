@@ -5,16 +5,19 @@ package Domain.Map;
  */
 public class NodeEdge
 {
+/*
     public static class EdgeEndPoint
     {
 
     }
 
-    protected float cost;
+*/
+    protected double cost;
 
     Node nodeA;
     Node nodeB;
 
+/*
     protected EdgeEndPoint a;
     protected EdgeEndPoint b;
 
@@ -28,12 +31,13 @@ public class NodeEdge
     {
         this.nodeA = nodeA;
         this.nodeB = nodeB;
+*/
+    public NodeEdge() {
     }
 
-    Node getOtherNode(Node n)
-    public NodeEdge(MapNode nodeA, MapNode nodeB, float cost) {
+    // Node getOtherNode(Node n)
+    public NodeEdge(MapNode nodeA, MapNode nodeB, double cost) {
         this();
-
         this.nodeA = nodeA;
         this.nodeB = nodeB;
         this.cost = cost;
@@ -42,7 +46,17 @@ public class NodeEdge
 
     }
 
+    public double getCost() {
+        return cost;
+    }
+    public MapNode getNodeA() {
+        return nodeA;
+    }
+    public MapNode getNodeB() {
+        return nodeB;
+    }
 
+    //Returns the node connected to this edge that isn't passed in
     public MapNode getOtherNode(MapNode n)
     {
         if(nodeA.equals(n))
