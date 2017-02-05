@@ -3,7 +3,6 @@
 package Controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ListView;
@@ -11,7 +10,8 @@ import javafx.scene.image.ImageView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class addNewProfileController {
+public class AddNewProfileController
+{
     ObservableList<String> addedDept = FXCollections.observableArrayList();
     ObservableList<String> deptList = FXCollections.observableArrayList();
 
@@ -48,37 +48,16 @@ public class addNewProfileController {
 
     @FXML
     private void logoutHit(){
-        Main.thisStage.setScene(Main.adminLogin);
+        new AdminLoginController();
     }
 
     @FXML
     private void backHit(){
-        Main.thisStage.setScene(Main.changingDirectoryView);
+        new ChangingDirectoryController();
     }
 
     @FXML
-    private void saveHit(){
-        if (isProcessable()) {
-            doctorProfile newDoctor = new doctorProfile(firstName.getText(), lastName.getText());
-            System.out.println("You have added a new profile of name: " + newDoctor.getFirstName() + " "
-                    + newDoctor.getLastName());
-            newDoctor.assignRoom(roomNum.getText());
-            System.out.println("You have assigned him/her to this room:" + newDoctor.getRoomNum());
-
-            for (String dept: addedDept) {
-                newDoctor.addDepartment(dept);
-            }
-
-            System.out.println("The new doctor is assigned to the following departments: " + newDoctor.getDepartments());
-
-            System.out.println(newDoctor);
-
-        } else {
-            return; // Exception
-        }
-
-        Main.thisStage.setScene(Main.changingDirectoryView);
-    }
+    private void saveHit(){}
 
     @FXML
     private void showDeptList() {

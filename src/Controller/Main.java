@@ -1,3 +1,4 @@
+//Testing
 package Controller;
 
 import javafx.application.Application;
@@ -8,60 +9,24 @@ import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.io.File;
-import java.net.URL;
-
 public class Main extends Application {
 
-    public static Stage thisStage;
-    public static Scene adminLogin, adminWelcome, addNewProfile,
-            changingDirectoryView,  chooseProfileToModify, dragWindow,
-            editDepartmentView, editDoctorView, editNodeGraph,
-            editRoomAttributes, editRoomView, modifyLocations;
+    public static Parent adminLoginRoot;
 
-    public static adminList admins;    // For testing purposes
+    public static Scene testScene;
+
     public static final ObservableList<String> departments =
             FXCollections.observableArrayList();
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        thisStage = primaryStage;
-
-        Parent addNewProfileRoot = FXMLLoader.load(getClass().getResource("../AddNewProfile.fxml"));
-        Parent adminLoginRoot = FXMLLoader.load(getClass().getResource("../AdminLoginView.fxml"));
-        Parent adminWelcomeRoot = FXMLLoader.load(getClass().getResource("../AdminWelcomeView.fxml"));
-        Parent changingDirectoryViewRoot = FXMLLoader.load(getClass().getResource("../ChangingDirectoryView.fxml"));
-        Parent chooseProfileToModifyRoot = FXMLLoader.load(getClass().getResource("../ChooseProfileToModify.fxml"));
-        Parent dragWindowRoot = FXMLLoader.load(getClass().getResource("../dragWindow.fxml"));
-        Parent editDepartmentViewRoot = FXMLLoader.load(getClass().getResource("../editDepartmentView.fxml"));
-        Parent editDoctorViewRoot = FXMLLoader.load(getClass().getResource("../editDoctorView.fxml"));
-        Parent editNodeGraphRoot = FXMLLoader.load(getClass().getResource("../editNodeGraph.fxml"));
-        Parent editRoomAttributesRoot = FXMLLoader.load(getClass().getResource("../editRoomAttributes.fxml"));
-        Parent editRoomViewRoot = FXMLLoader.load(getClass().getResource("../editRoomView.fxml"));
-        Parent modifyLocationsRoot = FXMLLoader.load(getClass().getResource("../modifyLocations.fxml"));
-
-        thisStage.setTitle("Faulkner Hospital");
-
-        addNewProfile = new Scene(addNewProfileRoot);
-        adminLogin = new Scene(adminLoginRoot);
-        adminWelcome = new Scene(adminWelcomeRoot);
-        changingDirectoryView = new Scene(changingDirectoryViewRoot);
-        chooseProfileToModify = new Scene(chooseProfileToModifyRoot);
-        dragWindow = new Scene(dragWindowRoot);
-        editDepartmentView = new Scene(editDepartmentViewRoot);
-        editDoctorView = new Scene(editDoctorViewRoot);
-        editNodeGraph = new Scene(editNodeGraphRoot);
-        editRoomAttributes = new Scene(editRoomAttributesRoot);
-        editRoomView = new Scene(editRoomViewRoot);
-        modifyLocations = new Scene(modifyLocationsRoot);
-
-        thisStage.setScene(adminLogin);
-        thisStage.show();
-        admins = new adminList();
-
-        admins.addAdmin("ADMIN", "ADMIN");
-        admins.devEnabled = true;
-
+    public void start(Stage primaryStage) throws Exception {
+        departments.addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+        //adminLoginRoot = FXMLLoader.load(getClass().getResource("../AdminLoginView.fxml"));        //Scene adminLogin = new Scene(adminLoginRoot);
+        //testScene = new Scene(adminLoginRoot);
+        //thisStage.setTitle("Hello World");
+        //thisStage.setScene(adminLogin);
+        //thisStage.show();
+        new AdminLoginController();
     }
 
     public static void main(String[] args) {
