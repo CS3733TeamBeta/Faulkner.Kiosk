@@ -260,7 +260,7 @@ public class RootLayout extends AnchorPane{
 								droppedNode.setOnMouseDragged(null);
 
 								setOnKeyPressed(keyEvent-> {
-									if (keyEvent.getCode() == KeyCode.ESCAPE) {
+									if (drawingEdge!=null && keyEvent.getCode() == KeyCode.ESCAPE) {
 										drawingEdge.setVisible(false);
 										drawingEdge = null;
 										right_pane.setOnMouseMoved(null);
