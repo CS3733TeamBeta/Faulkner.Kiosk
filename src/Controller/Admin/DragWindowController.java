@@ -28,7 +28,6 @@ public class DragWindowController
         //and form bonds
 
         //root.getChildren().add(e.getDrawableNode());
-
         //edgeA.setOnMousePressed(pressMouse());
       //  edgeA.setOnMouseDragged(dragMouse());
     }
