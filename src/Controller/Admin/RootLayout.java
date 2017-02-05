@@ -313,15 +313,13 @@ public class RootLayout extends AnchorPane{
 									System.out.println("Removing Edges: ");
 									for (GraphicalNodeEdge edge: droppedNode.getEdges())
 									{
-										System.out.println("Removing Edge");
+										System.out.print("Removing Edge: ");
+										System.out.println(droppedNode.getChildren().remove(edge.getEdgeLine()));
 										System.out.println(right_pane.getChildren().remove(edge.getEdgeLine()));
-										System.out.println(left_pane.getChildren().remove(edge.getEdgeLine()));
-
 									}
 
-									System.out.println("Removing Node");
+									System.out.print("Removing Node: ");
 									System.out.println(right_pane.getChildren().remove(droppedNode));
-
 
 								}
 							}
