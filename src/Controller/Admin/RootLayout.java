@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
+import Model.MapEditorModel;
 import com.sun.corba.se.impl.orbutil.graph.Graph;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -20,6 +21,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
+import sun.java2d.loops.DrawGlyphList;
 
 public class RootLayout extends AnchorPane{
 
@@ -33,11 +35,9 @@ public class RootLayout extends AnchorPane{
 	private EventHandler<DragEvent> mIconDragDropped = null;
 	private EventHandler<DragEvent> mIconDragOverRightPane = null;
 
-	private LinkedList<EdgeCompleteEventHandler> edgeCompleteHandlers;
+	private MapEditorModel model;
 
 	GraphicalNodeEdge drawingEdge;
-
-	boolean isDrawingEdge = false;
 
 	public RootLayout() {
 		
@@ -55,22 +55,15 @@ public class RootLayout extends AnchorPane{
 		    throw new RuntimeException(exception);
 		}
 
-		edgeCompleteHandlers = new LinkedList<EdgeCompleteEventHandler>(); //instantiate empty linked list for handlers;
-
-		edgeCompleteHandlers.add(event->
+		model.addEdgeCompleteHandler(event->
 		{
-
 			right_pane.setOnMouseMoved(null);
 
-			GraphicalNodeEdge newEdge = new GraphicalNodeEdge();
+			drawingEdge.setSource(event.getNodeEdge().getSource());
+			drawingEdge.setTarget(event.getNodeEdge().getTarget());
 
-			right_pane.getChildren().add(newEdge.getEdgeLine());
-
-			newEdge.setSource(event.getNodeEdge().getSource());
-			newEdge.setTarget(event.getNodeEdge().getTarget());
-
-			event.getNodeEdge().getSource().addEdge(newEdge); // add the current drawing edge to the list of this node's edges
-			event.getNodeEdge().getTarget().addEdge(newEdge); // add the current drawing edge to the list of this node's edges
+			event.getNodeEdge().getSource().addEdge(drawingEdge); // add the current drawing edge to the list of this node's edges
+			event.getNodeEdge().getTarget().addEdge(drawingEdge); // add the current drawing edge to the list of this node's edges
 
 			/*MouseControlUtil.makeDraggable(event.getNodeEdge().getSource(),
 					ev->{
@@ -83,20 +76,18 @@ public class RootLayout extends AnchorPane{
 
 			MouseControlUtil.makeDraggable(event.getNodeEdge().getTarget());
 
-
 			drawingEdge.toBack();
-			newEdge.toBack();
+			drawingEdge = null;
 
 			event.getNodeEdge().getSource().toFront();
 			event.getNodeEdge().getTarget().toFront();
-
-			drawingEdge.resetEdge();
 		});
 
 	}
 
-	public void onEdgeComplete() {
-		for(EdgeCompleteEventHandler handler : edgeCompleteHandlers)
+	public void onEdgeComplete()
+	{
+		for(EdgeCompleteEventHandler handler : model.getEdgeCompleteHandlers())
 		{
 			handler.handle(new EdgeCompleteEvent(drawingEdge));
 		}
@@ -104,30 +95,34 @@ public class RootLayout extends AnchorPane{
 
 	@FXML
 	private void initialize() {
-		
+
+		if(model==null) model = new MapEditorModel();
+
 		//Add one icon that will be used for the drag-drop process
 		//This is added as a child to the root anchorpane so it can be visible
 		//on both sides of the split pane.
 		mDragOverIcon = new DragIcon();
-		
 		mDragOverIcon.setVisible(false);
 		mDragOverIcon.setOpacity(0.65);
 
 		getChildren().add(mDragOverIcon);
 		
 		//populate left pane with multiple colored icons for testing
-		for (int i = 0; i < 6; i++) {
-			
+		for (int i = 0; i < 6; i++)
+		{
 			DragIcon icn = new DragIcon();
 			
 			addDragDetection(icn);
-			
 			icn.setType(DragIconType.values()[i]);
-			left_pane.getChildren().add(icn);
+
+			model.addSideBarIcon(icn);
 		}
 
 		drawingEdge = new GraphicalNodeEdge();
-		right_pane.getChildren().add(drawingEdge);
+		model.addToRightPane(drawingEdge);
+
+		left_pane.getChildren().setAll(model.getSideBarIcons());
+		right_pane.getChildren().setAll(model.getRightPaneChildren());
 
 		buildDragHandlers();
 	}
@@ -245,49 +240,38 @@ public class RootLayout extends AnchorPane{
 						
 						droppedNode.setType(DragIconType.valueOf(container.getValue("type")));
 						right_pane.getChildren().add(droppedNode);
+						droppedNode.toFront();
 
 						Point2D cursorPoint = container.getValue("scene_coords");
 
-						droppedNode.relocateToPoint(new Point2D(cursorPoint.getX() - 32, cursorPoint.getY() - 32));
+						droppedNode.relocateToPoint(new Point2D(cursorPoint.getX() - 32,
+								cursorPoint.getY()-32)); //32 is half of 64, so half the height/width... @TODO
 
 						droppedNode.setOnMouseClicked(ev -> {
 							if(ev.getButton() == MouseButton.SECONDARY)
 							{
-								isDrawingEdge = true;
+								drawingEdge = new GraphicalNodeEdge();
+								drawingEdge.setSource(droppedNode);
 
-								drawingEdge.setVisible(true);
-
-								/*drawingEdge = new GraphicalNodeEdge(); CAUTION: Breaks code for unknown reasons
-								right_pane.getChildren().add(drawingEdge);*/ //Uncomment to strategically destroy code
+								right_pane.getChildren().add(drawingEdge);
+								drawingEdge.toBack();
 
 								droppedNode.setOnMouseDragEntered(null);
 								droppedNode.setOnMouseDragged(null);
 
-								Bounds boundsInScene = droppedNode.getBoundsInLocal();
-
-								Point2D startPoint = new Point2D(
-										boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
-										boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
-								);
-
-								drawingEdge.setSource(droppedNode);
+								setOnKeyPressed(keyEvent-> {
+									if (drawingEdge!=null && keyEvent.getCode() == KeyCode.ESCAPE) {
+										drawingEdge.setVisible(false);
+										drawingEdge = null;
+										right_pane.setOnMouseMoved(null);
+									}
+								});
 
 								right_pane.setOnMouseMoved(mouseEvent->{
 
 									Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
 									Point2D mouseCoords = drawingEdge.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 									drawingEdge.setEnd(mouseCoords);
-
-									getParent().setOnKeyPressed(keyEvent-> {
-										if (keyEvent.getCode() == KeyCode.ESCAPE) {
-											isDrawingEdge = false;
-											drawingEdge.setVisible(false);
-											drawingEdge.resetEdge();
-										}
-
-										isDrawingEdge = false;
-									});
-
 								});
 							}
 							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse buttons
@@ -302,16 +286,15 @@ public class RootLayout extends AnchorPane{
 										System.out.println(right_pane.getChildren().remove(edge.getEdgeLine()));
 									}
 
-									System.out.print("Removing Node: ");
-									System.out.println(right_pane.getChildren().remove(droppedNode));
+									//System.out.print("Removing Node: ");
+									right_pane.getChildren().remove(droppedNode);
 
-									drawingEdge.setVisible(false);
+									if(drawingEdge!=null) drawingEdge.setVisible(false);
 								}
 							}
 
-							if (isDrawingEdge && !drawingEdge.getSource().equals(droppedNode))
+							if (drawingEdge!=null && !drawingEdge.getSource().equals(droppedNode))
 							{
-								isDrawingEdge = false;
 								drawingEdge.setTarget(droppedNode);
 								onEdgeComplete();
 							}
@@ -331,93 +314,6 @@ public class RootLayout extends AnchorPane{
 				event.consume();
 			}
 		});
+
 	}
-
-	/*
-	public void buildSplitPaneDragHandlers() {
-		
-		//drag detection for widget in the left-hand scroll pane to create a node in the right pane 
-		mWidgetDragDetected = new EventHandler <MouseEvent> () {
-
-			@Override
-			public void handle(MouseEvent event) {
-
-				fs_right_pane.setOnDragDropped(null);
-				fs_root.setOnDragOver(null);
-				fs_right_pane.setOnDragOver(null);
-				
-				fs_right_pane.setOnDragDropped(mRightPaneDragDropped);
-				fs_root.setOnDragOver(mRootDragOver);
-				
-                //begin drag ops
-
-                mDragObject = ((IFileSystemObject) (event.getSource())).getDragObject();
-                
-                if (!fs_root.getChildren().contains((Node)mDragObject))
-                	fs_root.getChildren().add((Node)mDragObject);
-                
-                mDragObject.relocateToPoint(new Point2D (event.getSceneX(), event.getSceneY()));
-                
-                ClipboardContent content = new ClipboardContent();
-                content.putString(mDragObject.getFileSystemType().toString());
-
-                mDragObject.startDragAndDrop (TransferMode.ANY).setContent(content);
-                mDragObject.setVisible(true);
-                
-                event.consume();					
-			}					
-		};
-		
-		//drag over transition to move widget form left pane to right pane
-		mRootDragOver = new EventHandler <DragEvent>() {
-
-			@Override
-			public void handle(DragEvent event) {
-				
-				Point2D p = fs_right_pane.sceneToLocal(event.getSceneX(), event.getSceneY());
-
-				if (!fs_right_pane.boundsInLocalProperty().get().contains(p)) {
-					mDragObject.relocateToPoint(new Point2D(event.getX(), event.getY()));
-					return;
-				}
-
-				fs_root.removeEventHandler(DragEvent.DRAG_OVER, this);
-				fs_right_pane.setOnDragOver(mRightPaneDragOver);
-				event.consume();
-
-			}
-		};
-		
-		//drag over in the right pane
-		mRightPaneDragOver = new EventHandler <DragEvent> () {
-
-			@Override
-			public void handle(DragEvent event) {
-
-				event.acceptTransferModes(TransferMode.ANY);
-				mDragObject.relocateToPoint(mDragObject.getParent().sceneToLocal(new Point2D(event.getSceneX(), event.getSceneY())));
-				
-				event.consume();
-			}
-		};		
-		
-		//drop action in the right pane to create a new node
-		mRightPaneDragDropped = new EventHandler <DragEvent> () {
-
-			@Override
-			public void handle(DragEvent event) {
-				Point2D p = fs_right_pane.sceneToLocal(new Point2D (event.getSceneX(), event.getSceneY()));	
-				
-				self.addFileSystemNode(mDragObject.getFileSystemType(), p);
-				event.setDropCompleted(true);
-
-				fs_right_pane.setOnDragOver(null);
-				fs_right_pane.setOnDragDropped(null);
-				fs_root.setOnDragOver(null);
-				
-				event.consume();
-			}
-		};		
-	}
-	*/
 }
