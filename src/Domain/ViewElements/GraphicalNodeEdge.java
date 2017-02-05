@@ -141,4 +141,19 @@ public class GraphicalNodeEdge extends AnchorPane
         return edgeLine;
     }
 
+    public void updatePosViaNode(GraphicalMapNode node)
+    {
+
+        Point2D newPoint = new Point2D(node.getLayoutX() + node.getWidth() / 2, node.getLayoutY() + node.getHeight() / 2);
+
+        if (node == target) {
+            setEnd(newPoint);
+        }
+        else
+        {
+            setStart(newPoint);
+        }
+
+    }
+
 }

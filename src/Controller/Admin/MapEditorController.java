@@ -62,17 +62,34 @@ public class MapEditorController extends AnchorPane{
 			event.getNodeEdge().getSource().addEdge(drawingEdge); // add the current drawing edge to the list of this node's edges
 			event.getNodeEdge().getTarget().addEdge(drawingEdge); // add the current drawing edge to the list of this node's edges
 
-			/*MouseControlUtil.makeDraggable(event.getNodeEdge().getSource(), //could be used to track node and update line
+			MouseControlUtil.makeDraggable(event.getNodeEdge().getSource(), //could be used to track node and update line
 					ev->{
 
+						GraphicalMapNode node = event.getNodeEdge().getSource();
+
+						for (GraphicalNodeEdge edge : node.getEdges()) {
+							edge.updatePosViaNode(node);
+						}
 					},
-					ev
-					 ->{;
+					ev ->{;
 
-					});*/
+					});
 
-			MouseControlUtil.makeDraggable(event.getNodeEdge().getSource());
-			MouseControlUtil.makeDraggable(event.getNodeEdge().getTarget());
+			MouseControlUtil.makeDraggable(event.getNodeEdge().getTarget(), //could be used to track node and update line
+					ev->{
+
+						GraphicalMapNode node = event.getNodeEdge().getTarget();
+
+						for (GraphicalNodeEdge edge : node.getEdges()) {
+							edge.updatePosViaNode(node);
+						}
+					},
+					ev ->{;
+
+					});
+
+			//MouseControlUtil.makeDraggable(event.getNodeEdge().getSource());
+			//MouseControlUtil.makeDraggable(event.getNodeEdge().getTarget());
 
 			drawingEdge.toBack(); //send drawing edge to back
 			drawingEdge = null;
@@ -240,6 +257,8 @@ public class MapEditorController extends AnchorPane{
 
 						Point2D cursorPoint = container.getValue("scene_coords"); //cursor point
 
+						/* Build up event handlers for this droppedNode */
+
 						droppedNode.relocateToPoint(new Point2D(cursorPoint.getX() - 32,
 								cursorPoint.getY()-32)); //32 is half of 64, so half the height/width... @TODO
 
@@ -265,10 +284,12 @@ public class MapEditorController extends AnchorPane{
 
 								setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
 									if (drawingEdge!=null && keyEvent.getCode() == KeyCode.ESCAPE) {
-										drawingEdge.setVisible(false);
+										if(right_pane.getChildren().contains(drawingEdge)) //and the right pane has the drawing edge as child
+										{
+											right_pane.getChildren().remove(drawingEdge); //remove from the right pane
+										}
 										drawingEdge = null;
 										right_pane.setOnMouseMoved(null);
-
 										MouseControlUtil.makeDraggable(droppedNode);
 									}
 								});
@@ -280,7 +301,7 @@ public class MapEditorController extends AnchorPane{
 									drawingEdge.setEnd(mouseCoords); //set the end point
 								});
 							}
-							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse buttons
+							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
 
 								if(ev.getClickCount() == 2){ // double click
 
