@@ -172,28 +172,15 @@ class PathTest extends GroovyTestCase {
     }
 
     @Test
-    void testTextual() {
-        g1 = new Guidance(nodeA, nodeB, false)
-        g2 = new Guidance(nodeA, nodeR, false)
-        LinkedList<String> directions = new LinkedList<String>()
-        directions.add("Go to 1")
-        directions.add("Go to 2")
-        directions.add("Go to 5")
-        directions.add("Go to 24")
-        directions.add("Go to 16")
-        directions.add("Go to 19")
-        directions.add("Go to 18")
-        assertTrue(g2.getTextDirections().equals(directions))
-        assertTrue(true)
-    }
-
     void testEmp() {
         g1 = new Guidance(nodeA, nodeB, false)
-        g2 = new Guidance(nodeA, nodeR, false)
-        LinkedList<String> directions = g1.getEmpDirections()
-        for (String s: directions) {
-            System.out.println(s)
-        }
-        assertTrue(true)
+        g2 = new Guidance(nodeO, nodeI, true)
+        LinkedList<String> directions = new LinkedList<String>()
+        directions.add("Go East toward node 16")
+        directions.add("Go East toward node 24")
+        directions.add("Go Up toward node 5")
+        directions.add("Go South toward node 10")
+        directions.add("Go West toward node 9")
+        assertTrue(g2.getTextDirections().equals(directions))
     }
 }
