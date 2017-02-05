@@ -1,6 +1,8 @@
 package Controller;
 
-import Controller.Admin.DoctorProfile;
+
+
+import Domain.Map.Doctor;
 
 import java.util.HashSet;
 
@@ -10,7 +12,7 @@ import java.util.HashSet;
 public class RoomInfo
 {
     String roomNum;
-    HashSet<DoctorProfile> doctors = new HashSet<DoctorProfile>();
+    HashSet<Doctor> doctors = new HashSet<Doctor>();
 
     public RoomInfo(String roomNum) {
         this.roomNum = roomNum;
@@ -22,7 +24,7 @@ public class RoomInfo
         return 0;
     }
 
-    public int addDoctor(DoctorProfile doctor) {
+    public int addDoctor(Doctor doctor) {
         if (this.doctors.add(doctor)) {
             return 0;
         } else {
@@ -30,7 +32,7 @@ public class RoomInfo
         }
     }
 
-    public int removeDoctor(DoctorProfile doctor) {
+    public int removeDoctor(Doctor doctor) {
         if (this.doctors.remove(doctor)) {
             return 0;
         } else {
@@ -42,7 +44,7 @@ public class RoomInfo
         return this.roomNum;
     }
 
-    public HashSet<DoctorProfile> getDoctorsList() {
+    public HashSet<Doctor> getDoctorsList() {
         return this.doctors;
     }
 }

@@ -1,6 +1,7 @@
 //Testing
 package Controller;
 
+import Model.Database.DatabaseManager;
 import com.sun.javafx.geom.Shape;
 import Controller.Admin.AdminList;
 import javafx.application.Application;
@@ -10,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.sql.SQLException;
 
 public class Main extends Application {
 
@@ -67,6 +70,14 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+        try {
+            launch(args);
+            DatabaseManager test = new DatabaseManager();
+            test.testDatabase();
+        }
+        catch(SQLException e) {
+            System.out.println("Violence is never the answer.");
+            System.out.println(e.getMessage());
+        }
     }
 }
