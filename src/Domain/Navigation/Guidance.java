@@ -40,24 +40,37 @@ public class Guidance extends Path {
     public void createTextDirections(boolean vFlag) {
         LinkedList<String> tempTextDirections = new LinkedList<String>();
         int prevDirection = KIOSK_DIRECTION;
+        MapNode fromNode = new MapNode();
+        MapNode toNode = new MapNode();
+
+        //Add the first node to the textual directions
+        tempTextDirections.add("Start from " + pathNodes.get(0).getNodeID() + " facing North");
+
         for (int i = 0; i < this.pathNodes.size() - 1; i++) {
 
-            MapNode fromNode = pathNodes.get(i);
-            MapNode toNode = pathNodes.get(i+1);
+            //For each set of two nodes
+            fromNode = pathNodes.get(i);
+            toNode = pathNodes.get(i+1);
+
+
             if (vFlag) {
                 System.out.println("");
                 System.out.println("fromNode has ID " + fromNode.getNodeID());
                 System.out.println("toNode has ID " + toNode.getNodeID());
             }
 
+            //Figure out the direction that is taken between them.
             int currentDirection = Guidance.nodesToDirection(fromNode, toNode);
 
             if (vFlag) {
                 System.out.println("Current direction is " + currentDirection);
                 System.out.println("PrevDirection is " + prevDirection);
             }
+
             int changeInDirection;
+            //If direction is not in an elevator
             if (currentDirection < 9) {
+                //change in direction is the difference between directions
                 changeInDirection = prevDirection - currentDirection;
                 prevDirection = currentDirection;
             } else {
@@ -66,9 +79,18 @@ public class Guidance extends Path {
                 //Presume the elevator passenger faces North
                 prevDirection = 1;
             }
+
+            //Change the directionChange into a textual string
             String directionChangeString = Guidance.directionChangeToString(changeInDirection, vFlag);
-            tempTextDirections.add("Go " + directionChangeString + " toward node " + toNode.getNodeID());
+
+            //Don't add straight to the list
+            if (!directionChangeString.equals("Straight")){
+                tempTextDirections.add("Turn " + directionChangeString + " at " + fromNode.getNodeID());
+            }
         }
+
+        //Add the destination arrival string
+        tempTextDirections.add("Arrive at destination at " + toNode.getNodeID());
         this.textDirections = tempTextDirections;
     }
 
@@ -90,6 +112,7 @@ public class Guidance extends Path {
     }
 
     public static String directionChangeToString(int changeInDirection, boolean vFlag) {
+        //If a direction comes out as "Error", somethings wrong
         String stringDirection = "Error";
         switch (changeInDirection) {
             case -7:
@@ -99,13 +122,13 @@ public class Guidance extends Path {
                 stringDirection = "Left";
                 break;
             case -5:
-                stringDirection = "Hard Left";
+                stringDirection = "Hard left";
                 break;
             case -4:
                 stringDirection = "U-Turn";
                 break;
             case -3:
-                stringDirection = "hard right";
+                stringDirection = "Hard right";
                 break;
             case -2:
                 stringDirection = "Right";
@@ -117,25 +140,25 @@ public class Guidance extends Path {
                 stringDirection = "Straight";
                 break;
             case 1:
-                stringDirection = "Slight left";
+                stringDirection = "Slight right";
                 break;
             case 2:
-                stringDirection = "left";
+                stringDirection = "Left";
                 break;
             case 3:
-                stringDirection = "hard left";
+                stringDirection = "Hard left";
                 break;
             case 4:
                 stringDirection = "U-Turn";
                 break;
             case 5:
-                stringDirection = "hard right";
+                stringDirection = "Hard right";
                 break;
             case 6:
-                stringDirection = "right";
+                stringDirection = "Right";
                 break;
             case 7:
-                stringDirection = "slight right";
+                stringDirection = "Slight right";
                 break;
             case 9:
                 stringDirection = "Up";
@@ -144,6 +167,7 @@ public class Guidance extends Path {
                 stringDirection = "Down";
                 break;
             default:
+                //If it reaches this, something quite wrong
                 stringDirection = "Big Error";
                 break;
         }
