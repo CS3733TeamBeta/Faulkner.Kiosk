@@ -15,7 +15,7 @@ import java.util.LinkedList;
  * Created by IanCJ on 2/2/2017.
  *
  * Jesus christ fuck this class
- * 
+ *
  */
 public class PathFindingTest extends TestCase{
 

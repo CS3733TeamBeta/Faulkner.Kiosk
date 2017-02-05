@@ -1,2 +1,0 @@
-This product bundles the JUnit jar (junit.org)
-which is available under the terms of the Eclipse Public License v1.0
