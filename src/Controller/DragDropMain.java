@@ -1,6 +1,6 @@
 package Controller;
 
-import Controller.Admin.RootLayout;
+import Controller.Admin.MapEditorController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -23,7 +23,7 @@ public class DragDropMain extends Application {
 			e.printStackTrace();
 		}
 		
-		root.setCenter(new RootLayout());
+		root.setCenter(new MapEditorController());
 	}
 	
 	public static void main(String[] args) {

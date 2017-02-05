@@ -5,7 +5,7 @@ import Domain.Map.Doctor;
 import java.util.HashSet;
 
 /**
- * Created by jw97 on 2/3/2017.
+ * Room info.. Holds info for a specific room
  */
 public class RoomInfo
 {

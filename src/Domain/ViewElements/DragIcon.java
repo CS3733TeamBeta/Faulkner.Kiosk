@@ -69,6 +69,10 @@ public class DragIcon extends AnchorPane{
 
 	}
 
+	/**
+	 * Relocates the drag icon to a specific point
+	 * @param p point to relocate to
+	 */
 	public void relocateToPoint (Point2D p) {
 
 		//relocates the object to a point that has been converted to
@@ -80,9 +84,17 @@ public class DragIcon extends AnchorPane{
 				(int) (localCoords.getY() - (getBoundsInLocal().getHeight() / 2))
 			);
 	}
-	
+
+	/**
+	 *
+	 * @return the type of this drag icon
+	 */
 	public DragIconType getType () { return mType; }
-	
+
+	/**
+	 * Sets the type of this drag icon, changes picture accordingly
+	 * @param type of drag icon
+	 */
 	public void setType (DragIconType type) {
 		
 		mType = type;
@@ -121,8 +133,12 @@ public class DragIcon extends AnchorPane{
 		}
 	}
 
-	public Point2D getIconCenterPoint(DragIcon dragIcon){
-		Bounds boundsInScene = dragIcon.getBoundsInLocal();
+	/**
+	 *
+	 * @return center point of this drag icon
+	 */
+	public Point2D getIconCenterPoint(){
+		Bounds boundsInScene = this.getBoundsInLocal();
 
 		Point2D centerPoint = new Point2D(
 				boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),

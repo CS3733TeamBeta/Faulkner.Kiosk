@@ -82,6 +82,10 @@ public class GraphicalNodeEdge extends AnchorPane
         return target;
     }
 
+    /**
+     * Set source node and update start/end point
+     * @param source
+     */
     public void setSource(GraphicalMapNode source)
     {
         this.source = source;
@@ -97,6 +101,10 @@ public class GraphicalNodeEdge extends AnchorPane
         setEnd(source.localToParent(startPoint));
     }
 
+    /**
+     * Set target node and update start point
+     * @param target
+     */
     public void setTarget(GraphicalMapNode target)
     {
         this.target = target;
@@ -111,22 +119,21 @@ public class GraphicalNodeEdge extends AnchorPane
         setEnd(target.localToParent(endPoint));
     }
 
+    /**
+     * Set start point
+     * @param startPoint
+     */
     public void setStart(Point2D startPoint) {
 
         edgeLine.setStartX(startPoint.getX());
         edgeLine.setStartY(startPoint.getY());
     }
 
+    //Set end point
     public void setEnd(Point2D endPoint) {
 
         edgeLine.setEndX(endPoint.getX());
         edgeLine.setEndY(endPoint.getY());
-    }
-
-    public void resetEdge()
-    {
-        this.target = null;
-        this.source = null;
     }
 
     public Line getEdgeLine()
@@ -134,20 +141,4 @@ public class GraphicalNodeEdge extends AnchorPane
         return edgeLine;
     }
 
-    public void bindEnds (GraphicalMapNode source, GraphicalMapNode target) {
-        edgeLine.startXProperty().bind(
-            Bindings.add(source.layoutXProperty(), (source.getWidth() / 2.0)));
-
-    edgeLine.startYProperty().bind(
-            Bindings.add(source.layoutYProperty(), (source.getWidth() / 2.0)));
-
-    edgeLine.endXProperty().bind(
-            Bindings.add(target.layoutXProperty(), (target.getWidth() / 2.0)));
-
-    edgeLine.endYProperty().bind(
-            Bindings.add(target.layoutYProperty(), (target.getWidth() / 2.0)));
-
-    //source.registerLink (getId());
-   // target.registerLink (getId());
-    }
 }

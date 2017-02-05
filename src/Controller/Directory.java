@@ -1,20 +1,21 @@
 package Controller;
 
-import Domain.Map.Doctor;
+import Domain.Map.*;
 
 import java.util.HashMap;
+import Controller.Admin.*;
 
 /**
  * Created by jw97 on 2/3/2017.
  */
 public class Directory {
-    HashMap<Doctor, RoomInfo> doctors = new HashMap<Doctor, RoomInfo>();
+    HashMap<Doctor, MapEditorController> doctors = new HashMap<Doctor, MapEditorController>();
 
     public Directory() {
         doctors.clear();
     }
 
-    public int addToDirectory(Doctor doctor, RoomInfo room) {
+    public int addToDirectory(Doctor doctor, MapEditorController room) {
         if (this.doctors.containsKey(doctor)){
             return 1; // Exception
         }
