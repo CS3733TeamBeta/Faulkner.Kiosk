@@ -1,7 +1,10 @@
 package Controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+
+import java.io.IOException;
 
 public class ChangingDirectoryController
 {
@@ -11,20 +14,35 @@ public class ChangingDirectoryController
     Button btnAddNewProfile;
     @FXML
     Button btnModifyExistingProfile;
+
+    public ChangingDirectoryController(){
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Admin/ChangingDirectoryView.fxml"));
+
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+
+        try {
+            fxmlLoader.load();
+
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
     @FXML
     private void clickedBack()
     {
-        Main.thisStage.setScene(Main.adminWelcome);
+        new AdminWelcomeController();
     }
     @FXML
     private void clickedAddNewProfile()
     {
-        Main.thisStage.setScene(Main.addNewProfile);
+        new AddNewProfileController();
     }
     @FXML
     private void clickedModifyExistingProfile()
     {
-        Main.thisStage.setScene(Main.chooseProfileToModify);
+        new ProfileToModifyController();
     }
 }
 

@@ -4,15 +4,16 @@ package Controller;
  * Created by Pattop on 2/1/2017.
  */
 
-//TODO should be visible only to adminList class in final version
+//TODO should be visible only to AdminList class in final version
 
-public class adminProfile {
+public class AdminProfile
+{
     String username;
     String password;
     //maybe add a last logged in time?
     //maybe add a history of some kind
 
-    public adminProfile(String username, String password){
+    public AdminProfile(String username, String password){
         this.username = username;
         this.password = password;
     }

@@ -1,13 +1,16 @@
 package Controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 
 import java.awt.*;
+import java.io.IOException;
 
-public class editDepartmentController {
+public class EditDepartmentController
+{
     @FXML
     Button logout;
     @FXML
@@ -20,6 +23,20 @@ public class editDepartmentController {
     ChoiceBox doctorsAssigned; //lists doctors assigned to this department
     @FXML
     ComboBox listDepts;
+
+    public EditDepartmentController(){
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Admin/EditDepartmentView.fxml"));
+
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+
+        try {
+            fxmlLoader.load();
+
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
     @FXML
     private void logoutHit(){

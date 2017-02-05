@@ -1,14 +1,16 @@
 package Controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-import javax.swing.text.html.ImageView;
+import java.io.IOException;
 
-public class editDoctorController {
+public class EditDoctorController
+{
     @FXML
     Button logout;
     @FXML
@@ -28,20 +30,33 @@ public class editDoctorController {
     @FXML
     TextField docRoom; //room doctor is located in
 
+    public EditDoctorController(){
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Admin/EditDoctorView.fxml"));
+
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+
+        try {
+            fxmlLoader.load();
+
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
     @FXML
     private void logoutHit(){
-        Main.thisStage.setScene(Main.adminLogin);
+        new AdminLoginController();
     }
 
     @FXML
     private void backHit(){
-        Main.thisStage.setScene(Main.changingDirectoryView);
+        new ChangingDirectoryController();
     }
 
     @FXML
     private void saveHit(){
-        Main.thisStage.setScene(Main.changingDirectoryView);
+        new ChangingDirectoryController();
     }
 
     @FXML

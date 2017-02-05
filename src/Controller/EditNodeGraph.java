@@ -1,12 +1,16 @@
 package Controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+
+import java.io.IOException;
 
 /**
  * Created by Pattop on 1/31/2017.
  */
-public class editNodeGraph {
+public class EditNodeGraph
+{
     @FXML
     Button addRoom, addIntersection, addConnection,
             editRoom, editIntersection, editConnection,
@@ -14,6 +18,20 @@ public class editNodeGraph {
 
     @FXML
     Button saveHit, exitHit;
+
+    public EditNodeGraph(){
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Admin/EditNodeGraph.fxml"));
+
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+
+        try {
+            fxmlLoader.load();
+
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
     @FXML
     private void addRoomHit(){
@@ -62,12 +80,12 @@ public class editNodeGraph {
 
     @FXML
     private void saveHit(){
-        Main.thisStage.setScene(Main.modifyLocations);
+        new ModifyLocations();
     }
 
     @FXML
     private void exitHit(){
-        Main.thisStage.setScene(Main.modifyLocations);
+        new ModifyLocations();
     }
 
 }

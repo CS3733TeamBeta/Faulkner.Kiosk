@@ -5,9 +5,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ScrollPane;
 
-public class profileToModifyController {
+public class ProfileToModifyController
+{
     @FXML
-    Button logout, back;
+    Button logout;
+
+    @FXML
+    Button back;
 
     @FXML
     TextField searchModDoc;
@@ -17,12 +21,11 @@ public class profileToModifyController {
 
     @FXML
     private void logoutHit(){
-        Main.thisStage.setScene(Main.changingDirectoryView);
+        new AdminLoginController();
     }
 
     @FXML
     private void backHit(){
-        Main.thisStage.setScene(Main.changingDirectoryView);
+        new ChangingDirectoryController();
     }
-
 }
