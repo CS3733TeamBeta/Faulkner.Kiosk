@@ -64,10 +64,10 @@
     <children>
         <Button fx:id="changeRoomAssignments" onAction="#changeRoomAssignments" mnemonicParsing="false"
                 text="Change Room Assignments" maxHeight="1.7976931348623157E308"
-                maxWidth="1.7976931348623157E308" GridPane.columnIndex="7" GridPane.columnSpan="6"
+                maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.columnSpan="8"
                 GridPane.rowIndex="10" GridPane.rowSpan="2"/>
         <Button fx:id="changeFloorLayout" onAction="#changeFloorLayoutButton" mnemonicParsing="false"
-                text="Change Floor Layout" GridPane.columnIndex="7" GridPane.columnSpan="6"
+                text="Change Floor Layout" GridPane.columnIndex="6" GridPane.columnSpan="8"
                 GridPane.rowIndex="7" GridPane.rowSpan="2" maxHeight="1.7976931348623157E308"
                 maxWidth="1.7976931348623157E308"/>
         <Label fx:id="modifyLabel" GridPane.columnIndex="2" GridPane.columnSpan="16"
