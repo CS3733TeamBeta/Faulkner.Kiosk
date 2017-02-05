@@ -69,7 +69,8 @@ public class RootLayout extends AnchorPane{
 			newEdge.setSource(event.getNodeEdge().getSource());
 			newEdge.setTarget(event.getNodeEdge().getTarget());
 
-
+			event.getNodeEdge().getSource().addEdge(newEdge); // add the current drawing edge to the list of this node's edges
+			event.getNodeEdge().getTarget().addEdge(newEdge); // add the current drawing edge to the list of this node's edges
 
 			MouseControlUtil.makeDraggable(event.getNodeEdge().getSource(),
 					ev->{
@@ -286,9 +287,8 @@ public class RootLayout extends AnchorPane{
 									{
 										if (keyEvent.getCode() == KeyCode.ESCAPE) {
 											isDrawingEdge = false;
-											right_pane.setOnMouseMoved(null);
 											drawingEdge.setVisible(false);
-											onEdgeComplete();
+											drawingEdge.resetEdge();
 										}
 
 										isDrawingEdge = false;
@@ -296,12 +296,13 @@ public class RootLayout extends AnchorPane{
 
 								});
 							}
-							// death with other types of mouse buttons
-							else if (ev.getButton() == MouseButton.PRIMARY)
+							else if (ev.getButton() == MouseButton.PRIMARY) // deal with other types of mouse buttons
 							{
 								if(ev.getClickCount() == 2){ // double click
 
-									/*
+									System.out.println("Removing node and edges");
+
+									/* pseudo code
 									for edge in node edges:
 										edge.delete
 
@@ -309,7 +310,19 @@ public class RootLayout extends AnchorPane{
 
 									 */
 
-									System.out.println("Double clicked node");
+									System.out.println("Removing Edges: ");
+									for (GraphicalNodeEdge edge: droppedNode.getEdges())
+									{
+										System.out.println("Removing Edge");
+										System.out.println(right_pane.getChildren().remove(edge.getEdgeLine()));
+										System.out.println(left_pane.getChildren().remove(edge.getEdgeLine()));
+
+									}
+
+									System.out.println("Removing Node");
+									System.out.println(right_pane.getChildren().remove(droppedNode));
+
+
 								}
 							}
 
@@ -332,7 +345,6 @@ public class RootLayout extends AnchorPane{
 						});
 					}
 				}
-
 				event.consume();
 			}
 		});

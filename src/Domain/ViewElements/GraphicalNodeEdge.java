@@ -126,7 +126,12 @@ public class GraphicalNodeEdge extends AnchorPane
     public void resetEdge()
     {
         this.target = null;
-        this.source =null;
+        this.source = null;
+    }
+
+    public Line getEdgeLine()
+    {
+        return edgeLine;
     }
 
     public void bindEnds (GraphicalMapNode source, GraphicalMapNode target) {

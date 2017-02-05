@@ -17,12 +17,23 @@ public class GraphicalMapNode extends DragIcon implements DrawableMapEntity
     public GraphicalMapNode()
     {
         super();
+        edges = new HashSet<GraphicalNodeEdge>();
     }
 
     public GraphicalMapNode(MapNode n)
     {
         super();
         mapNode = n;
+    }
+
+    public void addEdge(GraphicalNodeEdge edge)
+    {
+       this.edges.add(edge);
+    }
+
+    public HashSet<GraphicalNodeEdge> getEdges()
+    {
+        return edges;
     }
 
     @Override
