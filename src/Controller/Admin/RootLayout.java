@@ -64,7 +64,7 @@ public class RootLayout extends AnchorPane{
 
 			GraphicalNodeEdge newEdge = new GraphicalNodeEdge();
 
-			right_pane.getChildren().add(newEdge);
+			right_pane.getChildren().add(newEdge.getEdgeLine());
 
 			newEdge.setSource(event.getNodeEdge().getSource());
 			newEdge.setTarget(event.getNodeEdge().getTarget());
@@ -86,6 +86,9 @@ public class RootLayout extends AnchorPane{
 
 			drawingEdge.toBack();
 			newEdge.toBack();
+
+			event.getNodeEdge().getSource().toFront();
+			event.getNodeEdge().getTarget().toFront();
 
 			drawingEdge.resetEdge();
 		});
@@ -198,9 +201,7 @@ public class RootLayout extends AnchorPane{
 				//the parent of mDragIcon.  Since mDragIcon is a child of the root
 				//pane, coodinates must be in the root pane's coordinate system to work
 				//properly.
-				mDragOverIcon.relocateToPoint(
-								new Point2D(event.getSceneX(), event.getSceneY())
-				);
+				mDragOverIcon.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
 				event.consume();
 			}
 		};
@@ -210,11 +211,9 @@ public class RootLayout extends AnchorPane{
 			@Override
 			public void handle(DragEvent event) {
 				
-				DragContainer container = 
-						(DragContainer) event.getDragboard().getContent(DragContainer.AddNode);
+				DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.AddNode);
 				
-				container.addData("scene_coords", 
-						new Point2D(event.getSceneX(), event.getSceneY()));
+				container.addData("scene_coords", new Point2D(event.getSceneX(), event.getSceneY()));
 				
 				ClipboardContent content = new ClipboardContent();
 				content.put(DragContainer.AddNode, container);
@@ -249,9 +248,7 @@ public class RootLayout extends AnchorPane{
 
 						Point2D cursorPoint = container.getValue("scene_coords");
 
-						droppedNode.relocateToPoint(
-								new Point2D(cursorPoint.getX() - 32, cursorPoint.getY() - 32)
-								);
+						droppedNode.relocateToPoint(new Point2D(cursorPoint.getX() - 32, cursorPoint.getY() - 32));
 
 						droppedNode.setOnMouseClicked(ev ->
 						{
@@ -275,7 +272,6 @@ public class RootLayout extends AnchorPane{
 								);
 
 								drawingEdge.setSource(droppedNode);
-								//drawingEdge.setStart(startPoint);
 
 								right_pane.setOnMouseMoved(mouseEvent->{
 
@@ -302,25 +298,16 @@ public class RootLayout extends AnchorPane{
 
 									System.out.println("Removing node and edges");
 
-									/* pseudo code
-									for edge in node edges:
-										edge.delete
-
-									node.delete()
-
-									 */
-
-									System.out.println("Node contains " + droppedNode.getEdges() + " edges.");
-
 									for (GraphicalNodeEdge edge: droppedNode.getEdges())
 									{
 										System.out.print("Removing Edge: ");
-										System.out.println(right_pane.getChildren().remove(edge));
+										System.out.println(right_pane.getChildren().remove(edge.getEdgeLine()));
 									}
 
 									System.out.print("Removing Node: ");
 									System.out.println(right_pane.getChildren().remove(droppedNode));
 
+									drawingEdge.setVisible(false);
 								}
 							}
 
