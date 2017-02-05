@@ -20,15 +20,15 @@ public class Guidance extends Path {
             this(start, end, false);
     }
 
-    public Guidance (MapNode start, MapNode end, boolean flag) throws PathFindingException {
+    public Guidance (MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
         //Make the path part
-        super(start, end, flag);
+        super(start, end, vFlag);
 
         //Declare and initialize directions
         textDirections = new LinkedList<String>();
-        createTextDirections();
+        createTextDirections(vFlag);
 
-        if (flag) {
+        if (vFlag) {
             printTextDirections();
         }
     }
@@ -45,6 +45,7 @@ public class Guidance extends Path {
             MapNode fromNode = pathNodes.get(i);
             MapNode toNode = pathNodes.get(i+1);
             if (vFlag) {
+                System.out.println("");
                 System.out.println("fromNode has ID " + fromNode.getNodeID());
                 System.out.println("toNode has ID " + toNode.getNodeID());
             }
@@ -53,12 +54,20 @@ public class Guidance extends Path {
 
             if (vFlag) {
                 System.out.println("Current direction is " + currentDirection);
-                System.out.println("");
+                System.out.println("PrevDirection is " + prevDirection);
             }
-            int changeInDirection = prevDirection - currentDirection;
-            tempTextDirections.add("Go " + Guidance.numToDirection(currentDirection) + " toward node " + toNode.getNodeID());
-
-            prevDirection = currentDirection;
+            int changeInDirection;
+            if (currentDirection < 9) {
+                changeInDirection = prevDirection - currentDirection;
+                prevDirection = currentDirection;
+            } else {
+                //If you're on an elevator, your previous direction doesn't matter
+                changeInDirection = currentDirection;
+                //Presume the elevator passenger faces North
+                prevDirection = 1;
+            }
+            String directionChangeString = Guidance.directionChangeToString(changeInDirection, vFlag);
+            tempTextDirections.add("Go " + directionChangeString + " toward node " + toNode.getNodeID());
         }
         this.textDirections = tempTextDirections;
     }
@@ -76,6 +85,74 @@ public class Guidance extends Path {
         return Guidance.nodesToDirection(fromNode, toNode, false);
     }
 
+    public static String directionChangeToString(int changeInDirection) {
+        return Guidance.directionChangeToString(changeInDirection, false);
+    }
+
+    public static String directionChangeToString(int changeInDirection, boolean vFlag) {
+        String stringDirection = "Error";
+        switch (changeInDirection) {
+            case -7:
+                stringDirection = "Slight left";
+                break;
+            case -6:
+                stringDirection = "Left";
+                break;
+            case -5:
+                stringDirection = "Hard Left";
+                break;
+            case -4:
+                stringDirection = "U-Turn";
+                break;
+            case -3:
+                stringDirection = "hard right";
+                break;
+            case -2:
+                stringDirection = "Right";
+                break;
+            case -1:
+                stringDirection = "Slight right";
+                break;
+            case 0:
+                stringDirection = "Straight";
+                break;
+            case 1:
+                stringDirection = "Slight left";
+                break;
+            case 2:
+                stringDirection = "left";
+                break;
+            case 3:
+                stringDirection = "hard left";
+                break;
+            case 4:
+                stringDirection = "U-Turn";
+                break;
+            case 5:
+                stringDirection = "hard right";
+                break;
+            case 6:
+                stringDirection = "right";
+                break;
+            case 7:
+                stringDirection = "slight right";
+                break;
+            case 9:
+                stringDirection = "Up";
+                break;
+            case 10:
+                stringDirection = "Down";
+                break;
+            default:
+                stringDirection = "Big Error";
+                break;
+        }
+        if (vFlag) {
+            System.out.println("ChangeInDirection " + changeInDirection + " changed to " + stringDirection);
+        }
+        return stringDirection;
+    }
+
     //Takes two nodes, and returns an int representing the angle made by the edge between them
     public static int nodesToDirection(MapNode fromNode, MapNode toNode, boolean vFlag) {
 
@@ -90,9 +167,9 @@ public class Guidance extends Path {
         //N, NE, E, SE, S, SW, W, NW, Up, down, are equal to
         //1,  2, 3,  4, 5,  6, 7,  8,  9,   10,
         int direction = 0;
-        if (fromNode.getMyFloor().getFloorNumber() > toNode.getMyFloor().getFloorNumber()) {
+        if (fromNode.getMyFloor().getFloorNumber() < toNode.getMyFloor().getFloorNumber()) {
             direction = 9;
-        } else if (fromNode.getMyFloor().getFloorNumber() < toNode.getMyFloor().getFloorNumber()) {
+        } else if (fromNode.getMyFloor().getFloorNumber() > toNode.getMyFloor().getFloorNumber()) {
             direction = 10;
         } else if (angle > -22.5 && angle <= 22.5) {
             direction = 1;
