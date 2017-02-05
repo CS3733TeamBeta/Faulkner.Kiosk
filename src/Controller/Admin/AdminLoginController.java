@@ -34,11 +34,11 @@ public class AdminLoginController
 
     AdminLoginModel infoForLoggingIn;
 
+    Stage primaryStage;
+
     public AdminLoginController(){
 
         //FXMLLoader fxmlLoader;
-
-        Parent root;
 
         /*
         try {
@@ -47,24 +47,48 @@ public class AdminLoginController
             throw new RuntimeException(exception);
         }
 
-
         Stage stage = (Stage) gridPane.getScene().getWindow();
         stage.setScene(scene);*/
 
         infoForLoggingIn = new AdminLoginModel();
     }
 
-    @FXML
-    private void clickedLogin()
+    public void setStage(Stage stage)
     {
+        primaryStage = stage;
+    }
+
+    @FXML
+    private void clickedLogin() throws IOException
+    {
+        System.out.println("Login clicked");
+
         if(infoForLoggingIn.admins.checkValidity(txtUsername.getText(), txtPassword.getText())) {
-            new AdminWelcomeController();
+            FXMLLoader loader;
+            Parent root;
+
+            loader = new FXMLLoader(getClass().getResource("../AdminWelcomeView.fxml"));
+
+            root = loader.load();
+            //create a new scene with root and set the stage
+            Scene scene = new Scene(root);
+
+            primaryStage.setScene(scene);
+
+            AdminWelcomeController controller = loader.getController();
+            controller.setStage(primaryStage);
+            //primaryStage.show();
         }
     }
 
     @FXML
     private void clickedBack()
     {
+
+    }
+
+    @FXML
+    protected void initialize() {
 
     }
 }

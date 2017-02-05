@@ -3,6 +3,7 @@ import Controller.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -15,18 +16,15 @@ public class AdminWelcomeController {
     @FXML
     Button btnChangeFloorplan;
 
+    Stage primaryStage;
+
     public AdminWelcomeController(){
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Admin/AdminWelcomeView.fxml"));
 
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
+    }
 
-        try {
-            fxmlLoader.load();
-
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+    public void setStage(Stage s)
+    {
+        primaryStage = s;
     }
 
     @FXML
@@ -45,5 +43,8 @@ public class AdminWelcomeController {
         new ModifyLocations();
     }
 
+    @FXML
+    protected void initialize() {
 
+    }
 }
