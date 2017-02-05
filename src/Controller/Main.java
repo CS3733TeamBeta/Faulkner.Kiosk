@@ -14,14 +14,8 @@ import javafx.collections.ObservableList;
 
 public class Main extends Application {
 
-    //public static AdminList admins;    // For testing purposes
-
     public static final ObservableList<String> departments =
             FXCollections.observableArrayList();
-
-    //public static Stage thisStage;
-    //public static Scene addNewProfile, adminLogin, adminWelcome, changingDirectoryView, chooseProfileToModify, dragWindow, editDepartmentView, editDoctorView;
-    //public static Scene editNodeGraph, editRoomAttributes, editRoomView, modifyLocations;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -43,32 +37,6 @@ public class Main extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
-
-
-
-
-        //Scene addNewProfile, adminLogin, adminWelcome, changingDirectoryView, chooseProfileToModify, dragWindow, editDepartmentView, editDoctorView;
-        //Scene editNodeGraph, editRoomAttributes, editRoomView, modifyLocations;
-/*
-        addNewProfile = new Scene(addNewProfileRoot);
-        adminLogin = new Scene(adminLoginRoot);
-        adminWelcome = new Scene(adminWelcomeRoot);
-        changingDirectoryView = new Scene(changingDirectoryViewRoot);
-        chooseProfileToModify = new Scene(chooseProfileToModifyRoot);
-        dragWindow = new Scene(dragWindowRoot);
-        editDepartmentView = new Scene(editDepartmentViewRoot);
-        editDoctorView = new Scene(editDoctorViewRoot);
-        editNodeGraph = new Scene(editNodeGraphRoot);
-        editRoomAttributes = new Scene(editRoomAttributesRoot);
-        editRoomView = new Scene(editRoomViewRoot);
-        modifyLocations = new Scene(modifyLocationsRoot);
-
-        thisStage.setScene(adminLogin);
-        thisStage.show();
-        admins = new AdminList();
-
-        admins.addAdmin("ADMIN", "ADMIN");
-        admins.setDevEnabled(true); */
     }
 
     public static void main(String[] args) {
