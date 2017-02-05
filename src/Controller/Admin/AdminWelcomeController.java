@@ -37,7 +37,7 @@ public class AdminWelcomeController {
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../AdminLoginView.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/AdminLoginView.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -54,7 +54,7 @@ public class AdminWelcomeController {
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../ChangingDirectoryView.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/ChangingDirectoryView.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -71,7 +71,7 @@ public class AdminWelcomeController {
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../modifyLocations.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/ModifyLocations.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage

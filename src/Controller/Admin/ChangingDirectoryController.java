@@ -37,7 +37,7 @@ public class ChangingDirectoryController
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../AdminWelcomeView.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/AdminWelcomeView.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -54,7 +54,7 @@ public class ChangingDirectoryController
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../AddNewProfile.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/AddNewProfile.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -71,7 +71,7 @@ public class ChangingDirectoryController
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../ChooseProfiletoModify.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/ChooseProfiletoModify.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage

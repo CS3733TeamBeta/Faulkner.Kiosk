@@ -38,7 +38,7 @@ public class ModifyLocations
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../AdminWelcomeView.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/AdminWelcomeView.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -56,7 +56,7 @@ public class ModifyLocations
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../editNodeGraph.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/EditNodeGraph.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -73,7 +73,7 @@ public class ModifyLocations
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../editRoomAttributes.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/EditRoomAttributes.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -90,7 +90,7 @@ public class ModifyLocations
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../AdminLoginView.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/AdminLoginView.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage

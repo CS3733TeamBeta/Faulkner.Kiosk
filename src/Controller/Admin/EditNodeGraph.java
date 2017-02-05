@@ -84,7 +84,7 @@ public class EditNodeGraph
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../modifyLocations.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../Admin/ModifyLocations.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -103,7 +103,7 @@ public class EditNodeGraph
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../modifyLocations.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/ModifyLocations.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage

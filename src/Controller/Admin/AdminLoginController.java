@@ -55,7 +55,7 @@ public class AdminLoginController
             FXMLLoader loader;
             Parent root;
 
-            loader = new FXMLLoader(getClass().getResource("../AdminWelcomeView.fxml"));
+            loader = new FXMLLoader(getClass().getResource("../../Admin/AdminWelcomeView.fxml"));
 
             root = loader.load();
             //create a new scene with root and set the stage

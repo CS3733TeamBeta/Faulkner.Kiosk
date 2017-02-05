@@ -71,7 +71,7 @@ public class AddNewProfileController
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../AdminLoginView.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/AdminLoginView.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -89,7 +89,7 @@ public class AddNewProfileController
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../ChangingDirectoryView.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/ChangingDirectoryView.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -107,7 +107,7 @@ public class AddNewProfileController
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../ChangingDirectoryView.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/ChangingDirectoryView.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
