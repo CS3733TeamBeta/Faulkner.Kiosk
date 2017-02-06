@@ -80,6 +80,6 @@
     </children>
     <stylesheets>
         <URL value="@genstyle.css"/>
-        <URL value="@../changingDirectoryStyle.css"/>
+        <URL value="@changingDirectoryStyle.css"/>
     </stylesheets>
 </GridPane>

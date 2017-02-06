@@ -82,6 +82,6 @@
     </children>
     <stylesheets>
         <URL value="@genstyle.css"/>
-        <URL value="@../modifyLocationsStyle.css"/>
+        <URL value="@modifyLocationsStyle.css"/>
     </stylesheets>
 </GridPane>
