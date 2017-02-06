@@ -77,11 +77,12 @@
               mnemonicParsing="false" text="Back" GridPane.columnIndex="1" GridPane.columnSpan="2"
               maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
     <!--should the onAction for btnBack be the same as the others? -->
-      <Label fx:id="searchLabel" layoutX="55.0" layoutY="93.0" text="Search: " />
-      <TextField fx:id="searchModDoc" layoutX="105.0" layoutY="89.0" prefHeight="25.0"
-                 prefWidth="409.0" promptText="Search doctor" />
-      <ScrollPane fx:id="filteredProfiles" layoutX="105.0" layoutY="140.0" prefHeight="204.0"
-                  prefWidth="409.0">
+      <Label fx:id="searchLabel" text="Search: " GridPane.columnIndex="4"
+      GridPane.rowIndex="7" GridPane.columnSpan="2"/>
+      <TextField fx:id="searchModDoc" promptText="Search doctor" GridPane.columnSpan="10"
+      GridPane.rowIndex="7" GridPane.columnIndex="6"/>
+      <ScrollPane fx:id="filteredProfiles" GridPane.columnIndex="4" GridPane.columnSpan="12"
+      GridPane.rowIndex="10" GridPane.rowSpan="10">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
         </content>
@@ -89,5 +90,6 @@
    </children>
     <stylesheets>
         <URL value ="@/genstyle.css" />
+        <URL value ="@chooseProfileStyle.css" />
     </stylesheets>
 </GridPane>
