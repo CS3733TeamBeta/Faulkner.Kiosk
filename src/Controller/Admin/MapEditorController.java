@@ -29,7 +29,7 @@ public class MapEditorController extends AnchorPane{
 	private EventHandler<DragEvent> onIconDragOverRoot = null;
 	private EventHandler<DragEvent> onIconDragDropped = null;
 	private EventHandler<DragEvent> onIconDragOverRightPane = null;
-
+	private EventHandler<DragEvent> onLineSyncNeeded = null;
 	private MapEditorModel model;
 
 	GraphicalNodeEdge drawingEdge;
@@ -52,47 +52,27 @@ public class MapEditorController extends AnchorPane{
 
 		model.addEdgeCompleteHandler(event->
 		{
+			GraphicalMapNode sourceNode = event.getNodeEdge().getSource();
+			GraphicalMapNode targetNode = event.getNodeEdge().getTarget();
+
 			model.addMapEdge(drawingEdge);
 
 			right_pane.setOnMouseMoved(null);
 
-			drawingEdge.setSource(event.getNodeEdge().getSource());
-			drawingEdge.setTarget(event.getNodeEdge().getTarget());
+			drawingEdge.setSource(sourceNode);
+			drawingEdge.setTarget(targetNode);
 
-			event.getNodeEdge().getSource().addEdge(drawingEdge); // add the current drawing edge to the list of this node's edges
-			event.getNodeEdge().getTarget().addEdge(drawingEdge); // add the current drawing edge to the list of this node's edges
+			sourceNode.addEdge(drawingEdge); // add the current drawing edge to the list of this node's edges
+			targetNode.addEdge(drawingEdge); // add the current drawing edge to the list of this node's edges
 
-			MouseControlUtil.makeDraggable(event.getNodeEdge().getSource(), //could be used to track node and update line
-					ev->{
-
-						GraphicalMapNode node = event.getNodeEdge().getSource();
-
-						for (GraphicalNodeEdge edge : node.getEdges()) {
-							edge.updatePosViaNode(node);
-						}
-					},
-					ev ->{;
-
-					});
-
-			MouseControlUtil.makeDraggable(event.getNodeEdge().getTarget(), //could be used to track node and update line
-					ev->{
-
-						GraphicalMapNode node = event.getNodeEdge().getTarget();
-
-						for (GraphicalNodeEdge edge : node.getEdges()) {
-							edge.updatePosViaNode(node);
-						}
-					},
-					ev ->{;
-
-					});
+			makeMapNodeDraggable(sourceNode);
+			makeMapNodeDraggable(targetNode);
 
 			drawingEdge.toBack(); //send drawing edge to back
 			drawingEdge = null;
 
-			event.getNodeEdge().getSource().toFront();
-			event.getNodeEdge().getTarget().toFront();
+			sourceNode.toFront();
+			sourceNode.toFront();
 		});
 
 	}
@@ -134,7 +114,26 @@ public class MapEditorController extends AnchorPane{
 
 		buildDragHandlers();
 	}
-	
+
+	/**
+	 * Handler to be called when node is dragged... updates end point of any edges connected to it
+	 *
+	 * @param n node to keep in sync
+	 * @return event handler for mouse event that updates positions of lines when triggered
+	 */
+	private static void makeMapNodeDraggable (GraphicalMapNode n)
+	{
+		MouseControlUtil.makeDraggable(n, //could be used to track node and update line
+				event ->
+				{
+					for (GraphicalNodeEdge edge : n.getEdges())
+					{
+						edge.updatePosViaNode(n);
+					}
+				},
+				null);
+	}
+
 	private void addDragDetection(DragIcon dragIcon) {
 		
 		dragIcon.setOnDragDetected (new EventHandler <MouseEvent> () {
@@ -286,8 +285,10 @@ public class MapEditorController extends AnchorPane{
 											right_pane.getChildren().remove(drawingEdge); //remove from the right pane
 										}
 										drawingEdge = null;
+
 										right_pane.setOnMouseMoved(null);
-										MouseControlUtil.makeDraggable(droppedNode);
+
+										makeMapNodeDraggable(droppedNode);
 									}
 								});
 

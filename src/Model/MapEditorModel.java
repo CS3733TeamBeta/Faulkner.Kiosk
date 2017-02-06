@@ -1,5 +1,8 @@
 package Model;
 
+import Domain.Map.Building;
+import Domain.Map.Floor;
+import Domain.Map.Hospital;
 import Domain.Map.MapNode;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
@@ -23,6 +26,9 @@ public class MapEditorModel
     HashSet<GraphicalMapNode> mapNodes;
     HashSet<GraphicalNodeEdge> mapEdges;
 
+    Hospital hospital;
+    Floor currentFloor;
+
     public MapEditorModel()
     {
         edgeCompleteHandlers = new LinkedList<EdgeCompleteEventHandler>(); //instantiate empty linked list for handlers;
@@ -30,6 +36,23 @@ public class MapEditorModel
         sideBarIcons = new ArrayList<DragIcon>();
         mapNodes = new HashSet<GraphicalMapNode>();
         mapEdges = new HashSet<GraphicalNodeEdge>();
+
+        hospital = new Hospital();
+
+        Building b  = new Building();
+        Floor f1 = new Floor(1);
+
+        try //attempts to add floor 1
+        {
+            b.addFloor(f1);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        hospital.addBuilding(b);
+
+        currentFloor = f1;
     }
 
     public void addEdgeCompleteHandler(EdgeCompleteEventHandler e)
