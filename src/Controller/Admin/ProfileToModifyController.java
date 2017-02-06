@@ -2,6 +2,7 @@ package Controller.Admin;
 
 import Controller.Main;
 import Model.DoctorProfile;
+import java.util.HashSet;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,9 +22,6 @@ import java.io.IOException;
 import java.util.function.Predicate;
 
 public class ProfileToModifyController {
-
-    private ObservableList<DoctorProfile> directory = FXCollections.observableArrayList();
-
     @FXML
     Button logout;
 
@@ -53,7 +51,6 @@ public class ProfileToModifyController {
     }
 
     public ProfileToModifyController(){
-
     }
 
 
@@ -66,10 +63,10 @@ public class ProfileToModifyController {
                 new PropertyValueFactory<DoctorProfile,String>("firstName"));
 
         deptsCol.setCellValueFactory(
-                new PropertyValueFactory<DoctorProfile,String>("departments"));
+                new PropertyValueFactory<DoctorProfile,HashSet<String>>("departments"));
 
 
-        FilteredList<DoctorProfile> filtered = new FilteredList<>(directory, profile -> true);
+        FilteredList<DoctorProfile> filtered = new FilteredList<>(Main.FaulknerHospitalDirectory, profile -> true);
 
         searchModDoc.textProperty().addListener((observableValue, oldValue, newValue) -> {
             filtered.setPredicate((Predicate<? super DoctorProfile>) profile -> {
@@ -85,13 +82,16 @@ public class ProfileToModifyController {
                     return true; // Filter matches first name.
                 } else if (profile.getLastName().toLowerCase().contains(lowerCaseFilter)) {
                     return true; // Filter matches last name.
+                } else if (profile.getDepartments().contains(lowerCaseFilter)) {
+                    return true; // Filter matches department(s).
                 }
                 return false; // Does not match.
             });
         });
 
+        // Create sorted list for filtered data list
         SortedList<DoctorProfile> sorted = new SortedList<>(filtered);
-        // Bind sorted list to the table
+        // Bind sorted list to table
         sorted.comparatorProperty().bind(filteredProfiles.comparatorProperty());
         // Set table data
         filteredProfiles.setItems(sorted);

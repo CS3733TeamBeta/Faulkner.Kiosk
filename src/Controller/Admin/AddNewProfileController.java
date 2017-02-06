@@ -5,6 +5,7 @@ package Controller.Admin;
 import Controller.Main;
 import Exceptions.AddFoundException;
 import Model.DoctorProfile;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -172,7 +173,7 @@ public class AddNewProfileController
         DoctorProfile newProfile = new DoctorProfile(firstName.getText(), lastName.getText(), roomNum.getText());
         for (String dept: addedDept) {
             try {
-                newProfile.addDepartment(dept);
+                newProfile.addDepartment(new SimpleStringProperty(dept));
             } catch (AddFoundException e) {
                 System.out.println("This doctor is already assigned to this department(s).");
             }
