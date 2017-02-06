@@ -8,7 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +18,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 
 import java.io.IOException;
+import java.util.function.Predicate;
 
 public class ProfileToModifyController {
 
@@ -32,9 +33,17 @@ public class ProfileToModifyController {
     @FXML
     TextField searchModDoc;
 
-    //Should be TableView?
     @FXML
-    ScrollPane filteredProfiles;
+    TableView<DoctorProfile> filteredProfiles;
+
+    @FXML
+    TableColumn lastNameCol;
+
+    @FXML
+    TableColumn firstNameCol;
+
+    @FXML
+    TableColumn deptsCol;
 
     Stage primaryStage;
 
@@ -49,6 +58,43 @@ public class ProfileToModifyController {
 
 
     public void initialize() {
+        // Set up table view
+        lastNameCol.setCellValueFactory(
+                new PropertyValueFactory<DoctorProfile,String>("lastName"));
+
+        firstNameCol.setCellValueFactory(
+                new PropertyValueFactory<DoctorProfile,String>("firstName"));
+
+        deptsCol.setCellValueFactory(
+                new PropertyValueFactory<DoctorProfile,String>("departments"));
+
+
+        FilteredList<DoctorProfile> filtered = new FilteredList<>(directory, profile -> true);
+
+        searchModDoc.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            filtered.setPredicate((Predicate<? super DoctorProfile>) profile -> {
+                // If filter text is empty, display all persons.
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (profile.getFirstName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches first name.
+                } else if (profile.getLastName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches last name.
+                }
+                return false; // Does not match.
+            });
+        });
+
+        SortedList<DoctorProfile> sorted = new SortedList<>(filtered);
+        // Bind sorted list to the table
+        sorted.comparatorProperty().bind(filteredProfiles.comparatorProperty());
+        // Set table data
+        filteredProfiles.setItems(sorted);
 
     }
 
