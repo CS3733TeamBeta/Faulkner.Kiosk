@@ -1,32 +1,31 @@
 package Domain.ViewElements;
 
 import Domain.Map.MapNode;
+import Domain.Map.NodeEdge;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * Created by benhylak on 1/30/17.
+ * A map node used during the graphical map building process
  */
-public class GraphicalMapNode extends DragIcon
+public class GraphicalMapNode extends MapNode implements DrawableMapEntity
 {
-    MapNode mapNode = null;
-    HashSet<GraphicalNodeEdge> edges;
+    DragIcon icon;
 
     final double NODE_HOVER_OPACITY = .65;
     final double NODE__NORMAL_OPACITY = 1;
 
+    HashMap<Node, GraphicalMapNode> fxNodetoEdgeMap;
+
     public GraphicalMapNode()
     {
         super();
-        edges = new HashSet<GraphicalNodeEdge>();
-    }
+        //edges = new HashSet<GraphicalNodeEdge>();
 
-    public GraphicalMapNode(MapNode n)
-    {
-        super();
-        mapNode = n;
+        icon = new DragIcon();
     }
 
     public void addEdge(GraphicalNodeEdge edge)
@@ -34,7 +33,7 @@ public class GraphicalMapNode extends DragIcon
        this.edges.add(edge);
     }
 
-    public HashSet<GraphicalNodeEdge> getEdges()
+    public HashSet<NodeEdge> getGraphicalEdges()
     {
         return edges;
     }
@@ -45,7 +44,7 @@ public class GraphicalMapNode extends DragIcon
      */
     public void changeToHoverOpacity()
     {
-        setOpacity(NODE_HOVER_OPACITY);
+        icon.setOpacity(NODE_HOVER_OPACITY);
     }
 
     /**
@@ -53,6 +52,40 @@ public class GraphicalMapNode extends DragIcon
      */
     public void changeToNormalOpacity()
     {
-        setOpacity(NODE__NORMAL_OPACITY);
+        icon.setOpacity(NODE__NORMAL_OPACITY);
+    }
+
+    /**
+     *
+     * @return Visual (JavaFX) node that represents this object
+     */
+    @Override
+    public Node getNodeToDisplay()
+    {
+        return icon;
+    }
+
+    /**
+     * Sends underlying icon to back
+     */
+    public void toBack()
+    {
+        icon.toBack();
+    }
+
+    /**
+     * Sends underlying icon to front
+     */
+    public void toFront()
+    {
+        icon.toFront();
+    }
+
+    /**
+     * Set the type of the underlying drag icon
+     * @param type (Doctor, bathroom, etc.)
+     */
+    public void setType (DragIconType type) {
+        icon.setType(type);
     }
 }
