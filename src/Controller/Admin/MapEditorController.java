@@ -2,18 +2,14 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
 
 import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.MapEditorModel;
-import com.sun.corba.se.impl.orbutil.graph.Graph;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.*;
@@ -21,9 +17,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
-import sun.java2d.loops.DrawGlyphList;
 
-public class RootLayout extends AnchorPane{
+public class MapEditorController extends AnchorPane{
 
 	@FXML SplitPane base_pane;
 	@FXML AnchorPane right_pane;
@@ -31,18 +26,18 @@ public class RootLayout extends AnchorPane{
 
 	private DragIcon mDragOverIcon = null;
 	
-	private EventHandler<DragEvent> mIconDragOverRoot = null;
-	private EventHandler<DragEvent> mIconDragDropped = null;
-	private EventHandler<DragEvent> mIconDragOverRightPane = null;
-
+	private EventHandler<DragEvent> onIconDragOverRoot = null;
+	private EventHandler<DragEvent> onIconDragDropped = null;
+	private EventHandler<DragEvent> onIconDragOverRightPane = null;
+	private EventHandler<DragEvent> onLineSyncNeeded = null;
 	private MapEditorModel model;
 
 	GraphicalNodeEdge drawingEdge;
 
-	public RootLayout() {
+	public MapEditorController() {
 		
 		FXMLLoader fxmlLoader = new FXMLLoader(
-				getClass().getResource("/Admin/MapBuilder/RootLayout.fxml")
+				getClass().getResource("/Admin/MapBuilder/MapEditor.fxml")
 				);
 		
 		fxmlLoader.setRoot(this); 
@@ -57,30 +52,27 @@ public class RootLayout extends AnchorPane{
 
 		model.addEdgeCompleteHandler(event->
 		{
+			GraphicalMapNode sourceNode = event.getNodeEdge().getSource();
+			GraphicalMapNode targetNode = event.getNodeEdge().getTarget();
+
+			model.addMapEdge(drawingEdge);
+
 			right_pane.setOnMouseMoved(null);
 
-			drawingEdge.setSource(event.getNodeEdge().getSource());
-			drawingEdge.setTarget(event.getNodeEdge().getTarget());
+			drawingEdge.setSource(sourceNode);
+			drawingEdge.setTarget(targetNode);
 
-			event.getNodeEdge().getSource().addEdge(drawingEdge); // add the current drawing edge to the list of this node's edges
-			event.getNodeEdge().getTarget().addEdge(drawingEdge); // add the current drawing edge to the list of this node's edges
+			sourceNode.addEdge(drawingEdge); // add the current drawing edge to the list of this node's edges
+			targetNode.addEdge(drawingEdge); // add the current drawing edge to the list of this node's edges
 
-			/*MouseControlUtil.makeDraggable(event.getNodeEdge().getSource(),
-					ev->{
+			makeMapNodeDraggable(sourceNode);
+			makeMapNodeDraggable(targetNode);
 
-					},
-					ev
-					 ->{;
-
-					});*/
-
-			MouseControlUtil.makeDraggable(event.getNodeEdge().getTarget());
-
-			drawingEdge.toBack();
+			drawingEdge.toBack(); //send drawing edge to back
 			drawingEdge = null;
 
-			event.getNodeEdge().getSource().toFront();
-			event.getNodeEdge().getTarget().toFront();
+			sourceNode.toFront();
+			sourceNode.toFront();
 		});
 
 	}
@@ -118,15 +110,30 @@ public class RootLayout extends AnchorPane{
 			model.addSideBarIcon(icn);
 		}
 
-		drawingEdge = new GraphicalNodeEdge();
-		model.addToRightPane(drawingEdge);
-
 		left_pane.getChildren().setAll(model.getSideBarIcons());
-		right_pane.getChildren().setAll(model.getRightPaneChildren());
 
 		buildDragHandlers();
 	}
-	
+
+	/**
+	 * Handler to be called when node is dragged... updates end point of any edges connected to it
+	 *
+	 * @param n node to keep in sync
+	 * @return event handler for mouse event that updates positions of lines when triggered
+	 */
+	private static void makeMapNodeDraggable (GraphicalMapNode n)
+	{
+		MouseControlUtil.makeDraggable(n, //could be used to track node and update line
+				event ->
+				{
+					for (GraphicalNodeEdge edge : n.getEdges())
+					{
+						edge.updatePosViaNode(n);
+					}
+				},
+				null);
+	}
+
 	private void addDragDetection(DragIcon dragIcon) {
 		
 		dragIcon.setOnDragDetected (new EventHandler <MouseEvent> () {
@@ -135,9 +142,9 @@ public class RootLayout extends AnchorPane{
 			public void handle(MouseEvent event) {
 
 				// set drag event handlers on their respective objects
-				base_pane.setOnDragOver(mIconDragOverRoot);
-				right_pane.setOnDragOver(mIconDragOverRightPane);
-				right_pane.setOnDragDropped(mIconDragDropped);
+				base_pane.setOnDragOver(onIconDragOverRoot);
+				right_pane.setOnDragOver(onIconDragOverRightPane);
+				right_pane.setOnDragDropped(onIconDragDropped);
 				
 				// get a reference to the clicked DragIcon object
 				DragIcon icn = (DragIcon) event.getSource();
@@ -163,7 +170,7 @@ public class RootLayout extends AnchorPane{
 	private void buildDragHandlers() {
 		
 		//drag over transition to move widget form left pane to right pane
-		mIconDragOverRoot = new EventHandler <DragEvent>() {
+		onIconDragOverRoot = new EventHandler <DragEvent>() {
 
 			@Override
 			public void handle(DragEvent event) {
@@ -183,7 +190,7 @@ public class RootLayout extends AnchorPane{
 			}
 		};
 		
-		mIconDragOverRightPane = new EventHandler <DragEvent> () {
+		onIconDragOverRightPane = new EventHandler <DragEvent> () {
 
 			@Override
 			public void handle(DragEvent event) {
@@ -201,7 +208,7 @@ public class RootLayout extends AnchorPane{
 			}
 		};
 				
-		mIconDragDropped = new EventHandler <DragEvent> () {
+		onIconDragDropped = new EventHandler <DragEvent> () {
 
 			@Override
 			public void handle(DragEvent event) {
@@ -223,73 +230,97 @@ public class RootLayout extends AnchorPane{
 			@Override
 			public void handle (DragEvent event) {
 				
-				right_pane.removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverRightPane);
-				right_pane.removeEventHandler(DragEvent.DRAG_DROPPED, mIconDragDropped);
-				base_pane.removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverRoot);
+				right_pane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane); //remove the event handlers created on drag start
+				right_pane.removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
+				base_pane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRoot);
 								
 				mDragOverIcon.setVisible(false);
 				
-				DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.AddNode);
+				DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.AddNode); //information from the drop
 				
 				if (container != null) {
 
 					if (container.getValue("scene_coords") != null) {
 
-						GraphicalMapNode droppedNode = new GraphicalMapNode();
-						MouseControlUtil.makeDraggable(droppedNode);
+						GraphicalMapNode droppedNode = new GraphicalMapNode(); // make a new graphical map node
+						MouseControlUtil.makeDraggable(droppedNode); //make it draggable
 						
-						droppedNode.setType(DragIconType.valueOf(container.getValue("type")));
-						right_pane.getChildren().add(droppedNode);
-						droppedNode.toFront();
+						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
+						right_pane.getChildren().add(droppedNode); //add to right panes children
+						model.addMapNode(droppedNode); //add node to model
 
-						Point2D cursorPoint = container.getValue("scene_coords");
+						droppedNode.toFront(); //send the node to the front
+
+						Point2D cursorPoint = container.getValue("scene_coords"); //cursor point
+
+						/* Build up event handlers for this droppedNode */
 
 						droppedNode.relocateToPoint(new Point2D(cursorPoint.getX() - 32,
 								cursorPoint.getY()-32)); //32 is half of 64, so half the height/width... @TODO
 
 						droppedNode.setOnMouseClicked(ev -> {
-							if(ev.getButton() == MouseButton.SECONDARY)
+							if(ev.getButton() == MouseButton.SECONDARY) //if right click
 							{
+								if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
+								{
+									if(right_pane.getChildren().contains(drawingEdge)) //and the right pane has the drawing edge as child
+									{
+										right_pane.getChildren().remove(drawingEdge); //remove from the right pane
+									}
+								}
+
 								drawingEdge = new GraphicalNodeEdge();
 								drawingEdge.setSource(droppedNode);
 
 								right_pane.getChildren().add(drawingEdge);
 								drawingEdge.toBack();
 
-								droppedNode.setOnMouseDragEntered(null);
+								droppedNode.setOnMouseDragEntered(null); //sets drag handlers to null so they can't be repositioned during line drawing
 								droppedNode.setOnMouseDragged(null);
 
-								setOnKeyPressed(keyEvent-> {
+								setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
 									if (drawingEdge!=null && keyEvent.getCode() == KeyCode.ESCAPE) {
-										drawingEdge.setVisible(false);
+										if(right_pane.getChildren().contains(drawingEdge)) //and the right pane has the drawing edge as child
+										{
+											right_pane.getChildren().remove(drawingEdge); //remove from the right pane
+										}
 										drawingEdge = null;
+
 										right_pane.setOnMouseMoved(null);
+
+										makeMapNodeDraggable(droppedNode);
 									}
 								});
 
-								right_pane.setOnMouseMoved(mouseEvent->{
+								right_pane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
 
-									Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
-									Point2D mouseCoords = drawingEdge.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
-									drawingEdge.setEnd(mouseCoords);
+									if(drawingEdge!=null)
+									{
+										Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
+										Point2D mouseCoords = drawingEdge.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
+										drawingEdge.setEnd(mouseCoords); //set the end point
+									}
 								});
 							}
-							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse buttons
+							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
 
 								if(ev.getClickCount() == 2){ // double click
 
-									System.out.println("Removing node and edges");
-
 									for (GraphicalNodeEdge edge: droppedNode.getEdges())
 									{
-										System.out.print("Removing Edge: ");
-										System.out.println(right_pane.getChildren().remove(edge.getEdgeLine()));
+										right_pane.getChildren().remove(edge); //remove edge from pane
+										model.removeMapEdge(edge); //remove edge from model
 									}
 
-									//System.out.print("Removing Node: ");
-									right_pane.getChildren().remove(droppedNode);
+									right_pane.getChildren().remove(droppedNode); //remove the node
 
-									if(drawingEdge!=null) drawingEdge.setVisible(false);
+									if(drawingEdge!=null)
+									{
+										drawingEdge.setVisible(false); //hide the drawing edge if drawing
+										drawingEdge = null; //no longer drawing
+									}
+
+									model.removeMapNode(droppedNode); //remove node from model
 								}
 							}
 

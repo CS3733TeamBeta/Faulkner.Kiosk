@@ -1,5 +1,7 @@
 package Domain.Map;
 
+import javafx.scene.Node;
+
 import java.util.LinkedList;
 
 /**
@@ -26,7 +28,18 @@ public class Floor {
         return floorNumber;
     }
 
+
     public void addEdge(NodeEdge e) {
         floorEdges.add(e);
+    }
+
+    public void removeNode(MapNode n)
+    {
+        floorNodes.remove(n);
+    }
+
+    public void removeEdge(NodeEdge edge)
+    {
+        floorEdges.remove(edge);
     }
 }
