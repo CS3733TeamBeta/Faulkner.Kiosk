@@ -9,8 +9,8 @@ public class NodeEdge
 {
     protected double cost;
 
-    protected MapNode nodeA;
-    protected MapNode nodeB;
+    MapNode nodeA;
+    MapNode nodeB;
 
     public NodeEdge() {}
 

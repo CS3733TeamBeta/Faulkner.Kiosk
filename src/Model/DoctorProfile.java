@@ -60,6 +60,10 @@ public class DoctorProfile
         return this.lastName;
     }
 
+    public String fullName() {
+        return this.lastName + ", " + this.firstName;
+    }
+
     public HashSet<String> getDepartments() {
         return this.departments;
     }
