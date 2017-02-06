@@ -3,6 +3,7 @@ package Model;
 import Model.DoctorProfile;
 import Exceptions.AddFoundException;
 import Exceptions.RemoveNotFoundException;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.util.HashSet;
@@ -16,7 +17,7 @@ public class RoomInfo
     HashSet<DoctorProfile> doctors = new HashSet<DoctorProfile>();
 
     public RoomInfo(String roomNum) {
-        this.roomNum.set(roomNum);
+        this.roomNum = new SimpleStringProperty(roomNum);;
         this.doctors.clear();
     }
 
