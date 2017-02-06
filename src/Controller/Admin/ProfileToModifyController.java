@@ -1,6 +1,7 @@
 package Controller.Admin;
 
 import Controller.Main;
+import Model.DoctorProfile;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,11 +10,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 
 import java.io.IOException;
 
-public class ProfileToModifyController
-{
+public class ProfileToModifyController {
+
+    private ObservableList<DoctorProfile> directory = FXCollections.observableArrayList();
+
     @FXML
     Button logout;
 
@@ -23,6 +32,7 @@ public class ProfileToModifyController
     @FXML
     TextField searchModDoc;
 
+    //Should be TableView?
     @FXML
     ScrollPane filteredProfiles;
 
@@ -34,6 +44,11 @@ public class ProfileToModifyController
     }
 
     public ProfileToModifyController(){
+
+    }
+
+
+    public void initialize() {
 
     }
 
