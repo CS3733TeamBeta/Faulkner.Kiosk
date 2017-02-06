@@ -11,16 +11,16 @@ import java.util.HashSet;
 
 public class MapNode
 {
-    int posX;
-    int posY;
-    int nodeID;
+    int posX; //x posiiton on the map
+    int posY; //y posiiton on the map
+    int nodeID; //the ID for the node
     UID nodeUID;
-    double g = 0;
-    double heuristic = Double.MAX_VALUE;
-    double f = Double.MAX_VALUE;
-    NodeEdge parent = null;
+    double g = 0;//the distance traveled from some start node to this node. should be set to 0 at the start of each search.
+    double heuristic = Double.MAX_VALUE;//the projected distance from this node to some goal. this value should be initialized to 0 and reset after each search.
+    double f = Double.MAX_VALUE;//the combined values from heuristic and g fields
+    NodeEdge parent = null;//the parent of the node in its calculated path
     Image node = null;
-    Floor myFloor;
+    Floor myFloor;//the floor info for this node
     public HashSet<NodeEdge> edges;
 
     public int getPosX() {
