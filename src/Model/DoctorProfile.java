@@ -22,40 +22,34 @@ public class DoctorProfile
     // Should I include roomNum, phoneNum, etc.
     private HashSet<StringProperty> departments = new HashSet<StringProperty>();
 
-    public DoctorProfile(String firstName, String lastName) {
+    public DoctorProfile(String firstName, String lastName, String room) {
         this.firstName = new SimpleStringProperty(firstName);
-        this.lastName = new SimpleStringProperty(lastName);;
+        this.lastName = new SimpleStringProperty(lastName);
+        this.room = new RoomInfo(room);
+        try {
+            this.room.addDoctor(this);
+        } catch (AddFoundException e) {
+            System.out.println("This doctor is already assigned to this room.");
+        }
         this.departments.clear();
     }
 
     // Would it be relevant to have methods that change the doctor's first and last name?
 
-    public void addDepartment(String department) throws AddFoundException {
-        StringProperty dept = new SimpleStringProperty(department);
-
-        if (this.departments.add(dept)) {
+    public void addDepartment(StringProperty department) throws AddFoundException {
+        if (this.departments.add(department)) {
             return;
         }
 
         throw new AddFoundException();
     }
 
-    public void removeDepartment(String department) throws RemoveNotFoundException {
-        StringProperty dept = new SimpleStringProperty(department);
-
-        if (this.departments.remove(dept)) {
+    public void removeDepartment(StringProperty department) throws RemoveNotFoundException {
+        if (this.departments.remove(department)) {
             return;
         }
 
         throw new RemoveNotFoundException();
-    }
-
-    public void assignRoom(String roomNum) {
-        try {
-            this.room.addDoctor(this);
-        } catch (AddFoundException e) {
-            System.out.println("This room is already assigned to this room.");
-        }
     }
 
     public String getFirstName() {
