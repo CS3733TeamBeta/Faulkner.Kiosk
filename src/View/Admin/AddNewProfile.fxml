@@ -80,19 +80,19 @@
                    GridPane.columnIndex="4" GridPane.rowIndex="4" GridPane.rowSpan="4"/>
         <!--I can't see where the image box is-->
         <TextField fx:id="firstName" prefHeight="25.0" prefWidth="249.0"
-                   promptText="First name" GridPane.columnSpan="5" GridPane.rowIndex="7"
+                   promptText="First name" GridPane.columnSpan="6" GridPane.rowIndex="7"
                    GridPane.columnIndex="10"/>
         <TextField fx:id="lastName" prefHeight="25.0" prefWidth="249.0"
                    promptText="Last name" GridPane.columnIndex="10" GridPane.rowIndex="9"
-                   GridPane.columnSpan="5"/>
+                   GridPane.columnSpan="6"/>
         <Label fx:id="newProfLabel" text="Add New Profile" textAlignment="CENTER"
                GridPane.columnIndex="5" GridPane.columnSpan="16" GridPane.rowIndex="3"
                maxHeight="1.7976931348623157E308"
                maxWidth="1.7976931348623157E308"/>
-        <Label fx:id="assignToLabel" text="Assign to:" GridPane.columnSpan="4" GridPane.rowIndex="14"
-               GridPane.columnIndex="4"/>
+        <Label fx:id="assignToLabel" text="Assign to:" GridPane.columnSpan="3" GridPane.rowIndex="11"
+               GridPane.columnIndex="10"/>
         <TextField fx:id="roomNum" GridPane.columnSpan="4" GridPane.rowIndex="11"
-                   GridPane.columnIndex="11" promptText="Room Number"/>
+                   GridPane.columnIndex="12" promptText="Room Number"/>
         <Button fx:id="add" mnemonicParsing="false" onAction="#addClicked" GridPane.columnSpan="3"
                 GridPane.columnIndex="6" text="Add" GridPane.rowIndex="22"/>
         <Button fx:id="remove" mnemonicParsing="false" onAction="#removeClicked" GridPane.columnSpan="3"
@@ -105,7 +105,7 @@
                   GridPane.columnSpan="6" GridPane.rowSpan="6"/>
         <Button fx:id="showDeptList" mnemonicParsing="false" onAction="#showDeptList"
                 text="Show Departments List" GridPane.columnIndex="3" GridPane.columnSpan="8"
-                GridPane.rowIndex="12"/>
+                GridPane.rowIndex="13"/>
     </children>
     <stylesheets>
         <URL value="@genstyle.css"/>
