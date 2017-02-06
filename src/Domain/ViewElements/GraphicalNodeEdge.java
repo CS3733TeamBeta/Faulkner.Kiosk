@@ -22,7 +22,7 @@ import java.util.UUID;
 /**
  * Created by benhylak on 2/3/17.
  */
-public class GraphicalNodeEdge extends MapNode implements DrawableMapEntity
+public class GraphicalNodeEdge extends NodeEdge implements DrawableMapEntity
 {
     Line edgeLine;
 

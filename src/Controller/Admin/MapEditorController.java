@@ -2,7 +2,9 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Iterator;
 
+import Domain.Map.NodeEdge;
 import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
@@ -126,9 +128,9 @@ public class MapEditorController extends AnchorPane{
 		MouseControlUtil.makeDraggable(n.getNodeToDisplay(), //could be used to track node and update line
 				event ->
 				{
-					for (GraphicalNodeEdge edge : n.getGraphicalEdges())
+					for (NodeEdge edge : n.getGraphicalEdges())
 					{
-						edge.updatePosViaNode(n);
+						((GraphicalNodeEdge)edge).updatePosViaNode(n);
 					}
 				},
 				null);
@@ -303,10 +305,13 @@ public class MapEditorController extends AnchorPane{
 
 								if(ev.getClickCount() == 2){ // double click
 
-									for (GraphicalNodeEdge edge: droppedNode.getGraphicalEdges())
-									{
+									for (Iterator<NodeEdge> i = droppedNode.getGraphicalEdges().iterator(); i.hasNext();) {
+										GraphicalNodeEdge edge = (GraphicalNodeEdge)i.next();
+
 										right_pane.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
 										model.removeMapEdge(edge); //remove edge from model
+
+										i.remove();
 									}
 
 									right_pane.getChildren().remove(droppedNode.getNodeToDisplay()); //remove the node
