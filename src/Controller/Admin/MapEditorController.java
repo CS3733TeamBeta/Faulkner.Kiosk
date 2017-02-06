@@ -68,7 +68,7 @@ public class MapEditorController extends AnchorPane{
 			makeMapNodeDraggable(sourceNode);
 			makeMapNodeDraggable(targetNode);
 
-			drawingEdge.toBack(); //send drawing edge to back
+			drawingEdge.getNodeToDisplay().toBack(); //send drawing edge to back
 			drawingEdge = null;
 
 			sourceNode.toFront();
@@ -123,10 +123,10 @@ public class MapEditorController extends AnchorPane{
 	 */
 	private static void makeMapNodeDraggable (GraphicalMapNode n)
 	{
-		MouseControlUtil.makeDraggable(n, //could be used to track node and update line
+		MouseControlUtil.makeDraggable(n.getNodeToDisplay(), //could be used to track node and update line
 				event ->
 				{
-					for (GraphicalNodeEdge edge : n.getEdges())
+					for (GraphicalNodeEdge edge : n.getGraphicalEdges())
 					{
 						edge.updatePosViaNode(n);
 					}
@@ -243,10 +243,10 @@ public class MapEditorController extends AnchorPane{
 					if (container.getValue("scene_coords") != null) {
 
 						GraphicalMapNode droppedNode = new GraphicalMapNode(); // make a new graphical map node
-						MouseControlUtil.makeDraggable(droppedNode); //make it draggable
+						MouseControlUtil.makeDraggable(droppedNode.getNodeToDisplay()); //make it draggable
 						
 						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
-						right_pane.getChildren().add(droppedNode); //add to right panes children
+						right_pane.getChildren().add(droppedNode.getNodeToDisplay()); //add to right panes children
 						model.addMapNode(droppedNode); //add node to model
 
 						droppedNode.toFront(); //send the node to the front
@@ -255,10 +255,10 @@ public class MapEditorController extends AnchorPane{
 
 						/* Build up event handlers for this droppedNode */
 
-						droppedNode.relocateToPoint(new Point2D(cursorPoint.getX() - 32,
+						((DragIcon)droppedNode.getNodeToDisplay()).relocateToPoint(new Point2D(cursorPoint.getX() - 32,
 								cursorPoint.getY()-32)); //32 is half of 64, so half the height/width... @TODO
 
-						droppedNode.setOnMouseClicked(ev -> {
+						droppedNode.getNodeToDisplay().setOnMouseClicked(ev -> {
 							if(ev.getButton() == MouseButton.SECONDARY) //if right click
 							{
 								if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
@@ -272,17 +272,17 @@ public class MapEditorController extends AnchorPane{
 								drawingEdge = new GraphicalNodeEdge();
 								drawingEdge.setSource(droppedNode);
 
-								right_pane.getChildren().add(drawingEdge);
+								right_pane.getChildren().add(drawingEdge.getNodeToDisplay());
 								drawingEdge.toBack();
 
-								droppedNode.setOnMouseDragEntered(null); //sets drag handlers to null so they can't be repositioned during line drawing
-								droppedNode.setOnMouseDragged(null);
+								droppedNode.getNodeToDisplay().setOnMouseDragEntered(null); //sets drag handlers to null so they can't be repositioned during line drawing
+								droppedNode.getNodeToDisplay().setOnMouseDragged(null);
 
 								setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
 									if (drawingEdge!=null && keyEvent.getCode() == KeyCode.ESCAPE) {
-										if(right_pane.getChildren().contains(drawingEdge)) //and the right pane has the drawing edge as child
+										if(right_pane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
 										{
-											right_pane.getChildren().remove(drawingEdge); //remove from the right pane
+											right_pane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
 										}
 										drawingEdge = null;
 
@@ -295,7 +295,7 @@ public class MapEditorController extends AnchorPane{
 								right_pane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
 
 									Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
-									Point2D mouseCoords = drawingEdge.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
+									Point2D mouseCoords = drawingEdge.getNodeToDisplay().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 									drawingEdge.setEnd(mouseCoords); //set the end point
 								});
 							}
@@ -303,17 +303,17 @@ public class MapEditorController extends AnchorPane{
 
 								if(ev.getClickCount() == 2){ // double click
 
-									for (GraphicalNodeEdge edge: droppedNode.getEdges())
+									for (GraphicalNodeEdge edge: droppedNode.getGraphicalEdges())
 									{
-										right_pane.getChildren().remove(edge); //remove edge from pane
+										right_pane.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
 										model.removeMapEdge(edge); //remove edge from model
 									}
 
-									right_pane.getChildren().remove(droppedNode); //remove the node
+									right_pane.getChildren().remove(droppedNode.getNodeToDisplay()); //remove the node
 
 									if(drawingEdge!=null)
 									{
-										drawingEdge.setVisible(false); //hide the drawing edge if drawing
+										drawingEdge.getNodeToDisplay().setVisible(false); //hide the drawing edge if drawing
 										drawingEdge = null; //no longer drawing
 									}
 
@@ -328,14 +328,14 @@ public class MapEditorController extends AnchorPane{
 							}
 						});
 
-						droppedNode.setOnMouseEntered(ev->
+						droppedNode.getNodeToDisplay().setOnMouseEntered(ev->
 						{
-							droppedNode.setOpacity(.65);
+							droppedNode.getNodeToDisplay().setOpacity(.65);
 						});
 
-						droppedNode.setOnMouseExited(ev->
+						droppedNode.getNodeToDisplay().setOnMouseExited(ev->
 						{
-							droppedNode.setOpacity(1);
+							droppedNode.getNodeToDisplay().setOpacity(1);
 						});
 					}
 				}

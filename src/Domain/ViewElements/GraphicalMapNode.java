@@ -9,10 +9,12 @@ import java.util.HashSet;
 /**
  * Created by benhylak on 1/30/17.
  */
-public class GraphicalMapNode extends DragIcon
+public class GraphicalMapNode extends MapNode implements DrawableMapEntity
 {
     MapNode mapNode = null;
     HashSet<GraphicalNodeEdge> edges;
+
+    DragIcon icon;
 
     final double NODE_HOVER_OPACITY = .65;
     final double NODE__NORMAL_OPACITY = 1;
@@ -21,6 +23,7 @@ public class GraphicalMapNode extends DragIcon
     {
         super();
         edges = new HashSet<GraphicalNodeEdge>();
+        icon = new DragIcon();
     }
 
     public GraphicalMapNode(MapNode n)
@@ -34,7 +37,7 @@ public class GraphicalMapNode extends DragIcon
        this.edges.add(edge);
     }
 
-    public HashSet<GraphicalNodeEdge> getEdges()
+    public HashSet<GraphicalNodeEdge> getGraphicalEdges()
     {
         return edges;
     }
@@ -45,7 +48,7 @@ public class GraphicalMapNode extends DragIcon
      */
     public void changeToHoverOpacity()
     {
-        setOpacity(NODE_HOVER_OPACITY);
+        icon.setOpacity(NODE_HOVER_OPACITY);
     }
 
     /**
@@ -53,6 +56,26 @@ public class GraphicalMapNode extends DragIcon
      */
     public void changeToNormalOpacity()
     {
-        setOpacity(NODE__NORMAL_OPACITY);
+        icon.setOpacity(NODE__NORMAL_OPACITY);
+    }
+
+    @Override
+    public Node getNodeToDisplay()
+    {
+        return icon;
+    }
+
+    public void toBack()
+    {
+        icon.toBack();
+    }
+
+    public void toFront()
+    {
+        icon.toFront();
+    }
+
+    public void setType (DragIconType type) {
+        icon.setType(type);
     }
 }

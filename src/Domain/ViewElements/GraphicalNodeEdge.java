@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 
@@ -21,9 +22,8 @@ import java.util.UUID;
 /**
  * Created by benhylak on 2/3/17.
  */
-public class GraphicalNodeEdge extends AnchorPane
+public class GraphicalNodeEdge extends MapNode implements DrawableMapEntity
 {
-    @FXML
     Line edgeLine;
 
     protected GraphicalMapNode source = null;
@@ -31,25 +31,7 @@ public class GraphicalNodeEdge extends AnchorPane
 
     public GraphicalNodeEdge()
     {
-        FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/Admin/MapBuilder/NodeLink.fxml")
-        );
-
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
-
-      //  edgeLine = new Line();
-       // this.getChildren().add(edgeLine);
-
-        //provide a universally unique identifier for this object
-        setId(UUID.randomUUID().toString());
+        edgeLine = new Line();
     }
 
     public GraphicalNodeEdge(GraphicalMapNode source, GraphicalMapNode target)
@@ -90,15 +72,17 @@ public class GraphicalNodeEdge extends AnchorPane
     {
         this.source = source;
 
-        Bounds boundsInScene = source.getBoundsInLocal();
+        DragIcon drawableNode = (DragIcon)source.getNodeToDisplay();
+
+        Bounds boundsInScene = drawableNode.getBoundsInLocal();
 
         Point2D startPoint = new Point2D(
                 boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
                 boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
         );
 
-        setStart(source.localToParent(startPoint));
-        setEnd(source.localToParent(startPoint));
+        setStart(drawableNode.localToParent(startPoint));
+        setEnd(drawableNode.localToParent(startPoint));
     }
 
     /**
@@ -109,14 +93,16 @@ public class GraphicalNodeEdge extends AnchorPane
     {
         this.target = target;
 
-        Bounds boundsInScene = target.getBoundsInLocal();
+        DragIcon dragIcon = (DragIcon) target.getNodeToDisplay();
+
+        Bounds boundsInScene = dragIcon.getBoundsInLocal();
 
         Point2D endPoint = new Point2D(
                 boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
                 boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
         );
 
-        setEnd(target.localToParent(endPoint));
+        setEnd(dragIcon.localToParent(endPoint));
     }
 
     /**
@@ -143,8 +129,10 @@ public class GraphicalNodeEdge extends AnchorPane
 
     public void updatePosViaNode(GraphicalMapNode node)
     {
+        Node drawableNode = node.getNodeToDisplay();
 
-        Point2D newPoint = new Point2D(node.getLayoutX() + node.getWidth() / 2, node.getLayoutY() + node.getHeight() / 2);
+        Point2D newPoint = new Point2D(drawableNode.getLayoutX() + drawableNode.getBoundsInLocal().getWidth() / 2,
+                drawableNode.getLayoutY() + drawableNode.getBoundsInLocal().getHeight() / 2);
 
         if (node == target) {
             setEnd(newPoint);
@@ -156,4 +144,14 @@ public class GraphicalNodeEdge extends AnchorPane
 
     }
 
+    @Override
+    public Node getNodeToDisplay()
+    {
+        return edgeLine;
+    }
+
+    public void toBack()
+    {
+        edgeLine.toBack();;
+    }
 }
