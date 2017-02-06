@@ -55,6 +55,34 @@ public class MapEditorModel
         currentFloor = f1;
     }
 
+    public Floor getCurrentFloor()
+    {
+        return currentFloor;
+    }
+
+    /**
+     * Adds a node to the current floor
+     *
+     * @param nodeToAdd The node to add to the floor
+     */
+    public void addNodeToCurrentFloor(GraphicalMapNode nodeToAdd)
+    {
+        getCurrentFloor().addNode(nodeToAdd);
+    }
+
+    /**
+     * Place holder for function to switch floors
+     * @param f
+     */
+    public void switchFloor(Floor f)
+    {
+
+    }
+
+    /**
+     * Adds a handler to handle the edge complete event raised when two nodes are connected
+     * @param e
+     */
     public void addEdgeCompleteHandler(EdgeCompleteEventHandler e)
     {
         edgeCompleteHandlers.add(e);
@@ -88,12 +116,12 @@ public class MapEditorModel
     }
 
     /**
-     * Remove map node to model
+     * Remove map node from floor under edit
      * @param n
      */
-    public void removeMapNode(GraphicalMapNode n)
+    public void removeMapNodeFromCurrentFloor(GraphicalMapNode n)
     {
-        mapNodes.remove(n);
+       getCurrentFloor().removeNode(n);
     }
 
     /**

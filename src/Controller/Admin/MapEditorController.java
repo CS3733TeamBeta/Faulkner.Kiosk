@@ -17,6 +17,9 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
 
@@ -52,6 +55,8 @@ public class MapEditorController extends AnchorPane{
 		    throw new RuntimeException(exception);
 		}
 
+		//Runs once the edge is drawn from one node to another
+		//connects the two, sends sources, positions them etc.
 		model.addEdgeCompleteHandler(event->
 		{
 			GraphicalMapNode sourceNode = event.getNodeEdge().getSource();
@@ -70,11 +75,25 @@ public class MapEditorController extends AnchorPane{
 			makeMapNodeDraggable(sourceNode);
 			makeMapNodeDraggable(targetNode);
 
+			Line l = drawingEdge.getEdgeLine();
+
+			drawingEdge.getEdgeLine().setOnMouseClicked(e ->
+			{
+				l.setFill(Color.RED);
+			});
+
 			drawingEdge.getNodeToDisplay().toBack(); //send drawing edge to back
 			drawingEdge = null;
 
 			sourceNode.toFront();
 			sourceNode.toFront();
+		});
+
+		model.addEdgeCompleteHandler(event->
+		{
+			GraphicalNodeEdge edge = event.getNodeEdge();
+
+
 		});
 
 	}
@@ -119,6 +138,7 @@ public class MapEditorController extends AnchorPane{
 
 	/**
 	 * Handler to be called when node is dragged... updates end point of any edges connected to it
+	 * Also makes sure the mapnode location gets updated on a drag
 	 *
 	 * @param n node to keep in sync
 	 * @return event handler for mouse event that updates positions of lines when triggered
@@ -245,7 +265,7 @@ public class MapEditorController extends AnchorPane{
 					if (container.getValue("scene_coords") != null) {
 
 						GraphicalMapNode droppedNode = new GraphicalMapNode(); // make a new graphical map node
-						MouseControlUtil.makeDraggable(droppedNode.getNodeToDisplay()); //make it draggable
+						makeMapNodeDraggable(droppedNode); //make it draggable
 						
 						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
 						right_pane.getChildren().add(droppedNode.getNodeToDisplay()); //add to right panes children
@@ -307,8 +327,8 @@ public class MapEditorController extends AnchorPane{
 
 									for (Iterator<NodeEdge> i = droppedNode.getGraphicalEdges().iterator(); i.hasNext();) {
 										GraphicalNodeEdge edge = (GraphicalNodeEdge)i.next();
-
 										right_pane.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
+
 										model.removeMapEdge(edge); //remove edge from model
 
 										i.remove();
@@ -322,7 +342,7 @@ public class MapEditorController extends AnchorPane{
 										drawingEdge = null; //no longer drawing
 									}
 
-									model.removeMapNode(droppedNode); //remove node from model
+									model.removeMapNodeFromCurrentFloor(droppedNode); //remove node from model
 								}
 							}
 
