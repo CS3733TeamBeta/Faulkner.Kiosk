@@ -4,7 +4,6 @@ package Controller.Admin;
 
 import Controller.Main;
 import Exceptions.AddFoundException;
-import Model.Directory;
 import Model.DoctorProfile;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,8 +23,6 @@ public class AddNewProfileController
 {
     ObservableList<String> addedDept = FXCollections.observableArrayList();
     ObservableList<String> deptList = FXCollections.observableArrayList();
-    public static Directory FaulknerHospital;
-
     @FXML
     Button logout, back, save;
 
@@ -64,7 +61,7 @@ public class AddNewProfileController
     }
 
     public AddNewProfileController(){
-        FaulknerHospital = new Directory();
+
     }
 
 
@@ -182,10 +179,6 @@ public class AddNewProfileController
             }
         }
 
-        try {
-            FaulknerHospital.addToDirectory(newProfile);
-        } catch (AddFoundException e) {
-            System.out.println("This doctor already exists in our hospital directory.");
-        }
+        Main.FaulknerHospitalDirectory.add(newProfile);
     }
 }
