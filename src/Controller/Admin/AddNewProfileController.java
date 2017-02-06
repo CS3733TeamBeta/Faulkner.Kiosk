@@ -61,7 +61,7 @@ public class AddNewProfileController
     }
 
     public AddNewProfileController(){
-
+        deptList = Main.departments;
     }
 
 
@@ -169,13 +169,12 @@ public class AddNewProfileController
     }
 
     private void processInformation() {
-        DoctorProfile newProfile = new DoctorProfile(firstName.getText(), lastName.getText());
-        newProfile.assignRoom(roomNum.getText());
+        DoctorProfile newProfile = new DoctorProfile(firstName.getText(), lastName.getText(), roomNum.getText());
         for (String dept: addedDept) {
             try {
                 newProfile.addDepartment(dept);
             } catch (AddFoundException e) {
-                System.out.println("This doctor is already assigned to this room.");
+                System.out.println("This doctor is already assigned to this department(s).");
             }
         }
 
