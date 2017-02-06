@@ -5,6 +5,7 @@ package Controller.Admin;
 import Controller.Main;
 import Exceptions.AddFoundException;
 import Model.DoctorProfile;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,7 +24,6 @@ public class AddNewProfileController
 {
     ObservableList<String> addedDept = FXCollections.observableArrayList();
     ObservableList<String> deptList = FXCollections.observableArrayList();
-
     @FXML
     Button logout, back, save;
 
@@ -62,7 +62,7 @@ public class AddNewProfileController
     }
 
     public AddNewProfileController(){
-
+        deptList = Main.departments;
     }
 
 
@@ -104,6 +104,8 @@ public class AddNewProfileController
 
     @FXML
     private void saveHit() throws IOException{
+        processInformation();
+
         FXMLLoader loader;
         Parent root;
 
@@ -165,5 +167,18 @@ public class AddNewProfileController
 
     private Boolean isProcessable() {
         return true;
+    }
+
+    private void processInformation() {
+        DoctorProfile newProfile = new DoctorProfile(firstName.getText(), lastName.getText(), roomNum.getText());
+        for (String dept: addedDept) {
+            try {
+                newProfile.addDepartment(new SimpleStringProperty(dept));
+            } catch (AddFoundException e) {
+                System.out.println("This doctor is already assigned to this department(s).");
+            }
+        }
+
+        Main.FaulknerHospitalDirectory.add(newProfile);
     }
 }

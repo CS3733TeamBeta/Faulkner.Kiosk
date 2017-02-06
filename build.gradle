@@ -11,7 +11,6 @@ sourceSets {
         java {
             srcDirs = ["src"]
             exclude 'test/**'
-
         }
         resources {
             srcDirs "src/View"
