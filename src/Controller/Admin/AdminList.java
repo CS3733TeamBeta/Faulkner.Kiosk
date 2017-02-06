@@ -15,12 +15,12 @@ public class AdminList
         listOfAdmins.clear();
     }
 
-    public int addAdmin(String username, String password){
+    public boolean addAdmin(String username, String password){
         System.out.println("Adding admin with the following credentials: " + username + " " + password);
         AdminProfile newProfile = new AdminProfile(username, password);
         System.out.println("Adding admin with the following credentials: " + newProfile.username + " " + newProfile.password);
         listOfAdmins.put(username, newProfile);
-        return 0;
+        return true;
     }
 
     public boolean getDevEnabled()
@@ -33,7 +33,7 @@ public class AdminList
         this.devEnabled = devEnabled;
     }
 
-    public int changeUsername(String oldUsername, String newUsername){
+    public boolean changeUsername(String oldUsername, String newUsername){
         if (listOfAdmins.containsKey(oldUsername)){
             //get the info associated with the old username
             AdminProfile oldProfileInfo = listOfAdmins.get(oldUsername);
@@ -45,12 +45,12 @@ public class AdminList
         }
         else{
             System.out.println("ERROR. TRYING TO CHANGE ADMIN USERNAME FOR PROFILE THAT DOES NOT EXIST");
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
-    public int changePassword(String username, String oldPassword, String newPassword){
+    public boolean changePassword(String username, String oldPassword, String newPassword){
         if (listOfAdmins.containsKey(username)){
             //get the info associated with the old username
             AdminProfile profileInfo = listOfAdmins.get(username);
@@ -61,14 +61,14 @@ public class AdminList
             }
             else{
                 System.out.println("ERROR. ADMIN TRIED TO CHANGE PASSWORD WITH INCORRECT VALIDATION");
-                return 1;
+                return true;
             }
         }
         else{
             System.out.println("ERROR. TRYING TO CHANGE ADMIN PASSWORD FOR PROFILE THAT DOES NOT EXIST");
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
     public Boolean checkValidity(String username, String password){
