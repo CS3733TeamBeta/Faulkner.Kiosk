@@ -26,6 +26,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         thisStage = primaryStage;
 
+        //TODO: Switch this to new system
         Parent addNewProfileRoot = FXMLLoader.load(getClass().getResource("../Admin/AddNewProfile.fxml"));
         Parent adminLoginRoot = FXMLLoader.load(getClass().getResource("../Admin/AdminLoginView.fxml"));
         Parent adminWelcomeRoot = FXMLLoader.load(getClass().getResource("../Admin/AdminWelcomeView.fxml"));
