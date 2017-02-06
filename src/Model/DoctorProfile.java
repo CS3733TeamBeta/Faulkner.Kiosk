@@ -1,8 +1,12 @@
 package Model;
 
 import Model.RoomInfo;
+import Model.RoomList;
 import Exceptions.AddFoundException;
 import Exceptions.RemoveNotFoundException;
+import Exceptions.RoomNotFoundException;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 import java.util.HashSet;
 
@@ -12,22 +16,24 @@ import java.util.HashSet;
 
 public class DoctorProfile
 {
-    private String firstName;
-    private String lastName;
+    private StringProperty firstName;
+    private StringProperty lastName;
     private RoomInfo room;
     // Should I include roomNum, phoneNum, etc.
-    private HashSet<String> departments = new HashSet<String>();
+    private HashSet<StringProperty> departments = new HashSet<StringProperty>();
 
     public DoctorProfile(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstName = new SimpleStringProperty(firstName);
+        this.lastName = new SimpleStringProperty(lastName);;
         this.departments.clear();
     }
 
     // Would it be relevant to have methods that change the doctor's first and last name?
 
     public void addDepartment(String department) throws AddFoundException {
-        if (this.departments.add(department)) {
+        StringProperty dept = new SimpleStringProperty(department);
+
+        if (this.departments.add(dept)) {
             return;
         }
 
@@ -35,7 +41,9 @@ public class DoctorProfile
     }
 
     public void removeDepartment(String department) throws RemoveNotFoundException {
-        if (this.departments.remove(department)) {
+        StringProperty dept = new SimpleStringProperty(department);
+
+        if (this.departments.remove(dept)) {
             return;
         }
 
@@ -43,8 +51,6 @@ public class DoctorProfile
     }
 
     public void assignRoom(String roomNum) {
-        this.room = new RoomInfo(roomNum);
-
         try {
             this.room.addDoctor(this);
         } catch (AddFoundException e) {
@@ -53,18 +59,14 @@ public class DoctorProfile
     }
 
     public String getFirstName() {
-        return this.firstName;
+        return this.firstName.get();
     }
 
     public String getLastName() {
-        return this.lastName;
+        return this.lastName.get();
     }
 
-    public String fullName() {
-        return this.lastName + ", " + this.firstName;
-    }
-
-    public HashSet<String> getDepartments() {
+    public HashSet<StringProperty> getDepartments() {
         return this.departments;
     }
 
