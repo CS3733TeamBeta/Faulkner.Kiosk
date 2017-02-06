@@ -132,6 +132,11 @@ public class MapEditorController extends AnchorPane{
 					{
 						((GraphicalNodeEdge)edge).updatePosViaNode(n);
 					}
+
+					n.setPosX(event.getSceneX());
+					n.setPosY(event.getSceneY());
+
+					System.out.println("Node " + n.getIconType().name() + " moved to (X: "+ event.getSceneX() + ", Y: " + event.getSceneY() + ")");
 				},
 				null);
 	}
@@ -245,7 +250,7 @@ public class MapEditorController extends AnchorPane{
 					if (container.getValue("scene_coords") != null) {
 
 						GraphicalMapNode droppedNode = new GraphicalMapNode(); // make a new graphical map node
-						MouseControlUtil.makeDraggable(droppedNode.getNodeToDisplay()); //make it draggable
+						makeMapNodeDraggable(droppedNode); //make it draggable
 						
 						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
 						right_pane.getChildren().add(droppedNode.getNodeToDisplay()); //add to right panes children
