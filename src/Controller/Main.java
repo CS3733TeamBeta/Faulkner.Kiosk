@@ -5,6 +5,7 @@ package Controller;
 import Controller.Admin.AdminList;
 import Controller.Admin.AdminLoginController;
 import Controller.Admin.ModifyLocations;
+import Model.DoctorProfile;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +17,9 @@ import javafx.collections.ObservableList;
 public class Main extends Application {
 
     public static final ObservableList<String> departments =
+            FXCollections.observableArrayList();
+
+    public static final ObservableList<DoctorProfile> FaulknerHospitalDirectory =
             FXCollections.observableArrayList();
 
     @Override
