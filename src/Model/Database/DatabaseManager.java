@@ -27,6 +27,22 @@ public class DatabaseManager {
 
     public DatabaseManager(){
 
+        String driver = "org.apache.derby.jdbc.EmbeddedDriver";
+
+        try
+        {
+            Class.forName(driver).newInstance();
+        } catch (InstantiationException e)
+        {
+            e.printStackTrace();
+        } catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
         Properties props = new Properties(); // connection properties
         // providing a user name and password is optional in the embedded
         // and derbyclient frameworks
