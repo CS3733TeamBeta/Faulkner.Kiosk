@@ -47,11 +47,20 @@ public class Main extends Application {
         try {
             launch(args);
             DatabaseManager test = new DatabaseManager();
-            test.testDatabase();
+
+
+//            test.testDatabase();
+//            test.addRow("services", "Admitting/Registration", 1);
+//            test.deleteRow("departments", "floor", 4);
+//            test.addRow("services", "ATM", 3);
+//            test.addRow("services", "Atrium Cafe", 1);
         }
         catch(SQLException e) {
             System.out.println("Violence is never the answer.");
             System.out.println(e.getMessage());
+        }
+        catch (NullPointerException e){
+            System.out.println("We know what we are, but know not what we may be.");
         }
     }
 }
