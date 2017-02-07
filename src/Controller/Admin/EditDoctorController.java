@@ -33,17 +33,17 @@ public class EditDoctorController
 
     @FXML
     private void logoutHit(){
-        Main.thisStage.setScene(Main.adminLogin);
+        //Main.thisStage.setScene(Main.adminLogin);
     }
 
     @FXML
     private void backHit(){
-        Main.thisStage.setScene(Main.changingDirectoryView);
+        //Main.thisStage.setScene(Main.changingDirectoryView);
     }
 
     @FXML
     private void saveHit(){
-        Main.thisStage.setScene(Main.changingDirectoryView);
+        //Main.thisStage.setScene(Main.changingDirectoryView);
     }
 
     @FXML

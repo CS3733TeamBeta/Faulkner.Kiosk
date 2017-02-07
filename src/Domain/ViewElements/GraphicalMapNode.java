@@ -13,19 +13,18 @@ import java.util.HashSet;
  */
 public class GraphicalMapNode extends MapNode implements DrawableMapEntity
 {
-    DragIcon icon;
+    protected DragIcon icon;
 
     final double NODE_HOVER_OPACITY = .65;
     final double NODE__NORMAL_OPACITY = 1;
 
-    HashMap<Node, GraphicalMapNode> fxNodetoEdgeMap;
-
     public GraphicalMapNode()
     {
         super();
-        //edges = new HashSet<GraphicalNodeEdge>();
 
         icon = new DragIcon();
+
+      //  fxNodetoGraphicalMap = new HashMap<Node, GraphicalMapNode>();
     }
 
     public void addEdge(GraphicalNodeEdge edge)
@@ -87,5 +86,15 @@ public class GraphicalMapNode extends MapNode implements DrawableMapEntity
      */
     public void setType (DragIconType type) {
         icon.setType(type);
+    }
+
+    /**
+     * Get the icon type of the underlying DragIcon
+     *
+     * @return Drag Icon type
+     */
+    public DragIconType getIconType()
+    {
+        return icon.getType();
     }
 }

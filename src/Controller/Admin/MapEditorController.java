@@ -152,6 +152,11 @@ public class MapEditorController extends AnchorPane{
 					{
 						((GraphicalNodeEdge)edge).updatePosViaNode(n);
 					}
+
+					n.setPosX(event.getSceneX());
+					n.setPosY(event.getSceneY());
+
+					System.out.println("Node " + n.getIconType().name() + " moved to (X: "+ event.getSceneX() + ", Y: " + event.getSceneY() + ")");
 				},
 				null);
 	}
@@ -317,7 +322,7 @@ public class MapEditorController extends AnchorPane{
 								right_pane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
 
 									Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
-									Point2D mouseCoords = drawingEdge.getNodeToDisplay().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
+									Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 									drawingEdge.setEnd(mouseCoords); //set the end point
 								});
 							}

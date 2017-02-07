@@ -1,8 +1,12 @@
 package Model;
 
 import Model.RoomInfo;
+import Model.RoomList;
 import Exceptions.AddFoundException;
 import Exceptions.RemoveNotFoundException;
+import Exceptions.RoomNotFoundException;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 import java.util.HashSet;
 
@@ -12,21 +16,27 @@ import java.util.HashSet;
 
 public class DoctorProfile
 {
-    private String firstName;
-    private String lastName;
+    private StringProperty firstName;
+    private StringProperty lastName;
     private RoomInfo room;
     // Should I include roomNum, phoneNum, etc.
-    private HashSet<String> departments = new HashSet<String>();
+    private HashSet<StringProperty> departments = new HashSet<StringProperty>();
 
-    public DoctorProfile(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public DoctorProfile(String firstName, String lastName, String room) {
+        this.firstName = new SimpleStringProperty(firstName);
+        this.lastName = new SimpleStringProperty(lastName);
+        this.room = new RoomInfo(room);
+        try {
+            this.room.addDoctor(this);
+        } catch (AddFoundException e) {
+            System.out.println("This doctor is already assigned to this room.");
+        }
         this.departments.clear();
     }
 
     // Would it be relevant to have methods that change the doctor's first and last name?
 
-    public void addDepartment(String department) throws AddFoundException {
+    public void addDepartment(StringProperty department) throws AddFoundException {
         if (this.departments.add(department)) {
             return;
         }
@@ -34,7 +44,7 @@ public class DoctorProfile
         throw new AddFoundException();
     }
 
-    public void removeDepartment(String department) throws RemoveNotFoundException {
+    public void removeDepartment(StringProperty department) throws RemoveNotFoundException {
         if (this.departments.remove(department)) {
             return;
         }
@@ -42,25 +52,15 @@ public class DoctorProfile
         throw new RemoveNotFoundException();
     }
 
-    public void assignRoom(String roomNum) {
-        this.room = new RoomInfo(roomNum);
-
-        try {
-            this.room.addDoctor(this);
-        } catch (AddFoundException e) {
-            System.out.println("This room is already assigned to this room.");
-        }
-    }
-
     public String getFirstName() {
-        return this.firstName;
+        return this.firstName.get();
     }
 
     public String getLastName() {
-        return this.lastName;
+        return this.lastName.get();
     }
 
-    public HashSet<String> getDepartments() {
+    public HashSet<StringProperty> getDepartments() {
         return this.departments;
     }
 

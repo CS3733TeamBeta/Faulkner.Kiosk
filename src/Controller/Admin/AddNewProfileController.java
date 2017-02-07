@@ -5,20 +5,25 @@ package Controller.Admin;
 import Controller.Main;
 import Exceptions.AddFoundException;
 import Model.DoctorProfile;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class AddNewProfileController
 {
     ObservableList<String> addedDept = FXCollections.observableArrayList();
     ObservableList<String> deptList = FXCollections.observableArrayList();
-
     @FXML
     Button logout, back, save;
 
@@ -49,45 +54,71 @@ public class AddNewProfileController
     @FXML
     ImageView profilePic;
 
+    Stage primaryStage;
+
+    public void setStage(Stage s)
+    {
+        primaryStage = s;
+    }
+
+    public AddNewProfileController(){
+        deptList = Main.departments;
+    }
+
 
     @FXML
-    private void logoutHit(){
-        Main.thisStage.setScene(Main.adminLogin);
+    private void logoutHit()throws IOException{
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../../Admin/AdminLoginView.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        AdminLoginController controller = loader.getController();
+        controller.setStage(primaryStage);
     }
 
     @FXML
-    private void backHit(){
-        Main.thisStage.setScene(Main.changingDirectoryView);
+    private void backHit() throws IOException{
+
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../../Admin/ChangingDirectoryView.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        ChangingDirectoryController controller = loader.getController();
+        controller.setStage(primaryStage);
+
     }
 
     @FXML
-    private void saveHit(){
-        if (isProcessable()) {
-            DoctorProfile newDoctor = new DoctorProfile(firstName.getText(), lastName.getText());
-            System.out.println("You have added a new profile of name: " + newDoctor.getFirstName() + " "
-                    + newDoctor.getLastName());
-            newDoctor.assignRoom(roomNum.getText());
-            System.out.println("You have assigned him/her to this room:" + newDoctor.getRoomNum());
+    private void saveHit() throws IOException{
+        processInformation();
 
-            for (String dept: addedDept) {
+        FXMLLoader loader;
+        Parent root;
 
-                try {
-                    newDoctor.addDepartment(dept);
-                } catch (AddFoundException e) {
-                    System.out.println("This doctor is assigned to a department(s) multiple times.");
-                    break;
-                }
-            }
+        loader = new FXMLLoader(getClass().getResource("../../Admin/ChangingDirectoryView.fxml"));
 
-            System.out.println("The new doctor is assigned to the following departments: " + newDoctor.getDepartments());
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
 
-            System.out.println(newDoctor);
+        primaryStage.setScene(scene);
 
-        } else {
-            return; // Exception
-        }
-
-        Main.thisStage.setScene(Main.changingDirectoryView);
+        ChangingDirectoryController controller = loader.getController();
+        controller.setStage(primaryStage);
     }
 
     @FXML
@@ -136,5 +167,18 @@ public class AddNewProfileController
 
     private Boolean isProcessable() {
         return true;
+    }
+
+    private void processInformation() {
+        DoctorProfile newProfile = new DoctorProfile(firstName.getText(), lastName.getText(), roomNum.getText());
+        for (String dept: addedDept) {
+            try {
+                newProfile.addDepartment(new SimpleStringProperty(dept));
+            } catch (AddFoundException e) {
+                System.out.println("This doctor is already assigned to this department(s).");
+            }
+        }
+
+        Main.FaulknerHospitalDirectory.add(newProfile);
     }
 }

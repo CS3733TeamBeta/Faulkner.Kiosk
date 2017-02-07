@@ -9,7 +9,9 @@ sourceCompatibility = 1.8
 sourceSets {
     main {
         java {
-            srcDirs = ["src"];
+            srcDirs = ["src"]
+            exclude 'test/**'
+
         }
         resources {
             srcDirs "src/View"
@@ -19,7 +21,7 @@ sourceSets {
 
     test {
         java {
-            srcDirs = ["src/test/java"];
+            srcDirs = ["src/test"]
         }
     }
 }
@@ -32,6 +34,7 @@ task compile {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
