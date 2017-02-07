@@ -109,9 +109,10 @@ public class PathFindingTest extends TestCase{
         floor2.addNode(nodeY);
         floor2.addNode(nodeX);
 
-        myBuilding.addFloor(floor1);
-        myBuilding.addFloor(floor2);
-
+        try {
+            myBuilding.addFloor(floor1);
+            myBuilding.addFloor(floor2);
+        } catch(Exception e) {}
         myHospital.addBuilding(myBuilding);
     }
 
