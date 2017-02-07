@@ -88,14 +88,6 @@ public class MapEditorController extends AnchorPane{
 			sourceNode.toFront();
 			sourceNode.toFront();
 		});
-
-		model.addEdgeCompleteHandler(event->
-		{
-			GraphicalNodeEdge edge = event.getNodeEdge();
-
-
-		});
-
 	}
 
 	public void onEdgeComplete()
