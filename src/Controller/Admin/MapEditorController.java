@@ -306,9 +306,12 @@ public class MapEditorController extends AnchorPane{
 
 								right_pane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
 
-									Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
-									Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
-									drawingEdge.setEnd(mouseCoords); //set the end point
+									if(drawingEdge!=null)
+									{
+										Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
+										Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
+										drawingEdge.setEnd(mouseCoords); //set the end point
+									}
 								});
 							}
 							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
