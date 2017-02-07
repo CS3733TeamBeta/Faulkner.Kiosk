@@ -1,6 +1,9 @@
-package Domain.Navigation;
+package test.java;
 
 import Domain.Map.*;
+import Domain.Navigation.Guidance;
+import Domain.Navigation.Path;
+import Domain.Navigation.*;
 import Exceptions.PathFindingNoPathException;
 import junit.framework.TestCase;
 
