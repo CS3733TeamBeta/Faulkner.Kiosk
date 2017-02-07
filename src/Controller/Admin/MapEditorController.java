@@ -75,13 +75,6 @@ public class MapEditorController extends AnchorPane{
 			makeMapNodeDraggable(sourceNode);
 			makeMapNodeDraggable(targetNode);
 
-			Line l = drawingEdge.getEdgeLine();
-
-			drawingEdge.getEdgeLine().setOnMouseClicked(e ->
-			{
-				l.setFill(Color.RED);
-			});
-
 			drawingEdge.getNodeToDisplay().toBack(); //send drawing edge to back
 			drawingEdge = null;
 
