@@ -26,13 +26,13 @@ public class AdminProfile
         return this.password;
     }
 
-    public int changeUsername(String newUsername){
+    public boolean changeUsername(String newUsername){
         this.username = newUsername;
-        return 0;
+        return true;
     }
 
-    public int changePassword(String newPassword){
+    public boolean changePassword(String newPassword){
         this.password = newPassword;
-        return 0;
+        return true;
     }
 }

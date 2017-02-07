@@ -3,10 +3,13 @@ package Domain.Map;
 /**
  * Elevators allow for navigation inbetween floors.
  */
-public class Elevator extends Domain.Map.Destination
+
+public class Elevator extends Destination
 {
+    /*
     Elevator elevatorAbove;
     Elevator elevatorBelow;
+    */
 
     /**
      * Sets the elevator that is on floor directly above (should only be set once)
@@ -15,6 +18,8 @@ public class Elevator extends Domain.Map.Destination
      *
      * @TODO make sure that this hasn't been set yet, throw exception
      */
+
+    /*
     public void setElevatorAbove(Elevator above)
     {
         LinkEdge edgeToElevator = new LinkEdge(this, above);
@@ -22,6 +27,7 @@ public class Elevator extends Domain.Map.Destination
 
         edges.add(edgeToElevator);
     }
+    */
 
     /**
      * Sets the elevator that is on floor directly below (should only be set once)
@@ -30,10 +36,8 @@ public class Elevator extends Domain.Map.Destination
      *
      * @TODO make sure that this hasn't been set yet, throw exception
      */
-    public void setElevatorBelow(Elevator below)
-    {
-        elevatorBelow = below;
-    }
+
+    //public void setElevatorBelow(Elevator below){ elevatorBelow = below;}
 
     /*
     public Node goToFloor(Floor f)

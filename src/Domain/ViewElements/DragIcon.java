@@ -23,7 +23,6 @@ public class DragIcon extends AnchorPane{
 	@FXML AnchorPane root_pane;
 
 	private DragIconType mType = null;
-	private GraphicalNodeEdge edgeLine;
 
 	public DragIcon() {
 
@@ -40,10 +39,6 @@ public class DragIcon extends AnchorPane{
 		} catch (IOException exception) {
 		    throw new RuntimeException(exception);
 		}
-
-		edgeLine = new GraphicalNodeEdge();
-
-		this.getChildren().add(edgeLine);
 
 		/*this.setOnMouseClicked(event->{
 
@@ -67,8 +62,6 @@ public class DragIcon extends AnchorPane{
 				});
 			}
 		});*/
-
-		edgeLine.setVisible(false);
 	}
 	
 	@FXML
@@ -76,6 +69,10 @@ public class DragIcon extends AnchorPane{
 
 	}
 
+	/**
+	 * Relocates the drag icon to a specific point
+	 * @param p point to relocate to
+	 */
 	public void relocateToPoint (Point2D p) {
 
 		//relocates the object to a point that has been converted to
@@ -87,9 +84,17 @@ public class DragIcon extends AnchorPane{
 				(int) (localCoords.getY() - (getBoundsInLocal().getHeight() / 2))
 			);
 	}
-	
+
+	/**
+	 *
+	 * @return the type of this drag icon
+	 */
 	public DragIconType getType () { return mType; }
-	
+
+	/**
+	 * Sets the type of this drag icon, changes picture accordingly
+	 * @param type of drag icon
+	 */
 	public void setType (DragIconType type) {
 		
 		mType = type;
@@ -126,5 +131,20 @@ public class DragIcon extends AnchorPane{
 			default:
 				break;
 		}
+	}
+
+	/**
+	 *
+	 * @return center point of this drag icon
+	 */
+	public Point2D getIconCenterPoint(){
+		Bounds boundsInScene = this.getBoundsInLocal();
+
+		Point2D centerPoint = new Point2D(
+				boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
+				boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
+		);
+
+		return centerPoint;
 	}
 }

@@ -11,24 +11,47 @@ import java.util.HashSet;
 
 public class MapNode
 {
-    int posX;
-    int posY;
+    double posX;
+    double posY;
+
     int nodeID;
     UID nodeUID;
+
     double g = 0;
     double heuristic = Double.MAX_VALUE;
     double f = Double.MAX_VALUE;
+
     NodeEdge parent = null;
     Image node = null;
     Floor myFloor;
     public HashSet<NodeEdge> edges;
 
-    public int getPosX() {
+    public void setPosX(double posX)
+    {
+        this.posX = posX;
+    }
+
+    public void setPosY(double posY)
+    {
+        this.posY = posY;
+    }
+
+    /**
+     *
+     * @return X Position in Scene Coordinates
+     */
+    public double getPosX() {
         return posX;
     }
-    public int getPosY() {
+
+    /**
+     *
+     * @return Y Position in Scene Coordinates
+     */
+    public double getPosY() {
         return posY;
     }
+
     public double getG() {
         return g;
     }
@@ -38,14 +61,22 @@ public class MapNode
     public double getF() {
         return f;
     }
-    public NodeEdge getParent() {
-        return parent;
-    }
-    public HashSet<NodeEdge> getEdges() {return edges;}
     public void setG(double g) {
         this.g = g;
     }
     public void setFloor(Floor f) {this.myFloor = f;}
+    public void setHeuristic(double heuristic) {
+        this.heuristic = heuristic;
+    }
+    public void setF(double f) {
+        this.f = f;
+    }
+
+    public NodeEdge getParent() {
+        return parent;
+    }
+    public HashSet<NodeEdge> getEdges() {return edges;}
+
 
     public boolean hasEdgeTo(MapNode n) {
         for (NodeEdge e: edges) {
@@ -54,14 +85,6 @@ public class MapNode
             }
         }
         return false;
-    }
-
-    public void setHeuristic(double heuristic) {
-        this.heuristic = heuristic;
-    }
-
-    public void setF(double f) {
-        this.f = f;
     }
 
     public void setParent(NodeEdge parent) {
