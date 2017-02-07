@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="Domain.Map.Doctor" table="INFO">
+
+        <id name="id" type="int" column="docID">
+        </id>
+        <property name="name" column="name" type="string"/>
+        <property name="description" column="description" type="string"/>
+        <property name="hours" column="hours" type="string"/>
+        <property name="department" column="department" type="string"/>
+        <property name="phoneNumber" column="phoneNumber" type="string"/>
+        <many-to-one name="myOffice" column="office" class="Domain.Map.Office"/>
+
+    </class>
+</hibernate-mapping>

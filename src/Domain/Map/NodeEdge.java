@@ -1,14 +1,16 @@
 package Domain.Map;
 
+import java.util.Map;
+
 /**
  * An edge that connects two nodes and has a cost (edge length)
  */
 public class NodeEdge
 {
-    protected double cost = 0;
+    protected double cost;
 
-    protected MapNode nodeA;
-    protected MapNode nodeB;
+    MapNode nodeA;
+    MapNode nodeB;
 
     public NodeEdge() {}
 

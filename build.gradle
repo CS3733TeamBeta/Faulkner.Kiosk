@@ -10,6 +10,9 @@ sourceSets {
     main {
         java {
             srcDirs = ["src"]
+            exclude 'test/**'
+
+
         }
         resources {
             srcDirs "src/View"
@@ -19,7 +22,7 @@ sourceSets {
 
     test {
         java {
-            srcDirs = ["src/test/java"]
+            srcDirs = ["src/test"]
         }
     }
 }
@@ -32,6 +35,7 @@ task compile {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {

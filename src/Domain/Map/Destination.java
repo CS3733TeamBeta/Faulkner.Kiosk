@@ -15,7 +15,4 @@ public class Destination extends MapNode {
     public Destination() {
         myInfo = new Info("1", "2", "3");
     }
-
-
-
 }

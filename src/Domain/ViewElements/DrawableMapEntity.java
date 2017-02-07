@@ -3,9 +3,10 @@ package Domain.ViewElements;
 import javafx.scene.Node;
 
 /**
- * Created by benhylak on 1/30/17.
+ * Created by benhylak on 2/6/17.
  */
 public interface DrawableMapEntity
 {
-    public Node getDrawableNode();
+    //Returns node for displaying on pane
+    Node getNodeToDisplay();
 }

@@ -38,74 +38,85 @@ public class Path implements Iterable {
         boolean flagDone = false;
 
         //Initialize sets and globals
+        //openset is the list of nodes to be visited
         LinkedList<MapNode> openSet = new LinkedList<MapNode>();
+        //closedset is the list of nodes already visited
         LinkedList<MapNode> closedSet = new LinkedList<MapNode>();
+        //currentnode is the node we are inspecting now
         MapNode currentNode;
 
-        //Start from start
+        //first add the starting node to the openset
         openSet.add(start);
 
-        //While not everything is checked, and the end has not been found
+        //Iterate through the list until either we run out of nodes to explore or we get to the exit
         while (openSet.size() > 0 && !flagDone) {
 
-            //Get the node with the smallest f-value in openset
+            //Get the node with the smallest best combined heuristic in the openset
             currentNode = popSmallest(openSet);
 
-            //and add it to the closed set.
+            //Add the node into the closed set to avoid errors from self-references
             closedSet.add(currentNode);
 
-            //If it's the destination
+            //First check if the current node is the goal we are looking for
             if (currentNode.equals(end)) {
 
-                //Whoop-de-do, you found the path!
+                //Now we need to reconstruct the path from the parent field in each node
 
-                //return the path from start to end
+                //currentInPath is the node we are looking at now to reconstruct the path
                 MapNode currentInPath = currentNode;
 
-                //While parents are still to be found.
+                //While the current node HAS a parent, continue iterating.
+                // This works because the only node without a parent in the path is the starting node.
                 while(currentInPath.getParent() != null){
 
                     //Stick the parent at the beginning of the list
+                    //we order the array like this in order to invert the list of nodes
+                    //the path we construct via parent is naturally the path from the end to the start.
                     pathEdges.add(0, currentInPath.getParent());
 
-                    //Then look for the parent's parent.
+                    //Then go to the next node in the path
                     currentInPath = currentInPath.getParent().getOtherNode(currentInPath);
                 }
-                //Set flag to exit while
+                //Set the flag to exit the algorithm
                 flagDone = true;
 
             }
 
-            //If you havn't found the end,
-            //For every edge in the lowest-f currentNode, look at it's connected edges
+            //If you haven't found the end,
+            //For every edge in the currentNode, look at it's connected edges and add them to the openSet if they
+            //ae not in either the openSet or the closedSet
             for (NodeEdge aEdge: currentNode.edges) {
 
                 //and those edges' nodes.
                 MapNode aNode = aEdge.getOtherNode(currentNode);
 
-                //As long as you arn't currently pathing through that node
+                //As long as you have not already visited the node, recalculate its heuristic values
                 if (!closedSet.contains(aNode)) {
 
                     //Calculate what the F value would be
+                    //the heuristic is the geometric distance from the next node to the end point
                     double tentativeNewHeuristic = findHeuristic(aNode, end);
+                    //the G value is the distance we have traveled on this current path
                     double tentativeNewGValue = currentNode.getG() + aEdge.getCost();
+                    //the combined heuristic is the sum of the projected distance and the travelled distance
+                    //to the end node
                     double tentativeNewFValue = tentativeNewHeuristic + tentativeNewGValue;
 
-                    //If the new F value is better
+                    //If the new F value is better than the one we have for the node, we have found a better path
+                    //to that node. replace that node's values with this better parent and heuristics
                     if(tentativeNewFValue < aNode.getF()) {
 
-                        //set it as the F value.
+                        //set the heuristic values.
                         aNode.setHeuristic(tentativeNewHeuristic);
                         aNode.setG(tentativeNewGValue);
                         aNode.setF(tentativeNewHeuristic + tentativeNewGValue);
 
-                        //And set its parent
+                        //And set its parent to this node
                         aNode.setParent(aEdge);
                     }
 
-                    //If this node isn't in the open set either
+                    //If this node isn't in the open set either, add it to the openset so we visit it later
                     if(!openSet.contains(aNode)) {
-                        //Put it in the open set
                         openSet.add(aNode);
                     }
 
@@ -115,7 +126,8 @@ public class Path implements Iterable {
 
         }
 
-        //Set all nodes in the open and closed set back to default values
+        //Set all nodes in the open and closed set back to default values so we can iterate through the list again
+        //and find another path
         for (MapNode n: openSet) {
             n.resetTempValues();
         }
@@ -182,6 +194,7 @@ public class Path implements Iterable {
 
     //Find the heuristic (aprox. distance) from currentNode to endNode
     public static double findHeuristic(MapNode currentNode, MapNode endNode){
+        //calculate the distance from one node to another via geometry
         double currentNodeX = currentNode.getPosX();
         double currentNodeY = currentNode.getPosY();
         double currentNodeZ = ( (currentNode.getMyFloor().getFloorNumber()) * FLOOR_HEIGHT_CONSTANT);
