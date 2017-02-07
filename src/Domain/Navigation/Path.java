@@ -26,7 +26,14 @@ public class Path implements Iterable {
         this(start, end, false);
     }
 
-
+    /**
+     * Constructs itself as a path between the two given nodes.
+     * If devFlag is true, prints verbose logs as it does so.
+     * @param start
+     * @param end
+     * @param devFlag
+     * @throws PathFindingException
+     */
     public Path(MapNode start, MapNode end, boolean devFlag) throws PathFindingException{
 
         this.devFlag = devFlag;
@@ -158,6 +165,11 @@ public class Path implements Iterable {
 
     }
 
+    /**
+     * Manual constructor for a path
+     * @param pathEdges
+     * @param pathNodes
+     */
     public Path (LinkedList<NodeEdge> pathEdges, LinkedList<MapNode> pathNodes) {
         this.pathEdges = pathEdges;
         this.pathNodes = pathNodes;
@@ -168,7 +180,12 @@ public class Path implements Iterable {
     }
     public LinkedList<MapNode> getPathNodes() { return pathNodes; }
 
-    //Given the start and ending nodes, fill pathNodes from pathEdges
+    /**
+     * Given the starting and ending nodes, and knowing that pathEdges is already populated,
+     * fill pathNodes from pathEdges
+     * @param start
+     * @param end
+     */
     public void nodesFromEdges(MapNode start, MapNode end) {
         MapNode prev = start;
         for (int i = 0; i < pathEdges.size(); i++){
@@ -192,7 +209,13 @@ public class Path implements Iterable {
         return isValid;
     }
 
-    //Find the heuristic (aprox. distance) from currentNode to endNode
+    /**
+     * Find the heuristic (aprox. distance) from currentNode to endNode using pythag. theorm from xpos and ypos, and
+     * zpos figured out from floor and the floor height constant
+     * @param currentNode
+     * @param endNode
+     * @return Approximate direct distance from currentNode to endNode
+     */
     public static double findHeuristic(MapNode currentNode, MapNode endNode){
         //calculate the distance from one node to another via geometry
         double currentNodeX = currentNode.getPosX();
@@ -224,7 +247,7 @@ public class Path implements Iterable {
 
     }
 
-    //Prints out all edges in this path
+    //Prints out all edges in this path, only used for testing
     public void printPathEdges(){
         System.out.println("Printing Edges");
         for (NodeEdge e: this.pathEdges) {
@@ -232,16 +255,13 @@ public class Path implements Iterable {
         }
     }
 
-    //Prints out all nodes in this path
+    //Prints out all nodes in this path, only used for testing
     public void printPathNodes(){
         System.out.println("Printing Nodes");
         for (MapNode n: this.pathNodes) {
             System.out.println("Node of id " + n.getNodeID());
         }
     }
-
-
-    //
 
     public boolean equals(Object obj) {
         if (obj instanceof Path) {
