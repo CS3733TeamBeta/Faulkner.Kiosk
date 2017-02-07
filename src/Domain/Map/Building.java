@@ -1,16 +1,16 @@
 package Domain.Map;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 
 /**
  * Represents a building with floors
  */
 public class Building {
 
-    LinkedList<Floor> buildingFloors;
+    HashSet<Floor> buildingFloors;
 
     public Building() {
-        this.buildingFloors = new LinkedList<Floor>();
+        this.buildingFloors = new HashSet<>();
     }
 
     public void addFloor(Floor f) throws Exception
