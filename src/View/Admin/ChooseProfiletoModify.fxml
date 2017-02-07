@@ -76,8 +76,8 @@
             <TableColumn fx:id="firstNameCol" prefWidth="179.0" text="First Name" />
         </columns>
       </TableView>
-      <Button fx:id="deleteBut" mnemonicParsing="false" text="Delete" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="22" />
-      <Button fx:id="editBut" mnemonicParsing="false" text="Edit" GridPane.columnIndex="15" GridPane.columnSpan="2" GridPane.rowIndex="22" />
+      <Button fx:id="deleteBut" onAction="#delete" mnemonicParsing="false" text="Delete" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="22" />
+      <Button fx:id="editBut" onAction="#edit" mnemonicParsing="false" text="Edit" GridPane.columnIndex="15" GridPane.columnSpan="2" GridPane.rowIndex="22" />
    </children>
     <stylesheets>
         <URL value="@/genstyle.css" />
