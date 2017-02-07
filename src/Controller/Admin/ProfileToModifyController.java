@@ -20,6 +20,7 @@ import javafx.collections.transformation.SortedList;
 import java.io.IOException;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import Model.Database.DatabaseManager;
 
 public class ProfileToModifyController {
     @FXML

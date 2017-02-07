@@ -4,7 +4,7 @@ package Domain.Map;
  * Elevators allow for navigation inbetween floors.
  */
 
-public class Elevator extends Domain.Map.Destination
+public class Elevator extends Destination
 {
     /*
     Elevator elevatorAbove;
