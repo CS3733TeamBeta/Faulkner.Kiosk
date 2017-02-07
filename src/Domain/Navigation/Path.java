@@ -30,6 +30,7 @@ public class Path implements Iterable {
     public Path(MapNode start, MapNode end, boolean devFlag) throws PathFindingException{
 
         this.devFlag = devFlag;
+
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
 

@@ -1,6 +1,6 @@
 package Domain.Navigation;
 
-import java.lang.Math;
+
 import java.util.LinkedList;
 
 import Domain.Map.*;

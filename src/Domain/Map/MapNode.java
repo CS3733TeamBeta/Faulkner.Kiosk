@@ -11,24 +11,47 @@ import java.util.HashSet;
 
 public class MapNode
 {
-    int posX; //x posiiton on the map
-    int posY; //y posiiton on the map
-    int nodeID; //the ID for the node
+    double posX;
+    double posY;
+
+    int nodeID;
     UID nodeUID;
-    double g = 0;//the distance traveled from some start node to this node. should be set to 0 at the start of each search.
-    double heuristic = Double.MAX_VALUE;//the projected distance from this node to some goal. this value should be initialized to 0 and reset after each search.
-    double f = Double.MAX_VALUE;//the combined values from heuristic and g fields
-    NodeEdge parent = null;//the parent of the node in its calculated path
+
+    double g = 0;
+    double heuristic = Double.MAX_VALUE;
+    double f = Double.MAX_VALUE;
+
+    NodeEdge parent = null;
     Image node = null;
-    Floor myFloor;//the floor info for this node
+    Floor myFloor;
     public HashSet<NodeEdge> edges;
 
-    public int getPosX() {
+    public void setPosX(double posX)
+    {
+        this.posX = posX;
+    }
+
+    public void setPosY(double posY)
+    {
+        this.posY = posY;
+    }
+
+    /**
+     *
+     * @return X Position in Scene Coordinates
+     */
+    public double getPosX() {
         return posX;
     }
-    public int getPosY() {
+
+    /**
+     *
+     * @return Y Position in Scene Coordinates
+     */
+    public double getPosY() {
         return posY;
     }
+
     public double getG() {
         return g;
     }
@@ -38,14 +61,22 @@ public class MapNode
     public double getF() {
         return f;
     }
-    public NodeEdge getParent() {
-        return parent;
-    }
-    public HashSet<NodeEdge> getEdges() {return edges;}
     public void setG(double g) {
         this.g = g;
     }
     public void setFloor(Floor f) {this.myFloor = f;}
+    public void setHeuristic(double heuristic) {
+        this.heuristic = heuristic;
+    }
+    public void setF(double f) {
+        this.f = f;
+    }
+
+    public NodeEdge getParent() {
+        return parent;
+    }
+    public HashSet<NodeEdge> getEdges() {return edges;}
+
 
     public boolean hasEdgeTo(MapNode n) {
         for (NodeEdge e: edges) {
@@ -54,14 +85,6 @@ public class MapNode
             }
         }
         return false;
-    }
-
-    public void setHeuristic(double heuristic) {
-        this.heuristic = heuristic;
-    }
-
-    public void setF(double f) {
-        this.f = f;
     }
 
     public void setParent(NodeEdge parent) {
