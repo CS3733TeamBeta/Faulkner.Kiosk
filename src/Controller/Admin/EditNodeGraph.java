@@ -2,7 +2,13 @@ package Controller.Admin;
 
 import Controller.Main;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 /**
  * Created by Pattop on 1/31/2017.
@@ -16,6 +22,17 @@ public class EditNodeGraph
 
     @FXML
     Button saveHit, exitHit;
+
+    Stage primaryStage;
+
+    public void setStage(Stage s)
+    {
+        primaryStage = s;
+    }
+
+    public EditNodeGraph(){
+
+    }
 
     @FXML
     private void addRoomHit(){
@@ -63,13 +80,41 @@ public class EditNodeGraph
     }
 
     @FXML
-    private void saveHit(){
-        Main.thisStage.setScene(Main.modifyLocations);
+    private void saveHit() throws IOException {
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../Admin/ModifyLocations.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        ModifyLocations controller = loader.getController();
+        controller.setStage(primaryStage);
+
+        new ModifyLocations();
     }
 
     @FXML
-    private void exitHit(){
-        Main.thisStage.setScene(Main.modifyLocations);
+    private void exitHit() throws IOException{
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../../Admin/ModifyLocations.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        ModifyLocations controller = loader.getController();
+        controller.setStage(primaryStage);
+
+        new ModifyLocations();
     }
 
 }

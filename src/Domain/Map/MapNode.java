@@ -11,24 +11,59 @@ import java.util.HashSet;
 
 public class MapNode
 {
-    int posX;
-    int posY;
-    int nodeID;
+    double posX;
+    double posY;
+
+    int nodeID; //Used for a human-identifiable
+
     UID nodeUID;
+    /**
+     * G value of this node, used for pathfinding, defaults to 0
+     */
     double g = 0;
+    /**
+     * Heuristic value of this node, used for pathfinding, defaults to max
+     */
     double heuristic = Double.MAX_VALUE;
+    /**
+     * //F  value of this node, used for pathfinding, defaults to max
+     */
     double f = Double.MAX_VALUE;
+    /**
+     * Parent of this node, used for pathfinding, defaults to null
+     */
     NodeEdge parent = null;
+
     Image node = null;
     Floor myFloor;
     public HashSet<NodeEdge> edges;
 
-    public int getPosX() {
+    public void setPosX(double posX)
+    {
+        this.posX = posX;
+    }
+
+    public void setPosY(double posY)
+    {
+        this.posY = posY;
+    }
+
+    /**
+     *
+     * @return X Position in Scene Coordinates
+     */
+    public double getPosX() {
         return posX;
     }
-    public int getPosY() {
+
+    /**
+     *
+     * @return Y Position in Scene Coordinates
+     */
+    public double getPosY() {
         return posY;
     }
+
     public double getG() {
         return g;
     }
@@ -38,15 +73,28 @@ public class MapNode
     public double getF() {
         return f;
     }
-    public NodeEdge getParent() {
-        return parent;
-    }
-    public HashSet<NodeEdge> getEdges() {return edges;}
     public void setG(double g) {
         this.g = g;
     }
     public void setFloor(Floor f) {this.myFloor = f;}
+    public void setHeuristic(double heuristic) {
+        this.heuristic = heuristic;
+    }
+    public void setF(double f) {
+        this.f = f;
+    }
 
+    public NodeEdge getParent() {
+        return parent;
+    }
+    public HashSet<NodeEdge> getEdges() {return edges;}
+
+    /**
+     * Determines if this node has a node to another node.
+     *
+     * @param n
+     * @return true if this node has a node to another node, false otherwise.
+     */
     public boolean hasEdgeTo(MapNode n) {
         for (NodeEdge e: edges) {
             if (e.getOtherNode(this).equals(n)) {
@@ -54,14 +102,6 @@ public class MapNode
             }
         }
         return false;
-    }
-
-    public void setHeuristic(double heuristic) {
-        this.heuristic = heuristic;
-    }
-
-    public void setF(double f) {
-        this.f = f;
     }
 
     public void setParent(NodeEdge parent) {
@@ -100,6 +140,10 @@ public class MapNode
         this.edges.add(e);
     }
 
+
+    /**
+     * Resets the temp values used for pathfinding to the default values.
+     */
     public void resetTempValues() {
         this.g = 0;
         this.heuristic = Double.MAX_VALUE;
