@@ -141,7 +141,6 @@ public class GraphicalNodeEdge extends NodeEdge implements DrawableMapEntity
         {
             setStart(newPoint);
         }
-
     }
 
     @Override
