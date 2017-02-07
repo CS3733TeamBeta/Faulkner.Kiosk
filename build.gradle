@@ -37,6 +37,7 @@ repositories {
 dependencies {
     //compile sourceSets.main.output
     compile 'org.jfxtras:jfxtras-labs:8.0-r5'
+    compile 'junit.framework.TestCase'
 
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
