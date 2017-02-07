@@ -66,38 +66,50 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
     <children>
-        <Button fx:id="logout" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#logoutHit"
+        <Button fx:id="logout" mnemonicParsing="false" onAction="#logoutHit"
                 text="Logout" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                 GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1"/>
         <Button fx:id="btnBack" mnemonicParsing="false" onAction="#backHit" text="Back"
                 GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="23"
-                maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-        <Button fx:id="save" layoutX="513.0" layoutY="361.0" mnemonicParsing="false" onAction="#saveHit"
+                maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
+        <Button fx:id="save" mnemonicParsing="false" onAction="#saveHit"
                 text="Save" GridPane.columnIndex="17" GridPane.columnSpan="2" GridPane.rowIndex="23"
-                maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
         <ImageView fx:id="profilePic" fitHeight="119.0" fitWidth="146.0"
-                   pickOnBounds="true" preserveRatio="true"/>
+                   pickOnBounds="true" preserveRatio="true" GridPane.columnSpan="4"
+                   GridPane.columnIndex="4" GridPane.rowIndex="4" GridPane.rowSpan="4"/>
+        <!--I can't see where the image box is-->
         <TextField fx:id="firstName" prefHeight="25.0" prefWidth="249.0"
-                   promptText="First name"/>
+                   promptText="First name" GridPane.columnSpan="6" GridPane.rowIndex="7"
+                   GridPane.columnIndex="10"/>
         <TextField fx:id="lastName" prefHeight="25.0" prefWidth="249.0"
-                   promptText="Last name"/>
-        <Label fx:id="newProfLabel" text="Add New Profile" textAlignment="CENTER"/>
-        <Label fx:id="assignToLabel" text="Assign to:"/>
-        <TextField fx:id="roomNum" layoutX="289.0" layoutY="140.0" prefHeight="25.0" prefWidth="186.0"
-                   promptText="Room Number"/>
-        <Button fx:id="add" layoutX="122.0" layoutY="337.0" mnemonicParsing="false" onAction="#addClicked"
-                prefHeight="25.0" prefWidth="78.0" text="Add"/>
-        <Button fx:id="remove" layoutX="365.0" layoutY="337.0" mnemonicParsing="false" onAction="#removeClicked"
-                prefHeight="25.0" prefWidth="78.0" text="Remove"/>
-        <Label fx:id="deptAddedLabel" text="Department(s) Added:"/>
-        <ListView fx:id="deptListView" prefHeight="119.0" prefWidth="219.0"/>
-        <ListView fx:id="deptAddedListView" prefHeight="119.0" prefWidth="219.0"/>
+                   promptText="Last name" GridPane.columnIndex="10" GridPane.rowIndex="9"
+                   GridPane.columnSpan="6"/>
+        <Label fx:id="newProfLabel" text="Add New Profile" textAlignment="CENTER"
+               GridPane.columnIndex="5" GridPane.columnSpan="16" GridPane.rowIndex="3"
+               maxHeight="1.7976931348623157E308"
+               maxWidth="1.7976931348623157E308"/>
+        <Label fx:id="assignToLabel" text="Assign to:" GridPane.columnSpan="3" GridPane.rowIndex="11"
+               GridPane.columnIndex="10"/>
+        <TextField fx:id="roomNum" GridPane.columnSpan="4" GridPane.rowIndex="11"
+                   GridPane.columnIndex="12" promptText="Room Number"/>
+        <Button fx:id="add" mnemonicParsing="false" onAction="#addClicked" GridPane.columnSpan="3"
+                GridPane.columnIndex="6" text="Add" GridPane.rowIndex="22"/>
+        <Button fx:id="remove" mnemonicParsing="false" onAction="#removeClicked" GridPane.columnSpan="3"
+                text="Remove" GridPane.columnIndex="12" GridPane.rowIndex="22"/>
+        <Label fx:id="deptAddedLabel" text="Department(s) Added:" GridPane.columnSpan="5"
+               GridPane.rowIndex="14" GridPane.columnIndex="10"/>
+        <ListView fx:id="deptListView" GridPane.columnIndex="4"
+                  GridPane.columnSpan="6" GridPane.rowIndex="15" GridPane.rowSpan="6"/>
+        <ListView fx:id="deptAddedListView" GridPane.columnIndex="10" GridPane.rowIndex="15"
+                  GridPane.columnSpan="6" GridPane.rowSpan="6"/>
         <Button fx:id="showDeptList" mnemonicParsing="false" onAction="#showDeptList"
-                text="Show Departments List"/>
+                text="Show Departments List" GridPane.columnIndex="3" GridPane.columnSpan="8"
+                GridPane.rowIndex="13"/>
     </children>
     <stylesheets>
         <URL value="@genstyle.css"/>
-        <URL value="@../newProfileStyle.css" />
+        <URL value="@newProfileStyle.css"/>
     </stylesheets>
 </GridPane>
 
