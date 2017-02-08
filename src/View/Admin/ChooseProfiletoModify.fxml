@@ -72,13 +72,12 @@
       <TextField fx:id="searchModDoc" promptText="Search doctor" GridPane.columnIndex="6" GridPane.columnSpan="10" GridPane.rowIndex="7" />
       <TableView fx:id="filteredProfiles" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.columnSpan="12" GridPane.rowIndex="10" GridPane.rowSpan="10">
         <columns>
-          <TableColumn fx:id="roomNumCol" prefWidth="75.0" text="Room #" />
-          <TableColumn fx:id="lastNameCol" prefWidth="136.0" text="Last Name" />
-            <TableColumn fx:id="firstNameCol" prefWidth="148.0" text="First Name" />
+          <TableColumn fx:id="lastNameCol" prefWidth="180.0" text="Last Name" />
+            <TableColumn fx:id="firstNameCol" prefWidth="179.0" text="First Name" />
         </columns>
       </TableView>
-      <Button fx:id="deleteBut" mnemonicParsing="false" text="Delete" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="22" />
-      <Button fx:id="editBut" mnemonicParsing="false" text="Edit" GridPane.columnIndex="15" GridPane.columnSpan="2" GridPane.rowIndex="22" />
+      <Button fx:id="deleteBut" onAction="#delete" mnemonicParsing="false" text="Delete" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="22" />
+      <Button fx:id="editBut" onAction="#edit" mnemonicParsing="false" text="Edit" GridPane.columnIndex="15" GridPane.columnSpan="2" GridPane.rowIndex="22" />
    </children>
     <stylesheets>
         <URL value="@/genstyle.css" />
