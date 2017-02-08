@@ -124,8 +124,7 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	public void onEdgeComplete()
-	{
+	public void onEdgeComplete() {
 		for(EdgeCompleteEventHandler handler : model.getEdgeCompleteHandlers())
 		{
 			handler.handle(new EdgeCompleteEvent(drawingEdge));
@@ -150,7 +149,9 @@ public class MapEditorController extends AbstractController {
 		for (int i = 0; i < DragIconType.values().length; i++)
 		{
 			DragIcon icn = new DragIcon();
-			
+
+			icn.setStyle("-fx-background-size: 64 64");
+
 			addDragDetection(icn);
 			icn.setType(DragIconType.values()[i]);
 

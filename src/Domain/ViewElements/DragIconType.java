@@ -6,5 +6,6 @@ public enum DragIconType {
 	elevator,
 	food,
 	info,
-	help
+	help,
+	connector
 }
