@@ -38,7 +38,6 @@ public class NodeEdge implements DrawableMapEntity
     public NodeEdge(MapNode source, MapNode nodeB, double cost) {
         this(source, nodeB);
         this.cost = cost;
-
     }
 
     /**
@@ -120,7 +119,6 @@ public class NodeEdge implements DrawableMapEntity
     {
         edgeLine.toBack();
     }
-
 
     public double getCost() {
         return cost;

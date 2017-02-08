@@ -127,7 +127,11 @@ public class DragIcon extends AnchorPane{
 			case info:
 				getStyleClass().add("info");
 				break;
-		
+
+			case connector:
+				getStyleClass().add("connector");
+				break;
+
 			default:
 				break;
 		}
