@@ -1,6 +1,7 @@
 package Controller;
 
 import Controller.Admin.*;
+import Controller.User.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,6 +15,7 @@ import java.io.IOException;
 public class SceneSwitcher
 {
     protected static final String AdminPackage = "../Admin";
+    protected static final String UserPackage = "../User";
     protected static final String AdminLoginViewPath = AdminPackage + "/AdminLoginView.fxml";
     protected static final String AdminWelcomeViewPath = AdminPackage + "/AdminWelcomeView.fxml";
     protected static final String AddNewProfileViewPath = AdminPackage + "/AdminLoginView.fxml";
@@ -24,6 +26,9 @@ public class SceneSwitcher
     //protected static final String EditRoomAttributesViewPath = AdminPackage + "/EditRoomAttributesView.fxml";
     protected static final String ModifyLocationsViewPath = AdminPackage + "/ModifyLocationsView.fxml";
     protected static final String EditNodeGraphViewPath = AdminPackage + "/EditNodeGraphView.fxml";
+    protected static final String HomeViewPath = UserPackage + "/HomeView.fxml";
+    protected static final String UserMapViewPath = UserPackage + "/UserMapView.fxml";
+    protected static final String UserSearchViewPath = UserPackage + "/UserSearchView.fxml";
 
     public static AbstractController switchToScene(Stage primaryStage, String pathToView) throws IOException
     {
@@ -89,5 +94,17 @@ public class SceneSwitcher
         EditRoomAttributesController controller = (EditRoomAttributesController) switchToScene(primaryStage, EditRoomAttributesViewPath);
     }
     */
+
+    public static void switchToHomeView(Stage primaryStage) throws IOException {
+        HomeController controller = (HomeController) switchToScene(primaryStage, HomeViewPath);
+    }
+
+    public static void switchToUserMapView(Stage primaryStage) throws IOException {
+        UserMapController controller = (UserMapController) switchToScene(primaryStage, UserMapViewPath);
+    }
+
+    public static void switchToUserSearchView(Stage primaryStage) throws IOException {
+        UserSearchController controller = (UserSearchController) switchToScene(primaryStage, UserSearchViewPath);
+    }
 }
 

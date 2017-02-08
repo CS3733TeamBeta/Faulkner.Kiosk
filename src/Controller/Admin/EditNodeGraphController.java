@@ -1,5 +1,6 @@
 package Controller.Admin;
 
+import Controller.AbstractController;
 import Controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +14,7 @@ import java.io.IOException;
 /**
  * Created by Pattop on 1/31/2017.
  */
-public class EditNodeGraphController
+public class EditNodeGraphController extends AbstractController
 {
     @FXML
     Button addRoom, addIntersection, addConnection,

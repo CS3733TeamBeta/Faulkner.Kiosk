@@ -1,5 +1,7 @@
 package Controller.User;
 
+import Controller.AbstractController;
+import Controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,7 +13,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class UserMapController
+public class UserMapController extends AbstractController
 {
     @FXML
     Button btnBack;
@@ -31,21 +33,7 @@ public class UserMapController
 
     @FXML
     private void clickBack() throws IOException{
-        {
-            FXMLLoader loader;
-            Parent root;
-
-            loader = new FXMLLoader(getClass().getResource("../../Admin/UserSearchView.fxml"));
-
-            root = loader.load();
-            //create a new scene with root and set the stage
-            Scene scene = new Scene(root);
-
-            primaryStage.setScene(scene);
-
-            UserSearchController controller = loader.getController();
-            controller.setStage(primaryStage);
-        }
+        SceneSwitcher.switchToUserSearchView(primaryStage);
     }
     @FXML
     private void clickSwitchFloors(){}

@@ -1,5 +1,6 @@
 package Controller.Admin;
 
+import Controller.AbstractController;
 import Controller.Main;
 import Controller.SceneSwitcher;
 import Model.DoctorProfile;
@@ -19,7 +20,7 @@ import java.util.function.Predicate;
 
 import javafx.scene.control.Alert.AlertType;
 
-public class ChooseProfileToModifyController {
+public class ChooseProfileToModifyController extends AbstractController {
     @FXML
     Button logout;
 
