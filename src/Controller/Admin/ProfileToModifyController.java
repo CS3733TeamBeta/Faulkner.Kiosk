@@ -61,8 +61,7 @@ public class ProfileToModifyController {
     }
 
     public void initialize() {
-        // Set up table columns
-
+        // Setting up the columns of the TableView
         lastNameCol.setCellValueFactory(
                 new PropertyValueFactory<DoctorProfile,String>("lastName"));
 
@@ -70,11 +69,13 @@ public class ProfileToModifyController {
                 new PropertyValueFactory<DoctorProfile,String>("firstName"));
 
 
+        // Creating list of data to be filtered
         FilteredList<DoctorProfile> filtered = new FilteredList<>(Main.FaulknerHospitalDirectory);
 
+        // Adding a listener to the search bar, filtering through the data as the user types
         searchModDoc.textProperty().addListener((observableValue, oldValue, newValue) -> {
             filtered.setPredicate((Predicate<? super DoctorProfile>) profile -> {
-                // If filter text is empty, display all persons.
+                // By default, the entire directory is displayed
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
@@ -82,18 +83,21 @@ public class ProfileToModifyController {
                 // Compare first name and last name of every person with filter text.
                 String lowerCaseFilter = newValue.toLowerCase();
 
+                // Checks if filter matches
                 if (profile.getFirstName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true; // Filter matches first name.
+                    return true;
                 } else if (profile.getLastName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true; // Filter matches last name.
+                    return true;
                 }
-                return false; // Does not match.
+
+                // Filter does not match
+                return false;
             });
         });
 
-        // Create sorted list for filtered data list
+        // Create a sorted list for the filtered data list
         SortedList<DoctorProfile> sorted = new SortedList<>(filtered);
-        // Bind sorted list to table
+        // Bind the sorted list to table
         sorted.comparatorProperty().bind(filteredProfiles.comparatorProperty());
         // Set table data
         filteredProfiles.setItems(sorted);
