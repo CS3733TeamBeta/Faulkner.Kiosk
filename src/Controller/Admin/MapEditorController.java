@@ -156,6 +156,12 @@ public class MapEditorController extends AbstractController {
 			addDragDetection(icn);
 			icn.setType(DragIconType.values()[i]);
 
+			if (icn.getType().equals(DragIconType.connector))
+			{
+				System.out.println("Adding Connector");
+				icn.setStyle("-fx-background-size: 30 30");
+			}
+
 			model.addSideBarIcon(icn);
 			bottom_bar.getChildren().add(icn);
 		}
