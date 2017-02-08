@@ -1,6 +1,6 @@
 .dragicon {
 	-fx-background-repeat: stretch;
-	-fx-background-size: 64 64;
+	-fx-background-size: 25 25;
 	-fx-background-position: center center;
 }
 
@@ -26,4 +26,9 @@
 
 .info {
 	-fx-background-image: url("info.png");
+}
+
+.connector {
+	-fx-background-image: url("blank2.png");
+	-fx-background-size: 10 10;
 }

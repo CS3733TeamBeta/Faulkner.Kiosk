@@ -11,6 +11,9 @@ import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.MapEditorModel;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,8 +27,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.stage.Stage;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
+import org.controlsfx.control.PopOver;
+import org.controlsfx.samples.HelloPopOver;
 
 public class MapEditorController extends AbstractController {
 
@@ -118,8 +124,7 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	public void onEdgeComplete()
-	{
+	public void onEdgeComplete() {
 		for(EdgeCompleteEventHandler handler : model.getEdgeCompleteHandlers())
 		{
 			handler.handle(new EdgeCompleteEvent(drawingEdge));
@@ -144,7 +149,9 @@ public class MapEditorController extends AbstractController {
 		for (int i = 0; i < DragIconType.values().length; i++)
 		{
 			DragIcon icn = new DragIcon();
-			
+
+			icn.setStyle("-fx-background-size: 64 64");
+
 			addDragDetection(icn);
 			icn.setType(DragIconType.values()[i]);
 
@@ -213,8 +220,8 @@ public class MapEditorController extends AbstractController {
 				event.consume();					
 			}
 		});
-	}	
-	
+	}
+
 	private void buildDragHandlers() {
 		
 		//drag over transition to move widget form left pane to right pane
@@ -309,6 +316,12 @@ public class MapEditorController extends AbstractController {
 						droppedNode.getNodeToDisplay().setOnMouseClicked(ev -> {
 							if(ev.getButton() == MouseButton.SECONDARY) //if right click
 							{
+								PopOver popOver = new PopOver();
+
+								popOver.show(droppedNode.getNodeToDisplay(),
+										ev.getScreenX(),
+										ev.getScreenY());
+
 								if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
 								{
 									if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
@@ -397,6 +410,5 @@ public class MapEditorController extends AbstractController {
 				event.consume();
 			}
 		});
-
 	}
 }

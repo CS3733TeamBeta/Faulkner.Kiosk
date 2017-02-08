@@ -1,7 +1,6 @@
 package Controller.Admin;
 
 import Controller.AbstractController;
-import Controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -36,7 +35,19 @@ public class ModifyLocationsController extends AbstractController
     @FXML
     private void backButton()throws IOException
     {
-        SceneSwitcher.switchToAdminWelcomeView(primaryStage);
+        FXMLLoader loader;
+        Parent root;
+
+        loader = new FXMLLoader(getClass().getResource("../../Admin/AdminWelcomeView.fxml"));
+
+        root = loader.load();
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        AdminWelcomeController controller = loader.getController();
+        controller.setStage(primaryStage);
     }
 
     @FXML
