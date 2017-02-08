@@ -18,6 +18,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.Parent;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -318,9 +319,19 @@ public class MapEditorController extends AbstractController {
 							{
 								PopOver popOver = new PopOver();
 
-								popOver.show(droppedNode.getNodeToDisplay(),
+								FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/Popup/DoctorEditPopup.fxml"));
+
+								try
+								{
+									popOver.setContentNode(loader.load());
+								} catch (IOException e)
+								{
+									e.printStackTrace();
+								}
+
+								/*popOver.show(droppedNode.getNodeToDisplay(),
 										ev.getScreenX(),
-										ev.getScreenY());
+										ev.getScreenY());*/
 
 								if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
 								{
