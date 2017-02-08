@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class EditRoomAttributes
+public class EditRoomAttributesController
 {
     @FXML
     Button exitButton;
@@ -28,7 +28,7 @@ public class EditRoomAttributes
         primaryStage = s;
     }
 
-    public EditRoomAttributes(){
+    public EditRoomAttributesController(){
 
     }
 

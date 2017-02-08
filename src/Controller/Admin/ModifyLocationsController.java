@@ -1,6 +1,7 @@
 package Controller.Admin;
 
 import Controller.AbstractController;
+import Controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -53,52 +54,17 @@ public class ModifyLocationsController extends AbstractController
     @FXML
     private void changeFloorLayoutButton() throws IOException
     {
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/MapEditorView.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        EditNodeGraph controller = loader.getController();
-        controller.setStage(primaryStage);
+        SceneSwitcher.switchToEditNodeGraphView(primaryStage);
     }
 
     @FXML
-    private void changeRoomAssignments() throws IOException{
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/EditRoomAttributes.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        EditRoomAttributes controller = loader.getController();
-        controller.setStage(primaryStage);
+    private void changeRoomAssignments() throws IOException {
+        //SceneSwitcher.switchToEditRoomAssignmentsView(primaryStage);
+        SceneSwitcher.switchToEditDoctorView(primaryStage);
     }
 
     @FXML
     private void logoutButton() throws IOException{
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/AdminLoginView.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        AdminLoginController controller = loader.getController();
-        controller.setStage(primaryStage);
+        SceneSwitcher.switchToLoginView(primaryStage);
     }
 }

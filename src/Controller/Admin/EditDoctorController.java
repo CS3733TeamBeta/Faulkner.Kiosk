@@ -1,11 +1,15 @@
 package Controller.Admin;
 
 import Controller.AbstractController;
+import Controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class EditDoctorController extends AbstractController
 {
@@ -27,16 +31,22 @@ public class EditDoctorController extends AbstractController
     TextField nameLast;
     @FXML
     TextField docRoom; //room doctor is located in
+    Stage primaryStage;
+
+    public void setStage(Stage s)
+    {
+        primaryStage = s;
+    }
 
 
     @FXML
-    private void logoutHit(){
-        //Main.thisStage.setScene(Main.adminLogin);
+    private void logoutHit() throws IOException{
+        SceneSwitcher.switchToLoginView(primaryStage);
     }
 
     @FXML
-    private void backHit(){
-        //Main.thisStage.setScene(Main.changingDirectoryView);
+    private void backHit() throws IOException{
+        SceneSwitcher.switchToModifyLocationsView(primaryStage);
     }
 
     @FXML

@@ -1,6 +1,8 @@
 package Controller.Admin;
 
+import Controller.AbstractController;
 import Controller.Main;
+import Controller.SceneSwitcher;
 import Model.DoctorProfile;
 
 import javafx.fxml.FXML;
@@ -18,7 +20,7 @@ import java.util.function.Predicate;
 
 import javafx.scene.control.Alert.AlertType;
 
-public class ProfileToModifyController {
+public class ChooseProfileToModifyController extends AbstractController {
     @FXML
     Button logout;
 
@@ -51,7 +53,7 @@ public class ProfileToModifyController {
         primaryStage = s;
     }
 
-    public ProfileToModifyController(){
+    public ChooseProfileToModifyController(){
     }
 
     public void initialize() {
@@ -100,36 +102,12 @@ public class ProfileToModifyController {
 
     @FXML
     private void logoutHit() throws IOException{
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../AdminLoginView.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        AdminLoginController controller = loader.getController();
-        controller.setStage(primaryStage);
+        SceneSwitcher.switchToLoginView(primaryStage);
     }
 
     @FXML
     private void backHit() throws IOException{
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../ModifyDirectoryView.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        ModifyDirectoryController controller = loader.getController();
-        controller.setStage(primaryStage);
+        SceneSwitcher.switchToModifyDirectoryView(primaryStage);
     }
 
     @FXML
