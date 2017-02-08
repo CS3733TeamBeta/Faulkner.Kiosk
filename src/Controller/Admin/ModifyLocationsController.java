@@ -1,6 +1,7 @@
 package Controller.Admin;
 
 import Controller.AbstractController;
+import Controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
