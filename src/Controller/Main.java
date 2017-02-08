@@ -13,7 +13,7 @@ public class Main extends Application {
     public static Stage thisStage;
     public static Scene adminLogin, adminWelcome, addNewProfile,
             changingDirectoryView,  chooseProfileToModify, dragWindow,
-            editDepartmentView, editDoctorView, editNodeGraph,
+            editDepartmentView, editDoctorView, editNodeGraph, map_for_project,
             editRoomAttributes, editRoomView, modifyLocations;
 
     public static AdminList admins;
@@ -34,6 +34,7 @@ public class Main extends Application {
         Parent editRoomAttributesRoot = FXMLLoader.load(getClass().getResource("../Admin/editRoomAttributes.fxml"));
         Parent editRoomViewRoot = FXMLLoader.load(getClass().getResource("../Admin/editRoomView.fxml"));
         Parent modifyLocationsRoot = FXMLLoader.load(getClass().getResource("../Admin/modifyLocations.fxml"));
+        Parent map_for_projectRoot = FXMLLoader.load(getClass().getResource("../Admin/map_for_project.fxml"));
 
         thisStage.setTitle("Hello World");
 
@@ -49,6 +50,7 @@ public class Main extends Application {
         editRoomAttributes = new Scene(editRoomAttributesRoot);
         editRoomView = new Scene(editRoomViewRoot);
         modifyLocations = new Scene(modifyLocationsRoot);
+        map_for_project = new Scene(map_for_projectRoot);
 
         thisStage.setScene(adminLogin);
         thisStage.show();
