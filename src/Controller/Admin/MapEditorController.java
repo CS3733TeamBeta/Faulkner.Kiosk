@@ -72,13 +72,13 @@ public class MapEditorController extends AbstractController {
 			completedEdge.getNodeToDisplay().setOnMouseEntered(deEvent->{
 				if (completedEdge != null)
 				{
-					completedEdge.getEdgeLine().setFill(Color.RED);
+					completedEdge.getEdgeLine().setStroke(Color.RED);
 				}
 			});
 
 			completedEdge.getNodeToDisplay().setOnMouseExited(deEvent->{
 				if (completedEdge != null) {
-					completedEdge.getEdgeLine().setFill(Color.BLACK);
+					completedEdge.getEdgeLine().setStroke(Color.BLACK);
 				}
 			});
 

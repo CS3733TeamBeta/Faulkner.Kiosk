@@ -22,6 +22,7 @@ public class NodeEdge implements DrawableMapEntity
 
     public NodeEdge() {
         edgeLine = new Line();
+        edgeLine.setStrokeWidth(5);
     }
 
     public NodeEdge(MapNode source, MapNode target) {
