@@ -152,7 +152,7 @@ public class ProfileToModifyController {
             Main.FaulknerHospitalDirectory.remove(profileSelected);
             // I need to search for a doctor in database, remove it
             System.out.println("Action confirmed.");
-            // Call initiate() again to update table columns, removed from list display
+            // Call initiate() again to update table columns, removed from list display.
             initialize();
         }
     }
