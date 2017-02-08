@@ -22,13 +22,14 @@ public class Main extends Application {
         departments.addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
 
         SceneSwitcher.switchToLoginView(primaryStage);
+
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
         try {
             launch(args);
             DatabaseManager test = new DatabaseManager();
-
 
 //            test.testDatabase();
 //            test.addRow("services", "Admitting/Registration", 1);
