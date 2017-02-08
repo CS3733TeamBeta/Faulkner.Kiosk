@@ -324,20 +324,20 @@ public class MapEditorController extends AbstractController {
 							if(ev.getButton() == MouseButton.SECONDARY) //if right click
 							{
 								PopOver popOver = new PopOver();
-
 								FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/Popup/DoctorEditPopup.fxml"));
 
 								try
 								{
 									popOver.setContentNode(loader.load());
-								} catch (IOException e)
+								}
+								catch (IOException e)
 								{
 									e.printStackTrace();
 								}
 
-								/*popOver.show(droppedNode.getNodeToDisplay(),
+								popOver.show(droppedNode.getNodeToDisplay(),
 										ev.getScreenX(),
-										ev.getScreenY());*/
+										ev.getScreenY());
 
 								if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
 								{
