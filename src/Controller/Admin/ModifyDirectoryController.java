@@ -1,6 +1,7 @@
 package Controller.Admin;
 
 import Controller.AbstractController;
+import Controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -32,56 +33,16 @@ public class ModifyDirectoryController extends AbstractController
     }
 
     @FXML
-    private void clickedBack() throws IOException
-    {
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/AdminWelcomeView.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        AdminWelcomeController controller = loader.getController();
-        controller.setStage(primaryStage);
+    private void clickedBack() throws IOException {
+        SceneSwitcher.switchToAdminWelcomeView(primaryStage);
     }
     @FXML
-    private void clickedAddNewProfile() throws IOException
-    {
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/AddNewProfile.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        AddNewProfileController controller = loader.getController();
-        controller.setStage(primaryStage);
+    private void clickedAddNewProfile() throws IOException {
+        SceneSwitcher.switchToAddNewProfileView(primaryStage);
     }
     @FXML
-    private void clickedModifyExistingProfile() throws IOException
-    {
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/ChooseProfiletoModify.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        ProfileToModifyController controller = loader.getController();
-        controller.setStage(primaryStage);
-
+    private void clickedModifyExistingProfile() throws IOException {
+        SceneSwitcher.switchToChooseProfileToModifyView(primaryStage);
     }
 }
 
