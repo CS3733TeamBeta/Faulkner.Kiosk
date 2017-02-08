@@ -21,6 +21,9 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
 
@@ -64,6 +67,32 @@ public class MapEditorController extends AbstractController {
 		//connects the two, sends sources, positions them etc.
 		model.addEdgeCompleteHandler(event->
 		{
+			NodeEdge completedEdge = drawingEdge;
+
+			completedEdge.getNodeToDisplay().setOnMouseEntered(deEvent->{
+				if (completedEdge != null)
+				{
+					completedEdge.getEdgeLine().setFill(Color.RED);
+				}
+			});
+
+			completedEdge.getNodeToDisplay().setOnMouseExited(deEvent->{
+				if (completedEdge != null) {
+					completedEdge.getEdgeLine().setFill(Color.BLACK);
+				}
+			});
+
+			completedEdge.getNodeToDisplay().setOnMouseClicked(deEvent->{
+				if (completedEdge != null) {
+					if (deEvent.getClickCount() == 2) {
+						completedEdge.getSource().getEdges().remove(completedEdge);
+						completedEdge.getTarget().getEdges().remove(completedEdge);
+						mapPane.getChildren().remove(completedEdge.getNodeToDisplay()); //remove from the right pane
+						model.removeMapEdge(completedEdge);
+					}
+				}
+			});
+
 			MapNode sourceNode = event.getNodeEdge().getSource();
 			MapNode targetNode = event.getNodeEdge().getTarget();
 
