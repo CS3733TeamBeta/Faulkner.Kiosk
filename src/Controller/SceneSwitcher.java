@@ -32,7 +32,7 @@ public class SceneSwitcher
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(SceneSwitcher.class.getResource(AdminWelcomeViewPath));
+        loader = new FXMLLoader(SceneSwitcher.class.getResource(pathToView));
 
         root = loader.load();
         //create a new scene with root and set the stage

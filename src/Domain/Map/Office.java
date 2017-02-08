@@ -1,6 +1,5 @@
 package Domain.Map;
 
-import javax.persistence.*;
 import java.util.HashSet;
 
 /**
@@ -10,6 +9,7 @@ import java.util.HashSet;
 public class Office extends Destination
 {
     int id;
+
     HashSet<Doctor> occupants;
 
     public Office(int id, HashSet<Doctor> doctors) {
