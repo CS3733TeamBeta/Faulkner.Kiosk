@@ -18,25 +18,30 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import Model.Database.DatabaseManager;
+import javafx.scene.control.Alert.AlertType;
 
 public class ProfileToModifyController {
     @FXML
     Button logout;
 
     @FXML
-    Button back;
+    Button btnBack;
+
+    @FXML
+    Button deleteBut;
+
+    @FXML
+    Button editBut;
 
     @FXML
     TextField searchModDoc;
 
     @FXML
     TableView<DoctorProfile> filteredProfiles;
-
-    @FXML
-    TableColumn roomNumCol;
 
     @FXML
     TableColumn lastNameCol;
@@ -56,8 +61,7 @@ public class ProfileToModifyController {
     }
 
     public void initialize() {
-        // Set up table view
-        // roomNumCol.setCellValueFactory(new PropertyValueFactory<DoctorProfile, RoomInfo>("roomNum"));
+        // Set up table columns
 
         lastNameCol.setCellValueFactory(
                 new PropertyValueFactory<DoctorProfile,String>("lastName"));
@@ -66,7 +70,7 @@ public class ProfileToModifyController {
                 new PropertyValueFactory<DoctorProfile,String>("firstName"));
 
 
-        FilteredList<DoctorProfile> filtered = new FilteredList<>(Main.FaulknerHospitalDirectory, profile -> true);
+        FilteredList<DoctorProfile> filtered = new FilteredList<>(Main.FaulknerHospitalDirectory);
 
         searchModDoc.textProperty().addListener((observableValue, oldValue, newValue) -> {
             filtered.setPredicate((Predicate<? super DoctorProfile>) profile -> {
@@ -128,5 +132,37 @@ public class ProfileToModifyController {
 
         ChangingDirectoryController controller = loader.getController();
         controller.setStage(primaryStage);
+    }
+
+    @FXML
+    private void delete() {
+        DoctorProfile profileSelected = filteredProfiles.getSelectionModel().getSelectedItem();
+
+        // Popup confirmation dialog message window
+        Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this profile from the directory?");
+        alert.setTitle("Confirm Action");
+        alert.setHeaderText(null);
+        ButtonType ok = new ButtonType("OK");
+        alert.getButtonTypes().setAll(ok);
+
+        // Save changes only if action has been confirmed.
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ok) {
+            // Deleted from database
+            Main.FaulknerHospitalDirectory.remove(profileSelected);
+            // I need to search for a doctor in database, remove it
+            System.out.println("Action confirmed.");
+            // Call initiate() again to update table columns, removed from list display.
+            initialize();
+        }
+    }
+
+    @FXML
+    private void edit() {
+        DoctorProfile profileSelected = filteredProfiles.getSelectionModel().getSelectedItem();
+
+        // Search for the specific doctor, and edit the row of the table in the database system
+        // What to edit? Could we edit the ID #?
+
     }
 }
