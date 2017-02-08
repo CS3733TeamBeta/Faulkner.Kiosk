@@ -411,9 +411,4 @@ public class MapEditorController extends AbstractController {
 			}
 		});
 	}
-
-	public PopOver makeEditPopOver(MapNode m)
-	{
-		return null;
-	}
 }
