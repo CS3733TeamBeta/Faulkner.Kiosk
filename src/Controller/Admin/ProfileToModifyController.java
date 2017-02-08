@@ -27,16 +27,19 @@ public class ProfileToModifyController {
     Button logout;
 
     @FXML
-    Button back;
+    Button btnBack;
+
+    @FXML
+    Button deleteBut;
+
+    @FXML
+    Button editBut;
 
     @FXML
     TextField searchModDoc;
 
     @FXML
     TableView<DoctorProfile> filteredProfiles;
-
-    @FXML
-    TableColumn roomNumCol;
 
     @FXML
     TableColumn lastNameCol;
