@@ -7,6 +7,6 @@
 
 <fx:root stylesheets="@application.css" type="Pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Line fx:id="node_link" fill="#1f93ff00" stroke="BLACK" />
+      <Line fx:id="edgeLine" fill="#1f93ff00" stroke="BLACK" />
    </children>
 </fx:root>

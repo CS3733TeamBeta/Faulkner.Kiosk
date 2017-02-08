@@ -1,68 +1,126 @@
 package Domain.Map;
 
+import Domain.ViewElements.DragIcon;
+import Domain.ViewElements.DragIconType;
+import Domain.ViewElements.DrawableMapEntity;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 
+import java.rmi.server.UID;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Represents a node in a Map, connected to other nodes by NodeEdges
  */
 
-public class MapNode
+public class MapNode implements DrawableMapEntity
 {
-    int posX;
-    int posY;
-    int nodeID;
-    float g = 0;
-    float heuristic = Float.MAX_VALUE;
-    float f = Float.MAX_VALUE;
+    double posX;
+    double posY;
+
+    protected DragIcon icon;
+
+    final double NODE_HOVER_OPACITY = .65;
+    final double NODE__NORMAL_OPACITY = 1;
+
+    int nodeID; //Used for a human-identifiable
+
+    UID nodeUID;
+
+    /**
+     * G value of this node, used for pathfinding, defaults to 0
+     */
+    double g = 0;
+    /**
+     * Heuristic value of this node, used for pathfinding, defaults to max
+     */
+    double heuristic = Double.MAX_VALUE;
+    /**
+     * F  value of this node, used for pathfinding, defaults to max
+     */
+    double f = Double.MAX_VALUE;
+    /**
+     * Parent of this node, used for pathfinding, defaults to null
+     */
     NodeEdge parent = null;
+
     Image node = null;
     Floor myFloor;
+
     public HashSet<NodeEdge> edges;
 
-    public int getPosX() {
+    public MapNode() {
+        this.edges = new HashSet<NodeEdge>();
+        this.nodeUID = new UID();
+        icon = new DragIcon();
+    }
+
+    public MapNode(int nodeID) {
+        this();
+        this.nodeID = nodeID;
+    }
+
+    public MapNode(int nodeID, int posX, int posY) {
+        this(nodeID);
+
+        this.posX = posX;
+        this.posY = posY;
+    }
+
+    /**
+     *
+     * @param posX
+     */
+    public void setPosX(double posX)
+    {
+        this.posX = posX;
+    }
+
+    public void setPosY(double posY)
+    {
+        this.posY = posY;
+    }
+
+    /**
+     *
+     * @return X Position in Scene Coordinates
+     */
+    public double getPosX() {
         return posX;
     }
 
-    public int getPosY() {
+    /**
+     *
+     * @return Y Position in Scene Coordinates
+     */
+    public double getPosY() {
         return posY;
     }
 
-    public float getG() {
-        return g;
-    }
 
-    public float getHeuristic() {
-        return heuristic;
-    }
+    public void setFloor(Floor f) {this.myFloor = f;}
 
-    public float getF() {
-        return f;
-    }
 
     public NodeEdge getParent() {
         return parent;
     }
+    public Collection<NodeEdge> getEdges() {return edges;}
 
-    public HashSet<NodeEdge> getEdges() {
-        return edges;
-    }
-
-    public void setG(float g) {
-        this.g = g;
-    }
-
-    public void setFloor(Floor f) {
-        this.myFloor = f;
-    }
-
-    public void setHeuristic(float heuristic) {
-        this.heuristic = heuristic;
-    }
-
-    public void setF(float f) {
-        this.f = f;
+    /**
+     * Determines if this node has a node to another node.
+     *
+     * @param n
+     * @return true if this node has a node to another node, false otherwise.
+     */
+    public boolean hasEdgeTo(MapNode n) {
+        for (NodeEdge e: edges) {
+            if (e.getOtherNode(this).equals(n)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setParent(NodeEdge parent) {
@@ -75,47 +133,122 @@ public class MapNode
 
     public int getNodeID(){ return this.nodeID; }
 
-    public MapNode() {
-        this.edges = new HashSet<NodeEdge>();
+    public UID getNodeUID() {
+        return this.nodeUID;
     }
 
-
-    public MapNode(int nodeID) {
-        this();
-        this.nodeID = nodeID;
-    }
-
-    public MapNode(int nodeID, int posX, int posY) {
-        this();
-        this.nodeID = nodeID;
-        this.posX = posX;
-        this.posY = posY;
-    }
-
+    /**
+     * Add an edge to this mapnode
+     * @param e edge to add
+     */
     public void addEdge(NodeEdge e) {
         this.edges.add(e);
     }
 
-    public void resetTempValues() {
-        this.g = 0;
-        this.heuristic = Float.MAX_VALUE;
-        this.f = Float.MAX_VALUE;
-        this.parent = null;
-    }
-
     public boolean equals(Object obj) {
         if (obj instanceof MapNode) {
-            return (this.nodeID == ((MapNode) obj).nodeID);
+            return this.equals((MapNode) obj);
         } else {
             return false;
         }
     }
 
     public int hashCode() {
-        return (nodeID*11);
+        return (nodeUID.hashCode());
     }
 
     public boolean equals(MapNode aNode) {
-        return (this.nodeID == ((MapNode) aNode).nodeID);
+        return (this.nodeUID.equals(aNode.getNodeUID()));
     }
+
+    /*****************************GRAPHICAL FUNCTIONS**********************/
+    /**
+     * Set the type of the underlying drag icon
+     * @param type (Doctor, bathroom, etc.)
+     */
+    public void setType (DragIconType type) {
+        icon.setType(type);
+    }
+
+    /**
+     * Get the icon type of the underlying DragIcon
+     *
+     * @return Drag Icon type
+     */
+    public DragIconType getIconType()
+    {
+        return icon.getType();
+    }
+
+    /**
+     * If the node, is being hovered on during map building, slightly change opacity
+     * to indicate it can be dropped on
+     */
+    public void changeToHoverOpacity()
+    {
+        icon.setOpacity(NODE_HOVER_OPACITY);
+    }
+
+    /**
+     * On mouse exit, change opacity back to solid
+     */
+    public void changeToNormalOpacity()
+    {
+        icon.setOpacity(NODE__NORMAL_OPACITY);
+    }
+
+
+    @Override
+    public Node getNodeToDisplay()
+    {
+        return icon;
+    }
+
+    /**
+     * Sends underlying icon to back
+     */
+    public void toBack()
+    {
+        icon.toBack();
+    }
+
+    /**
+     * Sends underlying icon to front
+     */
+    public void toFront()
+    {
+        icon.toFront();
+    }
+
+    /*******************************A STAR FUNCTIONS **********************************/
+
+    public void setG(double g) {
+        this.g = g;
+    }
+    public double getG() {
+        return g;
+    }
+    public double getF() {
+        return f;
+    }
+    public void setF(double f) {
+        this.f = f;
+    }
+    public void setHeuristic(double heuristic) {
+        this.heuristic = heuristic;
+    }
+    public double getHeuristic() {
+        return heuristic;
+    }
+
+    /**
+     * Resets the temp values used for pathfinding to the default values.
+     */
+    public void resetTempValues() {
+        this.g = 0;
+        this.heuristic = Double.MAX_VALUE;
+        this.f = Double.MAX_VALUE;
+        this.parent = null;
+    }
+
 }

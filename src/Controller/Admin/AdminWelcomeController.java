@@ -1,10 +1,19 @@
 package Controller.Admin;
-import Controller.Main;
+
+import Controller.AbstractController;
+import Controller.SceneSwitcher;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 
-public class AdminWelcomeController
+public class AdminWelcomeController extends AbstractController
 {
     @FXML
     Button btnBack;
@@ -12,19 +21,37 @@ public class AdminWelcomeController
     Button btnModifyDirectory;
     @FXML
     Button btnChangeFloorplan;
-    @FXML
-    private void clickedBack()
+
+    Stage primaryStage;
+
+    public AdminWelcomeController(){
+
+    }
+
+    public void setStage(Stage s)
     {
-        Main.thisStage.setScene(Main.adminLogin);
+        primaryStage = s;
+    }
+
+    @FXML
+    private void clickedBack() throws IOException
+    {
+        SceneSwitcher.switchToLoginView(primaryStage);
+    }
+
+    @FXML
+    private void clickedModifyDirectory() throws IOException
+    {
+        SceneSwitcher.switchToModifyDirectoryView(primaryStage);
     }
     @FXML
-    private void clickedModifyDirectory()
+    private void clickedChangeFloorplan() throws IOException
     {
-        Main.thisStage.setScene(Main.changingDirectoryView);
+        SceneSwitcher.switchToModifyLocationsView(primaryStage);
     }
+
     @FXML
-    private void clickedChangeFloorplan()
-    {
-        Main.thisStage.setScene(Main.modifyLocations);
+    protected void initialize() {
+
     }
 }

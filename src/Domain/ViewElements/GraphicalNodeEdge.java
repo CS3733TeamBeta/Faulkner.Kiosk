@@ -1,104 +1,146 @@
 
 package Domain.ViewElements;
 
-import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.When;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.Node;
 import javafx.scene.shape.Line;
-
-import java.io.IOException;
-import java.util.UUID;
 
 
 /**
  * Created by benhylak on 2/3/17.
  */
-public class GraphicalNodeEdge extends AnchorPane
+public class GraphicalNodeEdge extends NodeEdge implements DrawableMapEntity
 {
+    Line edgeLine;
 
-    @FXML
-    Line node_link;
-
-    NodeEdge nodeEdge = null;
-
+    protected GraphicalMapNode source = null;
+    protected GraphicalMapNode target = null;
 
     public GraphicalNodeEdge()
     {
-        if(nodeEdge == null)
-        {
-            nodeEdge = new NodeEdge();
-        }
-
-        FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/Admin/MapBuilder/NodeLink.fxml")
-        );
-
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
-
-        //provide a universally unique identifier for this object
-        setId(UUID.randomUUID().toString());
+        edgeLine = new Line();
     }
 
-    public GraphicalNodeEdge(MapNode a, MapNode b)
+    public GraphicalNodeEdge(GraphicalMapNode source, GraphicalMapNode target)
     {
-        nodeEdge = new NodeEdge(a, b);
-       // node_link.setStart(a.getLocation);
+       this.source = source;
+       this.target = target;
+       // node_link.setStartPoint(a.getLocation);
     }
 
     @FXML
     private void initialize() {
 
-
     }
 
-    public NodeEdge getNodeEdge()
+    /**
+     *
+     * @return source of edge
+     */
+    public GraphicalMapNode getSource()
     {
-        return nodeEdge;
+        return source;
     }
 
-
-    public void setStart(Point2D startPoint) {
-
-        node_link.setStartX(startPoint.getX());
-        node_link.setStartY(startPoint.getY());
+    /**
+     *
+     * @return target of edge
+     */
+    public GraphicalMapNode getTarget()
+    {
+        return target;
     }
 
-    public void setEnd(Point2D endPoint) {
+    /**
+     * Set source node and update start/end point
+     * @param source
+     */
+    public void setSource(GraphicalMapNode source)
+    {
+        this.source = source;
 
-        node_link.setEndX(endPoint.getX());
-        node_link.setEndY(endPoint.getY());
+        DragIcon drawableNode = (DragIcon)source.getNodeToDisplay();
+
+        Bounds boundsInScene = drawableNode.getBoundsInLocal();
+
+        Point2D startPoint = new Point2D(
+                boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
+                boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
+        );
+
+        setStartPoint(drawableNode.localToParent(startPoint));
+        setEndPoint(drawableNode.localToParent(startPoint));
     }
 
+    /**
+     * Set target node and update start point
+     * @param target
+     */
+    public void setTarget(GraphicalMapNode target)
+    {
+        this.target = target;
 
-/*public void bindEnds (DraggableNode source, DraggableNode target) {
-    node_link.startXProperty().bind(
-            Bindings.add(source.layoutXProperty(), (source.getWidth() / 2.0)));
+        DragIcon dragIcon = (DragIcon) target.getNodeToDisplay();
 
-    node_link.startYProperty().bind(
-            Bindings.add(source.layoutYProperty(), (source.getWidth() / 2.0)));
+        Bounds boundsInScene = dragIcon.getBoundsInLocal();
 
-    node_link.endXProperty().bind(
-            Bindings.add(target.layoutXProperty(), (target.getWidth() / 2.0)));
+        Point2D endPoint = new Point2D(
+                boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
+                boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
+        );
 
-    node_link.endYProperty().bind(
-            Bindings.add(target.layoutYProperty(), (target.getWidth() / 2.0)));
+        setEndPoint(dragIcon.localToParent(endPoint));
+    }
 
-    source.registerLink (getId());
-    target.registerLink (getId());
-}*/
+    /**
+     * Set start point
+     * @param startPoint
+     */
+    public void setStartPoint(Point2D startPoint) {
+
+        edgeLine.setStartX(startPoint.getX());
+        edgeLine.setStartY(startPoint.getY());
+    }
+
+    //Set end point
+    public void setEndPoint(Point2D endPoint) {
+
+        edgeLine.setEndX(endPoint.getX());
+        edgeLine.setEndY(endPoint.getY());
+    }
+
+    public Line getEdgeLine()
+    {
+        return edgeLine;
+    }
+
+    public void updatePosViaNode(GraphicalMapNode node)
+    {
+        Node drawableNode = node.getNodeToDisplay();
+
+        Point2D newPoint = new Point2D(drawableNode.getLayoutX() + drawableNode.getBoundsInLocal().getWidth() / 2,
+                drawableNode.getLayoutY() + drawableNode.getBoundsInLocal().getHeight() / 2);
+
+        if (node == target) {
+            setEndPoint(newPoint);
+        }
+        else
+        {
+            setStartPoint(newPoint);
+        }
+    }
+
+    @Override
+    public Node getNodeToDisplay()
+    {
+        return edgeLine;
+    }
+
+    public void toBack()
+    {
+        edgeLine.toBack();;
+    }
 }
