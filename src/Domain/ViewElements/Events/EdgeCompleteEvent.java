@@ -1,20 +1,20 @@
 package Domain.ViewElements.Events;
 
-import Domain.ViewElements.GraphicalNodeEdge;
+import Domain.Map.NodeEdge;
 
 /**
  * Created by benhylak on 2/4/17.
  */
 public class EdgeCompleteEvent
 {
-    GraphicalNodeEdge edge;
+    NodeEdge edge;
 
-    public EdgeCompleteEvent(GraphicalNodeEdge edge)
+    public EdgeCompleteEvent(NodeEdge edge)
     {
         this.edge =edge;
     }
 
-    public GraphicalNodeEdge getNodeEdge()
+    public NodeEdge getNodeEdge()
     {
         return edge;
     }

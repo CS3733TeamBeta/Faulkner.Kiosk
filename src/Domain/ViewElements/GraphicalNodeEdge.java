@@ -1,22 +1,12 @@
 
 package Domain.ViewElements;
 
-import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.When;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
-
-import java.io.IOException;
-import java.util.UUID;
 
 
 /**
@@ -38,7 +28,7 @@ public class GraphicalNodeEdge extends NodeEdge implements DrawableMapEntity
     {
        this.source = source;
        this.target = target;
-       // node_link.setStart(a.getLocation);
+       // node_link.setStartPoint(a.getLocation);
     }
 
     @FXML
@@ -81,8 +71,8 @@ public class GraphicalNodeEdge extends NodeEdge implements DrawableMapEntity
                 boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
         );
 
-        setStart(drawableNode.localToParent(startPoint));
-        setEnd(drawableNode.localToParent(startPoint));
+        setStartPoint(drawableNode.localToParent(startPoint));
+        setEndPoint(drawableNode.localToParent(startPoint));
     }
 
     /**
@@ -102,21 +92,21 @@ public class GraphicalNodeEdge extends NodeEdge implements DrawableMapEntity
                 boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
         );
 
-        setEnd(dragIcon.localToParent(endPoint));
+        setEndPoint(dragIcon.localToParent(endPoint));
     }
 
     /**
      * Set start point
      * @param startPoint
      */
-    public void setStart(Point2D startPoint) {
+    public void setStartPoint(Point2D startPoint) {
 
         edgeLine.setStartX(startPoint.getX());
         edgeLine.setStartY(startPoint.getY());
     }
 
     //Set end point
-    public void setEnd(Point2D endPoint) {
+    public void setEndPoint(Point2D endPoint) {
 
         edgeLine.setEndX(endPoint.getX());
         edgeLine.setEndY(endPoint.getY());
@@ -135,11 +125,11 @@ public class GraphicalNodeEdge extends NodeEdge implements DrawableMapEntity
                 drawableNode.getLayoutY() + drawableNode.getBoundsInLocal().getHeight() / 2);
 
         if (node == target) {
-            setEnd(newPoint);
+            setEndPoint(newPoint);
         }
         else
         {
-            setStart(newPoint);
+            setStartPoint(newPoint);
         }
     }
 

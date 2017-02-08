@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Iterator;
 
+import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
@@ -17,9 +18,6 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
 
@@ -37,7 +35,7 @@ public class MapEditorController extends AnchorPane{
 	private EventHandler<DragEvent> onLineSyncNeeded = null;
 	private MapEditorModel model;
 
-	GraphicalNodeEdge drawingEdge;
+	NodeEdge drawingEdge;
 
 	public MapEditorController() {
 		
@@ -59,8 +57,8 @@ public class MapEditorController extends AnchorPane{
 		//connects the two, sends sources, positions them etc.
 		model.addEdgeCompleteHandler(event->
 		{
-			GraphicalMapNode sourceNode = event.getNodeEdge().getSource();
-			GraphicalMapNode targetNode = event.getNodeEdge().getTarget();
+			MapNode sourceNode = event.getNodeEdge().getSource();
+			MapNode targetNode = event.getNodeEdge().getTarget();
 
 			model.addMapEdge(drawingEdge);
 
@@ -128,14 +126,14 @@ public class MapEditorController extends AnchorPane{
 	 * @param n node to keep in sync
 	 * @return event handler for mouse event that updates positions of lines when triggered
 	 */
-	private static void makeMapNodeDraggable (GraphicalMapNode n)
+	private static void makeMapNodeDraggable (MapNode n)
 	{
 		MouseControlUtil.makeDraggable(n.getNodeToDisplay(), //could be used to track node and update line
 				event ->
 				{
-					for (NodeEdge edge : n.getGraphicalEdges())
+					for (NodeEdge edge : n.getEdges())
 					{
-						((GraphicalNodeEdge)edge).updatePosViaNode(n);
+						((NodeEdge)edge).updatePosViaNode(n);
 					}
 
 					n.setPosX(event.getSceneX());
@@ -254,7 +252,7 @@ public class MapEditorController extends AnchorPane{
 
 					if (container.getValue("scene_coords") != null) {
 
-						GraphicalMapNode droppedNode = new GraphicalMapNode(); // make a new graphical map node
+						MapNode droppedNode = new MapNode(); // make a new  map node
 						makeMapNodeDraggable(droppedNode); //make it draggable
 						
 						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
@@ -281,7 +279,7 @@ public class MapEditorController extends AnchorPane{
 									}
 								}
 
-								drawingEdge = new GraphicalNodeEdge();
+								drawingEdge = new NodeEdge();
 								drawingEdge.setSource(droppedNode);
 
 								right_pane.getChildren().add(drawingEdge.getNodeToDisplay());
@@ -310,7 +308,7 @@ public class MapEditorController extends AnchorPane{
 									{
 										Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
 										Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
-										drawingEdge.setEnd(mouseCoords); //set the end point
+										drawingEdge.setEndPoint(mouseCoords); //set the end point
 									}
 								});
 							}
@@ -318,8 +316,8 @@ public class MapEditorController extends AnchorPane{
 
 								if(ev.getClickCount() == 2){ // double click
 
-									for (Iterator<NodeEdge> i = droppedNode.getGraphicalEdges().iterator(); i.hasNext();) {
-										GraphicalNodeEdge edge = (GraphicalNodeEdge)i.next();
+									for (Iterator<NodeEdge> i = droppedNode.getEdges().iterator(); i.hasNext();) {
+										NodeEdge edge = (NodeEdge)i.next();
 										right_pane.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
 
 										model.removeMapEdge(edge); //remove edge from model

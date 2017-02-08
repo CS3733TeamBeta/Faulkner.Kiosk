@@ -1,14 +1,8 @@
 package Model;
 
-import Domain.Map.Building;
-import Domain.Map.Floor;
-import Domain.Map.Hospital;
-import Domain.Map.MapNode;
+import Domain.Map.*;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
-import Domain.ViewElements.GraphicalMapNode;
-import Domain.ViewElements.GraphicalNodeEdge;
-import javafx.scene.Node;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,8 +17,8 @@ public class MapEditorModel
     LinkedList<EdgeCompleteEventHandler> edgeCompleteHandlers;
     ArrayList<DragIcon> sideBarIcons;
 
-    HashSet<GraphicalMapNode> mapNodes;
-    HashSet<GraphicalNodeEdge> mapEdges;
+    HashSet<MapNode> mapNodes;
+    HashSet<NodeEdge> mapEdges;
 
     Hospital hospital;
     Floor currentFloor;
@@ -34,8 +28,8 @@ public class MapEditorModel
         edgeCompleteHandlers = new LinkedList<EdgeCompleteEventHandler>(); //instantiate empty linked list for handlers;
 
         sideBarIcons = new ArrayList<DragIcon>();
-        mapNodes = new HashSet<GraphicalMapNode>();
-        mapEdges = new HashSet<GraphicalNodeEdge>();
+        mapNodes = new HashSet<MapNode>();
+        mapEdges = new HashSet<NodeEdge>();
 
         hospital = new Hospital();
 
@@ -65,7 +59,7 @@ public class MapEditorModel
      *
      * @param nodeToAdd The node to add to the floor
      */
-    public void addNodeToCurrentFloor(GraphicalMapNode nodeToAdd)
+    public void addNodeToCurrentFloor(MapNode nodeToAdd)
     {
         getCurrentFloor().addNode(nodeToAdd);
     }
@@ -110,7 +104,7 @@ public class MapEditorModel
      *
      * @param n
      */
-    public void addMapNode(GraphicalMapNode n)
+    public void addMapNode(MapNode n)
     {
         mapNodes.add(n);
     }
@@ -119,7 +113,7 @@ public class MapEditorModel
      * Remove map node from floor under edit
      * @param n
      */
-    public void removeMapNodeFromCurrentFloor(GraphicalMapNode n)
+    public void removeMapNodeFromCurrentFloor(MapNode n)
     {
        getCurrentFloor().removeNode(n);
     }
@@ -128,7 +122,7 @@ public class MapEditorModel
      * Add map edge to model
      * @param e map edge to add
      */
-    public void addMapEdge(GraphicalNodeEdge e)
+    public void addMapEdge(NodeEdge e)
     {
         mapEdges.remove(e);
     }
@@ -137,7 +131,7 @@ public class MapEditorModel
      * Remove map edge from model
      * @param e map edge to remove
      */
-    public void removeMapEdge(GraphicalNodeEdge e)
+    public void removeMapEdge(NodeEdge e)
     {
         mapEdges.remove(e);
     }

@@ -53,12 +53,12 @@ public class DragIcon extends AnchorPane{
 						boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
 				);
 
-				edgeLine.setStart(startPoint);
+				edgeLine.setStartPoint(startPoint);
 
 				this.getParent().setOnMouseMoved(ev->{
 					Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
 					Point2D mouseCoords = this.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
-					edgeLine.setEnd(mouseCoords);
+					edgeLine.setEndPoint(mouseCoords);
 				});
 			}
 		});*/

@@ -251,7 +251,7 @@ public class Path implements Iterable {
     public void printPathEdges(){
         System.out.println("Printing Edges");
         for (NodeEdge e: this.pathEdges) {
-            System.out.println("From " + Integer.toString(e.getNodeA().getNodeID()) + "to " + Integer.toString(e.getNodeB().getNodeID()));
+            System.out.println("From " + Integer.toString(e.getSource().getNodeID()) + "to " + Integer.toString(e.getTarget().getNodeID()));
         }
     }
 

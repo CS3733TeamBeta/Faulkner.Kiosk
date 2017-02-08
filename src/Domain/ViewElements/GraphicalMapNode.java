@@ -64,21 +64,7 @@ public class GraphicalMapNode extends MapNode implements DrawableMapEntity
         return icon;
     }
 
-    /**
-     * Sends underlying icon to back
-     */
-    public void toBack()
-    {
-        icon.toBack();
-    }
 
-    /**
-     * Sends underlying icon to front
-     */
-    public void toFront()
-    {
-        icon.toFront();
-    }
 
     /**
      * Set the type of the underlying drag icon
