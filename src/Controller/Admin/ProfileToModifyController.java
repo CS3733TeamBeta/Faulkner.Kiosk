@@ -2,10 +2,7 @@ package Controller.Admin;
 
 import Controller.Main;
 import Model.DoctorProfile;
-import java.util.HashSet;
 
-import Model.RoomInfo;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,15 +10,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import Model.Database.DatabaseManager;
+
 import javafx.scene.control.Alert.AlertType;
 
 public class ProfileToModifyController {
@@ -126,7 +120,7 @@ public class ProfileToModifyController {
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../../ChangingDirectoryView.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../ModifyDirectoryView.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -134,7 +128,7 @@ public class ProfileToModifyController {
 
         primaryStage.setScene(scene);
 
-        ChangingDirectoryController controller = loader.getController();
+        ModifyDirectoryController controller = loader.getController();
         controller.setStage(primaryStage);
     }
 

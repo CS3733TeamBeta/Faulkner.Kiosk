@@ -1,7 +1,8 @@
 package Controller.Admin;
 
-import Controller.Admin.*;
-import Controller.Main;
+import Controller.AbstractController;
+import Controller.SceneSwitcher;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,7 +13,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 
-public class AdminWelcomeController {
+public class AdminWelcomeController extends AbstractController
+{
     @FXML
     Button btnBack;
     @FXML
@@ -34,36 +36,13 @@ public class AdminWelcomeController {
     @FXML
     private void clickedBack() throws IOException
     {
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/AdminLoginView.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        AdminLoginController controller = loader.getController();
-        controller.setStage(primaryStage);
+        SceneSwitcher.switchToLoginView(primaryStage);
     }
+
     @FXML
     private void clickedModifyDirectory() throws IOException
     {
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/ChangingDirectoryView.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        ChangingDirectoryController controller = loader.getController();
-        controller.setStage(primaryStage);
+        SceneSwitcher.switchToModifyDirectoryView(primaryStage);
     }
     @FXML
     private void clickedChangeFloorplan() throws IOException
@@ -71,7 +50,7 @@ public class AdminWelcomeController {
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../../Admin/ModifyLocations.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/ModifyLocationsController.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -79,7 +58,7 @@ public class AdminWelcomeController {
 
         primaryStage.setScene(scene);
 
-        ModifyLocations controller = loader.getController();
+        ModifyLocationsController controller = loader.getController();
         controller.setStage(primaryStage);
     }
 

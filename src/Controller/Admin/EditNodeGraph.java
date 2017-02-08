@@ -1,6 +1,5 @@
 package Controller.Admin;
 
-import Controller.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -84,7 +83,7 @@ public class EditNodeGraph
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../Admin/ModifyLocations.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../Admin/ModifyLocationsController.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -92,10 +91,10 @@ public class EditNodeGraph
 
         primaryStage.setScene(scene);
 
-        ModifyLocations controller = loader.getController();
+        ModifyLocationsController controller = loader.getController();
         controller.setStage(primaryStage);
 
-        new ModifyLocations();
+        new ModifyLocationsController();
     }
 
     @FXML
@@ -103,7 +102,7 @@ public class EditNodeGraph
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../../Admin/ModifyLocations.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/ModifyLocationsController.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -111,10 +110,10 @@ public class EditNodeGraph
 
         primaryStage.setScene(scene);
 
-        ModifyLocations controller = loader.getController();
+        ModifyLocationsController controller = loader.getController();
         controller.setStage(primaryStage);
 
-        new ModifyLocations();
+        new ModifyLocationsController();
     }
 
 }

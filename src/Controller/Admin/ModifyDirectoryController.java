@@ -1,25 +1,23 @@
 package Controller.Admin;
 
+import Controller.AbstractController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-import Controller.Admin.*;
 
 import java.io.IOException;
 
-public class ModifyLocations
+public class ModifyDirectoryController extends AbstractController
 {
     @FXML
-    Button logout;
+    Button btnBack;
     @FXML
-    Button changeFloorLayout;
+    Button btnAddNewProfile;
     @FXML
-    Button changeRoomAssignments;
-    @FXML
-    Button back;
+    Button btnModifyExistingProfile;
 
     Stage primaryStage;
 
@@ -28,12 +26,13 @@ public class ModifyLocations
         primaryStage = s;
     }
 
-    public ModifyLocations(){
+
+    public ModifyDirectoryController(){
 
     }
 
     @FXML
-    private void backButton()throws IOException
+    private void clickedBack() throws IOException
     {
         FXMLLoader loader;
         Parent root;
@@ -49,14 +48,13 @@ public class ModifyLocations
         AdminWelcomeController controller = loader.getController();
         controller.setStage(primaryStage);
     }
-
     @FXML
-    private void changeFloorLayoutButton() throws IOException
+    private void clickedAddNewProfile() throws IOException
     {
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../../Admin/EditNodeGraph.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/AddNewProfile.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -64,16 +62,16 @@ public class ModifyLocations
 
         primaryStage.setScene(scene);
 
-        EditNodeGraph controller = loader.getController();
+        AddNewProfileController controller = loader.getController();
         controller.setStage(primaryStage);
     }
-
     @FXML
-    private void changeRoomAssignments() throws IOException{
+    private void clickedModifyExistingProfile() throws IOException
+    {
         FXMLLoader loader;
         Parent root;
 
-        loader = new FXMLLoader(getClass().getResource("../../Admin/EditRoomAttributes.fxml"));
+        loader = new FXMLLoader(getClass().getResource("../../Admin/ChooseProfiletoModify.fxml"));
 
         root = loader.load();
         //create a new scene with root and set the stage
@@ -81,24 +79,9 @@ public class ModifyLocations
 
         primaryStage.setScene(scene);
 
-        EditRoomAttributes controller = loader.getController();
+        ProfileToModifyController controller = loader.getController();
         controller.setStage(primaryStage);
-    }
 
-    @FXML
-    private void logoutButton() throws IOException{
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/AdminLoginView.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        AdminLoginController controller = loader.getController();
-        controller.setStage(primaryStage);
     }
 }
+

@@ -2,7 +2,9 @@
 
 package Controller.Admin;
 
+import Controller.AbstractController;
 import Controller.Main;
+import Controller.SceneSwitcher;
 import Exceptions.AddFoundException;
 import Model.DoctorProfile;
 import javafx.beans.property.SimpleStringProperty;
@@ -20,7 +22,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class AddNewProfileController
+public class AddNewProfileController extends AbstractController
 {
     ObservableList<String> addedDept = FXCollections.observableArrayList();
     ObservableList<String> deptList = FXCollections.observableArrayList();
@@ -72,58 +74,25 @@ public class AddNewProfileController
 
 
     @FXML
-    private void logoutHit()throws IOException{
-        FXMLLoader loader;
-        Parent root;
+    private void logoutHit()throws IOException
+    {
+        SceneSwitcher.switchToLoginView(primaryStage);
+    }
 
-        loader = new FXMLLoader(getClass().getResource("../../Admin/AdminLoginView.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        AdminLoginController controller = loader.getController();
-        controller.setStage(primaryStage);
+    /**
+     * Switches to modify directory view
+     * @throws IOException
+     */
+    @FXML
+    private void backHit() throws IOException
+    {
+        SceneSwitcher.switchToModifyLocationsView(primaryStage);
     }
 
     @FXML
-    private void backHit() throws IOException{
-
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/ChangingDirectoryView.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        ChangingDirectoryController controller = loader.getController();
-        controller.setStage(primaryStage);
-
-    }
-
-    @FXML
-    private void saveHit() throws IOException{
-        processInformation();
-
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/ChangingDirectoryView.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        ChangingDirectoryController controller = loader.getController();
-        controller.setStage(primaryStage);
+    private void saveHit() throws IOException
+    {
+        SceneSwitcher.switchToModifyDirectoryView(primaryStage);
     }
 
     @FXML

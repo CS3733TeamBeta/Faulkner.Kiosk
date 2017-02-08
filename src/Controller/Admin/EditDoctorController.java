@@ -1,15 +1,13 @@
 package Controller.Admin;
 
-import Controller.Main;
+import Controller.AbstractController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-import javax.swing.text.html.ImageView;
-
-public class EditDoctorController
+public class EditDoctorController extends AbstractController
 {
     @FXML
     Button logout;

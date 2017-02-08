@@ -1,12 +1,13 @@
 package Controller.Admin;
 
+import Controller.AbstractController;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.fxml.FXML;
 
-public class EditRoomController
+public class EditRoomController extends AbstractController
 {
     @FXML
     TextField roomNumber;
