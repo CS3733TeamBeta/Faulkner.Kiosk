@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Iterator;
 
+import Controller.AbstractController;
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import Domain.ViewElements.*;
@@ -15,17 +16,21 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.control.SplitPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
 
-public class MapEditorController extends AnchorPane{
+public class MapEditorController extends AbstractController {
 
 	@FXML SplitPane base_pane;
-	@FXML AnchorPane right_pane;
-	@FXML VBox left_pane;
+	@FXML AnchorPane mapPane;
+	@FXML HBox bottom_bar;
+	@FXML AnchorPane root_pane;
+	@FXML ImageView mapImage;
 
 	private DragIcon mDragOverIcon = null;
 	
@@ -39,7 +44,7 @@ public class MapEditorController extends AnchorPane{
 
 	public MapEditorController() {
 		
-		FXMLLoader fxmlLoader = new FXMLLoader(
+		/*FXMLLoader fxmlLoader = new FXMLLoader(
 				getClass().getResource("/Admin/MapBuilder/MapEditor.fxml")
 				);
 		
@@ -52,6 +57,8 @@ public class MapEditorController extends AnchorPane{
 		} catch (IOException exception) {
 		    throw new RuntimeException(exception);
 		}
+		*/
+		model = new MapEditorModel();
 
 		//Runs once the edge is drawn from one node to another
 		//connects the two, sends sources, positions them etc.
@@ -62,7 +69,7 @@ public class MapEditorController extends AnchorPane{
 
 			model.addMapEdge(drawingEdge);
 
-			right_pane.setOnMouseMoved(null);
+			mapPane.setOnMouseMoved(null);
 
 			drawingEdge.setSource(sourceNode);
 			drawingEdge.setTarget(targetNode);
@@ -78,6 +85,7 @@ public class MapEditorController extends AnchorPane{
 
 			sourceNode.toFront();
 			sourceNode.toFront();
+			mapImage.toBack();
 		});
 	}
 
@@ -101,7 +109,7 @@ public class MapEditorController extends AnchorPane{
 		mDragOverIcon.setVisible(false);
 		mDragOverIcon.setOpacity(0.65);
 
-		getChildren().add(mDragOverIcon);
+		root_pane.getChildren().add(mDragOverIcon);
 		
 		//populate left pane with multiple colored icons for testing
 		for (int i = 0; i < 6; i++)
@@ -112,9 +120,10 @@ public class MapEditorController extends AnchorPane{
 			icn.setType(DragIconType.values()[i]);
 
 			model.addSideBarIcon(icn);
+			bottom_bar.getChildren().add(icn);
 		}
 
-		left_pane.getChildren().setAll(model.getSideBarIcons());
+		//bottom_bar.getChildren().setAll(model.getSideBarIcons());
 
 		buildDragHandlers();
 	}
@@ -153,8 +162,8 @@ public class MapEditorController extends AnchorPane{
 
 				// set drag event handlers on their respective objects
 				base_pane.setOnDragOver(onIconDragOverRoot);
-				right_pane.setOnDragOver(onIconDragOverRightPane);
-				right_pane.setOnDragDropped(onIconDragDropped);
+				mapPane.setOnDragOver(onIconDragOverRightPane);
+				mapPane.setOnDragDropped(onIconDragDropped);
 				
 				// get a reference to the clicked DragIcon object
 				DragIcon icn = (DragIcon) event.getSource();
@@ -185,11 +194,11 @@ public class MapEditorController extends AnchorPane{
 			@Override
 			public void handle(DragEvent event) {
 				
-				Point2D p = right_pane.sceneToLocal(event.getSceneX(), event.getSceneY());
+				Point2D p = mapPane.sceneToLocal(event.getSceneX(), event.getSceneY());
 
 				//turn on transfer mode and track in the right-pane's context 
 				//if (and only if) the mouse cursor falls within the right pane's bounds.
-				if (!right_pane.boundsInLocalProperty().get().contains(p)) {
+				if (!mapPane.boundsInLocalProperty().get().contains(p)) {
 					
 					event.acceptTransferModes(TransferMode.ANY);
 					mDragOverIcon.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
@@ -235,13 +244,13 @@ public class MapEditorController extends AnchorPane{
 			}
 		};
 
-		this.setOnDragDone (new EventHandler <DragEvent> (){
+		root_pane.setOnDragDone (new EventHandler <DragEvent> (){
 			
 			@Override
 			public void handle (DragEvent event) {
 				
-				right_pane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane); //remove the event handlers created on drag start
-				right_pane.removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
+				mapPane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane); //remove the event handlers created on drag start
+				mapPane.removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
 				base_pane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRoot);
 								
 				mDragOverIcon.setVisible(false);
@@ -256,7 +265,7 @@ public class MapEditorController extends AnchorPane{
 						makeMapNodeDraggable(droppedNode); //make it draggable
 						
 						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
-						right_pane.getChildren().add(droppedNode.getNodeToDisplay()); //add to right panes children
+						mapPane.getChildren().add(droppedNode.getNodeToDisplay()); //add to right panes children
 						model.addMapNode(droppedNode); //add node to model
 
 						droppedNode.toFront(); //send the node to the front
@@ -273,36 +282,37 @@ public class MapEditorController extends AnchorPane{
 							{
 								if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
 								{
-									if(right_pane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
+									if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
 									{
-										right_pane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
+										mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
 									}
 								}
 
 								drawingEdge = new NodeEdge();
 								drawingEdge.setSource(droppedNode);
 
-								right_pane.getChildren().add(drawingEdge.getNodeToDisplay());
+								mapPane.getChildren().add(drawingEdge.getNodeToDisplay());
 								drawingEdge.toBack();
+								mapImage.toBack();
 
 								droppedNode.getNodeToDisplay().setOnMouseDragEntered(null); //sets drag handlers to null so they can't be repositioned during line drawing
 								droppedNode.getNodeToDisplay().setOnMouseDragged(null);
 
-								setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
+								root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
 									if (drawingEdge!=null && keyEvent.getCode() == KeyCode.ESCAPE) {
-										if(right_pane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
+										if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
 										{
-											right_pane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
+											mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
 										}
 										drawingEdge = null;
 
-										right_pane.setOnMouseMoved(null);
+										mapPane.setOnMouseMoved(null);
 
 										makeMapNodeDraggable(droppedNode);
 									}
 								});
 
-								right_pane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
+								mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
 
 									if(drawingEdge!=null)
 									{
@@ -318,14 +328,14 @@ public class MapEditorController extends AnchorPane{
 
 									for (Iterator<NodeEdge> i = droppedNode.getEdges().iterator(); i.hasNext();) {
 										NodeEdge edge = (NodeEdge)i.next();
-										right_pane.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
+										mapPane.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
 
 										model.removeMapEdge(edge); //remove edge from model
 
 										i.remove();
 									}
 
-									right_pane.getChildren().remove(droppedNode.getNodeToDisplay()); //remove the node
+									mapPane.getChildren().remove(droppedNode.getNodeToDisplay()); //remove the node
 
 									if(drawingEdge!=null)
 									{

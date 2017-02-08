@@ -15,15 +15,16 @@ public class DragDropMain extends Application {
 		try {
 			
 			Scene scene = new Scene(root,640,480);
-			scene.getStylesheets().add(getClass().getResource("../Admin/MapBuilder/application.css").toExternalForm());
-			primaryStage.setScene(scene);
+			//scene.getStylesheets().add(getClass().getResource("../Admin/MapBuilder/application.css").toExternalForm());
+			SceneSwitcher.switchToScene(primaryStage, "../Admin/MapBuilder/MapEditorView.fxml");
+			//primaryStage.setScene(scene);
 			primaryStage.show();
 			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		
-		root.setCenter(new MapEditorController());
+		//root.setCenter(new MapEditorController());
 	}
 	
 	public static void main(String[] args) {

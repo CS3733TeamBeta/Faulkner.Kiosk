@@ -27,7 +27,7 @@ public class SceneSwitcher
     protected static final String EditRoomAttributesViewPath = AdminPackage + "/EditRoomAttributes.fxml";
     protected static final String ModifyLocationsViewPath = AdminPackage + "/ModifyLocations.fxml";
 
-    protected static AbstractController switchToScene(Stage primaryStage, String pathToView) throws IOException
+    public static AbstractController switchToScene(Stage primaryStage, String pathToView) throws IOException
     {
         FXMLLoader loader;
         Parent root;
