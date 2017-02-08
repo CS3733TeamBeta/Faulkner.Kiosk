@@ -65,6 +65,11 @@ public class AddNewProfileController
         deptList = Main.departments;
     }
 
+    public void initialize() {
+        deptList = Main.departments;
+        deptListView.setItems(FXCollections.observableList(deptList));
+    }
+
 
     @FXML
     private void logoutHit()throws IOException{
@@ -119,12 +124,6 @@ public class AddNewProfileController
 
         ChangingDirectoryController controller = loader.getController();
         controller.setStage(primaryStage);
-    }
-
-    @FXML
-    private void showDeptList() {
-        deptList = Main.departments;
-        deptListView.setItems(FXCollections.observableList(deptList));
     }
 
     @FXML

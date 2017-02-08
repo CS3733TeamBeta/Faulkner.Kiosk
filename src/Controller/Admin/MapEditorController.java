@@ -290,9 +290,9 @@ public class MapEditorController extends AnchorPane{
 							{
 								if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
 								{
-									if(right_pane.getChildren().contains(drawingEdge)) //and the right pane has the drawing edge as child
+									if(right_pane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
 									{
-										right_pane.getChildren().remove(drawingEdge); //remove from the right pane
+										right_pane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
 									}
 								}
 
