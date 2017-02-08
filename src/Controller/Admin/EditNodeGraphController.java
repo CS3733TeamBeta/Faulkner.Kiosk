@@ -1,5 +1,6 @@
 package Controller.Admin;
 
+import Controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,7 +13,7 @@ import java.io.IOException;
 /**
  * Created by Pattop on 1/31/2017.
  */
-public class EditNodeGraph
+public class EditNodeGraphController
 {
     @FXML
     Button addRoom, addIntersection, addConnection,
@@ -29,7 +30,7 @@ public class EditNodeGraph
         primaryStage = s;
     }
 
-    public EditNodeGraph(){
+    public EditNodeGraphController(){
 
     }
 
@@ -80,40 +81,12 @@ public class EditNodeGraph
 
     @FXML
     private void saveHit() throws IOException {
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../Admin/ModifyLocationsController.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        ModifyLocationsController controller = loader.getController();
-        controller.setStage(primaryStage);
-
-        new ModifyLocationsController();
+        SceneSwitcher.switchToModifyLocationsView(primaryStage);
     }
 
     @FXML
     private void exitHit() throws IOException{
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/ModifyLocationsController.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        ModifyLocationsController controller = loader.getController();
-        controller.setStage(primaryStage);
-
-        new ModifyLocationsController();
+        SceneSwitcher.switchToModifyLocationsView(primaryStage);
     }
 
 }

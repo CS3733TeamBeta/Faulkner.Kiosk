@@ -47,19 +47,7 @@ public class AdminWelcomeController extends AbstractController
     @FXML
     private void clickedChangeFloorplan() throws IOException
     {
-        FXMLLoader loader;
-        Parent root;
-
-        loader = new FXMLLoader(getClass().getResource("../../Admin/ModifyLocationsController.fxml"));
-
-        root = loader.load();
-        //create a new scene with root and set the stage
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-
-        ModifyLocationsController controller = loader.getController();
-        controller.setStage(primaryStage);
+        SceneSwitcher.switchToModifyLocationsView(primaryStage);
     }
 
     @FXML
