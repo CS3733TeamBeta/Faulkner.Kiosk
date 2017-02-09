@@ -63,7 +63,7 @@
     </rowConstraints>
     <children>
         <Button fx:id="changeRoomAssignments" onAction="#changeRoomAssignments" mnemonicParsing="false"
-                text="Change Room Assignments" maxHeight="1.7976931348623157E308"
+                text="Change Doctor's Office Assignments" maxHeight="1.7976931348623157E308"
                 maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.columnSpan="8"
                 GridPane.rowIndex="10" GridPane.rowSpan="2"/>
         <Button fx:id="changeFloorLayout" onAction="#changeFloorLayoutButton" mnemonicParsing="false"
