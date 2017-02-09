@@ -129,7 +129,7 @@ public class MapEditorController extends AbstractController {
 		newNodes = new LinkedList<>();
 		newEdges = new LinkedList<>();
 			if(DragDropMain.mvm != null) {
-				System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
+				//System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
 				//import a model if one exists
 				model.setCurrentFloor(DragDropMain.mvm.getCurrentFloor());
 				//and then set all the existing nodes up
@@ -146,7 +146,7 @@ public class MapEditorController extends AbstractController {
 					}
 
 				}
-				System.out.println("Edges to add: " + DragDropMain.mvm.getCurrentFloor().getFloorEdges().size());
+				//System.out.println("Edges to add: " + DragDropMain.mvm.getCurrentFloor().getFloorEdges().size());
 				for(NodeEdge edge : model.getCurrentFloor().getFloorEdges()){
 					drawingEdge = edge;
 					drawingEdge.changeColor(javafx.scene.paint.Color.BLACK);
@@ -229,7 +229,7 @@ public class MapEditorController extends AbstractController {
 
 			if (icn.getType().equals(DragIconType.connector))
 			{
-				System.out.println("Adding Connector");
+				//System.out.println("Adding Connector");
 				icn.setStyle("-fx-background-size: 30 30");
 			}
 
@@ -387,7 +387,7 @@ public class MapEditorController extends AbstractController {
 						if(!model.getCurrentFloor().getFloorNodes().contains(droppedNode)){
 							droppedNode.setPosX(cursorPoint.getX());
 							droppedNode.setPosY(cursorPoint.getY());
-							System.out.println("Node added to: " + droppedNode.getPosX() + " " + droppedNode.getPosY());
+							System.out.println("Node " + droppedNode.getNodeUID() + " added to: " + droppedNode.getPosX() + " " + droppedNode.getPosY());
 							model.getCurrentFloor().getFloorNodes().add(droppedNode);
 						}
 						/* Build up event handlers for this droppedNode */
@@ -497,6 +497,7 @@ public class MapEditorController extends AbstractController {
 
 								}else{
 									System.out.println("End of primary");
+									System.out.println("Node " + droppedNode.getNodeUID() + " moved to: " + droppedNode.getPosX() + " " + droppedNode.getPosY());
 								}
 
 
