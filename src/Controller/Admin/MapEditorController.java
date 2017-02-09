@@ -5,11 +5,8 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import Controller.AbstractController;
-<<<<<<< HEAD
 import Controller.DragDropMain;
-=======
 import Controller.Admin.PopUp.OfficeEditController;
->>>>>>> 724df4feee35dac9b7c731862efd12860db053a1
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import Domain.ViewElements.*;
@@ -528,7 +525,6 @@ public class MapEditorController extends AbstractController {
 		model.removeMapNodeFromCurrentFloor(node); //remove node from mode
 	}
 
-<<<<<<< HEAD
 	private void setupImportedNode(MapNode droppedNode){
 		makeMapNodeDraggable(droppedNode); //make it draggable
 
@@ -633,7 +629,4 @@ public class MapEditorController extends AbstractController {
 			droppedNode.getNodeToDisplay().setOpacity(1);
 		});
 	}
-=======
-
->>>>>>> 724df4feee35dac9b7c731862efd12860db053a1
 }
