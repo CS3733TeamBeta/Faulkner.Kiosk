@@ -39,29 +39,6 @@ public class DragIcon extends AnchorPane{
 		} catch (IOException exception) {
 		    throw new RuntimeException(exception);
 		}
-
-		/*this.setOnMouseClicked(event->{
-
-			if(event.getButton() == MouseButton.SECONDARY)
-			{
-				edgeLine.setVisible(true);
-
-				Bounds boundsInScene = this.getBoundsInLocal();
-
-				Point2D startPoint = new Point2D(
-						boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
-						boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
-				);
-
-				edgeLine.setStartPoint(startPoint);
-
-				this.getParent().setOnMouseMoved(ev->{
-					Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
-					Point2D mouseCoords = this.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
-					edgeLine.setEndPoint(mouseCoords);
-				});
-			}
-		});*/
 	}
 	
 	@FXML

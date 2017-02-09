@@ -51,16 +51,14 @@ public class MapEditorController extends AbstractController {
 	private EventHandler<DragEvent> onIconDragOverRoot = null;
 	private EventHandler<DragEvent> onIconDragDropped = null;
 	private EventHandler<DragEvent> onIconDragOverRightPane = null;
-	private EventHandler<DragEvent> onLineSyncNeeded = null;
 	private MapModel model;
 
 	NodeEdge drawingEdge;
 
-	private LinkedList<MapNode> newNodes;
-	private LinkedList<NodeEdge> newEdges;
 
 	@FXML
 	public void saveInfoAndExit() throws IOException{
+		removeHandlers();
 		updateEdgeWeights();
 		DragDropMain.mvm.setCurrentFloor(this.model.getCurrentFloor());
 		SceneSwitcher.switchToModifyLocationsView(this.getStage());
@@ -127,8 +125,6 @@ public class MapEditorController extends AbstractController {
 	}
 
 	protected void renderInitialMap(){
-		newNodes = new LinkedList<>();
-		newEdges = new LinkedList<>();
 			if(DragDropMain.mvm != null) {
 				//System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
 				//import a model if one exists
@@ -666,4 +662,11 @@ public class MapEditorController extends AbstractController {
 		}
 	}
 
+	public void removeHandlers(){
+		for(MapNode n : model.getCurrentFloor().getFloorNodes()){
+			n.getNodeToDisplay().removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
+			n.getNodeToDisplay().removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane);
+			n.getNodeToDisplay().removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRoot);
+		}
+	}
 }
