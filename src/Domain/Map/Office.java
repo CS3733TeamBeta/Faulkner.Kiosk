@@ -1,5 +1,8 @@
 package Domain.Map;
 
+import Controller.Admin.PopUp.OfficeEditController;
+import org.controlsfx.control.PopOver;
+
 import java.util.HashSet;
 
 /**
@@ -12,6 +15,7 @@ public class Office extends Destination
 
     HashSet<Doctor> occupants;
     protected String department;
+    private final String popOverEditFXML = "/Admin/Popup/OfficeEditPopup.fxml";
 
     public Office(int id, HashSet<Doctor> doctors) {
         this.id = id;
@@ -23,6 +27,13 @@ public class Office extends Destination
 
     }
 
+    @Override
+    public PopOver getEditPopover()
+    {
+        OfficeEditController controller = new OfficeEditController(this);
+
+        return getPopOver(controller, popOverEditFXML);
+    }
     public int getId() {
         return this.id;
     }

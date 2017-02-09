@@ -27,18 +27,12 @@ public class OfficeEditController extends AbstractPopupController
 
     protected Office officeUnderEdit;
 
-    @FXML
-    public void initialize()
+    public OfficeEditController(Office office)
     {
-        fillFields();
-    }
-
-    public OfficeEditController(Office office, PopOver popOver)
-    {
-        super(popOver);
         this.officeUnderEdit = office;
     }
 
+    @Override
     public void saveEdits()
     {
         officeUnderEdit.setDepartment(deptBox.getText());
@@ -46,13 +40,11 @@ public class OfficeEditController extends AbstractPopupController
         officeUnderEdit.getInfo().setPhoneNumber(phoneBox.getText());
     }
 
+    @Override
     public void fillFields()
     {
-        if(nameBox!=null && deptBox != null && phoneBox!=null)
-        {
-            nameBox.setText(officeUnderEdit.getInfo().getName());
-            deptBox.setText(officeUnderEdit.getDepartment());
-            phoneBox.setText(officeUnderEdit.getInfo().getPhoneNumber());
-        }
+        nameBox.setText(officeUnderEdit.getInfo().getName());
+        deptBox.setText(officeUnderEdit.getDepartment());
+        phoneBox.setText(officeUnderEdit.getInfo().getPhoneNumber());
     }
 }

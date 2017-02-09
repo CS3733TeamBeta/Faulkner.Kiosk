@@ -20,16 +20,38 @@ public abstract class AbstractPopupController
     protected JFXButton deleteButton;
 
 
-    public AbstractPopupController(PopOver popOver)
+    public AbstractPopupController()
     {
-        this.popOver = popOver;
+
     }
 
+    @FXML
+    public void initialize()
+    {
+        fillFields();
+    }
+
+    /**Called on initialize**/
+    public abstract void fillFields();
+
+    /**
+     * Called when this popup is closed
+     */
     public abstract void saveEdits();
 
+    /**
+     * When the okay button is pressed
+     * @param event
+     */
     @FXML
     void onConfirm(ActionEvent event) {
         saveEdits();
         popOver.hide();
     }
+
+    public void setPopOver(PopOver popOver)
+    {
+        this.popOver = popOver;
+    }
 }
+

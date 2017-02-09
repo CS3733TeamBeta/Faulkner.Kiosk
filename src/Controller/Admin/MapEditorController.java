@@ -372,32 +372,7 @@ public class MapEditorController extends AbstractController {
 
 						MapNode droppedNode;
 
-						switch (DragIconType.valueOf(container.getValue("type")))
-						{
-							case elevator:
-							{
-								droppedNode = new Elevator();
-								break;
-							}
-
-							case doctor: //@TODO change this to office
-							{
-								droppedNode = new Office();
-								break;
-							}
-
-							case connector:
-							{
-								droppedNode = new MapNode();
-								break;
-							}
-
-							default:
-							{
-								droppedNode = new Destination();
-							}
-
-						}
+						droppedNode = DragIcon.constructMapNodeFromType((DragIconType.valueOf(container.getValue("type"))));
 
 						makeMapNodeDraggable(droppedNode); //make it draggable
 						
@@ -423,31 +398,14 @@ public class MapEditorController extends AbstractController {
 
 							if(ev.getButton() == MouseButton.SECONDARY) //if right click
 							{
-								if(droppedNode.getClass().equals(Office.class))
+								if(droppedNode instanceof Destination)
 								{
-									PopOver popOver = new PopOver();
-									FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/Popup/OfficeEditPopup.fxml"));
-									OfficeEditController controller = new OfficeEditController((Office)droppedNode, popOver);
-									loader.setController(controller);
-
-									try
-									{
-										popOver.setContentNode(loader.load());
-									}
-									catch (IOException e)
-									{
-										e.printStackTrace();
-									}
-
-									popOver.show(droppedNode.getNodeToDisplay(),
+									((Destination)droppedNode).getEditPopover().show(droppedNode.getNodeToDisplay(),
 											ev.getScreenX(),
 											ev.getScreenY());
-
-
 								}
 								//removeNode(droppedNode);
 							}
-
 							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
 								if(ev.getClickCount() == 2) // double click
 								{
