@@ -134,55 +134,28 @@ public class MapEditorController extends AbstractController {
 					//System.out.println("Adding node");
 					addToAdminMap(n);
 				}
-				drawingEdge = null;
-
-				for (MapNode n : model.getCurrentFloor().getFloorNodes()) {
-					n.getNodeToDisplay();
-					for (NodeEdge edge : n.getEdges())
-					{
-						(edge).updatePosViaNode(n);
-					}
-				}
 
 				//System.out.println("Edges to add: " + DragDropMain.mvm.getCurrentFloor().getFloorEdges().size());
 				for(NodeEdge edge : model.getCurrentFloor().getFloorEdges()){
-					drawingEdge = edge;
-					drawingEdge.changeColor(javafx.scene.paint.Color.BLACK);
-					//Opacity goes from 0 to 1
-					drawingEdge.changeOpacity(1.0);
+					edge.changeColor(javafx.scene.paint.Color.BLACK);
+					//edge.changeOpacity(1.0);
 
 					MapNode sourceNode = edge.getSource();
 					MapNode targetNode = edge.getTarget();
 
-					drawingEdge.setSource(sourceNode);
-					drawingEdge.setTarget(targetNode);
-
-					drawingEdge.updatePosViaNode(sourceNode);
-					drawingEdge.updatePosViaNode(targetNode);
+					edge.setSource(sourceNode);
+					edge.setTarget(targetNode);
 
 					model.addMapEdge(drawingEdge);
-
-					drawingEdge.updatePosViaNode(sourceNode);
-					drawingEdge.updatePosViaNode(targetNode);
-
-					drawingEdge.updatePosViaNode(sourceNode);
-					drawingEdge.updatePosViaNode(targetNode);
 
 					sourceNode.toFront();
 					targetNode.toFront();
 
-					drawingEdge.updatePosViaNode(sourceNode);
-					drawingEdge.updatePosViaNode(targetNode);
+					mapPane.getChildren().add(edge.getNodeToDisplay());
 
-					//System.out.println("drawingedge goes from " + sourceNode.getNodeID() + " to " + targetNode.getNodeID());
-
-					mapPane.getChildren().add(drawingEdge.getNodeToDisplay());
-
-					drawingEdge.updatePosViaNode(sourceNode);
-					drawingEdge.updatePosViaNode(targetNode);
-					drawingEdge = null;
+					edge.updatePosViaNode(sourceNode);
+					edge.updatePosViaNode(targetNode);
 				}
-
 			}
 			else{
 				model = new MapModel();
@@ -419,8 +392,8 @@ public class MapEditorController extends AbstractController {
 		}
 						/* Build up event handlers for this droppedNode */
 
-		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX() - ((DragIcon) mapNode.getNodeToDisplay()).getWidth()/2,
-				mapNode.getPosY() - ((DragIcon) mapNode.getNodeToDisplay()).getWidth())); //placed by upper left corner
+		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX() - 32,
+				mapNode.getPosY() - 32)); //placed by upper left corner
 	}
 	/**
 	 * Adds all of the event handlers to handle dragging, edge creation, deletion etc.
