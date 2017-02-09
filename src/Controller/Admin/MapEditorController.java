@@ -58,7 +58,7 @@ public class MapEditorController extends AbstractController {
 
 	@FXML
 	public void saveInfoAndExit() throws IOException{
-		removeHandlers();
+		//removeHandlers();
 		updateEdgeWeights();
 		DragDropMain.mvm.setCurrentFloor(this.model.getCurrentFloor());
 		SceneSwitcher.switchToModifyLocationsView(this.getStage());
