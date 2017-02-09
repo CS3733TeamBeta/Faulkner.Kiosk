@@ -318,6 +318,7 @@ public class MapEditorController extends AbstractController {
 								cursorPoint.getY()-32)); //32 is half of 64, so half the height/width... @TODO
 
 						droppedNode.getNodeToDisplay().setOnMouseClicked(ev -> {
+
 							if(ev.getButton() == MouseButton.SECONDARY) //if right click
 							{
 								PopOver popOver = new PopOver();
@@ -326,14 +327,13 @@ public class MapEditorController extends AbstractController {
 										ev.getScreenX(),
 										ev.getScreenY());
 
-								removeNode(droppedNode);
+								// removeNode(droppedNode);
 							}
-							
+
 							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
 
 								if(ev.getClickCount() == 2) // double click
 								{
-
 									if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
 									{
 										if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
@@ -373,6 +373,13 @@ public class MapEditorController extends AbstractController {
 											Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
 											Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 											drawingEdge.setEndPoint(mouseCoords); //set the end point
+
+											drawingEdge.getNodeToDisplay().setOnMouseClicked(eventoid->{
+												if(eventoid.getClickCount() == 2) {
+													System.out.println("Double Click");
+												}
+											});
+
 										}
 									});
 								}
@@ -401,8 +408,11 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	/**
-
+	/*
+	 removes the node from the model
+	 removes the node.getNodeToDisplay() from the map pane
+	 removes the node edges associated with that node from the model
+	 removes the node edge.getNodeToDisplay() associated with from the map pane
 	 */
 	private void removeNode(MapNode node)
 	{
