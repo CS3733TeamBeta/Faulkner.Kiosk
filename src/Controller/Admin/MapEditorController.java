@@ -4,12 +4,9 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
 
 import Controller.AbstractController;
 import Controller.DragDropMain;
-import Controller.Admin.PopUp.OfficeEditController;
 import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
@@ -17,28 +14,20 @@ import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.MapModel;
-import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
-import javafx.scene.Parent;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
 import org.controlsfx.control.PopOver;
-import org.controlsfx.samples.HelloPopOver;
 
 public class MapEditorController extends AbstractController {
 
