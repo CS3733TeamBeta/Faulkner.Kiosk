@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import Controller.AbstractController;
+import Controller.Admin.PopUp.OfficeEditController;
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import Domain.ViewElements.*;
@@ -322,7 +323,9 @@ public class MapEditorController extends AbstractController {
 							if(ev.getButton() == MouseButton.SECONDARY) //if right click
 							{
 								PopOver popOver = new PopOver();
-								FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/Popup/DoctorEditPopup.fxml"));
+								FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/Popup/OfficeEditPopup.fxml"));
+								OfficeEditController controller = new OfficeEditController(popOver);
+								loader.setController(controller);
 
 								try
 								{
@@ -337,7 +340,7 @@ public class MapEditorController extends AbstractController {
 										ev.getScreenX(),
 										ev.getScreenY());
 
-								removeNode(droppedNode);
+								//removeNode(droppedNode);
 							}
 							
 							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
