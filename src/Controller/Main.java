@@ -1,15 +1,19 @@
 //Testing
 package Controller;
 
+import Domain.Map.Floor;
 import Model.Database.DatabaseManager;
 import Controller.Admin.AdminList;
 import Model.DoctorProfile;
+import Model.MapModel;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class Main extends Application {
+
+    public static MapModel mvm;
 
     public static AdminList admins;    // For testing purposes
     public static final ObservableList<String> departments =
@@ -20,6 +24,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         departments.addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+
+        mvm = new MapModel();
+        mvm.setCurrentFloor(new Floor(3));
 
         SceneSwitcher.switchToLoginView(primaryStage);
 
