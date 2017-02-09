@@ -47,8 +47,13 @@ public class MapViewerController extends AbstractController {
 
 	@FXML
 	public void saveInfoAndExit() throws IOException{
-		DragDropMain.mvm.setCurrentFloor(this.model.getCurrentFloor());
-		SceneSwitcher.switchToModifyLocationsView(this.getStage());
+		//DragDropMain.mvm.setCurrentFloor(this.model.getCurrentFloor());
+		//SceneSwitcher.switchToModifyLocationsView(this.getStage());
+	}
+
+	@FXML
+	public void goToAdminSide() throws IOException{
+		SceneSwitcher.switchToLoginView(this.getStage());
 	}
 
 	public MapViewerController() {
@@ -70,7 +75,7 @@ public class MapViewerController extends AbstractController {
 					drawingEdge = edge;
 					drawingEdge.changeColor(Color.RED);
 					//Opacity goes from 0 to 1
-					drawingEdge.changeOpacity(1.0);
+					drawingEdge.changeOpacity(0.0);
 
 					MapNode sourceNode = edge.getSource();
 					MapNode targetNode = edge.getTarget();

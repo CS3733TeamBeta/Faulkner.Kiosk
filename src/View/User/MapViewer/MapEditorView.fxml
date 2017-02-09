@@ -48,7 +48,8 @@
                         <DropShadow color="#000000cf" height="11.5" offsetX="2.0" offsetY="2.0" radius="5.625" spread="0.03" width="13.0" />
                     </effect>
                 </JFXButton>
-                <JFXButton layoutX="1.0" layoutY="1.0" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="New Building" textFill="WHITE" AnchorPane.leftAnchor="5.0">
+                <JFXButton layoutX="1.0" layoutY="1.0" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="ADMIN LOGIN" textFill="WHITE" AnchorPane.leftAnchor="5.0"
+                onAction="#goToAdminSide">
                     <font>
                         <Font size="14.0" />
                     </font>
