@@ -61,6 +61,7 @@ public class ModifyLocationsController extends AbstractController
     private void changeRoomAssignments() throws IOException {
         //SceneSwitcher.switchToEditRoomAssignmentsView(primaryStage);
         SceneSwitcher.switchToEditDoctorView(primaryStage);
+//        Why is the change room assignments button going to edit doctor view????
     }
 
     @FXML
