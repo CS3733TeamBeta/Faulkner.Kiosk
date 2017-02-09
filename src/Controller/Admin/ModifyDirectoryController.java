@@ -39,6 +39,7 @@ public class ModifyDirectoryController extends AbstractController
     @FXML
     private void clickedAddNewProfile() throws IOException {
         SceneSwitcher.switchToAddNewProfileView(primaryStage);
+//        This is going to the login screen and not the add new profile view
     }
     @FXML
     private void clickedModifyExistingProfile() throws IOException {
