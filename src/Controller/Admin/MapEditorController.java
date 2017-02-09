@@ -2,6 +2,7 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
@@ -126,35 +127,53 @@ public class MapEditorController extends AbstractController {
 
 	protected void renderInitialMap(){
 			if(DragDropMain.mvm != null) {
+				System.out.println("Begin render...");
 				//System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
 				//import a model if one exists
 				model.setCurrentFloor(DragDropMain.mvm.getCurrentFloor());
 				//and then set all the existing nodes up
-				for(MapNode n : model.getCurrentFloor().getFloorNodes()){
+
+				HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+
+				for(MapNode n : model.getCurrentFloor().getFloorNodes())
+				{
 					//System.out.println("Adding node");
 					addToAdminMap(n);
+
+					for(NodeEdge edge: n.getEdges())
+					{
+						if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+					}
 				}
 
-				//System.out.println("Edges to add: " + DragDropMain.mvm.getCurrentFloor().getFloorEdges().size());
-				for(NodeEdge edge : model.getCurrentFloor().getFloorEdges()){
-					edge.changeColor(javafx.scene.paint.Color.BLACK);
-					//edge.changeOpacity(1.0);
-
-					MapNode sourceNode = edge.getSource();
-					MapNode targetNode = edge.getTarget();
-
-					edge.setSource(sourceNode);
-					edge.setTarget(targetNode);
-
-					model.addMapEdge(drawingEdge);
-
-					sourceNode.toFront();
-					targetNode.toFront();
-
+				for(NodeEdge edge : collectedEdges)
+				{
 					mapPane.getChildren().add(edge.getNodeToDisplay());
 
-					edge.updatePosViaNode(sourceNode);
-					edge.updatePosViaNode(targetNode);
+					MapNode source = edge.getSource();
+					MapNode target = edge.getTarget();
+
+					//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
+
+					if(!mapPane.getChildren().contains(source.getNodeToDisplay()))
+					{
+						addToAdminMap(source);
+					}
+
+					if(!mapPane.getChildren().contains(target.getNodeToDisplay()))
+					{
+						addToAdminMap(target);
+					}
+
+					edge.setStartPoint(new Point2D(source.getPosX() , source.getPosY()));
+					edge.setEndPoint(new Point2D(target.getPosX(), target.getPosY()));
+
+					((DragIcon) source.getNodeToDisplay()).relocateToPoint(new Point2D(source.getPosX() - 12,
+							source.getPosY() - 12)); //placed by upper left corner
+
+					((DragIcon) target.getNodeToDisplay()).relocateToPoint(new Point2D(target.getPosX() - 12,
+							target.getPosY() - 12)); //placed by upper left corner
+
 				}
 			}
 			else{
@@ -225,7 +244,7 @@ public class MapEditorController extends AbstractController {
 				{
 					for (NodeEdge edge : n.getEdges())
 					{
-						((NodeEdge)edge).updatePosViaNode(n);
+						edge.updatePosViaNode(n);
 					}
 
 					n.setPosX(event.getSceneX());
