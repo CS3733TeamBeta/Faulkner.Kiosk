@@ -54,7 +54,7 @@ public class ModifyLocationsController extends AbstractController
     @FXML
     private void changeFloorLayoutButton() throws IOException
     {
-        SceneSwitcher.switchToEditNodeGraphView(primaryStage);
+        SceneSwitcher.switchToScene(primaryStage, "../Admin/MapBuilder/MapEditorView.fxml");
     }
 
     @FXML

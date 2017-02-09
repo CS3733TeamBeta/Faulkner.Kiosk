@@ -13,4 +13,8 @@ public class AbstractController
     {
         primaryScene = s;
     }
+
+    public Stage getStage(){
+        return this.primaryScene;
+    }
 }

@@ -7,6 +7,7 @@ import java.util.Iterator;
 import Controller.AbstractController;
 import Controller.DragDropMain;
 import Controller.Admin.PopUp.OfficeEditController;
+import Controller.SceneSwitcher;
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import Domain.ViewElements.*;
@@ -53,6 +54,12 @@ public class MapEditorController extends AbstractController {
 	private MapModel model;
 
 	NodeEdge drawingEdge;
+
+	@FXML
+	public void saveInfoAndExit() throws IOException{
+		DragDropMain.mvm = model;
+		SceneSwitcher.switchToModifyLocationsView(this.getStage());
+	}
 
 	public MapEditorController() {
 

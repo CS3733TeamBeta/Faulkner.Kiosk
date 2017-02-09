@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Wed Feb 08 23:55:06 EST 2017:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015a-2139-9629-00000698bf10 
+Thu Feb 09 00:06:28 EST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015a-2143-fdbc-000004cdee48 
 on database directory C:\Users\Pattop\Documents\junior_year\softeng\JFX-MultiScreen-master\Faulkner.Kiosk\derbyDB with class loader sun.misc.Launcher$AppClassLoader@511d50c0 
 Loaded from file:/C:/Users/Pattop/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar
 java.vendor=Oracle Corporation
@@ -10,10 +10,4 @@ os.name=Windows 10
 os.arch=amd64
 os.version=10.0
 derby.system.home=null
-------------  Begin Error Message -------------
-
-System may be in a inconsistent state, missing file C:\Users\Pattop\Documents\junior_year\softeng\JFX-MultiScreen-master\Faulkner.Kiosk\derbyDB\log\log7.dat
-------------  End Error Message -------------
-
-Deleting old Logfile C:\Users\Pattop\Documents\junior_year\softeng\JFX-MultiScreen-master\Faulkner.Kiosk\derbyDB\log\log1.dat
 Database Class Loader started - derby.database.classpath=''
