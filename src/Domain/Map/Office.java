@@ -11,6 +11,7 @@ public class Office extends Destination
     int id;
 
     HashSet<Doctor> occupants;
+    protected String department;
 
     public Office(int id, HashSet<Doctor> doctors) {
         this.id = id;
@@ -33,4 +34,13 @@ public class Office extends Destination
         this.occupants = doctors;
     }
 
+    public void setDepartment(String department)
+    {
+        this.department = department;
+    }
+
+    public String getDepartment()
+    {
+        return this.department;
+    }
 }

@@ -14,15 +14,6 @@ public class AbstractPopupController
     protected PopOver popOver;
 
     @FXML
-    private JFXTextField nameBox;
-
-    @FXML
-    private JFXTextField deptBox;
-
-    @FXML
-    private JFXTextField phoneBox;
-
-    @FXML
     private JFXButton okayButton;
 
     @FXML

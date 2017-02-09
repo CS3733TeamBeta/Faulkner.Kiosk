@@ -8,11 +8,16 @@ import sun.security.krb5.internal.crypto.Des;
  */
 
 public class Destination extends MapNode {
-    Info myInfo;
+    protected Info myInfo;
     Image icon;
     Image destinationView;
 
     public Destination() {
-        myInfo = new Info("1", "2", "3");
+        myInfo = new Info();
+    }
+
+    public Info getInfo()
+    {
+        return myInfo;
     }
 }
