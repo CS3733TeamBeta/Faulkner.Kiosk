@@ -166,4 +166,8 @@ public class NodeEdge implements DrawableMapEntity
         }
     }
 
+    public void updateCost() {
+        this.cost = Math.pow(source.getPosX() - target.getPosX(), 2) + Math.pow(source.getPosY() - target.getPosY(), 2);
+    }
+
 }

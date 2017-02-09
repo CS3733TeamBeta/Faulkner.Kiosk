@@ -61,6 +61,7 @@ public class MapEditorController extends AbstractController {
 
 	@FXML
 	public void saveInfoAndExit() throws IOException{
+		updateEdgeWeights();
 		DragDropMain.mvm.setCurrentFloor(this.model.getCurrentFloor());
 		SceneSwitcher.switchToModifyLocationsView(this.getStage());
 	}
@@ -658,4 +659,11 @@ public class MapEditorController extends AbstractController {
 			droppedNode.getNodeToDisplay().setOpacity(1);
 		});
 	}
+
+	public void updateEdgeWeights(){
+		for(NodeEdge e : model.getCurrentFloor().getFloorEdges()){
+			e.updateCost();
+		}
+	}
+
 }
