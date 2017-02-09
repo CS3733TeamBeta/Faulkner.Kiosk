@@ -353,7 +353,7 @@ public class MapEditorController extends AbstractController {
 									droppedNode.getNodeToDisplay().setOnMouseDragged(null);
 
 									root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
-										if (drawingEdge!=null && keyEvent.getCode() == KeyCode.ESCAPE) {
+										if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
 											if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
 											{
 												mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
@@ -366,20 +366,43 @@ public class MapEditorController extends AbstractController {
 										}
 									});
 
+									mapPane.setOnMouseClicked(mouseEvent-> { //handle escaping from edge creation
+
+										// this is where adding nodes on a edge should go, but i'm pretty sure it's not possible. 
+
+
+										/*
+										if (drawingEdge != null) {
+
+											MapNode node = new MapNode(); // make a new  map node
+											makeMapNodeDraggable(node); //make it draggable
+
+											node.setType(DragIconType.connector); //set the type
+											mapPane.getChildren().add(node.getNodeToDisplay()); //add to right panes children
+											model.addMapNode(node); //add node to model
+
+											node.toFront(); //send the node to the front
+
+											Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
+											Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y + 25 ); // convert coordinates to relative within the window
+
+											// Build up event handlers for this droppedNode
+
+											((DragIcon)node.getNodeToDisplay()).relocateToPoint(mouseCoords); //32 is half of 64, so half the height/width... @TODO
+
+										}
+										*/
+
+									});
+
 									mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
 
-										if(drawingEdge!=null)
+										if (drawingEdge != null)
 										{
+											System.out.println("Moving Mouse");
 											Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
 											Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 											drawingEdge.setEndPoint(mouseCoords); //set the end point
-
-											drawingEdge.getNodeToDisplay().setOnMouseClicked(eventoid->{
-												if(eventoid.getClickCount() == 2) {
-													System.out.println("Double Click");
-												}
-											});
-
 										}
 									});
 								}
@@ -435,4 +458,6 @@ public class MapEditorController extends AbstractController {
 
 		model.removeMapNodeFromCurrentFloor(node); //remove node from mode
 	}
+
+
 }
