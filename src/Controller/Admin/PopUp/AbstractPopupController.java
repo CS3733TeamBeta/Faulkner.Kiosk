@@ -9,15 +9,15 @@ import org.controlsfx.control.PopOver;
 /**
  * Created by benhylak on 2/8/17.
  */
-public class AbstractPopupController
+public abstract class AbstractPopupController
 {
     protected PopOver popOver;
 
     @FXML
-    private JFXButton okayButton;
+    protected JFXButton okayButton;
 
     @FXML
-    private JFXButton deleteButton;
+    protected JFXButton deleteButton;
 
 
     public AbstractPopupController(PopOver popOver)
@@ -25,8 +25,11 @@ public class AbstractPopupController
         this.popOver = popOver;
     }
 
+    public abstract void saveEdits();
+
     @FXML
     void onConfirm(ActionEvent event) {
+        saveEdits();
         popOver.hide();
     }
 }

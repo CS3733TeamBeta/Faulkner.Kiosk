@@ -9,8 +9,7 @@ import Controller.AbstractController;
 import Controller.DragDropMain;
 import Controller.Admin.PopUp.OfficeEditController;
 import Controller.SceneSwitcher;
-import Domain.Map.MapNode;
-import Domain.Map.NodeEdge;
+import Domain.Map.*;
 import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
@@ -371,7 +370,35 @@ public class MapEditorController extends AbstractController {
 
 					if (container.getValue("scene_coords") != null) {
 
-						MapNode droppedNode = new MapNode(); // make a new  map node
+						MapNode droppedNode;
+
+						switch (DragIconType.valueOf(container.getValue("type")))
+						{
+							case elevator:
+							{
+								droppedNode = new Elevator();
+								break;
+							}
+
+							case doctor: //@TODO change this to office
+							{
+								droppedNode = new Office();
+								break;
+							}
+
+							case connector:
+							{
+								droppedNode = new MapNode();
+								break;
+							}
+
+							default:
+							{
+								droppedNode = new Destination();
+							}
+
+						}
+
 						makeMapNodeDraggable(droppedNode); //make it draggable
 						
 						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
@@ -396,26 +423,29 @@ public class MapEditorController extends AbstractController {
 
 							if(ev.getButton() == MouseButton.SECONDARY) //if right click
 							{
-								PopOver popOver = new PopOver();
-								FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/Popup/OfficeEditPopup.fxml"));
-								OfficeEditController controller = new OfficeEditController(popOver);
-
-								loader.setController(controller);
-
-								try
+								if(droppedNode.getClass().equals(Office.class))
 								{
-									popOver.setContentNode(loader.load());
-								}
-								catch (IOException e)
-								{
-									e.printStackTrace();
-								}
+									PopOver popOver = new PopOver();
+									FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/Popup/OfficeEditPopup.fxml"));
+									OfficeEditController controller = new OfficeEditController((Office)droppedNode, popOver);
+									loader.setController(controller);
 
-								popOver.show(droppedNode.getNodeToDisplay(),
-										ev.getScreenX(),
-										ev.getScreenY());
+									try
+									{
+										popOver.setContentNode(loader.load());
+									}
+									catch (IOException e)
+									{
+										e.printStackTrace();
+									}
 
-								removeNode(droppedNode);
+									popOver.show(droppedNode.getNodeToDisplay(),
+											ev.getScreenX(),
+											ev.getScreenY());
+
+
+								}
+								//removeNode(droppedNode);
 							}
 
 							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks

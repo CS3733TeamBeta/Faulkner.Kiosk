@@ -18,6 +18,11 @@ public class Office extends Destination
         this.occupants = doctors;
     }
 
+    public Office()
+    {
+
+    }
+
     public int getId() {
         return this.id;
     }

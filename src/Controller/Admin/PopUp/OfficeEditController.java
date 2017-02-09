@@ -3,7 +3,10 @@ package Controller.Admin.PopUp;
 import Controller.AbstractController;
 import Domain.Map.Office;
 import com.jfoenix.controls.JFXTextField;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
+import javafx.scene.input.MouseEvent;
 import org.controlsfx.control.PopOver;
 
 /**
@@ -24,11 +27,6 @@ public class OfficeEditController extends AbstractPopupController
 
     protected Office officeUnderEdit;
 
-    public OfficeEditController(PopOver popOver)
-    {
-        super(popOver);
-    }
-
     @FXML
     public void initialize()
     {
@@ -37,23 +35,24 @@ public class OfficeEditController extends AbstractPopupController
 
     public OfficeEditController(Office office, PopOver popOver)
     {
-        this(popOver);
-
+        super(popOver);
         this.officeUnderEdit = office;
     }
 
-    public void onConfirm()
+    public void saveEdits()
     {
         officeUnderEdit.setDepartment(deptBox.getText());
         officeUnderEdit.getInfo().setName(nameBox.getText());
         officeUnderEdit.getInfo().setPhoneNumber(phoneBox.getText());
-        popOver.hide();
     }
 
     public void fillFields()
     {
-        nameBox.setText(officeUnderEdit.getInfo().getName());
-        deptBox.setText(officeUnderEdit.getDepartment());
-        phoneBox.setText(officeUnderEdit.getInfo().getPhoneNumber());
+        if(nameBox!=null && deptBox != null && phoneBox!=null)
+        {
+            nameBox.setText(officeUnderEdit.getInfo().getName());
+            deptBox.setText(officeUnderEdit.getDepartment());
+            phoneBox.setText(officeUnderEdit.getInfo().getPhoneNumber());
+        }
     }
 }
