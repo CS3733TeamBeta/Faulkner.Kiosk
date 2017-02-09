@@ -76,29 +76,7 @@ public class MapEditorController extends AbstractController {
 		{
 			NodeEdge completedEdge = drawingEdge;
 
-			completedEdge.getNodeToDisplay().setOnMouseEntered(deEvent->{
-				if (completedEdge != null)
-				{
-					completedEdge.getEdgeLine().setStroke(Color.RED);
-				}
-			});
-
-			completedEdge.getNodeToDisplay().setOnMouseExited(deEvent->{
-				if (completedEdge != null) {
-					completedEdge.getEdgeLine().setStroke(Color.BLACK);
-				}
-			});
-
-			completedEdge.getNodeToDisplay().setOnMouseClicked(deEvent->{
-				if (completedEdge != null) {
-					if (deEvent.getClickCount() == 2) {
-						completedEdge.getSource().getEdges().remove(completedEdge);
-						completedEdge.getTarget().getEdges().remove(completedEdge);
-						mapPane.getChildren().remove(completedEdge.getNodeToDisplay()); //remove from the right pane
-						model.removeMapEdge(completedEdge);
-					}
-				}
-			});
+			addEdgeHandlers(completedEdge);
 
 			MapNode sourceNode = event.getNodeEdge().getSource();
 			MapNode targetNode = event.getNodeEdge().getTarget();
@@ -154,6 +132,7 @@ public class MapEditorController extends AbstractController {
 
 				for(NodeEdge edge : collectedEdges)
 				{
+					addEdgeHandlers(edge);
 					mapPane.getChildren().add(edge.getNodeToDisplay());
 
 					MapNode source = edge.getSource();
@@ -186,6 +165,37 @@ public class MapEditorController extends AbstractController {
 				model = new MapModel();
 			}
 
+	}
+
+	/**Adds handlers to handle edge deletion mostly
+	 *
+	 * @param edge to add handlers to
+	 */
+	public void addEdgeHandlers(NodeEdge edge)
+	{
+		edge.getNodeToDisplay().setOnMouseEntered(deEvent->{
+			if (edge != null)
+			{
+				edge.getEdgeLine().setStroke(Color.RED);
+			}
+		});
+
+		edge.getNodeToDisplay().setOnMouseExited(deEvent->{
+			if (edge != null) {
+				edge.getEdgeLine().setStroke(Color.BLACK);
+			}
+		});
+
+		edge.getNodeToDisplay().setOnMouseClicked(deEvent->{
+			if (edge != null) {
+				if (deEvent.getClickCount() == 2) {
+					edge.getSource().getEdges().remove(edge);
+					edge.getTarget().getEdges().remove(edge);
+					mapPane.getChildren().remove(edge.getNodeToDisplay()); //remove from the right pane
+					model.removeMapEdge(edge);
+				}
+			}
+		});
 	}
 
 	public void onEdgeComplete() {
