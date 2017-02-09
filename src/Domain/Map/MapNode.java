@@ -3,10 +3,13 @@ package Domain.Map;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
 import Domain.ViewElements.DrawableMapEntity;
+import Domain.ViewElements.Events.DeleteRequestedEvent;
+import Domain.ViewElements.Events.DeleteRequestedHandler;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 
 import java.rmi.server.UID;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +27,8 @@ public class MapNode implements DrawableMapEntity
 
     final double NODE_HOVER_OPACITY = .65;
     final double NODE__NORMAL_OPACITY = 1;
+
+    protected ArrayList<DeleteRequestedHandler> deleteEventHandlers = null;
 
     int nodeID; //Used for a human-identifiable
 
@@ -222,6 +227,38 @@ public class MapNode implements DrawableMapEntity
     public void toFront()
     {
         icon.toFront();
+    }
+
+    /**
+     * When handlers susbscribe, notifies them that this mapnode should be deleted
+     */
+    public void deleteFromMap()
+    {
+        raiseDeleteRequested();
+    }
+
+    protected void raiseDeleteRequested()
+    {
+        if(deleteEventHandlers!=null)
+        {
+            for (DeleteRequestedHandler handler : deleteEventHandlers)
+            {
+                handler.handle(new DeleteRequestedEvent(this));
+            }
+        }
+        else {
+            System.out.println("You've requested to delete a node, but the node isn't set up to do so. (Hint: Add a DeleteRequestedHandler)");
+        }
+    }
+
+    public void setOnDeleteRequested(DeleteRequestedHandler handler)
+    {
+        if(deleteEventHandlers==null)
+        {
+            deleteEventHandlers = new ArrayList<>();
+        }
+
+        deleteEventHandlers.add(handler);
     }
 
     /*******************************A STAR FUNCTIONS **********************************/

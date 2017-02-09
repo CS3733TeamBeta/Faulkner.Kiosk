@@ -1,10 +1,15 @@
 package Controller.Admin.PopUp;
 
+import Domain.Map.Destination;
+import Domain.Map.MapNode;
+import Domain.ViewElements.Events.DeleteRequestedHandler;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import org.controlsfx.control.PopOver;
+
+import java.util.Map;
 
 /**
  * Created by benhylak on 2/8/17.
@@ -19,15 +24,23 @@ public abstract class AbstractPopupController
     @FXML
     protected JFXButton deleteButton;
 
+    private MapNode nodeToDelete; //node that will be deleted, if requested
 
-    public AbstractPopupController()
+    public AbstractPopupController(Destination nodeToDelete)
     {
-
+        this.nodeToDelete = nodeToDelete;
     }
+
 
     @FXML
     public void initialize()
     {
+        deleteButton.setOnAction(event ->
+        {
+            nodeToDelete.deleteFromMap();
+            popOver.hide();
+        });
+
         fillFields();
     }
 

@@ -23,11 +23,8 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.stage.Stage;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
-import org.controlsfx.control.PopOver;
 
 public class MapEditorController extends AbstractController {
 
@@ -76,7 +73,7 @@ public class MapEditorController extends AbstractController {
 		{
 			NodeEdge completedEdge = drawingEdge;
 
-			addEdgeHandlers(completedEdge);
+			addHandlersToEdge(completedEdge);
 
 			MapNode sourceNode = event.getNodeEdge().getSource();
 			MapNode targetNode = event.getNodeEdge().getTarget();
@@ -132,7 +129,7 @@ public class MapEditorController extends AbstractController {
 
 				for(NodeEdge edge : collectedEdges)
 				{
-					addEdgeHandlers(edge);
+					addHandlersToEdge(edge);
 					mapPane.getChildren().add(edge.getNodeToDisplay());
 
 					MapNode source = edge.getSource();
@@ -171,7 +168,7 @@ public class MapEditorController extends AbstractController {
 	 *
 	 * @param edge to add handlers to
 	 */
-	public void addEdgeHandlers(NodeEdge edge)
+	public void addHandlersToEdge(NodeEdge edge)
 	{
 		edge.getNodeToDisplay().setOnMouseEntered(deEvent->{
 			if (edge != null)
@@ -440,6 +437,11 @@ public class MapEditorController extends AbstractController {
 	public void addEventHandlersToNode(MapNode mapNode)
 	{
 		makeMapNodeDraggable(mapNode); //make it draggable
+
+		/***Handles deletion from a popup menu**/
+		mapNode.setOnDeleteRequested(event -> {
+			removeNode(event.getSource());
+		});
 
 		mapNode.getNodeToDisplay().setOnMouseClicked(ev -> {
 

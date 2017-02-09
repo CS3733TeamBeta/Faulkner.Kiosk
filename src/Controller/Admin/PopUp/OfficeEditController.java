@@ -1,7 +1,9 @@
 package Controller.Admin.PopUp;
 
 import Controller.AbstractController;
+import Domain.Map.Destination;
 import Domain.Map.Office;
+import Domain.ViewElements.Events.DeleteRequestedHandler;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -29,6 +31,8 @@ public class OfficeEditController extends AbstractPopupController
 
     public OfficeEditController(Office office)
     {
+        super(office);
+
         this.officeUnderEdit = office;
     }
 
