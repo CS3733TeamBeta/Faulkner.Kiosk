@@ -2,6 +2,10 @@ package Domain.ViewElements;
 
 import java.io.IOException;
 
+import Domain.Map.Destination;
+import Domain.Map.Elevator;
+import Domain.Map.MapNode;
+import Domain.Map.Office;
 import com.sun.corba.se.impl.orbutil.graph.Graph;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,6 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.util.Map;
 
 /**
  *
@@ -127,5 +132,39 @@ public class DragIcon extends AnchorPane{
 		);
 
 		return centerPoint;
+	}
+
+	public static MapNode constructMapNodeFromType(DragIconType type)
+	{
+		MapNode newNode;
+
+		switch (type)
+		{
+			case elevator:
+			{
+				newNode = new Elevator();
+				break;
+			}
+
+			case doctor: //@TODO change this to office
+			{
+				newNode = new Office();
+				break;
+			}
+
+			case connector:
+			{
+				newNode = new MapNode();
+				break;
+			}
+
+			default:
+			{
+				newNode = new Destination();
+			}
+
+		}
+
+		return newNode;
 	}
 }

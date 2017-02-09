@@ -1,22 +1,50 @@
 package Controller.Admin.PopUp;
 
 import Controller.AbstractController;
+import Domain.Map.Office;
+import com.jfoenix.controls.JFXTextField;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
+import javafx.fxml.FXML;
+import javafx.scene.input.MouseEvent;
 import org.controlsfx.control.PopOver;
 
 /**
- * Created by benhylak on 2/8/17.
+ * Controlled for popup that edits an office map node
  */
 public class OfficeEditController extends AbstractPopupController
 {
+    @FXML
+    private JFXTextField nameBox;
+
+    @FXML
+    private JFXTextField deptBox;
+
+    @FXML
+    private JFXTextField phoneBox;
+
     protected PopOver popOver;
 
-    public OfficeEditController(PopOver popOver)
+    protected Office officeUnderEdit;
+
+    public OfficeEditController(Office office)
     {
-        super(popOver);
+        this.officeUnderEdit = office;
     }
 
-    public void onConfirm()
+    @Override
+    public void saveEdits()
     {
-        popOver.hide();
+        officeUnderEdit.setDepartment(deptBox.getText());
+        officeUnderEdit.getInfo().setName(nameBox.getText());
+        officeUnderEdit.getInfo().setPhoneNumber(phoneBox.getText());
+    }
+
+    @Override
+    public void fillFields()
+    {
+        nameBox.setText(officeUnderEdit.getInfo().getName());
+        deptBox.setText(officeUnderEdit.getDepartment());
+        phoneBox.setText(officeUnderEdit.getInfo().getPhoneNumber());
     }
 }

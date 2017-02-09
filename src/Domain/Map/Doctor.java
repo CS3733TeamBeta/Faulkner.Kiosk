@@ -9,7 +9,6 @@ public class Doctor extends Info
 
     int docID;
     String department;
-    String phoneNumber;
     Office myOffice;
 
     public Doctor(String dept, String phoneNum, Office docOff, String name, String description, String hours)
@@ -51,29 +50,4 @@ public class Doctor extends Info
     public void setMyOffice(Office office) {
         this.myOffice = office;
     }
-
-    public String getName() {
-        return super.name;
-    }
-
-    public void setName(String name) {
-        super.name = name;
-    }
-
-    public String getDescription() {
-        return super.description;
-    }
-
-    public void setDescription(String description) {
-        super.description = description;
-    }
-
-    public String getHours() {
-        return super.hours;
-    }
-
-    public void setHours(String hours) {
-        super.hours = hours;
-    }
-
 }

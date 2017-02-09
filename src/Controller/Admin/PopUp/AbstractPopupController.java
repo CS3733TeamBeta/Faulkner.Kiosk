@@ -9,33 +9,49 @@ import org.controlsfx.control.PopOver;
 /**
  * Created by benhylak on 2/8/17.
  */
-public class AbstractPopupController
+public abstract class AbstractPopupController
 {
     protected PopOver popOver;
 
     @FXML
-    private JFXTextField nameBox;
+    protected JFXButton okayButton;
 
     @FXML
-    private JFXTextField deptBox;
+    protected JFXButton deleteButton;
+
+
+    public AbstractPopupController()
+    {
+
+    }
 
     @FXML
-    private JFXTextField phoneBox;
+    public void initialize()
+    {
+        fillFields();
+    }
 
+    /**Called on initialize**/
+    public abstract void fillFields();
+
+    /**
+     * Called when this popup is closed
+     */
+    public abstract void saveEdits();
+
+    /**
+     * When the okay button is pressed
+     * @param event
+     */
     @FXML
-    private JFXButton okayButton;
+    void onConfirm(ActionEvent event) {
+        saveEdits();
+        popOver.hide();
+    }
 
-    @FXML
-    private JFXButton deleteButton;
-
-
-    public AbstractPopupController(PopOver popOver)
+    public void setPopOver(PopOver popOver)
     {
         this.popOver = popOver;
     }
-
-    @FXML
-    void onConfirm(ActionEvent event) {
-        popOver.hide();
-    }
 }
+

@@ -9,8 +9,7 @@ import Controller.AbstractController;
 import Controller.DragDropMain;
 import Controller.Admin.PopUp.OfficeEditController;
 import Controller.SceneSwitcher;
-import Domain.Map.MapNode;
-import Domain.Map.NodeEdge;
+import Domain.Map.*;
 import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
@@ -371,7 +370,10 @@ public class MapEditorController extends AbstractController {
 
 					if (container.getValue("scene_coords") != null) {
 
-						MapNode droppedNode = new MapNode(); // make a new  map node
+						MapNode droppedNode;
+
+						droppedNode = DragIcon.constructMapNodeFromType((DragIconType.valueOf(container.getValue("type"))));
+
 						makeMapNodeDraggable(droppedNode); //make it draggable
 						
 						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
@@ -396,27 +398,14 @@ public class MapEditorController extends AbstractController {
 
 							if(ev.getButton() == MouseButton.SECONDARY) //if right click
 							{
-								PopOver popOver = new PopOver();
-								FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/Popup/OfficeEditPopup.fxml"));
-								OfficeEditController controller = new OfficeEditController(popOver);
-								loader.setController(controller);
-
-								try
+								if(droppedNode instanceof Destination)
 								{
-									popOver.setContentNode(loader.load());
+									((Destination)droppedNode).getEditPopover().show(droppedNode.getNodeToDisplay(),
+											ev.getScreenX(),
+											ev.getScreenY());
 								}
-								catch (IOException e)
-								{
-									e.printStackTrace();
-								}
-
-								popOver.show(droppedNode.getNodeToDisplay(),
-										ev.getScreenX(),
-										ev.getScreenY());
-
-								removeNode(droppedNode);
+								//removeNode(droppedNode);
 							}
-
 							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
 								if(ev.getClickCount() == 2) // double click
 								{
@@ -450,35 +439,6 @@ public class MapEditorController extends AbstractController {
 
 											makeMapNodeDraggable(droppedNode);
 										}
-									});
-
-									mapPane.setOnMouseClicked(mouseEvent-> { //handle escaping from edge creation
-
-										// this is where adding nodes on a edge should go, but i'm pretty sure it's not possible. 
-
-
-										/*
-										if (drawingEdge != null) {
-
-											MapNode node = new MapNode(); // make a new  map node
-											makeMapNodeDraggable(node); //make it draggable
-
-											node.setType(DragIconType.connector); //set the type
-											mapPane.getChildren().add(node.getNodeToDisplay()); //add to right panes children
-											model.addMapNode(node); //add node to model
-
-											node.toFront(); //send the node to the front
-
-											Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
-											Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y + 25 ); // convert coordinates to relative within the window
-
-											// Build up event handlers for this droppedNode
-
-											((DragIcon)node.getNodeToDisplay()).relocateToPoint(mouseCoords); //32 is half of 64, so half the height/width... @TODO
-
-										}
-										*/
-
 									});
 
 									mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
