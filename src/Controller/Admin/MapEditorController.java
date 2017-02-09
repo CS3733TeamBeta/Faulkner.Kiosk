@@ -62,6 +62,12 @@ public class MapEditorController extends AbstractController {
 		//removeHandlers();
 		updateEdgeWeights();
 
+		int i = 0;
+		for(NodeEdge e: model.getCurrentFloor().getFloorEdges()){
+			System.out.println(Integer.toString(i) + ": Node " + e.getSource().getNodeID() + " Finalized to: " + e.getTarget().getNodeID());
+			i++;
+		}
+
 		if(model.getCurrentFloor().getKioskNode() == null && model.getCurrentFloor().getFloorNodes().size() > 0){
 			System.out.println("ERROR; NO KIOSK NODE SET; SETTING ONE RANDOMLY");
 			model.getCurrentFloor().setKioskLocation(model.getCurrentFloor().getFloorNodes().get(0));
@@ -155,7 +161,7 @@ public class MapEditorController extends AbstractController {
 				//System.out.println("Edges to add: " + DragDropMain.mvm.getCurrentFloor().getFloorEdges().size());
 				for(NodeEdge edge : model.getCurrentFloor().getFloorEdges()){
 					edge.changeColor(javafx.scene.paint.Color.BLACK);
-					//edge.changeOpacity(1.0);
+					edge.changeOpacity(1.0);
 
 					MapNode sourceNode = edge.getSource();
 					MapNode targetNode = edge.getTarget();
@@ -404,7 +410,7 @@ public class MapEditorController extends AbstractController {
 
 		if (!model.getCurrentFloor().getFloorNodes().contains(mapNode))
 		{
-			System.out.println("Node " + mapNode.getNodeUID() + " added to: " + mapNode.getPosX() + " " + mapNode.getPosY());
+			System.out.println("Node " + mapNode.getIconType().name() + " added to: " + mapNode.getPosX() + " " + mapNode.getPosY());
 			mapNode.setFloor(model.getCurrentFloor());
 			model.getCurrentFloor().getFloorNodes().add(mapNode);
 		}
