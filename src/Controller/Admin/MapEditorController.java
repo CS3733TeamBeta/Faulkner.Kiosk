@@ -3,6 +3,7 @@ package Controller.Admin;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import Controller.AbstractController;
 import Controller.DragDropMain;
@@ -55,9 +56,12 @@ public class MapEditorController extends AbstractController {
 
 	NodeEdge drawingEdge;
 
+	private LinkedList<MapNode> newNodes;
+	private LinkedList<NodeEdge> newEdges;
+
 	@FXML
 	public void saveInfoAndExit() throws IOException{
-		DragDropMain.mvm = model;
+		DragDropMain.mvm.setCurrentFloor(this.model.getCurrentFloor());
 		SceneSwitcher.switchToModifyLocationsView(this.getStage());
 	}
 
@@ -122,12 +126,15 @@ public class MapEditorController extends AbstractController {
 	}
 
 	protected void renderInitialMap(){
-		if(model==null) {
+		newNodes = new LinkedList<>();
+		newEdges = new LinkedList<>();
 			if(DragDropMain.mvm != null) {
+				System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
 				//import a model if one exists
-				model = DragDropMain.mvm;
+				model.setCurrentFloor(DragDropMain.mvm.getCurrentFloor());
 				//and then set all the existing nodes up
 				for(MapNode n : model.getCurrentFloor().getFloorNodes()){
+					//System.out.println("Adding node");
 					setupImportedNode(n);
 				}
 				drawingEdge = null;
@@ -139,6 +146,7 @@ public class MapEditorController extends AbstractController {
 					}
 
 				}
+				System.out.println("Edges to add: " + DragDropMain.mvm.getCurrentFloor().getFloorEdges().size());
 				for(NodeEdge edge : model.getCurrentFloor().getFloorEdges()){
 					drawingEdge = edge;
 					drawingEdge.changeColor(javafx.scene.paint.Color.BLACK);
@@ -168,12 +176,13 @@ public class MapEditorController extends AbstractController {
 					drawingEdge.updatePosViaNode(sourceNode);
 					drawingEdge.updatePosViaNode(targetNode);
 
-					System.out.println("drawingedge goes from " + sourceNode.getNodeID() + " to " + targetNode.getNodeID());
+					//System.out.println("drawingedge goes from " + sourceNode.getNodeID() + " to " + targetNode.getNodeID());
 
 					mapPane.getChildren().add(drawingEdge.getNodeToDisplay());
 
 					drawingEdge.updatePosViaNode(sourceNode);
 					drawingEdge.updatePosViaNode(targetNode);
+					drawingEdge = null;
 				}
 
 			}
@@ -181,13 +190,15 @@ public class MapEditorController extends AbstractController {
 				model = new MapModel();
 			}
 
-		}
-
 	}
 
 	public void onEdgeComplete() {
+		System.out.println("Edge complete");
 		for(EdgeCompleteEventHandler handler : model.getEdgeCompleteHandlers())
 		{
+			if(!model.getCurrentFloor().getFloorEdges().contains(drawingEdge)){
+				model.getCurrentFloor().getFloorEdges().add(drawingEdge);
+			}
 			handler.handle(new EdgeCompleteEvent(drawingEdge));
 		}
 	}
@@ -249,7 +260,8 @@ public class MapEditorController extends AbstractController {
 					n.setPosX(event.getSceneX());
 					n.setPosY(event.getSceneY());
 
-					System.out.println("Node " + n.getIconType().name() + " moved to (X: "+ event.getSceneX() + ", Y: " + event.getSceneY() + ")");
+					//System.out.println("Node " + n.getIconType().name() + " moved to (X: "+ event.getSceneX() + ", Y: " + event.getSceneY() + ")");
+
 				},
 				null);
 	}
@@ -300,7 +312,6 @@ public class MapEditorController extends AbstractController {
 				//turn on transfer mode and track in the right-pane's context 
 				//if (and only if) the mouse cursor falls within the right pane's bounds.
 				if (!mapPane.boundsInLocalProperty().get().contains(p)) {
-					
 					event.acceptTransferModes(TransferMode.ANY);
 					mDragOverIcon.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
 					return;
@@ -314,7 +325,6 @@ public class MapEditorController extends AbstractController {
 
 			@Override
 			public void handle(DragEvent event) {
-
 				event.acceptTransferModes(TransferMode.ANY);
 				
 				//convert the mouse coordinates to scene coordinates,
@@ -332,6 +342,7 @@ public class MapEditorController extends AbstractController {
 
 			@Override
 			public void handle(DragEvent event) {
+				System.out.println("Node added");
 				
 				DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.AddNode);
 				
@@ -342,6 +353,7 @@ public class MapEditorController extends AbstractController {
 				
 				event.getDragboard().setContent(content);
 				event.setDropCompleted(true);
+
 			}
 		};
 
@@ -349,7 +361,7 @@ public class MapEditorController extends AbstractController {
 			
 			@Override
 			public void handle (DragEvent event) {
-				
+				System.out.println("test");
 				mapPane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane); //remove the event handlers created on drag start
 				mapPane.removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
 				base_pane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRoot);
@@ -372,7 +384,12 @@ public class MapEditorController extends AbstractController {
 						droppedNode.toFront(); //send the node to the front
 
 						Point2D cursorPoint = container.getValue("scene_coords"); //cursor point
-
+						if(!model.getCurrentFloor().getFloorNodes().contains(droppedNode)){
+							droppedNode.setPosX(cursorPoint.getX());
+							droppedNode.setPosY(cursorPoint.getY());
+							System.out.println("Node added to: " + droppedNode.getPosX() + " " + droppedNode.getPosY());
+							model.getCurrentFloor().getFloorNodes().add(droppedNode);
+						}
 						/* Build up event handlers for this droppedNode */
 
 						((DragIcon)droppedNode.getNodeToDisplay()).relocateToPoint(new Point2D(cursorPoint.getX() - 32,
@@ -404,7 +421,6 @@ public class MapEditorController extends AbstractController {
 							}
 
 							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
-
 								if(ev.getClickCount() == 2) // double click
 								{
 									if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
@@ -472,13 +488,18 @@ public class MapEditorController extends AbstractController {
 
 										if (drawingEdge != null)
 										{
-											System.out.println("Moving Mouse");
+											//System.out.println("Moving Mouse");
 											Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
 											Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 											drawingEdge.setEndPoint(mouseCoords); //set the end point
 										}
 									});
+
+								}else{
+									System.out.println("End of primary");
 								}
+
+
 							}
 
 							if (drawingEdge!=null && !drawingEdge.getSource().equals(droppedNode))
