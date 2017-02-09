@@ -320,6 +320,7 @@ public class MapEditorController extends AbstractController {
 								cursorPoint.getY()-32)); //32 is half of 64, so half the height/width... @TODO
 
 						droppedNode.getNodeToDisplay().setOnMouseClicked(ev -> {
+
 							if(ev.getButton() == MouseButton.SECONDARY) //if right click
 							{
 								PopOver popOver = new PopOver();
@@ -340,14 +341,13 @@ public class MapEditorController extends AbstractController {
 										ev.getScreenX(),
 										ev.getScreenY());
 
-								//removeNode(droppedNode);
+								removeNode(droppedNode);
 							}
-							
+
 							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
 
 								if(ev.getClickCount() == 2) // double click
 								{
-
 									if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
 									{
 										if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
@@ -367,7 +367,7 @@ public class MapEditorController extends AbstractController {
 									droppedNode.getNodeToDisplay().setOnMouseDragged(null);
 
 									root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
-										if (drawingEdge!=null && keyEvent.getCode() == KeyCode.ESCAPE) {
+										if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
 											if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
 											{
 												mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
@@ -380,10 +380,40 @@ public class MapEditorController extends AbstractController {
 										}
 									});
 
+									mapPane.setOnMouseClicked(mouseEvent-> { //handle escaping from edge creation
+
+										// this is where adding nodes on a edge should go, but i'm pretty sure it's not possible. 
+
+
+										/*
+										if (drawingEdge != null) {
+
+											MapNode node = new MapNode(); // make a new  map node
+											makeMapNodeDraggable(node); //make it draggable
+
+											node.setType(DragIconType.connector); //set the type
+											mapPane.getChildren().add(node.getNodeToDisplay()); //add to right panes children
+											model.addMapNode(node); //add node to model
+
+											node.toFront(); //send the node to the front
+
+											Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
+											Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y + 25 ); // convert coordinates to relative within the window
+
+											// Build up event handlers for this droppedNode
+
+											((DragIcon)node.getNodeToDisplay()).relocateToPoint(mouseCoords); //32 is half of 64, so half the height/width... @TODO
+
+										}
+										*/
+
+									});
+
 									mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
 
-										if(drawingEdge!=null)
+										if (drawingEdge != null)
 										{
+											System.out.println("Moving Mouse");
 											Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
 											Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 											drawingEdge.setEndPoint(mouseCoords); //set the end point
@@ -415,8 +445,11 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	/**
-
+	/*
+	 removes the node from the model
+	 removes the node.getNodeToDisplay() from the map pane
+	 removes the node edges associated with that node from the model
+	 removes the node edge.getNodeToDisplay() associated with from the map pane
 	 */
 	private void removeNode(MapNode node)
 	{
@@ -439,4 +472,6 @@ public class MapEditorController extends AbstractController {
 
 		model.removeMapNodeFromCurrentFloor(node); //remove node from mode
 	}
+
+
 }

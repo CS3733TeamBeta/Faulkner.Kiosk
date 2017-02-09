@@ -21,7 +21,7 @@
         <Font size="18.0" />
       </font>
     </Label>
-    <Label id="assignDocDept" layoutX="105.0" layoutY="250.0" text="Assign Doctor to Departments" />
+    <Label id="assignDocDept" layoutX="90.0" layoutY="250.0" text="Assign Doctor to Departments" />
     <ComboBox id="chooseDocBox" fx:id="assignDept" layoutX="276.0" layoutY="248.0" prefHeight="21.0" prefWidth="200.0">
       <items>
         <FXCollections fx:factory="observableArrayList">
