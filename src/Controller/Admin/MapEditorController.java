@@ -10,6 +10,7 @@ import java.util.Map;
 import Controller.AbstractController;
 import Controller.DragDropMain;
 import Controller.Admin.PopUp.OfficeEditController;
+import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
 import Domain.ViewElements.*;
@@ -61,7 +62,18 @@ public class MapEditorController extends AbstractController {
 	public void saveInfoAndExit() throws IOException{
 		//removeHandlers();
 		updateEdgeWeights();
-		DragDropMain.mvm.setCurrentFloor(this.model.getCurrentFloor());
+
+		if(model.getCurrentFloor().getKioskNode() == null && model.getCurrentFloor().getFloorNodes().size() > 0){
+			System.out.println("ERROR; NO KIOSK NODE SET; SETTING ONE RANDOMLY");
+			model.getCurrentFloor().setKioskLocation(model.getCurrentFloor().getFloorNodes().get(0));
+		}
+
+		if(DragDropMain.mvm != null) {
+			DragDropMain.mvm.setCurrentFloor(this.model.getCurrentFloor());
+		}
+		else if(Main.mvm != null) {
+			Main.mvm.setCurrentFloor(this.model.getCurrentFloor());
+		}
 		SceneSwitcher.switchToModifyLocationsView(this.getStage());
 	}
 
@@ -131,6 +143,11 @@ public class MapEditorController extends AbstractController {
 				//System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
 				//import a model if one exists
 				model.setCurrentFloor(DragDropMain.mvm.getCurrentFloor());
+			}
+			else if(Main.mvm != null) {
+				model.setCurrentFloor(Main.mvm.getCurrentFloor());
+			}
+			if(DragDropMain.mvm != null || Main.mvm != null){
 				//and then set all the existing nodes up
 
 				HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
@@ -407,6 +424,7 @@ public class MapEditorController extends AbstractController {
 		if (!model.getCurrentFloor().getFloorNodes().contains(mapNode))
 		{
 			System.out.println("Node " + mapNode.getNodeUID() + " added to: " + mapNode.getPosX() + " " + mapNode.getPosY());
+			mapNode.setFloor(model.getCurrentFloor());
 			model.getCurrentFloor().getFloorNodes().add(mapNode);
 		}
 						/* Build up event handlers for this droppedNode */

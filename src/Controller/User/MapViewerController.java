@@ -3,6 +3,7 @@ package Controller.User;
 import Controller.AbstractController;
 import Controller.Admin.PopUp.OfficeEditController;
 import Controller.DragDropMain;
+import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
@@ -65,6 +66,11 @@ public class MapViewerController extends AbstractController {
 				//System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
 				//import a model if one exists
 				model.setCurrentFloor(DragDropMain.mvm.getCurrentFloor());
+			}
+			else if(Main.mvm != null) {
+				model.setCurrentFloor(Main.mvm.getCurrentFloor());
+			}
+			if(Main.mvm != null || DragDropMain.mvm != null){
 				//and then set all the existing nodes up
 				for(MapNode n : model.getCurrentFloor().getFloorNodes()){
 					//System.out.println("Adding node");
@@ -183,6 +189,7 @@ public class MapViewerController extends AbstractController {
 		Path newRoute;
 		MapNode startPoint = model.getCurrentFloor().getKioskNode();
 		if (endPoint == startPoint) {
+			System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
 			return;//TODO add error message of some kind
 		}
 		try {
