@@ -5,12 +5,13 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import Controller.AbstractController;
+import Controller.DragDropMain;
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
-import Model.MapEditorModel;
+import Model.MapModel;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
@@ -43,32 +44,18 @@ public class MapEditorController extends AbstractController {
 	@FXML ImageView mapImage;
 
 	private DragIcon mDragOverIcon = null;
-	
+
 	private EventHandler<DragEvent> onIconDragOverRoot = null;
 	private EventHandler<DragEvent> onIconDragDropped = null;
 	private EventHandler<DragEvent> onIconDragOverRightPane = null;
 	private EventHandler<DragEvent> onLineSyncNeeded = null;
-	private MapEditorModel model;
+	private MapModel model;
 
 	NodeEdge drawingEdge;
 
 	public MapEditorController() {
-		
-		/*FXMLLoader fxmlLoader = new FXMLLoader(
-				getClass().getResource("/Admin/MapBuilder/MapEditor.fxml")
-				);
-		
-		fxmlLoader.setRoot(this); 
-		fxmlLoader.setController(this);
-		
-		try { 
-			fxmlLoader.load();
-        
-		} catch (IOException exception) {
-		    throw new RuntimeException(exception);
-		}
-		*/
-		model = new MapEditorModel();
+
+		model = new MapModel();
 
 		//Runs once the edge is drawn from one node to another
 		//connects the two, sends sources, positions them etc.
@@ -122,7 +109,72 @@ public class MapEditorController extends AbstractController {
 			sourceNode.toFront();
 			sourceNode.toFront();
 			mapImage.toBack();
+
 		});
+	}
+
+	protected void renderInitialMap(){
+		if(model==null) {
+			if(DragDropMain.mvm != null) {
+				//import a model if one exists
+				model = DragDropMain.mvm;
+				//and then set all the existing nodes up
+				for(MapNode n : model.getCurrentFloor().getFloorNodes()){
+					setupImportedNode(n);
+				}
+				drawingEdge = null;
+				for (MapNode n : model.getCurrentFloor().getFloorNodes()) {
+					n.getNodeToDisplay();
+					for (NodeEdge edge : n.getEdges())
+					{
+						(edge).updatePosViaNode(n);
+					}
+
+				}
+				for(NodeEdge edge : model.getCurrentFloor().getFloorEdges()){
+					drawingEdge = edge;
+					drawingEdge.changeColor(javafx.scene.paint.Color.BLACK);
+					//Opacity goes from 0 to 1
+					drawingEdge.changeOpacity(1.0);
+
+					MapNode sourceNode = edge.getSource();
+					MapNode targetNode = edge.getTarget();
+
+					drawingEdge.setSource(sourceNode);
+					drawingEdge.setTarget(targetNode);
+
+					drawingEdge.updatePosViaNode(sourceNode);
+					drawingEdge.updatePosViaNode(targetNode);
+
+					model.addMapEdge(drawingEdge);
+
+					drawingEdge.updatePosViaNode(sourceNode);
+					drawingEdge.updatePosViaNode(targetNode);
+
+					drawingEdge.updatePosViaNode(sourceNode);
+					drawingEdge.updatePosViaNode(targetNode);
+
+					sourceNode.toFront();
+					targetNode.toFront();
+
+					drawingEdge.updatePosViaNode(sourceNode);
+					drawingEdge.updatePosViaNode(targetNode);
+
+					System.out.println("drawingedge goes from " + sourceNode.getNodeID() + " to " + targetNode.getNodeID());
+
+					mapPane.getChildren().add(drawingEdge.getNodeToDisplay());
+
+					drawingEdge.updatePosViaNode(sourceNode);
+					drawingEdge.updatePosViaNode(targetNode);
+				}
+
+			}
+			else{
+				model = new MapModel();
+			}
+
+		}
+
 	}
 
 	public void onEdgeComplete() {
@@ -135,7 +187,7 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	private void initialize() {
 
-		if(model==null) model = new MapEditorModel();
+		renderInitialMap();
 
 		//Add one icon that will be used for the drag-drop process
 		//This is added as a child to the root anchorpane so it can be visible
@@ -339,7 +391,7 @@ public class MapEditorController extends AbstractController {
 
 								removeNode(droppedNode);
 							}
-							
+
 							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
 
 								if(ev.getClickCount() == 2) // double click
@@ -435,5 +487,110 @@ public class MapEditorController extends AbstractController {
 		}
 
 		model.removeMapNodeFromCurrentFloor(node); //remove node from mode
+	}
+
+	private void setupImportedNode(MapNode droppedNode){
+		makeMapNodeDraggable(droppedNode); //make it draggable
+
+		//droppedNode.setType(droppedNode.getIconType()); //set the type
+		mapPane.getChildren().add(droppedNode.getNodeToDisplay()); //add to right panes children
+		model.addMapNode(droppedNode); //add node to model
+
+		droppedNode.toFront(); //send the node to the front
+
+		Point2D cursorPoint = new Point2D(droppedNode.getPosX(), droppedNode.getPosY()); //cursor point
+
+						/* Build up event handlers for this droppedNode */
+
+		((DragIcon)droppedNode.getNodeToDisplay()).relocateToPoint(new Point2D(cursorPoint.getX() - 32,
+				cursorPoint.getY()-32)); //32 is half of 64, so half the height/width... @TODO
+
+		droppedNode.getNodeToDisplay().setOnMouseClicked(ev -> {
+			if(ev.getButton() == MouseButton.SECONDARY) //if right click
+			{
+				PopOver popOver = new PopOver();
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/Popup/DoctorEditPopup.fxml"));
+
+				try
+				{
+					popOver.setContentNode(loader.load());
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+
+				popOver.show(droppedNode.getNodeToDisplay(),
+						ev.getScreenX(),
+						ev.getScreenY());
+
+				removeNode(droppedNode);
+			}
+
+			else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
+
+				if(ev.getClickCount() == 2) // double click
+				{
+
+					if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
+					{
+						if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
+						{
+							mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
+						}
+					}
+
+					drawingEdge = new NodeEdge();
+					drawingEdge.setSource(droppedNode);
+
+					mapPane.getChildren().add(drawingEdge.getNodeToDisplay());
+					drawingEdge.toBack();
+					mapImage.toBack();
+
+					droppedNode.getNodeToDisplay().setOnMouseDragEntered(null); //sets drag handlers to null so they can't be repositioned during line drawing
+					droppedNode.getNodeToDisplay().setOnMouseDragged(null);
+
+					root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
+						if (drawingEdge!=null && keyEvent.getCode() == KeyCode.ESCAPE) {
+							if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
+							{
+								mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
+							}
+							drawingEdge = null;
+
+							mapPane.setOnMouseMoved(null);
+
+							makeMapNodeDraggable(droppedNode);
+						}
+					});
+
+					mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
+
+						if(drawingEdge!=null)
+						{
+							Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
+							Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
+							drawingEdge.setEndPoint(mouseCoords); //set the end point
+						}
+					});
+				}
+			}
+
+			if (drawingEdge!=null && !drawingEdge.getSource().equals(droppedNode))
+			{
+				drawingEdge.setTarget(droppedNode);
+				onEdgeComplete();
+			}
+		});
+
+		droppedNode.getNodeToDisplay().setOnMouseEntered(ev->
+		{
+			droppedNode.getNodeToDisplay().setOpacity(.65);
+		});
+
+		droppedNode.getNodeToDisplay().setOnMouseExited(ev->
+		{
+			droppedNode.getNodeToDisplay().setOpacity(1);
+		});
 	}
 }

@@ -67,6 +67,7 @@ public class MapNode implements DrawableMapEntity
 
         this.posX = posX;
         this.posY = posY;
+        this.setType(DragIconType.values()[0]);
     }
 
     /**

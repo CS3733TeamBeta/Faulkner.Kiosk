@@ -6,6 +6,7 @@ import Domain.ViewElements.GraphicalMapNode;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 /**
@@ -151,6 +152,18 @@ public class NodeEdge implements DrawableMapEntity
         );
 
         return centerPoint;
+    }
+
+    public void changeColor(Color c)
+    {
+        edgeLine.setStroke(c);
+    }
+
+    public void changeOpacity(Double opacity)
+    {
+        if(opacity <= 1 && opacity >= 0) {
+            edgeLine.setOpacity(opacity);
+        }
     }
 
 }

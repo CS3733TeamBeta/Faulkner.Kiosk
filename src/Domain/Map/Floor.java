@@ -10,6 +10,15 @@ import java.util.LinkedList;
 public class Floor {
     LinkedList<MapNode> floorNodes;
     LinkedList<NodeEdge> floorEdges;
+    MapNode kioskNode = null;
+
+    public LinkedList<MapNode> getFloorNodes() {
+        return floorNodes;
+    }
+
+    public LinkedList<NodeEdge> getFloorEdges() {
+        return floorEdges;
+    }
 
     int floorNumber;
 
@@ -24,10 +33,21 @@ public class Floor {
         n.setFloor(this);
     }
 
+    public void setKioskLocation(MapNode kioskNode){
+        for(MapNode n : this.floorNodes){
+            if(kioskNode.equals(n)){
+                this.kioskNode = kioskNode;
+            }
+        }
+    }
+
+    public MapNode getKioskNode(){
+        return kioskNode;
+    }
+
     public int getFloorNumber() {
         return floorNumber;
     }
-
 
     public void addEdge(NodeEdge e) {
         floorEdges.add(e);
