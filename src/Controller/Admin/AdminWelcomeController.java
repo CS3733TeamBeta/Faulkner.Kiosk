@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -22,7 +23,12 @@ public class AdminWelcomeController extends AbstractController
     @FXML
     Button btnChangeFloorplan;
 
+    @FXML
+    Label welcomeLabel;
+
     Stage primaryStage;
+
+    AdminProfile adminProfile;
 
     public AdminWelcomeController(){
 
@@ -44,6 +50,7 @@ public class AdminWelcomeController extends AbstractController
     {
         SceneSwitcher.switchToModifyDirectoryView(primaryStage);
     }
+
     @FXML
     private void clickedChangeFloorplan() throws IOException
     {
@@ -53,5 +60,16 @@ public class AdminWelcomeController extends AbstractController
     @FXML
     protected void initialize() {
 
+    }
+
+    /**
+     * Sets the profile to welcome!
+     *
+     * @param adminProfile
+     */
+    public void setAdminProfile(AdminProfile adminProfile)
+    {
+        this.adminProfile = adminProfile;
+        welcomeLabel.setText("Welcome " + adminProfile.getUsername() + "!");
     }
 }

@@ -9,7 +9,7 @@
 }
 
 .doctor {
-	-fx-background-image: url("doctor-og.png");
+	-fx-background-image: url("doctor.png");
 }
 
 .elevator {
@@ -20,8 +20,8 @@
 	-fx-background-image: url("food.png");
 }
 
-.help {
-	-fx-background-image: url("help.png");
+.store{
+	-fx-background-image: url("store.png");
 }
 
 .info {

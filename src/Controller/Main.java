@@ -22,8 +22,8 @@ public class Main extends Application {
     Hospital myHospital;
     Building myBuilding;
     Floor floor1;
-    static final int xoffset = 0;
-    static final int yoffset = -20;
+    static final int xoffset = -60;
+    static final int yoffset = -80;
     static final int BATHROOM = 0;
     static final int DOCTOR = 1;
     static final int ELEVATOR = 2;

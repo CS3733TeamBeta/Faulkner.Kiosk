@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="225.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="225.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <GridPane layoutX="52.0" layoutY="65.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0">
          <columnConstraints>
@@ -21,12 +21,12 @@
             <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <JFXTextField fx:id="nameBox" focusColor="#536dfe" labelFloat="true" promptText="Office Name" />
-            <JFXTextField fx:id="deptBox" focusColor="#536dfe" labelFloat="true" promptText="Department" GridPane.rowIndex="1" />
+            <JFXTextField fx:id="nameBox" focusColor="#536dfe" labelFloat="true" promptText="Name" />
+            <JFXTextField fx:id="deptBox" focusColor="#536dfe" labelFloat="true" promptText="Description" GridPane.rowIndex="1" />
             <JFXTextField fx:id="phoneBox" focusColor="#536dfe" labelFloat="true" promptText="Phone Number" GridPane.rowIndex="2" />
          </children>
       </GridPane>
-      <Text fill="#3f51b5" layoutX="52.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Office Editor" wrappingWidth="119.95166015625" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="53.04833984375">
+      <Text fill="#3f51b5" layoutX="32.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Destination Editor" wrappingWidth="161.99999806284904" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="31.000001937150955">
          <font>
             <Font size="19.0" />
          </font>
