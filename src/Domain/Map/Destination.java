@@ -2,13 +2,14 @@ package Domain.Map;
 
 import Controller.Admin.PopUp.AbstractPopupController;
 import Controller.Admin.PopUp.DestinationEditController;
-import Controller.Admin.PopUp.OfficeEditController;
+import Domain.ViewElements.Events.DeleteRequestedEvent;
+import Domain.ViewElements.Events.DeleteRequestedHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
-import sun.security.krb5.internal.crypto.Des;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Destination is a type of node that you'd want to navigate to
@@ -57,4 +58,6 @@ public class Destination extends MapNode {
 
         return popOver;
     }
+
+
 }

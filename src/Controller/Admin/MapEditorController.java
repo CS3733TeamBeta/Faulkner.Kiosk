@@ -2,13 +2,11 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
 
 import Controller.AbstractController;
 import Controller.DragDropMain;
-import Controller.Admin.PopUp.OfficeEditController;
 import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
@@ -16,28 +14,17 @@ import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.MapModel;
-import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
-import javafx.scene.Parent;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.stage.Stage;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
-import org.controlsfx.control.PopOver;
-import org.controlsfx.samples.HelloPopOver;
 
 public class MapEditorController extends AbstractController {
 
@@ -92,29 +79,7 @@ public class MapEditorController extends AbstractController {
 		{
 			NodeEdge completedEdge = drawingEdge;
 
-			completedEdge.getNodeToDisplay().setOnMouseEntered(deEvent->{
-				if (completedEdge != null)
-				{
-					completedEdge.getEdgeLine().setStroke(Color.RED);
-				}
-			});
-
-			completedEdge.getNodeToDisplay().setOnMouseExited(deEvent->{
-				if (completedEdge != null) {
-					completedEdge.getEdgeLine().setStroke(Color.BLACK);
-				}
-			});
-
-			completedEdge.getNodeToDisplay().setOnMouseClicked(deEvent->{
-				if (completedEdge != null) {
-					if (deEvent.getClickCount() == 2) {
-						completedEdge.getSource().getEdges().remove(completedEdge);
-						completedEdge.getTarget().getEdges().remove(completedEdge);
-						mapPane.getChildren().remove(completedEdge.getNodeToDisplay()); //remove from the right pane
-						model.removeMapEdge(completedEdge);
-					}
-				}
-			});
+			addHandlersToEdge(completedEdge);
 
 			MapNode sourceNode = event.getNodeEdge().getSource();
 			MapNode targetNode = event.getNodeEdge().getTarget();
@@ -144,6 +109,7 @@ public class MapEditorController extends AbstractController {
 
 	protected void renderInitialMap(){
 			if(DragDropMain.mvm != null) {
+				System.out.println("Begin render...");
 				//System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
 				//import a model if one exists
 				model.setCurrentFloor(DragDropMain.mvm.getCurrentFloor());
@@ -153,37 +119,86 @@ public class MapEditorController extends AbstractController {
 			}
 			if(DragDropMain.mvm != null || Main.mvm != null){
 				//and then set all the existing nodes up
-				for(MapNode n : model.getCurrentFloor().getFloorNodes()){
+				HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+
+				for(MapNode n : model.getCurrentFloor().getFloorNodes())
+				{
 					//System.out.println("Adding node");
 					addToAdminMap(n);
+
+					for(NodeEdge edge: n.getEdges())
+					{
+						if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+					}
 				}
 
-				//System.out.println("Edges to add: " + DragDropMain.mvm.getCurrentFloor().getFloorEdges().size());
-				for(NodeEdge edge : model.getCurrentFloor().getFloorEdges()){
-					edge.changeColor(javafx.scene.paint.Color.BLACK);
-					edge.changeOpacity(1.0);
 
-					MapNode sourceNode = edge.getSource();
-					MapNode targetNode = edge.getTarget();
-
-					edge.setSource(sourceNode);
-					edge.setTarget(targetNode);
-
-					model.addMapEdge(drawingEdge);
-
-					sourceNode.toFront();
-					targetNode.toFront();
-
+				for(NodeEdge edge : collectedEdges)
+				{
+					addHandlersToEdge(edge);
 					mapPane.getChildren().add(edge.getNodeToDisplay());
 
-					edge.updatePosViaNode(sourceNode);
-					edge.updatePosViaNode(targetNode);
+					MapNode source = edge.getSource();
+					MapNode target = edge.getTarget();
+
+					//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
+
+					if(!mapPane.getChildren().contains(source.getNodeToDisplay()))
+					{
+						addToAdminMap(source);
+					}
+
+					if(!mapPane.getChildren().contains(target.getNodeToDisplay()))
+					{
+						addToAdminMap(target);
+					}
+
+					edge.setStartPoint(new Point2D(source.getPosX() , source.getPosY()));
+					edge.setEndPoint(new Point2D(target.getPosX(), target.getPosY()));
+
+					((DragIcon) source.getNodeToDisplay()).relocateToPoint(new Point2D(source.getPosX() - 12,
+							source.getPosY() - 12)); //placed by upper left corner
+
+					((DragIcon) target.getNodeToDisplay()).relocateToPoint(new Point2D(target.getPosX() - 12,
+							target.getPosY() - 12)); //placed by upper left corner
+
 				}
 			}
 			else{
 				model = new MapModel();
 			}
 
+	}
+
+	/**Adds handlers to handle edge deletion mostly
+	 *
+	 * @param edge to add handlers to
+	 */
+	public void addHandlersToEdge(NodeEdge edge)
+	{
+		edge.getNodeToDisplay().setOnMouseEntered(deEvent->{
+			if (edge != null)
+			{
+				edge.getEdgeLine().setStroke(Color.RED);
+			}
+		});
+
+		edge.getNodeToDisplay().setOnMouseExited(deEvent->{
+			if (edge != null) {
+				edge.getEdgeLine().setStroke(Color.BLACK);
+			}
+		});
+
+		edge.getNodeToDisplay().setOnMouseClicked(deEvent->{
+			if (edge != null) {
+				if (deEvent.getClickCount() == 2) {
+					edge.getSource().getEdges().remove(edge);
+					edge.getTarget().getEdges().remove(edge);
+					mapPane.getChildren().remove(edge.getNodeToDisplay()); //remove from the right pane
+					model.removeMapEdge(edge);
+				}
+			}
+		});
 	}
 
 	public void onEdgeComplete() {
@@ -248,7 +263,7 @@ public class MapEditorController extends AbstractController {
 				{
 					for (NodeEdge edge : n.getEdges())
 					{
-						((NodeEdge)edge).updatePosViaNode(n);
+						edge.updatePosViaNode(n);
 					}
 
 					n.setPosX(event.getSceneX());
@@ -428,6 +443,11 @@ public class MapEditorController extends AbstractController {
 	public void addEventHandlersToNode(MapNode mapNode)
 	{
 		makeMapNodeDraggable(mapNode); //make it draggable
+
+		/***Handles deletion from a popup menu**/
+		mapNode.setOnDeleteRequested(event -> {
+			removeNode(event.getSource());
+		});
 
 		mapNode.getNodeToDisplay().setOnMouseClicked(ev -> {
 

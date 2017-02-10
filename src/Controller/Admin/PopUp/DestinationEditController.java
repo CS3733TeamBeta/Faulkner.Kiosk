@@ -1,9 +1,12 @@
 package Controller.Admin.PopUp;
 
 import Domain.Map.Destination;
+import Domain.ViewElements.Events.DeleteRequestedHandler;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import org.controlsfx.control.PopOver;
+
+import java.beans.EventHandler;
 
 /**
  * Controlled for popup that edits an office map node
@@ -25,6 +28,8 @@ public class DestinationEditController extends AbstractPopupController
 
     public DestinationEditController(Destination destination)
     {
+        super(destination);
+
         this.destinationUnderEdit = destination;
     }
 

@@ -119,21 +119,6 @@ public class DragIcon extends AnchorPane{
 		}
 	}
 
-	/**
-	 *
-	 * @return center point of this drag icon
-	 */
-	public Point2D getIconCenterPoint(){
-		Bounds boundsInScene = this.getBoundsInLocal();
-
-		Point2D centerPoint = new Point2D(
-				boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
-				boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
-		);
-
-		return centerPoint;
-	}
-
 	public static MapNode constructMapNodeFromType(DragIconType type)
 	{
 		MapNode newNode;
