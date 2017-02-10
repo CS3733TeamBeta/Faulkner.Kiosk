@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Thu Feb 09 21:48:06 EST 2017:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015a-25eb-adb5-00000877bfc0 
+Thu Feb 09 22:38:42 EST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015a-2619-fe14-00000be2bda8 
 on database directory /Users/benjaminhylak/Git/Faulkner.Kiosk/derbyDB with class loader sun.misc.Launcher$AppClassLoader@2f0e140b 
 Loaded from file:/Users/benjaminhylak/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar
 java.vendor=Oracle Corporation
