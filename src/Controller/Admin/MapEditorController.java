@@ -433,8 +433,8 @@ public class MapEditorController extends AbstractController {
 
 						Point2D cursorPoint = container.getValue("scene_coords"); //cursor point
 
-						droppedNode.setPosX(cursorPoint.getX()-32); //offset because mouse drag and pictures should start from upper corner
-						droppedNode.setPosY(cursorPoint.getY()-32);
+						droppedNode.setPosX(cursorPoint.getX()-12.5); //offset because mouse drag and pictures should start from upper corner
+						droppedNode.setPosY(cursorPoint.getY()-12.5);
 
 						addToAdminMap(droppedNode);
 					}
