@@ -65,6 +65,6 @@ public class ModifyLocationsController extends AbstractController
 
     @FXML
     private void logoutButton() throws IOException{
-        SceneSwitcher.switchToLoginView(primaryStage);
+        SceneSwitcher.switchToAdminLoginView(primaryStage);
     }
 }

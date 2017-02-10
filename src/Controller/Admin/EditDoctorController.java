@@ -41,7 +41,7 @@ public class EditDoctorController extends AbstractController
 
     @FXML
     private void logoutHit() throws IOException{
-        SceneSwitcher.switchToLoginView(primaryStage);
+        SceneSwitcher.switchToAdminLoginView(primaryStage);
     }
 
     @FXML
@@ -50,8 +50,8 @@ public class EditDoctorController extends AbstractController
     }
 
     @FXML
-    private void saveHit(){
-        //Main.thisStage.setScene(Main.changingDirectoryView);
+    private void saveHit() throws IOException{
+        SceneSwitcher.switchToModifyLocationsView(primaryStage);
     }
 
     @FXML

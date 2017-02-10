@@ -76,7 +76,7 @@ public class AddNewProfileController extends AbstractController
     @FXML
     private void logoutHit()throws IOException
     {
-        SceneSwitcher.switchToLoginView(primaryStage);
+        SceneSwitcher.switchToAdminLoginView(primaryStage);
     }
 
     /**
@@ -86,7 +86,7 @@ public class AddNewProfileController extends AbstractController
     @FXML
     private void backHit() throws IOException
     {
-        SceneSwitcher.switchToModifyLocationsView(primaryStage);
+        SceneSwitcher.switchToModifyDirectoryView(primaryStage);
     }
 
     @FXML

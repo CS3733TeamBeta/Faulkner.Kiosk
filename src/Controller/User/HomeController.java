@@ -35,6 +35,6 @@ public class HomeController extends AbstractController
     
     @FXML
     public void clickSAB() throws IOException {
-        SceneSwitcher.switchToLoginView(primaryStage);
+        SceneSwitcher.switchToAdminLoginView(primaryStage);
     }
 }

@@ -102,7 +102,7 @@ public class ChooseProfileToModifyController extends AbstractController {
 
     @FXML
     private void logoutHit() throws IOException{
-        SceneSwitcher.switchToLoginView(primaryStage);
+        SceneSwitcher.switchToAdminLoginView(primaryStage);
     }
 
     @FXML

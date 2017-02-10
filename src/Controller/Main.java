@@ -21,7 +21,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         departments.addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
 
-        SceneSwitcher.switchToLoginView(primaryStage);
+        SceneSwitcher.switchToAdminLoginView(primaryStage);
 
         primaryStage.show();
     }

@@ -36,7 +36,7 @@ public class AdminWelcomeController extends AbstractController
     @FXML
     private void clickedBack() throws IOException
     {
-        SceneSwitcher.switchToLoginView(primaryStage);
+        SceneSwitcher.switchToAdminLoginView(primaryStage);
     }
 
     @FXML

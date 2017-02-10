@@ -18,7 +18,7 @@ public class SceneSwitcher
     protected static final String UserPackage = "../User";
     protected static final String AdminLoginViewPath = AdminPackage + "/AdminLoginView.fxml";
     protected static final String AdminWelcomeViewPath = AdminPackage + "/AdminWelcomeView.fxml";
-    protected static final String AddNewProfileViewPath = AdminPackage + "/AdminLoginView.fxml";
+    protected static final String AddNewProfileViewPath = AdminPackage + "/AddNewProfileView.fxml";
     protected static final String ModifyDirectoryViewPath = AdminPackage + "/ModifyDirectoryView.fxml";
     protected static final String ChooseProfileToModifyViewPath = AdminPackage + "/ChooseProfileToModifyView.fxml";
     //protected static final String EditDepartmentViewPath = AdminPackage + "/EditDepartmentView.fxml";
@@ -55,7 +55,7 @@ public class SceneSwitcher
      * @throws IOException
      */
 
-    public static void switchToLoginView(Stage primaryStage) throws IOException {
+    public static void switchToAdminLoginView(Stage primaryStage) throws IOException {
         AdminLoginController controller = (AdminLoginController) switchToScene(primaryStage, AdminLoginViewPath);
     }
 
