@@ -92,7 +92,7 @@ public class AddNewProfileController extends AbstractController
     @FXML
     private void backHit() throws IOException
     {
-        SceneSwitcher.switchToModifyLocationsView(primaryStage);
+        SceneSwitcher.switchToModifyDirectoryView(primaryStage);
     }
 
     @FXML
