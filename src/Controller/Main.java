@@ -15,15 +15,15 @@ import javafx.collections.ObservableList;
 public class Main extends Application {
 
     MapNode nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG, nodeH, nodeI, nodeJ,
-            nodeK;
-    NodeEdge edgeA, edgeB, edgeC, edgeD, edgeE, edgeF, edgeG, edgeH, edgeI,
-            edgeJ, edgeK;
+            nodeK, nodeL, nodeM;
+    NodeEdge edgeA, edgeB, edgeC, edgeD, edgeE, edgeF, edgeG, edgeH, edgeI, edgeJ,
+            edgeK, edgeL, edgeM;
 
     Hospital myHospital;
     Building myBuilding;
     Floor floor1;
     static final int xoffset = 0;
-    static final int yoffset = 0;
+    static final int yoffset = -20;
     static final int BATHROOM = 0;
     static final int DOCTOR = 1;
     static final int ELEVATOR = 2;
@@ -87,8 +87,8 @@ public class Main extends Application {
         nodeI = new MapNode(9, 501 + xoffset, 187 + yoffset, CONNECTOR);
         nodeJ = new MapNode(10, 500 + xoffset, 476 + yoffset, CONNECTOR);
         nodeK = new MapNode(11, 464 + xoffset, 478 + yoffset, ELEVATOR);
-        //node12 = new MapNode(12, 538 + xoffset, 473 + yoffset, ELEVATOR);
-        //node13 = new MapNode(13, 496 + xoffset, 530 + yoffset, INFO);
+        nodeL = new MapNode(12, 538 + xoffset, 473 + yoffset, ELEVATOR);
+        nodeM = new MapNode(13, 496 + xoffset, 530 + yoffset, INFO);
 
         floor1.addNode(nodeA);
         floor1.addNode(nodeB);
@@ -101,9 +101,8 @@ public class Main extends Application {
         floor1.addNode(nodeI);
         floor1.addNode(nodeJ);
         floor1.addNode(nodeK);
-        //floor1.addNode(nodeL);
-        //floor1.addNode(node12);
-        //floor1.addNode(node13);
+        floor1.addNode(nodeL);
+        floor1.addNode(nodeM);
 
         edgeA = new NodeEdge(nodeI, nodeG, 8);
         edgeB = new NodeEdge(nodeI, nodeA, 5);
@@ -116,6 +115,8 @@ public class Main extends Application {
         edgeI = new NodeEdge(nodeJ, nodeK, 5);
         edgeJ = new NodeEdge(nodeC, nodeJ, 3);
         edgeK = new NodeEdge(nodeE, nodeF, 5);
+        edgeL = new NodeEdge(nodeJ, nodeL, 3);
+        edgeM = new NodeEdge(nodeJ, nodeM, 5);
         floor1.addEdge(edgeA);
         floor1.addEdge(edgeB);
         floor1.addEdge(edgeC);
@@ -127,6 +128,9 @@ public class Main extends Application {
         floor1.addEdge(edgeI);
         floor1.addEdge(edgeJ);
         floor1.addEdge(edgeK);
+        floor1.addEdge(edgeL);
+        floor1.addEdge(edgeM);
+        floor1.setKioskLocation(nodeM);
 
 
         mvm = new MapModel();
