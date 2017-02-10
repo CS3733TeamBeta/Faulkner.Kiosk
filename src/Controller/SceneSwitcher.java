@@ -29,6 +29,7 @@ public class SceneSwitcher
     protected static final String HomeViewPath = UserPackage + "/HomeView.fxml";
     protected static final String UserMapViewPath = UserPackage + "/UserMapView.fxml";
     protected static final String UserSearchViewPath = UserPackage + "/UserSearchView.fxml";
+    protected static final String EditProfileViewPath = AdminPackage + "/EditProfileView.fxml";
 
     public static AbstractController switchToScene(Stage primaryStage, String pathToView) throws IOException
     {
@@ -106,6 +107,10 @@ public class SceneSwitcher
 
     public static void switchToUserSearchView(Stage primaryStage) throws IOException {
         UserSearchController controller = (UserSearchController) switchToScene(primaryStage, UserSearchViewPath);
+    }
+
+    public static void switchToEditProfileView(Stage primaryStage) throws IOException {
+        EditProfileController controller = (EditProfileController) switchToScene(primaryStage, EditProfileViewPath);
     }
 
     public static void goToUserHome(Stage primaryStage) throws IOException{
