@@ -5,10 +5,14 @@ import Controller.AbstractController;
 import Controller.SceneSwitcher;
 import Model.AdminLoginModel;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -16,17 +20,24 @@ import java.io.IOException;
 
 public class AdminLoginController extends AbstractController
 {
-    @FXML
-    Button btnBack;
-    @FXML
-    Button btnLogin;
-    @FXML
-    TextField txtUsername;
-    @FXML
-    PasswordField txtPassword;
 
     @FXML
-    GridPane gridPane;
+    private AnchorPane anchorPane;
+
+    @FXML
+    private Label loginLabel;
+
+    @FXML
+    private JFXButton backButton;
+
+    @FXML
+    private JFXTextField txtUsername;
+
+    @FXML
+    private JFXTextField txtPassword;
+
+    @FXML
+    private JFXButton loginButton;
 
     AdminLoginModel infoForLoggingIn;
 
