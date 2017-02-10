@@ -26,7 +26,7 @@ public abstract class AbstractPopupController
 
     private MapNode nodeToDelete; //node that will be deleted, if requested
 
-    public AbstractPopupController(Destination nodeToDelete)
+    public AbstractPopupController(MapNode nodeToDelete)
     {
         this.nodeToDelete = nodeToDelete;
     }

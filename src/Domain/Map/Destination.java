@@ -31,33 +31,12 @@ public class Destination extends MapNode {
     }
 
     /**Returns a pop over window to edit this node**/
+    @Override
     public PopOver getEditPopover()
     {
         DestinationEditController controller = new DestinationEditController(this);
 
         return getPopOver(controller, popOverEditFXML);
     }
-
-    protected final PopOver getPopOver(AbstractPopupController controller, String fxmlPath)
-    {
-        PopOver popOver = new PopOver();
-
-        FXMLLoader loader = new FXMLLoader(Destination.class.getResource(fxmlPath));
-        controller.setPopOver(popOver); //sets the popover used by the controller
-
-        loader.setController(controller);
-
-        try
-        {
-            popOver.setContentNode(loader.load());
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        return popOver;
-    }
-
 
 }

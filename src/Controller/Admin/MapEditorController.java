@@ -63,6 +63,15 @@ public class MapEditorController extends AbstractController {
 		SceneSwitcher.switchToModifyLocationsView(this.getStage());
 	}
 
+	public void refreshNodePositions()
+	{
+		for (MapNode n : model.getCurrentFloor().getFloorNodes())
+		{
+			n.setPosX(n.getNodeToDisplay().getScene().getX());
+			n.setPosY(n.getNodeToDisplay().getScene().getY());
+		}
+	}
+
 	public MapEditorController() {
 
 		model = new MapModel();
@@ -147,15 +156,8 @@ public class MapEditorController extends AbstractController {
 						addToAdminMap(target);
 					}
 
-					edge.setStartPoint(new Point2D(source.getPosX() , source.getPosY()));
-					edge.setEndPoint(new Point2D(target.getPosX(), target.getPosY()));
-
-					((DragIcon) source.getNodeToDisplay()).relocateToPoint(new Point2D(source.getPosX() - 12,
-							source.getPosY() - 12)); //placed by upper left corner
-
-					((DragIcon) target.getNodeToDisplay()).relocateToPoint(new Point2D(target.getPosX() - 12,
-							target.getPosY() - 12)); //placed by upper left corner
-
+					edge.updatePosViaNode(source);
+					edge.updatePosViaNode(target);
 				}
 			}
 			else{
@@ -447,12 +449,9 @@ public class MapEditorController extends AbstractController {
 
 			if(ev.getButton() == MouseButton.SECONDARY) //if right click
 			{
-				if(mapNode instanceof Destination)
-				{
-					((Destination)mapNode).getEditPopover().show(mapNode.getNodeToDisplay(),
-							ev.getScreenX(),
-							ev.getScreenY());
-				}
+				mapNode.getEditPopover().show(mapNode.getNodeToDisplay(),
+						ev.getScreenX(),
+						ev.getScreenY());
 				//removeNode(droppedNode);
 			}
 			else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks

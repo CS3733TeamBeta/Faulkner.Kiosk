@@ -1,13 +1,19 @@
 package Domain.Map;
 
+import Controller.Admin.PopUp.AbstractPopupController;
+import Controller.Admin.PopUp.DestinationEditController;
+import Controller.Admin.PopUp.NodeEditController;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
 import Domain.ViewElements.DrawableMapEntity;
 import Domain.ViewElements.Events.DeleteRequestedEvent;
 import Domain.ViewElements.Events.DeleteRequestedHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
+import org.controlsfx.control.PopOver;
 
+import java.io.IOException;
 import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +33,8 @@ public class MapNode implements DrawableMapEntity
 
     final double NODE_HOVER_OPACITY = .65;
     final double NODE__NORMAL_OPACITY = 1;
+
+    private final String popOverEditFXML = "/Admin/Popup/NodeEditPopup.fxml";
 
     protected ArrayList<DeleteRequestedHandler> deleteEventHandlers = null;
 
@@ -259,6 +267,35 @@ public class MapNode implements DrawableMapEntity
         }
 
         deleteEventHandlers.add(handler);
+    }
+
+    /**Returns a pop over window to edit this node**/
+    public PopOver getEditPopover()
+    {
+        NodeEditController controller = new NodeEditController(this);
+
+        return getPopOver(controller, popOverEditFXML);
+    }
+
+    protected final PopOver getPopOver(AbstractPopupController controller, String fxmlPath)
+    {
+        PopOver popOver = new PopOver();
+
+        FXMLLoader loader = new FXMLLoader(Destination.class.getResource(fxmlPath));
+        controller.setPopOver(popOver); //sets the popover used by the controller
+
+        loader.setController(controller);
+
+        try
+        {
+            popOver.setContentNode(loader.load());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return popOver;
     }
 
     /*******************************A STAR FUNCTIONS **********************************/
