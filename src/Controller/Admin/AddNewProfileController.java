@@ -13,9 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -98,9 +96,17 @@ public class AddNewProfileController extends AbstractController
     }
 
     @FXML
-    private void saveHit() throws IOException
-    {
-        SceneSwitcher.switchToModifyDirectoryView(primaryStage);
+    private void saveHit() throws IOException {
+        if (isProcessable()) {
+            processInformation();
+
+            SceneSwitcher.switchToModifyDirectoryView(primaryStage);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
+            alert.setTitle("Action denied.");
+            alert.setHeaderText(null);
+            alert.showAndWait();
+        }
     }
 
     @FXML
@@ -132,21 +138,52 @@ public class AddNewProfileController extends AbstractController
     }
 
     private Boolean isProcessable() {
+        if (firstName.getText() == null || firstName.getText().trim().isEmpty()){
+            return false;
+        }
+
+        if (lastName.getText() == null || lastName.getText().trim().isEmpty()) {
+            return false;
+        }
+
+        if (roomNum.getText() == null || roomNum.getText().trim().isEmpty()) {
+            return false;
+        }
+
+        if (description.getText() == null || description.getText().trim().isEmpty()) {
+            return false;
+        }
+
+        if (addedDept.isEmpty()) {
+            return false;
+        }
+
         return true;
     }
 
     private void processInformation() {
-        /*
-        Doctor newProfile = new Doctor(firstName.getText(), lastName.getText(), roomNum.getText());
+        String name = lastName.getText() + ", " + firstName.getText();
+        String hour = "";
+        String phoneNum = "";
+
+        if (hours.getText() == null || hours.getText().trim().isEmpty()) {
+            hour = "N/A";
+        }
+
+        if (hours.getText() == null || hours.getText().trim().isEmpty()) {
+            phoneNum = "N/A";
+        }
+
+        Doctor newProfile = new Doctor(name, description.getText(), hour);
+
+        newProfile.addOffice(roomNum.getText());
+        newProfile.setPhoneNum(phoneNum);
+
         for (String dept: addedDept) {
-            try {
-                newProfile.addDepartment(dept);
-            } catch (AddFoundException e) {
-                System.out.println("This doctor is already assigned to this department(s).");
-            }
+            newProfile.addDepartment(dept);
         }
 
         Main.FaulknerHospitalDirectory.add(newProfile);
-        */
+
     }
 }
