@@ -172,6 +172,12 @@ public class MapEditorController extends AbstractController {
 
 					edge.updatePosViaNode(source);
 					edge.updatePosViaNode(target);
+
+					edge.toBack();
+					source.toFront();
+					target.toFront();
+
+					mapImage.toBack();
 				}
 			}
 			else{
