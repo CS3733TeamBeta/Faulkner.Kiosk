@@ -42,8 +42,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        departments.addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
-
         mvm = new MapModel();
         mvm.setCurrentFloor(new Floor(3));
         setUpNodeGraph();
