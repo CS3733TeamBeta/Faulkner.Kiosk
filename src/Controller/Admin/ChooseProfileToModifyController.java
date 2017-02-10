@@ -133,16 +133,14 @@ public class ChooseProfileToModifyController extends AbstractController {
     }
 
     @FXML
-    private void edit() {
+    private void edit() throws IOException {
         Doctor profileSelected = filteredProfiles.getSelectionModel().getSelectedItem();
 
         if (profileSelected != null) {
-            //SceneSwitcher.switchToModifyDirectoryView(primaryStage);
+            EditProfileController c = new EditProfileController(profileSelected);
 
+            SceneSwitcher.switchToEditProfileView(primaryStage);
         }
-
-        // Search for the specific doctor, and edit the row of the table in the database system
-        // What to edit? Could we edit the ID #?
 
     }
 }

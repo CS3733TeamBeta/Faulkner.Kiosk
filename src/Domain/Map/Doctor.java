@@ -12,7 +12,7 @@ public class Doctor extends Info
     int docID;
     HashSet<String> department;
     HashSet<String> myOffice;
-    String phoneNum;
+    String phoneNum = "N/A";
 
     public Doctor(String name, String description, String hours) {
         super(name, description, hours);
@@ -83,5 +83,9 @@ public class Doctor extends Info
 
     public String getDescription() {
         return this.description;
+    }
+
+    public String getHours() {
+        return this.hours;
     }
 }

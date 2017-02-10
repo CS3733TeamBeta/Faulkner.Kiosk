@@ -1,29 +1,28 @@
-// Create and edit by Joan Wong
-
 package Controller.Admin;
 
 import Controller.AbstractController;
 import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.Doctor;
-import Exceptions.AddFoundException;
-import Model.DoctorProfile;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.HashSet;
 
-public class AddNewProfileController extends AbstractController
+/**
+ * Created by jw97 on 2/9/2017.
+ */
+public class EditProfileController extends AbstractController
 {
-    ObservableList<String> addedDept = FXCollections.observableArrayList();
+    Doctor editDoc;
+    ObservableList<String> addedDept;
     ObservableList<String> deptList = FXCollections.observableArrayList();
     @FXML
     Button logout, back, save;
@@ -69,8 +68,23 @@ public class AddNewProfileController extends AbstractController
         primaryStage = s;
     }
 
-    public AddNewProfileController(){
-        deptList = Main.departments;
+    public EditProfileController(Doctor profile){
+        this.editDoc = profile;
+
+        // Split up the string name profile.getName();
+
+        firstName.setText("");
+        lastName.setText("");
+
+        // List of string
+        roomNum.setText("");
+
+        description.setText(profile.getDescription());
+        hours.setText(profile.getHours());
+        phoneNum.setText(profile.getPhoneNum());
+
+        addedDept = FXCollections.observableArrayList(profile.getDepartment());
+        deptAddedListView.setItems(addedDept);
     }
 
     public void initialize() {
@@ -92,7 +106,7 @@ public class AddNewProfileController extends AbstractController
     @FXML
     private void backHit() throws IOException
     {
-        SceneSwitcher.switchToModifyLocationsView(primaryStage);
+        SceneSwitcher.switchToChooseProfileToModifyView(primaryStage);
     }
 
     @FXML
@@ -100,7 +114,7 @@ public class AddNewProfileController extends AbstractController
         if (isProcessable()) {
             processInformation();
 
-            SceneSwitcher.switchToModifyDirectoryView(primaryStage);
+            SceneSwitcher.switchToChooseProfileToModifyView(primaryStage);
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
             alert.setTitle("Action denied.");
@@ -162,25 +176,27 @@ public class AddNewProfileController extends AbstractController
     }
 
     private void processInformation() {
-        String name = lastName.getText() + ", " + firstName.getText();
         String hour = "N/A";
 
         if (hours.getText() != null && !(hours.getText().isEmpty())) {
             hour = hours.getText();
         }
 
-        Doctor newProfile = new Doctor(name, description.getText(), hour);
-
         if (phoneNum.getText() != null && !(phoneNum.getText().isEmpty())) {
-            newProfile.setPhoneNum(phoneNum.getText());
+            this.editDoc.setPhoneNum(phoneNum.getText());
         }
 
-        newProfile.addOffice(roomNum.getText());
+        this.editDoc.setName(lastName.getText() + ", " + firstName.getText());
+        this.editDoc.setDescription(description.getText());
+        this.editDoc.setHours(hour);
+
+        this.editDoc.setDepartment(new HashSet<String>());
 
         for (String dept: addedDept) {
-            newProfile.addDepartment(dept);
+            this.editDoc.addDepartment(dept);
         }
 
-        Main.FaulknerHospitalDirectory.add(newProfile);
+        this.editDoc.setMyOffice(new HashSet<String>());
+        this.editDoc.addOffice(roomNum.getText());
     }
 }
