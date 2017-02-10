@@ -60,7 +60,6 @@ public class EditProfileController extends AbstractController
     @FXML
     ListView<String> deptAddedListView;
 
-
     Stage primaryStage;
 
     public void setStage(Stage s)
@@ -68,26 +67,29 @@ public class EditProfileController extends AbstractController
         primaryStage = s;
     }
 
-    public EditProfileController(Doctor profile){
-        this.editDoc = profile;
-
-        // Split up the string name profile.getName();
-
-        firstName.setText("");
-        lastName.setText("");
-
-        // List of string
-        roomNum.setText("");
-
-        description.setText(profile.getDescription());
-        hours.setText(profile.getHours());
-        phoneNum.setText(profile.getPhoneNum());
-
-        addedDept = FXCollections.observableArrayList(profile.getDepartment());
-        deptAddedListView.setItems(addedDept);
-    }
-
     public void initialize() {
+        editDoc = ChooseProfileToModifyController.editDoc;
+
+        String name = editDoc.getName();
+        String[] lastAndFirst = name.split(", ");
+
+        firstName.setText(lastAndFirst[1]);
+        lastName.setText(lastAndFirst[0]);
+
+        String offices = "";
+
+        for (String office: editDoc.getMyOffice()) {
+            offices = offices + office;
+        }
+
+        roomNum.setText(offices);
+
+        description.setText(editDoc.getDescription());
+        hours.setText(editDoc.getHours());
+        phoneNum.setText(editDoc.getPhoneNum());
+
+        addedDept = FXCollections.observableArrayList(editDoc.getDepartment());
+        deptAddedListView.setItems(addedDept);
         deptList = Main.departments;
         deptListView.setItems(FXCollections.observableList(deptList));
     }
