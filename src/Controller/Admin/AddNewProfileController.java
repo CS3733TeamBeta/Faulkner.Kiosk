@@ -138,19 +138,19 @@ public class AddNewProfileController extends AbstractController
     }
 
     private Boolean isProcessable() {
-        if (firstName.getText() == null || firstName.getText().trim().isEmpty()){
+        if (firstName.getText() != null && !(firstName.getText().isEmpty())){
             return false;
         }
 
-        if (lastName.getText() == null || lastName.getText().trim().isEmpty()) {
+        if (lastName.getText() != null && !(lastName.getText().isEmpty())) {
             return false;
         }
 
-        if (roomNum.getText() == null || roomNum.getText().trim().isEmpty()) {
+        if (roomNum.getText() != null && !(roomNum.getText().isEmpty())) {
             return false;
         }
 
-        if (description.getText() == null || description.getText().trim().isEmpty()) {
+        if (description.getText() != null && !(description.getText().isEmpty())) {
             return false;
         }
 
@@ -163,27 +163,24 @@ public class AddNewProfileController extends AbstractController
 
     private void processInformation() {
         String name = lastName.getText() + ", " + firstName.getText();
-        String hour = "";
-        String phoneNum = "";
+        String hour = "N/A";
 
-        if (hours.getText() == null || hours.getText().trim().isEmpty()) {
-            hour = "N/A";
-        }
-
-        if (hours.getText() == null || hours.getText().trim().isEmpty()) {
-            phoneNum = "N/A";
+        if (hours.getText() != null && !(hours.getText().isEmpty())) {
+            hour = hours.getText();
         }
 
         Doctor newProfile = new Doctor(name, description.getText(), hour);
 
+        if (phoneNum.getText() != null && !(phoneNum.getText().isEmpty())) {
+            newProfile.setPhoneNum(phoneNum.getText());
+        }
+
         newProfile.addOffice(roomNum.getText());
-        newProfile.setPhoneNum(phoneNum);
 
         for (String dept: addedDept) {
             newProfile.addDepartment(dept);
         }
 
         Main.FaulknerHospitalDirectory.add(newProfile);
-
     }
 }
