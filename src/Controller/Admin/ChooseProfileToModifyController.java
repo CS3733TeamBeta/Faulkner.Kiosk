@@ -44,13 +44,14 @@ public class ChooseProfileToModifyController extends AbstractController {
     @FXML
     TableColumn descriptionCol;
 
-
     Stage primaryStage;
 
     public void setStage(Stage s)
     {
         primaryStage = s;
     }
+
+    protected static Doctor editDoc;
 
     public ChooseProfileToModifyController(){
     }
@@ -133,12 +134,11 @@ public class ChooseProfileToModifyController extends AbstractController {
     }
 
     @FXML
-    private void edit() throws IOException {
+    private void edit() throws IOException{
         Doctor profileSelected = filteredProfiles.getSelectionModel().getSelectedItem();
+        editDoc = profileSelected;
 
         if (profileSelected != null) {
-            EditProfileController c = new EditProfileController(profileSelected);
-
             SceneSwitcher.switchToEditProfileView(primaryStage);
         }
 
