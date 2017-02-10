@@ -59,8 +59,9 @@ public class SceneSwitcher
         AdminLoginController controller = (AdminLoginController) switchToScene(primaryStage, AdminLoginViewPath);
     }
 
-    public static void switchToAdminWelcomeView(Stage primaryStage) throws IOException {
+    public static void switchToAdminWelcomeView(Stage primaryStage, AdminProfile adminProfile) throws IOException {
         AdminWelcomeController controller = (AdminWelcomeController) switchToScene(primaryStage, AdminWelcomeViewPath);
+        controller.setAdminProfile(adminProfile);
     }
 
     public static void switchToModifyDirectoryView(Stage primaryStage) throws IOException {
