@@ -49,6 +49,15 @@ public class AddNewProfileController extends AbstractController
     TextField roomNum;
 
     @FXML
+    TextField description;
+
+    @FXML
+    TextField hours;
+
+    @FXML
+    TextField phoneNum;
+
+    @FXML
     ListView<String> deptListView;
 
     @FXML
@@ -98,14 +107,14 @@ public class AddNewProfileController extends AbstractController
     private void addClicked() {
         String deptSelected = deptListView.getSelectionModel().getSelectedItem();
 
-        if (deptSelected != null) {
+        if (deptSelected != null && !(addedDept.contains(deptSelected))) {
             deptListView.getSelectionModel().clearSelection();
-            makeChanges(deptSelected, deptList, addedDept);
+            addedDept.add(deptSelected);
         } else {
             return;
         }
 
-        updateLists();
+        deptAddedListView.setItems(FXCollections.observableList(addedDept));
     }
 
     @FXML
@@ -114,21 +123,11 @@ public class AddNewProfileController extends AbstractController
 
         if (deptToBeRemoved != null) {
             deptAddedListView.getSelectionModel().clearSelection();
-            makeChanges(deptToBeRemoved, addedDept, deptList);
+            addedDept.remove(deptToBeRemoved);
         } else {
             return;
         }
 
-        updateLists();
-    }
-
-    private void makeChanges(String department, ObservableList<String> removedFrom, ObservableList<String> addedTo) {
-        removedFrom.remove(department);
-        addedTo.add(department);
-    }
-
-    private void updateLists() {
-        deptListView.setItems(FXCollections.observableList(deptList));
         deptAddedListView.setItems(FXCollections.observableList(addedDept));
     }
 
