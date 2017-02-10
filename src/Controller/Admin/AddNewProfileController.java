@@ -5,6 +5,7 @@ package Controller.Admin;
 import Controller.AbstractController;
 import Controller.Main;
 import Controller.SceneSwitcher;
+import Domain.Map.Doctor;
 import Exceptions.AddFoundException;
 import Model.DoctorProfile;
 import javafx.beans.property.SimpleStringProperty;
@@ -53,8 +54,6 @@ public class AddNewProfileController extends AbstractController
     @FXML
     ListView<String> deptAddedListView;
 
-    @FXML
-    ImageView profilePic;
 
     Stage primaryStage;
 
@@ -138,15 +137,17 @@ public class AddNewProfileController extends AbstractController
     }
 
     private void processInformation() {
-        DoctorProfile newProfile = new DoctorProfile(firstName.getText(), lastName.getText(), roomNum.getText());
+        /*
+        Doctor newProfile = new Doctor(firstName.getText(), lastName.getText(), roomNum.getText());
         for (String dept: addedDept) {
             try {
-                newProfile.addDepartment(new SimpleStringProperty(dept));
+                newProfile.addDepartment(dept);
             } catch (AddFoundException e) {
                 System.out.println("This doctor is already assigned to this department(s).");
             }
         }
 
         Main.FaulknerHospitalDirectory.add(newProfile);
+        */
     }
 }
