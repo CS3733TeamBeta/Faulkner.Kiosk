@@ -16,6 +16,7 @@ import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.MapModel;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.ImageView;
@@ -49,6 +50,8 @@ public class MapEditorController extends AbstractController {
 		//removeHandlers();
 		updateEdgeWeights();
 
+		refreshNodePositions();
+
 		int i = 0;
 		for(NodeEdge e: model.getCurrentFloor().getFloorEdges()){
 			System.out.println(Integer.toString(i) + ": Node " + e.getSource().getNodeID() + " Finalized to: " + e.getTarget().getNodeID());
@@ -73,8 +76,13 @@ public class MapEditorController extends AbstractController {
 	{
 		for (MapNode n : model.getCurrentFloor().getFloorNodes())
 		{
-			n.setPosX(n.getNodeToDisplay().getScene().getX());
-			n.setPosY(n.getNodeToDisplay().getScene().getY());
+			DragIcon icon = (DragIcon)n.getNodeToDisplay();
+
+			Point2D newPoint = new Point2D(icon.getLayoutX() + icon.getBoundsInLocal().getWidth() / 2,
+					icon.getLayoutY() + icon.getBoundsInLocal().getHeight() / 2);
+
+			n.setPosX((newPoint.getX()));
+			n.setPosY((newPoint.getY()));
 		}
 	}
 
@@ -164,6 +172,12 @@ public class MapEditorController extends AbstractController {
 
 					edge.updatePosViaNode(source);
 					edge.updatePosViaNode(target);
+
+					edge.toBack();
+					source.toFront();
+					target.toFront();
+
+					mapImage.toBack();
 				}
 			}
 			else{
@@ -402,8 +416,8 @@ public class MapEditorController extends AbstractController {
 
 						Point2D cursorPoint = container.getValue("scene_coords"); //cursor point
 
-						droppedNode.setPosX(cursorPoint.getX());
-						droppedNode.setPosY(cursorPoint.getY());
+						droppedNode.setPosX(cursorPoint.getX()-32); //offset because mouse drag and pictures should start from upper corner
+						droppedNode.setPosY(cursorPoint.getY()-32);
 
 						addToAdminMap(droppedNode);
 					}
@@ -415,6 +429,10 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
+	public void addToMapFromDrag(MapNode mapNode)
+	{
+		addToAdminMap(mapNode);
+	}
 	public void addToAdminMap(MapNode mapNode)
 	{
 		addEventHandlersToNode(mapNode);
@@ -431,10 +449,10 @@ public class MapEditorController extends AbstractController {
 			mapNode.setFloor(model.getCurrentFloor());
 			model.getCurrentFloor().getFloorNodes().add(mapNode);
 		}
-						/* Build up event handlers for this droppedNode */
 
-		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX() - 32,
-				mapNode.getPosY() - 32)); //placed by upper left corner
+		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX(),
+				mapNode.getPosY())); //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
+						/* Build up event handlers for this droppedNode */
 	}
 	/**
 	 * Adds all of the event handlers to handle dragging, edge creation, deletion etc.
