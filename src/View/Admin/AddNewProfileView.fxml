@@ -32,6 +32,7 @@
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
       <ColumnConstraints />
+      <ColumnConstraints />
     </columnConstraints>
     <rowConstraints>
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -71,21 +72,21 @@
         <TextField fx:id="firstName" prefHeight="25.0" prefWidth="249.0" promptText="First name" GridPane.columnIndex="4" GridPane.columnSpan="5" GridPane.rowIndex="6" />
         <TextField fx:id="lastName" prefHeight="25.0" prefWidth="249.0" promptText="Last name" GridPane.columnIndex="4" GridPane.columnSpan="5" GridPane.rowIndex="9" />
         <Label fx:id="newProfLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Add New Profile" textAlignment="CENTER" GridPane.columnIndex="6" GridPane.columnSpan="16" GridPane.rowIndex="3" />
-        <Label fx:id="assignToLabel" text="Assign to:" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="12" />
+        <Label fx:id="assignToLabel" text="Assign to: *" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="12" />
         <TextField fx:id="roomNum" promptText="Room Number" GridPane.columnIndex="4" GridPane.columnSpan="5" GridPane.rowIndex="12" />
         <Button fx:id="add" mnemonicParsing="false" onAction="#addClicked" text="Add" GridPane.columnIndex="6" GridPane.columnSpan="3" GridPane.rowIndex="24" />
         <Button fx:id="remove" mnemonicParsing="false" onAction="#removeClicked" text="Remove" GridPane.columnIndex="12" GridPane.columnSpan="3" GridPane.rowIndex="24" />
         <Label fx:id="deptAddedLabel" text="Department(s) Added:" GridPane.columnIndex="11" GridPane.columnSpan="5" GridPane.rowIndex="15" />
         <ListView fx:id="deptListView" GridPane.columnIndex="3" GridPane.columnSpan="6" GridPane.rowIndex="16" GridPane.rowSpan="7" />
         <ListView fx:id="deptAddedListView" GridPane.columnIndex="11" GridPane.columnSpan="6" GridPane.rowIndex="16" GridPane.rowSpan="7" />
-      <Label text="First name:" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="6" />
-      <Label text="Last name:" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="9" />
-      <Label text="Description:" GridPane.columnIndex="10" GridPane.columnSpan="4" GridPane.rowIndex="6" />
+      <Label text="First name: *" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="6" />
+      <Label text="Last name: *" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="9" />
+      <Label text="Description: *" GridPane.columnIndex="10" GridPane.columnSpan="4" GridPane.rowIndex="6" />
       <Label text="Hours:" GridPane.columnIndex="10" GridPane.columnSpan="4" GridPane.rowIndex="9" />
       <Label text="Phone #:" GridPane.columnIndex="10" GridPane.columnSpan="4" GridPane.rowIndex="12" />
       <TextField fx:id="description" GridPane.columnIndex="13" GridPane.columnSpan="5" GridPane.rowIndex="6" />
-      <TextField fx:id="hours" GridPane.columnIndex="13" GridPane.columnSpan="5" GridPane.rowIndex="9" />
-      <TextField fx:id="phoneNum" GridPane.columnIndex="13" GridPane.columnSpan="5" GridPane.rowIndex="12" />
+      <TextField fx:id="hours" promptText="Optional" GridPane.columnIndex="13" GridPane.columnSpan="5" GridPane.rowIndex="9" />
+      <TextField fx:id="phoneNum" promptText="Optional" GridPane.columnIndex="13" GridPane.columnSpan="5" GridPane.rowIndex="12" />
     </children>
     <stylesheets>
         <URL value="@genstyle.css" />
