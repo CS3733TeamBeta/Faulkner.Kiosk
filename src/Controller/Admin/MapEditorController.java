@@ -2,36 +2,29 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import Controller.AbstractController;
-import Domain.Map.MapNode;
-import Domain.Map.NodeEdge;
+import Controller.DragDropMain;
+import Controller.Main;
+import Controller.SceneSwitcher;
+import Domain.Map.*;
 import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
-import Model.MapEditorModel;
-import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
+import Model.MapModel;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.stage.Stage;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
-import org.controlsfx.control.PopOver;
-import org.controlsfx.samples.HelloPopOver;
 
 public class MapEditorController extends AbstractController {
 
@@ -42,32 +35,52 @@ public class MapEditorController extends AbstractController {
 	@FXML ImageView mapImage;
 
 	private DragIcon mDragOverIcon = null;
-	
+
 	private EventHandler<DragEvent> onIconDragOverRoot = null;
 	private EventHandler<DragEvent> onIconDragDropped = null;
 	private EventHandler<DragEvent> onIconDragOverRightPane = null;
-	private EventHandler<DragEvent> onLineSyncNeeded = null;
-	private MapEditorModel model;
+	private MapModel model;
 
 	NodeEdge drawingEdge;
 
-	public MapEditorController() {
-		
-		/*FXMLLoader fxmlLoader = new FXMLLoader(
-				getClass().getResource("/Admin/MapBuilder/MapEditor.fxml")
-				);
-		
-		fxmlLoader.setRoot(this); 
-		fxmlLoader.setController(this);
-		
-		try { 
-			fxmlLoader.load();
-        
-		} catch (IOException exception) {
-		    throw new RuntimeException(exception);
+
+	@FXML
+	public void saveInfoAndExit() throws IOException{
+		//removeHandlers();
+		updateEdgeWeights();
+
+		int i = 0;
+		for(NodeEdge e: model.getCurrentFloor().getFloorEdges()){
+			System.out.println(Integer.toString(i) + ": Node " + e.getSource().getNodeID() + " Finalized to: " + e.getTarget().getNodeID());
+			i++;
 		}
-		*/
-		model = new MapEditorModel();
+
+		if(model.getCurrentFloor().getKioskNode() == null && model.getCurrentFloor().getFloorNodes().size() > 0){
+			System.out.println("ERROR; NO KIOSK NODE SET; SETTING ONE RANDOMLY");
+			model.getCurrentFloor().setKioskLocation(model.getCurrentFloor().getFloorNodes().get(0));
+		}
+
+		if(DragDropMain.mvm != null) {
+			DragDropMain.mvm.setCurrentFloor(this.model.getCurrentFloor());
+		}
+		else if(Main.mvm != null) {
+			Main.mvm.setCurrentFloor(this.model.getCurrentFloor());
+		}
+		SceneSwitcher.switchToModifyLocationsView(this.getStage());
+	}
+
+	public void refreshNodePositions()
+	{
+		for (MapNode n : model.getCurrentFloor().getFloorNodes())
+		{
+			n.setPosX(n.getNodeToDisplay().getScene().getX());
+			n.setPosY(n.getNodeToDisplay().getScene().getY());
+		}
+	}
+
+	public MapEditorController() {
+
+		model = new MapModel();
 
 		//Runs once the edge is drawn from one node to another
 		//connects the two, sends sources, positions them etc.
@@ -75,29 +88,7 @@ public class MapEditorController extends AbstractController {
 		{
 			NodeEdge completedEdge = drawingEdge;
 
-			completedEdge.getNodeToDisplay().setOnMouseEntered(deEvent->{
-				if (completedEdge != null)
-				{
-					completedEdge.getEdgeLine().setStroke(Color.RED);
-				}
-			});
-
-			completedEdge.getNodeToDisplay().setOnMouseExited(deEvent->{
-				if (completedEdge != null) {
-					completedEdge.getEdgeLine().setStroke(Color.BLACK);
-				}
-			});
-
-			completedEdge.getNodeToDisplay().setOnMouseClicked(deEvent->{
-				if (completedEdge != null) {
-					if (deEvent.getClickCount() == 2) {
-						completedEdge.getSource().getEdges().remove(completedEdge);
-						completedEdge.getTarget().getEdges().remove(completedEdge);
-						mapPane.getChildren().remove(completedEdge.getNodeToDisplay()); //remove from the right pane
-						model.removeMapEdge(completedEdge);
-					}
-				}
-			});
+			addHandlersToEdge(completedEdge);
 
 			MapNode sourceNode = event.getNodeEdge().getSource();
 			MapNode targetNode = event.getNodeEdge().getTarget();
@@ -121,12 +112,104 @@ public class MapEditorController extends AbstractController {
 			sourceNode.toFront();
 			sourceNode.toFront();
 			mapImage.toBack();
+
+		});
+	}
+
+	protected void renderInitialMap(){
+			if(DragDropMain.mvm != null) {
+				System.out.println("Begin render...");
+				//System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
+				//import a model if one exists
+				model.setCurrentFloor(DragDropMain.mvm.getCurrentFloor());
+			}
+			else if(Main.mvm != null) {
+				model.setCurrentFloor(Main.mvm.getCurrentFloor());
+			}
+			if(DragDropMain.mvm != null || Main.mvm != null){
+				//and then set all the existing nodes up
+				HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+
+				for(MapNode n : model.getCurrentFloor().getFloorNodes())
+				{
+					//System.out.println("Adding node");
+					addToAdminMap(n);
+
+					for(NodeEdge edge: n.getEdges())
+					{
+						if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+					}
+				}
+
+
+				for(NodeEdge edge : collectedEdges)
+				{
+					addHandlersToEdge(edge);
+					mapPane.getChildren().add(edge.getNodeToDisplay());
+
+					MapNode source = edge.getSource();
+					MapNode target = edge.getTarget();
+
+					//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
+
+					if(!mapPane.getChildren().contains(source.getNodeToDisplay()))
+					{
+						addToAdminMap(source);
+					}
+
+					if(!mapPane.getChildren().contains(target.getNodeToDisplay()))
+					{
+						addToAdminMap(target);
+					}
+
+					edge.updatePosViaNode(source);
+					edge.updatePosViaNode(target);
+				}
+			}
+			else{
+				model = new MapModel();
+			}
+
+	}
+
+	/**Adds handlers to handle edge deletion mostly
+	 *
+	 * @param edge to add handlers to
+	 */
+	public void addHandlersToEdge(NodeEdge edge)
+	{
+		edge.getNodeToDisplay().setOnMouseEntered(deEvent->{
+			if (edge != null)
+			{
+				edge.getEdgeLine().setStroke(Color.RED);
+			}
+		});
+
+		edge.getNodeToDisplay().setOnMouseExited(deEvent->{
+			if (edge != null) {
+				edge.getEdgeLine().setStroke(Color.BLACK);
+			}
+		});
+
+		edge.getNodeToDisplay().setOnMouseClicked(deEvent->{
+			if (edge != null) {
+				if (deEvent.getClickCount() == 2) {
+					edge.getSource().getEdges().remove(edge);
+					edge.getTarget().getEdges().remove(edge);
+					mapPane.getChildren().remove(edge.getNodeToDisplay()); //remove from the right pane
+					model.removeMapEdge(edge);
+				}
+			}
 		});
 	}
 
 	public void onEdgeComplete() {
+		System.out.println("Edge complete");
 		for(EdgeCompleteEventHandler handler : model.getEdgeCompleteHandlers())
 		{
+			if(!model.getCurrentFloor().getFloorEdges().contains(drawingEdge)){
+				model.getCurrentFloor().getFloorEdges().add(drawingEdge);
+			}
 			handler.handle(new EdgeCompleteEvent(drawingEdge));
 		}
 	}
@@ -134,7 +217,7 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	private void initialize() {
 
-		if(model==null) model = new MapEditorModel();
+		renderInitialMap();
 
 		//Add one icon that will be used for the drag-drop process
 		//This is added as a child to the root anchorpane so it can be visible
@@ -155,11 +238,15 @@ public class MapEditorController extends AbstractController {
 			addDragDetection(icn);
 			icn.setType(DragIconType.values()[i]);
 
+			if (icn.getType().equals(DragIconType.connector))
+			{
+				//System.out.println("Adding Connector");
+				icn.setStyle("-fx-background-size: 30 30");
+			}
+
 			model.addSideBarIcon(icn);
 			bottom_bar.getChildren().add(icn);
 		}
-
-		//bottom_bar.getChildren().setAll(model.getSideBarIcons());
 
 		buildDragHandlers();
 	}
@@ -178,13 +265,14 @@ public class MapEditorController extends AbstractController {
 				{
 					for (NodeEdge edge : n.getEdges())
 					{
-						((NodeEdge)edge).updatePosViaNode(n);
+						edge.updatePosViaNode(n);
 					}
 
 					n.setPosX(event.getSceneX());
 					n.setPosY(event.getSceneY());
 
-					System.out.println("Node " + n.getIconType().name() + " moved to (X: "+ event.getSceneX() + ", Y: " + event.getSceneY() + ")");
+					//System.out.println("Node " + n.getIconType().name() + " moved to (X: "+ event.getSceneX() + ", Y: " + event.getSceneY() + ")");
+
 				},
 				null);
 	}
@@ -222,20 +310,23 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	private void buildDragHandlers() {
-		
+	private void buildDragHandlers()
+	{
+
 		//drag over transition to move widget form left pane to right pane
-		onIconDragOverRoot = new EventHandler <DragEvent>() {
+		onIconDragOverRoot = new EventHandler<DragEvent>()
+		{
 
 			@Override
-			public void handle(DragEvent event) {
-				
+			public void handle(DragEvent event)
+			{
+
 				Point2D p = mapPane.sceneToLocal(event.getSceneX(), event.getSceneY());
 
 				//turn on transfer mode and track in the right-pane's context 
 				//if (and only if) the mouse cursor falls within the right pane's bounds.
-				if (!mapPane.boundsInLocalProperty().get().contains(p)) {
-					
+				if (!mapPane.boundsInLocalProperty().get().contains(p))
+				{
 					event.acceptTransferModes(TransferMode.ANY);
 					mDragOverIcon.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
 					return;
@@ -244,14 +335,15 @@ public class MapEditorController extends AbstractController {
 				event.consume();
 			}
 		};
-		
-		onIconDragOverRightPane = new EventHandler <DragEvent> () {
+
+		onIconDragOverRightPane = new EventHandler<DragEvent>()
+		{
 
 			@Override
-			public void handle(DragEvent event) {
-
+			public void handle(DragEvent event)
+			{
 				event.acceptTransferModes(TransferMode.ANY);
-				
+
 				//convert the mouse coordinates to scene coordinates,
 				//then convert back to coordinates that are relative to 
 				//the parent of mDragIcon.  Since mDragIcon is a child of the root
@@ -262,153 +354,241 @@ public class MapEditorController extends AbstractController {
 				event.consume();
 			}
 		};
-				
-		onIconDragDropped = new EventHandler <DragEvent> () {
 
+		onIconDragDropped = new EventHandler<DragEvent>()
+		{
 			@Override
-			public void handle(DragEvent event) {
-				
+			public void handle(DragEvent event)
+			{
+				System.out.println("Node added");
+
 				DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.AddNode);
-				
+
 				container.addData("scene_coords", new Point2D(event.getSceneX(), event.getSceneY()));
-				
+
 				ClipboardContent content = new ClipboardContent();
 				content.put(DragContainer.AddNode, container);
-				
+
 				event.getDragboard().setContent(content);
 				event.setDropCompleted(true);
+
 			}
 		};
 
-		root_pane.setOnDragDone (new EventHandler <DragEvent> (){
-			
+		root_pane.setOnDragDone(new EventHandler<DragEvent>()
+		{
+
 			@Override
-			public void handle (DragEvent event) {
-				
+			public void handle(DragEvent event)
+			{
+				System.out.println("test");
 				mapPane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane); //remove the event handlers created on drag start
 				mapPane.removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
 				base_pane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRoot);
-								
+
 				mDragOverIcon.setVisible(false);
-				
+
 				DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.AddNode); //information from the drop
-				
-				if (container != null) {
 
-					if (container.getValue("scene_coords") != null) {
+				if (container != null)
+				{
 
-						MapNode droppedNode = new MapNode(); // make a new  map node
-						makeMapNodeDraggable(droppedNode); //make it draggable
-						
+					if (container.getValue("scene_coords") != null)
+					{
+						MapNode droppedNode;
+
+						droppedNode = DragIcon.constructMapNodeFromType((DragIconType.valueOf(container.getValue("type"))));
 						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
-						mapPane.getChildren().add(droppedNode.getNodeToDisplay()); //add to right panes children
-						model.addMapNode(droppedNode); //add node to model
-
-						droppedNode.toFront(); //send the node to the front
 
 						Point2D cursorPoint = container.getValue("scene_coords"); //cursor point
 
+						droppedNode.setPosX(cursorPoint.getX());
+						droppedNode.setPosY(cursorPoint.getY());
+
+						addToAdminMap(droppedNode);
+					}
+					event.consume();
+				}
+			}
+
+			;
+		});
+	}
+
+	public void addToAdminMap(MapNode mapNode)
+	{
+		addEventHandlersToNode(mapNode);
+
+		mapPane.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
+
+		model.addMapNode(mapNode); //add node to model
+
+		mapNode.toFront(); //send the node to the front
+
+		if (!model.getCurrentFloor().getFloorNodes().contains(mapNode))
+		{
+			System.out.println("Node " + mapNode.getIconType().name() + " added to: " + mapNode.getPosX() + " " + mapNode.getPosY());
+			mapNode.setFloor(model.getCurrentFloor());
+			model.getCurrentFloor().getFloorNodes().add(mapNode);
+		}
 						/* Build up event handlers for this droppedNode */
 
-						((DragIcon)droppedNode.getNodeToDisplay()).relocateToPoint(new Point2D(cursorPoint.getX() - 32,
-								cursorPoint.getY()-32)); //32 is half of 64, so half the height/width... @TODO
+		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX() - 32,
+				mapNode.getPosY() - 32)); //placed by upper left corner
+	}
+	/**
+	 * Adds all of the event handlers to handle dragging, edge creation, deletion etc.
+	 * Needs to be called on newly constructed nodes to interact properly with map
+	 *
+	 * @param mapNode
+	 */
+	public void addEventHandlersToNode(MapNode mapNode)
+	{
+		makeMapNodeDraggable(mapNode); //make it draggable
 
-						droppedNode.getNodeToDisplay().setOnMouseClicked(ev -> {
-							if(ev.getButton() == MouseButton.SECONDARY) //if right click
-							{
-								PopOver popOver = new PopOver();
+		/***Handles deletion from a popup menu**/
+		mapNode.setOnDeleteRequested(event -> {
+			removeNode(event.getSource());
+		});
 
-								popOver.show(droppedNode.getNodeToDisplay(),
-										ev.getScreenX(),
-										ev.getScreenY());
+		mapNode.getNodeToDisplay().setOnMouseClicked(ev -> {
 
-								if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
-								{
-									if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
-									{
-										mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
-									}
-								}
+			if(ev.getButton() == MouseButton.SECONDARY) //if right click
+			{
+				mapNode.getEditPopover().show(mapNode.getNodeToDisplay(),
+						ev.getScreenX(),
+						ev.getScreenY());
+				//removeNode(droppedNode);
+			}
+			else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
+				if(ev.getClickCount() == 2) // double click
+				{
+					onStartEdgeDrawing(mapNode);
 
-								drawingEdge = new NodeEdge();
-								drawingEdge.setSource(droppedNode);
-
-								mapPane.getChildren().add(drawingEdge.getNodeToDisplay());
-								drawingEdge.toBack();
-								mapImage.toBack();
-
-								droppedNode.getNodeToDisplay().setOnMouseDragEntered(null); //sets drag handlers to null so they can't be repositioned during line drawing
-								droppedNode.getNodeToDisplay().setOnMouseDragged(null);
-
-								root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
-									if (drawingEdge!=null && keyEvent.getCode() == KeyCode.ESCAPE) {
-										if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
-										{
-											mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
-										}
-										drawingEdge = null;
-
-										mapPane.setOnMouseMoved(null);
-
-										makeMapNodeDraggable(droppedNode);
-									}
-								});
-
-								mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
-
-									if(drawingEdge!=null)
-									{
-										Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
-										Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
-										drawingEdge.setEndPoint(mouseCoords); //set the end point
-									}
-								});
-							}
-							else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
-
-								if(ev.getClickCount() == 2){ // double click
-
-									for (Iterator<NodeEdge> i = droppedNode.getEdges().iterator(); i.hasNext();) {
-										NodeEdge edge = (NodeEdge)i.next();
-										mapPane.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
-
-										model.removeMapEdge(edge); //remove edge from model
-
-										i.remove();
-									}
-
-									mapPane.getChildren().remove(droppedNode.getNodeToDisplay()); //remove the node
-
-									if(drawingEdge!=null)
-									{
-										drawingEdge.getNodeToDisplay().setVisible(false); //hide the drawing edge if drawing
-										drawingEdge = null; //no longer drawing
-									}
-
-									model.removeMapNodeFromCurrentFloor(droppedNode); //remove node from model
-								}
-							}
-
-							if (drawingEdge!=null && !drawingEdge.getSource().equals(droppedNode))
-							{
-								drawingEdge.setTarget(droppedNode);
-								onEdgeComplete();
-							}
-						});
-
-						droppedNode.getNodeToDisplay().setOnMouseEntered(ev->
-						{
-							droppedNode.getNodeToDisplay().setOpacity(.65);
-						});
-
-						droppedNode.getNodeToDisplay().setOnMouseExited(ev->
-						{
-							droppedNode.getNodeToDisplay().setOpacity(1);
-						});
-					}
+				}else{
+					System.out.println("Node " + mapNode.getNodeUID() + " moved to: " + mapNode.getPosX() + " " +  mapNode.getPosY());
 				}
-				event.consume();
+			}
+
+			if (drawingEdge!=null && !drawingEdge.getSource().equals(mapNode))
+			{
+				drawingEdge.setTarget(mapNode);
+				onEdgeComplete();
 			}
 		});
+
+		mapNode.getNodeToDisplay().setOnMouseEntered(ev->
+		{
+			mapNode.getNodeToDisplay().setOpacity(.65);
+		});
+
+		mapNode.getNodeToDisplay().setOnMouseExited(ev->
+		{
+			mapNode.getNodeToDisplay().setOpacity(1);
+		});
+	}
+
+	public void onStartEdgeDrawing(MapNode mapNode)
+	{
+		if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
+		{
+			if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
+			{
+				mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
+			}
+		}
+
+		drawingEdge = new NodeEdge();
+		drawingEdge.setSource(mapNode);
+
+		mapPane.getChildren().add(drawingEdge.getNodeToDisplay());
+		drawingEdge.toBack();
+		mapImage.toBack();
+
+		mapNode.getNodeToDisplay().setOnMouseDragEntered(null); //sets drag handlers to null so they can't be repositioned during line drawing
+		mapNode.getNodeToDisplay().setOnMouseDragged(null);
+
+		root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
+			if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
+				if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
+				{
+					mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
+				}
+				drawingEdge = null;
+
+				mapPane.setOnMouseMoved(null);
+
+				makeMapNodeDraggable(mapNode);
+			}
+		});
+
+		mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
+
+			if (drawingEdge != null)
+			{
+				//System.out.println("Moving Mouse");
+				Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
+				Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
+				drawingEdge.setEndPoint(mouseCoords); //set the end point
+			}
+		});
+	}
+	/*
+	 removes the node from the model
+	 removes the node.getNodeToDisplay() from the map pane
+	 removes the node edges associated with that node from the model
+	 removes the node edge.getNodeToDisplay() associated with from the map pane
+	 */
+	private void removeNode(MapNode node)
+	{
+		for (Iterator<NodeEdge> i = node.getEdges().iterator(); i.hasNext();) {
+			NodeEdge edge = (NodeEdge)i.next();
+			mapPane.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
+
+			model.removeMapEdge(edge); //remove edge from model
+
+			i.remove();
+		}
+
+		mapPane.getChildren().remove(node.getNodeToDisplay()); //remove the node
+
+		if(drawingEdge!=null)
+		{
+			drawingEdge.getNodeToDisplay().setVisible(false); //hide the drawing edge if drawing
+			drawingEdge = null; //no longer drawing
+		}
+
+		model.removeMapNodeFromCurrentFloor(node); //remove node from mode
+	}
+
+	/*private void setupImportedNode(MapNode droppedNode)
+	{
+		//droppedNode.setType(droppedNode.getIconType()); //set the type
+		mapPane.getChildren().add(droppedNode.getNodeToDisplay()); //add to right panes children
+		model.addMapNode(droppedNode); //add node to model
+
+		droppedNode.toFront(); //send the node to the front
+
+						/* Build up event handlers for this droppedNode
+		((DragIcon)droppedNode.getNodeToDisplay()).relocateToPoint(new Point2D(droppedNode.getPosX()
+				-((DragIcon) droppedNode.getNodeToDisplay()).getWidth()/2,
+				droppedNode.getPosY()-((DragIcon) droppedNode.getNodeToDisplay()).getHeight()/2));
+
+		addEventHandlersToNode(droppedNode);
+
+	}*/
+
+	public void updateEdgeWeights(){
+		for(NodeEdge e : model.getCurrentFloor().getFloorEdges()){
+			e.updateCost();
+		}
+	}
+
+	public void removeHandlers(){
+		for(MapNode n : model.getCurrentFloor().getFloorNodes()){
+			n.getNodeToDisplay().removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
+			n.getNodeToDisplay().removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane);
+			n.getNodeToDisplay().removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRoot);
+		}
 	}
 }

@@ -54,13 +54,14 @@ public class ModifyLocationsController extends AbstractController
     @FXML
     private void changeFloorLayoutButton() throws IOException
     {
-        SceneSwitcher.switchToEditNodeGraphView(primaryStage);
+        SceneSwitcher.switchToScene(primaryStage, "../Admin/MapBuilder/MapEditorView.fxml");
     }
 
     @FXML
     private void changeRoomAssignments() throws IOException {
         //SceneSwitcher.switchToEditRoomAssignmentsView(primaryStage);
         SceneSwitcher.switchToEditDoctorView(primaryStage);
+//        Why is the change room assignments button going to edit doctor view????
     }
 
     @FXML

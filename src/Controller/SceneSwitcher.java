@@ -106,5 +106,9 @@ public class SceneSwitcher
     public static void switchToUserSearchView(Stage primaryStage) throws IOException {
         UserSearchController controller = (UserSearchController) switchToScene(primaryStage, UserSearchViewPath);
     }
+
+    public static void goToUserHome(Stage primaryStage) throws IOException{
+        MapViewerController controller =(MapViewerController) switchToScene(primaryStage, "../User/MapViewer/MapEditorView.fxml");
+    }
 }
 

@@ -53,9 +53,10 @@ public class AdminLoginController extends AbstractController
     }
 
     @FXML
-    private void clickedBack()
+    private void clickedBack() throws IOException
     {
-
+        System.out.println("test");
+        SceneSwitcher.goToUserHome(primaryStage);
     }
 
     @FXML

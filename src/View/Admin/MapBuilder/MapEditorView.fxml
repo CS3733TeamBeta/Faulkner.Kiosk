@@ -39,7 +39,8 @@
       </TabPane>
       <AnchorPane layoutX="964.0" layoutY="611.0" prefWidth="300.0" AnchorPane.bottomAnchor="41.0" AnchorPane.rightAnchor="31.0">
          <children>
-            <JFXButton layoutX="5.0" layoutY="55.0" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+            <JFXButton layoutX="5.0" layoutY="55.0" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+            onAction="#saveInfoAndExit">
                <font>
                   <Font size="14.0" />
                </font>
