@@ -3,8 +3,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Line?>
 
-<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.DragWindowController">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.AbstractController"
+>
    <children>
+
       <Line fx:id="edgeB" endX="100.0" layoutX="403.0" layoutY="197.0" startX="-100.0" strokeWidth="8.0" />
       <Line fx:id="edgeA" endY="200.0" layoutX="166.0" layoutY="97.0" strokeWidth="8.0" />
    </children>

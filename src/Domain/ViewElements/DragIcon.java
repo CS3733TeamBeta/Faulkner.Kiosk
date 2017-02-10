@@ -2,6 +2,10 @@ package Domain.ViewElements;
 
 import java.io.IOException;
 
+import Domain.Map.Destination;
+import Domain.Map.Elevator;
+import Domain.Map.MapNode;
+import Domain.Map.Office;
 import com.sun.corba.se.impl.orbutil.graph.Graph;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,6 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.util.Map;
 
 /**
  *
@@ -39,29 +44,6 @@ public class DragIcon extends AnchorPane{
 		} catch (IOException exception) {
 		    throw new RuntimeException(exception);
 		}
-
-		/*this.setOnMouseClicked(event->{
-
-			if(event.getButton() == MouseButton.SECONDARY)
-			{
-				edgeLine.setVisible(true);
-
-				Bounds boundsInScene = this.getBoundsInLocal();
-
-				Point2D startPoint = new Point2D(
-						boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
-						boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
-				);
-
-				edgeLine.setStartPoint(startPoint);
-
-				this.getParent().setOnMouseMoved(ev->{
-					Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
-					Point2D mouseCoords = this.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
-					edgeLine.setEndPoint(mouseCoords);
-				});
-			}
-		});*/
 	}
 	
 	@FXML
@@ -137,18 +119,37 @@ public class DragIcon extends AnchorPane{
 		}
 	}
 
-	/**
-	 *
-	 * @return center point of this drag icon
-	 */
-	public Point2D getIconCenterPoint(){
-		Bounds boundsInScene = this.getBoundsInLocal();
+	public static MapNode constructMapNodeFromType(DragIconType type)
+	{
+		MapNode newNode;
 
-		Point2D centerPoint = new Point2D(
-				boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
-				boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
-		);
+		switch (type)
+		{
+			case elevator:
+			{
+				newNode = new Elevator();
+				break;
+			}
 
-		return centerPoint;
+			case doctor: //@TODO change this to office
+			{
+				newNode = new Office();
+				break;
+			}
+
+			case connector:
+			{
+				newNode = new MapNode();
+				break;
+			}
+
+			default:
+			{
+				newNode = new Destination();
+			}
+
+		}
+
+		return newNode;
 	}
 }

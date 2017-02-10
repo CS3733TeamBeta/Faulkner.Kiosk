@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="737.0" prefWidth="1295.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.User.MapViewerController">
+    <children>
+        <TabPane layoutX="839.0" layoutY="48.0" opacity="0.82" prefHeight="456.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="145.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0">
+            <tabs>
+                <Tab text="Untitled Tab 1">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="200.0">
+                            <children>
+                                <TreeView prefHeight="450.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Untitled Tab 2">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="500.0" prefWidth="300.0">
+                            <children>
+                                <TreeView layoutX="50.0" layoutY="75.0" prefHeight="432.0" prefWidth="300.0" AnchorPane.bottomAnchor="-15.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+        <AnchorPane layoutX="964.0" layoutY="611.0" prefWidth="300.0" AnchorPane.bottomAnchor="41.0" AnchorPane.rightAnchor="31.0">
+            <children>
+                <JFXButton layoutX="5.0" layoutY="55.0" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+                           onAction="#saveInfoAndExit">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <effect>
+                        <DropShadow color="#000000cf" height="11.5" offsetX="2.0" offsetY="2.0" radius="5.625" spread="0.03" width="13.0" />
+                    </effect>
+                </JFXButton>
+                <JFXButton layoutX="1.0" layoutY="1.0" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="ADMIN LOGIN" textFill="WHITE" AnchorPane.leftAnchor="5.0"
+                onAction="#goToAdminSide">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </JFXButton>
+                <JFXButton contentDisplay="TOP" layoutX="164.0" layoutY="1.0" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="New Floor" textFill="WHITE" AnchorPane.rightAnchor="5.0">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <effect>
+                        <DropShadow color="#00000099" height="19.04" offsetX="1.5" offsetY="1.5" radius="7.5" width="12.96" />
+                    </effect>
+                </JFXButton>
+            </children>
+        </AnchorPane>
+        <SplitPane fx:id="base_pane" dividerPositions="0.83" layoutX="32.0" layoutY="52.0" orientation="VERTICAL" prefHeight="655.0" prefWidth="913.0" AnchorPane.leftAnchor="32.0">
+            <items>
+                <AnchorPane fx:id="mapPane" minHeight="0.0" minWidth="0.0" prefHeight="472.0" prefWidth="829.0">
+                    <children>
+                        <ImageView fx:id="mapImage" fitHeight="546.0" fitWidth="941.0" layoutX="-9.0" layoutY="-12.0" preserveRatio="true" AnchorPane.bottomAnchor="-3.0" AnchorPane.leftAnchor="-9.0" AnchorPane.rightAnchor="-21.0">
+                            <image>
+                                <Image url="@floor3.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="61.0" prefWidth="913.0">
+                    <children>
+                        <ScrollPane hbarPolicy="ALWAYS" prefHeight="98.0" prefWidth="913.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <content>
+                                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="104.0" prefWidth="909.0">
+                                    <children>
+                                        <HBox fx:id="bottom_bar" layoutX="70.0" layoutY="2.0" prefHeight="100.0" prefWidth="200.0" spacing="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>
