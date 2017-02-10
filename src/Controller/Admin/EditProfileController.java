@@ -76,13 +76,9 @@ public class EditProfileController extends AbstractController
         firstName.setText(lastAndFirst[1]);
         lastName.setText(lastAndFirst[0]);
 
-        String offices = "";
-
         for (String office: editDoc.getMyOffice()) {
-            offices = offices + office;
+            roomNum.setText(office);
         }
-
-        roomNum.setText(offices);
 
         description.setText(editDoc.getDescription());
         hours.setText(editDoc.getHours());
@@ -154,19 +150,19 @@ public class EditProfileController extends AbstractController
     }
 
     private Boolean isProcessable() {
-        if (firstName.getText() != null && !(firstName.getText().isEmpty())){
+        if (firstName.getText() == null || (firstName.getText().isEmpty())){
             return false;
         }
 
-        if (lastName.getText() != null && !(lastName.getText().isEmpty())) {
+        if (lastName.getText() == null || (lastName.getText().isEmpty())) {
             return false;
         }
 
-        if (roomNum.getText() != null && !(roomNum.getText().isEmpty())) {
+        if (roomNum.getText() == null || (roomNum.getText().isEmpty())) {
             return false;
         }
 
-        if (description.getText() != null && !(description.getText().isEmpty())) {
+        if (description.getText() == null || (description.getText().isEmpty())) {
             return false;
         }
 
