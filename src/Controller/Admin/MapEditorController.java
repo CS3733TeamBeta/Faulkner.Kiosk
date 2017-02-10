@@ -14,11 +14,14 @@ import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.MapModel;
+import apple.laf.JRSUIUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -26,6 +29,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
+import org.controlsfx.control.PopOver;
 
 public class MapEditorController extends AbstractController {
 
@@ -34,6 +38,12 @@ public class MapEditorController extends AbstractController {
 	@FXML HBox bottom_bar;
 	@FXML AnchorPane root_pane;
 	@FXML ImageView mapImage;
+	@FXML Tab tabBuilding1;
+	@FXML
+	TreeView treeViewBuilding1;
+
+	@FXML
+	TreeItem<String> treeFloor3;
 
 	private DragIcon mDragOverIcon = null;
 
@@ -124,65 +134,72 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	protected void renderInitialMap(){
-			if(DragDropMain.mvm != null) {
-				System.out.println("Begin render...");
-				//System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
-				//import a model if one exists
-				model.setCurrentFloor(DragDropMain.mvm.getCurrentFloor());
-			}
-			else if(Main.mvm != null) {
-				model.setCurrentFloor(Main.mvm.getCurrentFloor());
-			}
-			if(DragDropMain.mvm != null || Main.mvm != null){
-				//and then set all the existing nodes up
-				HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+	protected void renderInitialMap()
+	{
+		if(DragDropMain.mvm != null) {
+			System.out.println("Begin render...");
+			//System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
+			//import a model if one exists
+			model.setCurrentFloor(DragDropMain.mvm.getCurrentFloor());
+		}
+		else if(Main.mvm != null) {
+			model.setCurrentFloor(Main.mvm.getCurrentFloor());
+		}
 
-				for(MapNode n : model.getCurrentFloor().getFloorNodes())
+		treeFloor3 = new TreeItem<String> ("Floor 3");
+		treeFloor3.setExpanded(true);
+
+		treeViewBuilding1.setRoot(treeFloor3);
+
+		if(DragDropMain.mvm != null || Main.mvm != null){
+			//and then set all the existing nodes up
+			HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+
+			for(MapNode n : model.getCurrentFloor().getFloorNodes())
+			{
+				//System.out.println("Adding node");
+				addToAdminMap(n);
+
+				for(NodeEdge edge: n.getEdges())
 				{
-					//System.out.println("Adding node");
-					addToAdminMap(n);
-
-					for(NodeEdge edge: n.getEdges())
-					{
-						if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
-					}
-				}
-
-
-				for(NodeEdge edge : collectedEdges)
-				{
-					addHandlersToEdge(edge);
-					mapPane.getChildren().add(edge.getNodeToDisplay());
-
-					MapNode source = edge.getSource();
-					MapNode target = edge.getTarget();
-
-					//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
-
-					if(!mapPane.getChildren().contains(source.getNodeToDisplay()))
-					{
-						addToAdminMap(source);
-					}
-
-					if(!mapPane.getChildren().contains(target.getNodeToDisplay()))
-					{
-						addToAdminMap(target);
-					}
-
-					edge.updatePosViaNode(source);
-					edge.updatePosViaNode(target);
-
-					edge.toBack();
-					source.toFront();
-					target.toFront();
-
-					mapImage.toBack();
+					if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
 				}
 			}
-			else{
-				model = new MapModel();
+
+
+			for(NodeEdge edge : collectedEdges)
+			{
+				addHandlersToEdge(edge);
+				mapPane.getChildren().add(edge.getNodeToDisplay());
+
+				MapNode source = edge.getSource();
+				MapNode target = edge.getTarget();
+
+				//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
+
+				if(!mapPane.getChildren().contains(source.getNodeToDisplay()))
+				{
+					addToAdminMap(source);
+				}
+
+				if(!mapPane.getChildren().contains(target.getNodeToDisplay()))
+				{
+					addToAdminMap(target);
+				}
+
+				edge.updatePosViaNode(source);
+				edge.updatePosViaNode(target);
+
+				edge.toBack();
+				source.toFront();
+				target.toFront();
+
+				mapImage.toBack();
 			}
+		}
+		else{
+			model = new MapModel();
+		}
 
 	}
 
@@ -453,6 +470,11 @@ public class MapEditorController extends AbstractController {
 		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX(),
 				mapNode.getPosY())); //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
 						/* Build up event handlers for this droppedNode */
+
+		if(mapNode instanceof Destination && !((Destination)mapNode).getInfo().getName().isEmpty())
+		{
+			treeFloor3.getChildren().add(new TreeItem<String>(((Destination) mapNode).getInfo().getName()));
+		}
 	}
 	/**
 	 * Adds all of the event handlers to handle dragging, edge creation, deletion etc.
@@ -473,9 +495,21 @@ public class MapEditorController extends AbstractController {
 
 			if(ev.getButton() == MouseButton.SECONDARY) //if right click
 			{
-				mapNode.getEditPopover().show(mapNode.getNodeToDisplay(),
+				PopOver popOver = mapNode.getEditPopover();
+
+				/***If the name is set, at it to the tree*/
+				popOver.setOnHiding(event -> {
+					if(mapNode instanceof Destination && !((Destination)mapNode).getInfo().getName().isEmpty())
+					{
+						treeFloor3.getChildren().add(new TreeItem<String>(((Destination) mapNode).getInfo().getName()));
+					}
+				});
+
+				popOver.show(mapNode.getNodeToDisplay(),
 						ev.getScreenX(),
 						ev.getScreenY());
+
+
 				//removeNode(droppedNode);
 			}
 			else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
@@ -577,6 +611,32 @@ public class MapEditorController extends AbstractController {
 		}
 
 		model.removeMapNodeFromCurrentFloor(node); //remove node from mode
+
+		/*********REALLY SHITTY CODEEEE, should specifically use iterator for removal**************/
+
+		TreeItem<String> toDelete = null;
+
+		if(node instanceof Destination)
+		{
+			for (TreeItem<String> nodeItem : treeFloor3.getChildren())
+			{
+				if (nodeItem.getValue().equals(((Destination)node).getInfo().getName()))
+				{
+					toDelete = nodeItem;
+					break;
+				}
+			}
+
+			if(toDelete != null)
+			{
+				toDelete.getParent().getChildren().remove(toDelete);
+				treeViewBuilding1.refresh();
+
+				System.out.println("3 strikes and ur out");
+			}
+
+			((Destination)node).getInfo().setName(""); //realllylllylyly hacky
+		}
 	}
 
 	/*private void setupImportedNode(MapNode droppedNode)
