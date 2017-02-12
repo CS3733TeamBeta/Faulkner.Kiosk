@@ -446,10 +446,6 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	public void addToMapFromDrag(MapNode mapNode)
-	{
-		addToAdminMap(mapNode);
-	}
 	public void addToAdminMap(MapNode mapNode)
 	{
 		addEventHandlersToNode(mapNode);
