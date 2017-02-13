@@ -38,10 +38,10 @@ public class Destination extends MapNode {
     }
 
     //Returns a pop over window to edit this node
-    @Override
     /**
      * God knows what this does. @TODO Ben add what this does.
      */
+    @Override
     public PopOver getEditPopover() {
         DestinationEditController controller = new DestinationEditController(this);
         return getPopOver(controller, popOverEditFXML);
