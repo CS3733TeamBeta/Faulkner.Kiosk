@@ -21,21 +21,29 @@ public class Destination extends MapNode {
     Image destinationView;
     private final String popOverEditFXML = "/Admin/Popup/DestinationEditPopup.fxml";
 
+    /**
+     *  Creates a new Destination with an new empty info
+     */
     public Destination() {
         myInfo = new Info();
     }
 
+    /**
+     * Returns the info of this Destination
+     * @return Info of this Destination
+     */
     public Info getInfo()
     {
         return myInfo;
     }
 
-    /**Returns a pop over window to edit this node**/
+    //Returns a pop over window to edit this node
     @Override
-    public PopOver getEditPopover()
-    {
+    /**
+     * God knows what this does. @TODO Ben add what this does.
+     */
+    public PopOver getEditPopover() {
         DestinationEditController controller = new DestinationEditController(this);
-
         return getPopOver(controller, popOverEditFXML);
     }
 
