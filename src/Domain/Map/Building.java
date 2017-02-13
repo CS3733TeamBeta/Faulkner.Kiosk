@@ -13,6 +13,11 @@ public class Building {
         this.buildingFloors = new HashSet<>();
     }
 
+    /**
+     * Adds a floor to this building, throwing an exception if the floor already exists
+     * @param f the floor to be added
+     * @throws Exception if the floor already exists
+     */
     public void addFloor(Floor f) throws Exception
     {
         boolean floorExists;
