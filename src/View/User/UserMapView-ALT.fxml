@@ -19,19 +19,19 @@
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="705.0" minHeight="10.0" prefHeight="645.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="496.0" minHeight="10.0" prefHeight="355.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="705.0" minHeight="10.0" prefHeight="591.6666870117188" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="496.0" minHeight="10.0" prefHeight="408.33331298828125" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <ImageView fitHeight="1100.0" fitWidth="1600.0" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowSpan="2" GridPane.valignment="CENTER">
                <image>
-                  <Image url="@../../../../../Desktop/floor3.png" />
+                  <Image url="@../User/MapViewer/floor3.png" />
                </image>
             </ImageView>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8ffebd6" height="415.0" stroke="BLACK" strokeType="INSIDE" width="1600.0" />
-                  <TextField layoutX="621.0" layoutY="90.0" promptText="Search for anything..." style="-fx-border-color: ;" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="60.0">
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#bcd2e3d9" height="409.0" layoutX="39.0" layoutY="118.0" stroke="BLACK" strokeType="INSIDE" width="1600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <TextField layoutX="621.0" layoutY="90.0" promptText="Search for anything..." style="-fx-border-color: ;" AnchorPane.leftAnchor="325.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="60.0">
                      <font>
                         <Font size="26.0" />
                      </font>
@@ -41,47 +41,47 @@
                   </TextField>
                   <ImageView fitHeight="112.0" fitWidth="112.0" layoutX="139.0" layoutY="192.0" opacity="0.6">
                      <image>
-                        <Image url="@../../../../../Desktop/22779-200.png" />
+                        <Image url="@../User/resources/22779-200.png" />
                      </image>
                   </ImageView>
                   <ImageView fitHeight="141.0" fitWidth="141.0" layoutX="523.0" layoutY="189.0" opacity="0.6">
                      <image>
-                        <Image url="@../../../../../Desktop/Gender-Neutral-Toilet-Sign-White-1000.png" />
+                        <Image url="@../User/resources/Gender-Neutral-Toilet-Sign-White-1000.png" />
                      </image>
                   </ImageView>
-                  <Text layoutX="150.0" layoutY="354.0" opacity="0.6" strokeType="OUTSIDE" strokeWidth="0.0" text="Doctors">
+                  <Text layoutX="149.0" layoutY="353.0" opacity="0.6" strokeType="OUTSIDE" strokeWidth="0.0" text="Doctors">
                      <font>
                         <Font size="25.0" />
                      </font>
                   </Text>
-                  <Text layoutX="535.0" layoutY="357.0" opacity="0.6" strokeType="OUTSIDE" strokeWidth="0.0" text="Bathrooms">
+                  <Text layoutX="531.0" layoutY="356.0" opacity="0.6" strokeType="OUTSIDE" strokeWidth="0.0" text="Bathrooms">
                      <font>
                         <Font size="25.0" />
                      </font>
                   </Text>
-                  <Text layoutX="987.0" layoutY="351.0" opacity="0.6" strokeType="OUTSIDE" strokeWidth="0.0" text="Food">
+                  <Text layoutX="981.0" layoutY="354.0" opacity="0.6" strokeType="OUTSIDE" strokeWidth="0.0" text="Food">
                      <font>
                         <Font size="25.0" />
                      </font>
                   </Text>
-                  <ImageView fitHeight="153.0" fitWidth="153.0" layoutX="937.0" layoutY="177.0" opacity="0.6">
+                  <ImageView fitHeight="153.0" fitWidth="153.0" layoutX="937.0" layoutY="179.0" opacity="0.6">
                      <image>
-                        <Image url="@../../../../../Desktop/10446-200.png" />
+                        <Image url="@../User/resources/10446-200.png" />
                      </image>
                   </ImageView>
                   <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="1301.0" layoutY="154.0" opacity="0.6">
                      <image>
-                        <Image url="@../../../../../Desktop/75-Question-mark-sign.png" />
+                        <Image url="@../User/resources/75-Question-mark-sign.png" />
                      </image>
                   </ImageView>
-                  <Text layoutX="1374.0" layoutY="353.0" opacity="0.6" strokeType="OUTSIDE" strokeWidth="0.0" text="Help">
+                  <Text layoutX="1373.0" layoutY="356.0" opacity="0.6" strokeType="OUTSIDE" strokeWidth="0.0" text="Help">
                      <font>
                         <Font size="25.0" />
                      </font>
                   </Text>
-                  <Text layoutX="718.0" layoutY="180.0" opacity="0.6" strokeType="OUTSIDE" strokeWidth="0.0" text="Suggestions:">
+                  <Text layoutX="723.0" layoutY="168.0" opacity="0.57" strokeType="OUTSIDE" strokeWidth="0.0" text="Suggestions:">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="26.0" />
                      </font>
                   </Text>
                </children>
