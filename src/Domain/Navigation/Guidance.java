@@ -85,10 +85,10 @@ public class Guidance extends Path {
 
 
             if (directionChangeString.equals("Up") || directionChangeString.equals("Down")) {
-                tempTextDirections.add("Take elevator " + directionChangeString + " at " + fromNode.getNodeID());
+                tempTextDirections.add("At " + fromNode.getNodeID() + ", take elevator " + directionChangeString);
             } else if (!directionChangeString.equals("Straight")) {
                 //Don't add straight to the list
-                tempTextDirections.add("Turn " + directionChangeString + " at " + fromNode.getNodeID());
+                tempTextDirections.add("At " + fromNode.getNodeID() +", turn " + directionChangeString);
             }
         }
 
