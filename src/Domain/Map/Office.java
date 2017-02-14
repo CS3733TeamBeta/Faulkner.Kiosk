@@ -9,8 +9,7 @@ import java.util.HashSet;
  *  Office is a particular type of destination that is a doctor's office
  */
 
-public class Office extends Destination
-{
+public class Office extends Destination {
     int id;
 
     HashSet<Doctor> occupants;
@@ -22,8 +21,7 @@ public class Office extends Destination
         this.occupants = doctors;
     }
 
-    public Office()
-    {
+    public Office() {
 
     }
 
