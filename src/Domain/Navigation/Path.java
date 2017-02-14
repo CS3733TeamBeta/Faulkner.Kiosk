@@ -4,6 +4,9 @@ import Domain.Map.*;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 import Exceptions.*;
 //Testing
 
@@ -166,8 +169,79 @@ public class Path implements Iterable {
      * @throws PathFindingException
      */
     public void createPathBreadthFirst(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
-        //@TODO Implement breadthFirst search
-        createPathAStar(start, end, devFlag);
+
+        pathEdges = new LinkedList<NodeEdge>();
+        pathNodes = new LinkedList<MapNode>();
+
+        LinkedList<MapNode> openSet = new LinkedList<>();
+        openSet.addFirst(start);
+        boolean flagDone = false;
+        LinkedList<MapNode> visitedNodes = new LinkedList<>();
+
+        while(openSet.size() > 0 && !flagDone) {
+            System.out.println("Doing a while");
+            MapNode newNode = openSet.pop();
+            visitedNodes.add(newNode);
+
+            for (NodeEdge e : newNode.getEdges()) {
+                System.out.println("Adding from an edge");
+                MapNode neighbor = e.getOtherNode(newNode);
+                if (!openSet.contains(neighbor) && !visitedNodes.contains(neighbor)) {
+                    System.out.println("adding a node to the queue");
+                    openSet.add(neighbor);
+                    neighbor.setParent(e);
+                }
+            }
+
+            if (newNode.equals(end)) {
+                System.out.println("Found the end");
+                //currentInPath is the node we are looking at now to reconstruct the path
+                MapNode currentInPath = end;
+
+                //While the current node HAS a parent, continue iterating.
+                // This works because the only node without a parent in the path is the starting node.
+                while (currentInPath.getParent() != null) {
+
+                    //Stick the parent at the beginning of the list
+                    //we order the array like this in order to invert the list of nodes
+                    //the path we construct via parent is naturally the path from the end to the start.
+                    pathEdges.add(0, currentInPath.getParent());
+
+                    //Then go to the next node in the path
+                    currentInPath = currentInPath.getParent().getOtherNode(currentInPath);
+                }
+                //Set the flag to exit the algorithm
+                flagDone = true;
+
+            }
+        }
+        //Set all nodes in the open and closed set back to default values so we can iterate through the list again
+        //and find another path
+        for (MapNode n: visitedNodes) {
+            n.resetTempValues();
+        }
+        for (MapNode n: openSet) {
+            n.resetTempValues();
+        }
+
+
+
+        //Determine pathNodes from pathEdges
+        nodesFromEdges(start, end);
+        //If the loop exited without flagDone, it must have searched all nodes and found nothing
+        if (!flagDone) {
+            throw new PathFindingNoPathException("No valid path found", this.pathNodes, this.pathEdges);
+        }
+
+        //Print the edges and nodes for bugfixing
+        if (devFlag) {
+            printPathEdges();
+            printPathNodes();
+        }
+
+        if (!this.isValidPath()) {
+            throw new PathFindingInvalidPathException("Path generated is invalid", this.pathNodes, this.pathEdges);
+        }
     }
 
     public Path(MapNode start, MapNode end) throws PathFindingException {
@@ -192,13 +266,14 @@ public class Path implements Iterable {
                 createPathAStar(start, end, devFlag);
                 break;
             case "breadthfirst":
+                System.out.println("Doing a breadthfirst");
                 createPathBreadthFirst(start, end, devFlag);
+                System.out.println("Finsihed a dslkfsj");
                 break;
             default:
                 System.out.println("Input was neither \"astar\" nor \"breadthfirst\", using astar");
                 createPathAStar(start, end, devFlag);
         }
-        createPathAStar(start, end, devFlag);
     }
 
     /**
