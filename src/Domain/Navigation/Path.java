@@ -22,8 +22,14 @@ public class Path implements Iterable {
 
     public Path() {}
 
-
-    public void createPath(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
+    /**
+     * Fills this path's field with the path genereated from start to end using Astar, printing out lots of stuff if devflag is true
+     * @param start
+     * @param end
+     * @param devFlag
+     * @throws PathFindingException
+     */
+    public void createPathAStar(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
 
         this.devFlag = devFlag;
 
@@ -152,8 +158,24 @@ public class Path implements Iterable {
 
     }
 
+    /**
+     * Fills this Path's fields with the path generated from start to end using breadth-first search, printing out stuff if devflag is true.
+     * @param start
+     * @param end
+     * @param devFlag
+     * @throws PathFindingException
+     */
+    public void createPathBreadthFirst(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
+        //@TODO Implement breadthFirst search
+        createPathAStar(start, end, devFlag);
+    }
+
     public Path(MapNode start, MapNode end) throws PathFindingException {
-        this(start, end, false);
+        this(start, end, false, "astar");
+    }
+
+    public Path(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
+        this(start, end, devFlag, "astar");
     }
 
     /**
@@ -164,8 +186,19 @@ public class Path implements Iterable {
      * @param devFlag
      * @throws PathFindingException
      */
-    public Path(MapNode start, MapNode end, boolean devFlag) throws PathFindingException{
-        createPath(start, end, devFlag);
+    public Path(MapNode start, MapNode end, boolean devFlag, String algo) throws PathFindingException{
+        switch (algo) {
+            case "astar":
+                createPathAStar(start, end, devFlag);
+                break;
+            case "breadthfirst":
+                createPathBreadthFirst(start, end, devFlag);
+                break;
+            default:
+                System.out.println("Input was neither \"astar\" nor \"breadthfirst\", using astar");
+                createPathAStar(start, end, devFlag);
+        }
+        createPathAStar(start, end, devFlag);
     }
 
     /**

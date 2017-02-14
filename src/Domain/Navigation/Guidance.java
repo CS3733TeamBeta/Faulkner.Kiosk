@@ -83,8 +83,11 @@ public class Guidance extends Path {
             //Change the directionChange into a textual string
             String directionChangeString = Guidance.directionChangeToString(changeInDirection, vFlag);
 
-            //Don't add straight to the list
-            if (!directionChangeString.equals("Straight")){
+
+            if (directionChangeString.equals("Up") || directionChangeString.equals("Down")) {
+                tempTextDirections.add("Take elevator " + directionChangeString + " at " + fromNode.getNodeID());
+            } else if (!directionChangeString.equals("Straight")) {
+                //Don't add straight to the list
                 tempTextDirections.add("Turn " + directionChangeString + " at " + fromNode.getNodeID());
             }
         }
