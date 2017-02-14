@@ -119,7 +119,6 @@ public class PathFindingTest extends TestCase{
     //Tests that UIDs are working properly
     public void testUID() {
         UID id = nodeA.getNodeUID();
-        //System.out.println(id.toString())
         assertEquals(nodeA, nodeA);
         assertEquals(nodeB, nodeB);
         assertNotSame(nodeA, nodeB);
@@ -174,7 +173,7 @@ public class PathFindingTest extends TestCase{
             assertFalse(p3.equals(p5));
             assertFalse(p5.equals(p3));
         } catch(Exception e) {
-            fail("Threw unexpected exception");
+            fail("Threw unexpected exception in testEquals");
         }
     }
 
@@ -184,16 +183,16 @@ public class PathFindingTest extends TestCase{
             g2 = new Guidance(nodeO, nodeI, false);
             assertTrue(true);
        } catch(Exception e) {
-            fail("Threw unexpected exception");
+            fail("Threw unexpected exception in testGuidance");
         }
     }
 
-    public void testBreadth() throws Exception{
-       // try {
-            p1 = new Path(nodeA, nodeL, true, "breadthfirst");
-        //} catch (Exception e) {
-        //    fail("Threw unexpected exception");
-        //}
+    public void testBreadth() {
+       try {
+            p1 = new Path(nodeA, nodeL, false, "breadthfirst");
+        } catch (Exception e) {
+            fail("Threw unexpected exception in testBreadth");
+        }
     }
 
 }
