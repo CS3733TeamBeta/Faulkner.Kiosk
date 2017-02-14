@@ -22,19 +22,8 @@ public class Path implements Iterable {
 
     public Path() {}
 
-    public Path(MapNode start, MapNode end) throws PathFindingException {
-        this(start, end, false);
-    }
 
-    /**
-     * Constructs itself as a path between the two given nodes.
-     * If devFlag is true, prints verbose logs as it does so.
-     * @param start
-     * @param end
-     * @param devFlag
-     * @throws PathFindingException
-     */
-    public Path(MapNode start, MapNode end, boolean devFlag) throws PathFindingException{
+    public void createPath(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
 
         this.devFlag = devFlag;
 
@@ -130,7 +119,6 @@ public class Path implements Iterable {
                 }
             }
 
-
         }
 
         //Set all nodes in the open and closed set back to default values so we can iterate through the list again
@@ -162,7 +150,22 @@ public class Path implements Iterable {
             throw new PathFindingInvalidPathException("Path generated is invalid", this.pathNodes, this.pathEdges);
         }
 
+    }
 
+    public Path(MapNode start, MapNode end) throws PathFindingException {
+        this(start, end, false);
+    }
+
+    /**
+     * Constructs itself as a path between the two given nodes.
+     * If devFlag is true, prints verbose logs as it does so.
+     * @param start
+     * @param end
+     * @param devFlag
+     * @throws PathFindingException
+     */
+    public Path(MapNode start, MapNode end, boolean devFlag) throws PathFindingException{
+        createPath(start, end, devFlag);
     }
 
     /**
