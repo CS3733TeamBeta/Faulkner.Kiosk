@@ -18,6 +18,7 @@ public class Guidance extends Path {
 
     public Guidance (MapNode start, MapNode end) throws PathFindingException {
             this(start, end, false);
+            printTextDirections();
     }
 
     public Guidance (MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
