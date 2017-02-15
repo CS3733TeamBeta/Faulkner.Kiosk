@@ -90,20 +90,20 @@ public class DragIcon extends AnchorPane{
 				getStyleClass().add("bathroom");
 				break;
 
-			case doctor:
-				getStyleClass().add("doctor");
+			case store:
+				getStyleClass().add("store");
 				break;
 
 			case elevator:
 				getStyleClass().add("elevator");
 				break;
 
-			case help:
-				getStyleClass().add("food");
+			case doctor:
+				getStyleClass().add("doctor");
 				break;
 
 			case food:
-				getStyleClass().add("help");
+				getStyleClass().add("food");
 				break;
 
 			case info:

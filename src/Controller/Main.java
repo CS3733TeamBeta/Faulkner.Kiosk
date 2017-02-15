@@ -22,8 +22,8 @@ public class Main extends Application {
     Hospital myHospital;
     Building myBuilding;
     Floor floor1;
-    static final int xoffset = 0;
-    static final int yoffset = -20;
+    static final int xoffset = -60;
+    static final int yoffset = -80;
     static final int BATHROOM = 0;
     static final int DOCTOR = 1;
     static final int ELEVATOR = 2;
@@ -38,15 +38,15 @@ public class Main extends Application {
     public static final ObservableList<String> departments =
             FXCollections.observableArrayList();
 
-    public static final ObservableList<DoctorProfile> FaulknerHospitalDirectory = FXCollections.observableArrayList();
+    public static final ObservableList<Doctor> FaulknerHospitalDirectory = FXCollections.observableArrayList();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        departments.addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
-
         mvm = new MapModel();
         mvm.setCurrentFloor(new Floor(3));
         setUpNodeGraph();
+
+        setUpDirectory();
 
         SceneSwitcher.switchToLoginView(primaryStage);
 
@@ -135,5 +135,35 @@ public class Main extends Application {
 
         mvm = new MapModel();
         mvm.setCurrentFloor(floor1);
+    }
+
+    public void setUpDirectory() {
+        // Doctors on the 3rd floor
+        Doctor Byrne = new Doctor("Byrne, Jennifer", "RN, CPNP", "N/A");
+        Doctor Frangieh = new Doctor("Frangieh, George", "MD", "N/A");
+        Doctor Greenberg = new Doctor("Greenberg, James Adam", "MD", "N/A");
+        Doctor Grossi = new Doctor ("Grossi, Lisa", "RN, MS, CPNP", "N/A");
+        Doctor Keller = new Doctor("Keller, Elizabeth", "MD", "N/A");
+        Doctor Malone = new Doctor("Malone, Linda", "DNP, RN, CPNP", "N/A");
+        Doctor Micley = new Doctor("Micley, Bruce", "MD", "N/A");
+        Doctor Minor = new Doctor("Minor, Julie", "DO", "N/A");
+        Doctor Morrison = new Doctor("Morrison, Beverly", "MD", "N/A");
+        Doctor Nadarajah = new Doctor("Nadarajah, Sarah", "WHNP", "N/A");
+        Doctor OConnor = new Doctor("OConnor, Elizabeth", "MD", "N/A");
+        Doctor Patten = new Doctor("Patten, James", "MD", "N/A");
+        Doctor Saluti = new Doctor("Saluti, Andrew", "DO", "N/A");
+        Doctor Scheff = new Doctor("Scheff, David", "MD", "N/A");
+        Doctor Schueler = new Doctor("Schueler, Leila", "MD", "N/A");
+        Doctor Smith = new Doctor("Smith, Shannon", "MD","N/A");
+        Doctor Stacks = new Doctor("Stacks, Robert", "MD", "N/A");
+        Doctor Tunick = new Doctor("Tunick, Mitchell", "MD", "N/A");
+        Doctor Viola = new Doctor("Viola, Julianne", "MD", "N/A");
+
+        FaulknerHospitalDirectory.addAll(Byrne, Frangieh, Greenberg, Grossi, Keller, Malone, Micley, Minor, Morrison,
+                Nadarajah, OConnor, Patten, Saluti, Scheff, Schueler, Smith, Stacks, Tunick, Viola);
+
+        // All the departments on the 3rd floor
+        departments.addAll("Eye Care Specialists", "Obstetrics and Gynecology Associates", "Roslindale Pediatric Associates",
+                "Suburban Eye Specialists");
     }
 }

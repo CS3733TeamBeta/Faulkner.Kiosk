@@ -18,7 +18,7 @@ public class SceneSwitcher
     protected static final String UserPackage = "../User";
     protected static final String AdminLoginViewPath = AdminPackage + "/AdminLoginView.fxml";
     protected static final String AdminWelcomeViewPath = AdminPackage + "/AdminWelcomeView.fxml";
-    protected static final String AddNewProfileViewPath = AdminPackage + "/AdminLoginView.fxml";
+    protected static final String AddNewProfileViewPath = AdminPackage + "/AddNewProfileView.fxml";
     protected static final String ModifyDirectoryViewPath = AdminPackage + "/ModifyDirectoryView.fxml";
     protected static final String ChooseProfileToModifyViewPath = AdminPackage + "/ChooseProfileToModifyView.fxml";
     //protected static final String EditDepartmentViewPath = AdminPackage + "/EditDepartmentView.fxml";
@@ -29,6 +29,7 @@ public class SceneSwitcher
     protected static final String HomeViewPath = UserPackage + "/HomeView.fxml";
     protected static final String UserMapViewPath = UserPackage + "/UserMapView.fxml";
     protected static final String UserSearchViewPath = UserPackage + "/UserSearchView.fxml";
+    protected static final String EditProfileViewPath = AdminPackage + "/EditProfileView.fxml";
 
     public static AbstractController switchToScene(Stage primaryStage, String pathToView) throws IOException
     {
@@ -59,8 +60,9 @@ public class SceneSwitcher
         AdminLoginController controller = (AdminLoginController) switchToScene(primaryStage, AdminLoginViewPath);
     }
 
-    public static void switchToAdminWelcomeView(Stage primaryStage) throws IOException {
+    public static void switchToAdminWelcomeView(Stage primaryStage, AdminProfile adminProfile) throws IOException {
         AdminWelcomeController controller = (AdminWelcomeController) switchToScene(primaryStage, AdminWelcomeViewPath);
+        controller.setAdminProfile(adminProfile);
     }
 
     public static void switchToModifyDirectoryView(Stage primaryStage) throws IOException {
@@ -105,6 +107,10 @@ public class SceneSwitcher
 
     public static void switchToUserSearchView(Stage primaryStage) throws IOException {
         UserSearchController controller = (UserSearchController) switchToScene(primaryStage, UserSearchViewPath);
+    }
+
+    public static void switchToEditProfileView(Stage primaryStage) throws IOException {
+        EditProfileController controller = (EditProfileController) switchToScene(primaryStage, EditProfileViewPath);
     }
 
     public static void goToUserHome(Stage primaryStage) throws IOException{

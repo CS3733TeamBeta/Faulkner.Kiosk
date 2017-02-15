@@ -3,8 +3,7 @@ package Controller.Admin;
 import Controller.AbstractController;
 import Controller.Main;
 import Controller.SceneSwitcher;
-import Model.DoctorProfile;
-
+import Domain.Map.Doctor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -37,14 +36,13 @@ public class ChooseProfileToModifyController extends AbstractController {
     TextField searchModDoc;
 
     @FXML
-    TableView<DoctorProfile> filteredProfiles;
+    TableView<Doctor> filteredProfiles;
 
     @FXML
-    TableColumn lastNameCol;
+    TableColumn nameCol;
 
     @FXML
-    TableColumn firstNameCol;
-
+    TableColumn descriptionCol;
 
     Stage primaryStage;
 
@@ -53,36 +51,36 @@ public class ChooseProfileToModifyController extends AbstractController {
         primaryStage = s;
     }
 
+    protected static Doctor editDoc;
+
     public ChooseProfileToModifyController(){
     }
 
     public void initialize() {
         // Setting up the columns of the TableView
-        lastNameCol.setCellValueFactory(
-                new PropertyValueFactory<DoctorProfile,String>("lastName"));
+        nameCol.setCellValueFactory(
+                new PropertyValueFactory<Doctor,String>("name"));
 
-        firstNameCol.setCellValueFactory(
-                new PropertyValueFactory<DoctorProfile,String>("firstName"));
+        descriptionCol.setCellValueFactory(
+                new PropertyValueFactory<Doctor,String>("description"));
 
 
         // Creating list of data to be filtered
-        FilteredList<DoctorProfile> filtered = new FilteredList<>(Main.FaulknerHospitalDirectory);
+        FilteredList<Doctor> filtered = new FilteredList<>(Main.FaulknerHospitalDirectory);
 
         // Adding a listener to the search bar, filtering through the data as the user types
         searchModDoc.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            filtered.setPredicate((Predicate<? super DoctorProfile>) profile -> {
+            filtered.setPredicate((Predicate<? super Doctor>) profile -> {
                 // By default, the entire directory is displayed
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
 
-                // Compare first name and last name of every person with filter text.
+                // Compare the name of the doctor with filter text
                 String lowerCaseFilter = newValue.toLowerCase();
 
                 // Checks if filter matches
-                if (profile.getFirstName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (profile.getLastName().toLowerCase().contains(lowerCaseFilter)) {
+                if (profile.getName().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
                 }
 
@@ -92,7 +90,7 @@ public class ChooseProfileToModifyController extends AbstractController {
         });
 
         // Create a sorted list for the filtered data list
-        SortedList<DoctorProfile> sorted = new SortedList<>(filtered);
+        SortedList<Doctor> sorted = new SortedList<>(filtered);
         // Bind the sorted list to table
         sorted.comparatorProperty().bind(filteredProfiles.comparatorProperty());
         // Set table data
@@ -112,7 +110,7 @@ public class ChooseProfileToModifyController extends AbstractController {
 
     @FXML
     private void delete() {
-        DoctorProfile profileSelected = filteredProfiles.getSelectionModel().getSelectedItem();
+        Doctor profileSelected = filteredProfiles.getSelectionModel().getSelectedItem();
 
         // Popup confirmation dialog message window
         Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this profile from the directory?");
@@ -121,24 +119,28 @@ public class ChooseProfileToModifyController extends AbstractController {
         ButtonType ok = new ButtonType("OK");
         alert.getButtonTypes().setAll(ok);
 
-        // Save changes only if action has been confirmed.
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ok) {
-            // Deleted from database
-            Main.FaulknerHospitalDirectory.remove(profileSelected);
-            // I need to search for a doctor in database, remove it
-            System.out.println("Action confirmed.");
-            // Call initiate() again to update table columns, removed from list display.
-            initialize();
+        if (profileSelected != null) {
+            // Save changes only if action has been confirmed.
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ok) {
+                // Deleted from database
+                Main.FaulknerHospitalDirectory.remove(profileSelected);
+                // I need to search for a doctor in database, remove it
+                System.out.println("Action confirmed.");
+                // Call initiate() again to update table columns, removed from list display.
+                initialize();
+            }
         }
     }
 
     @FXML
-    private void edit() {
-        DoctorProfile profileSelected = filteredProfiles.getSelectionModel().getSelectedItem();
+    private void edit() throws IOException{
+        Doctor profileSelected = filteredProfiles.getSelectionModel().getSelectedItem();
+        editDoc = profileSelected;
 
-        // Search for the specific doctor, and edit the row of the table in the database system
-        // What to edit? Could we edit the ID #?
+        if (profileSelected != null) {
+            SceneSwitcher.switchToEditProfileView(primaryStage);
+        }
 
     }
 }

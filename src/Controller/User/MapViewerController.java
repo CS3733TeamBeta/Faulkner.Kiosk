@@ -30,6 +30,7 @@ import org.controlsfx.control.PopOver;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -70,52 +71,42 @@ public class MapViewerController extends AbstractController {
 			else if(Main.mvm != null) {
 				model.setCurrentFloor(Main.mvm.getCurrentFloor());
 			}
-			if(Main.mvm != null || DragDropMain.mvm != null){
-				//and then set all the existing nodes up
-				for(MapNode n : model.getCurrentFloor().getFloorNodes()){
-					//System.out.println("Adding node");
-					setupImportedNode(n);
+		if(DragDropMain.mvm != null || Main.mvm != null)
+		{
+			//and then set all the existing nodes up
+			HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+
+			for (MapNode n : model.getCurrentFloor().getFloorNodes())
+			{
+				//System.out.println("Adding node");
+				setupImportedNode(n);
+
+				for (NodeEdge edge : n.getEdges())
+				{
+					if (!collectedEdges.contains(edge)) collectedEdges.add(edge);
 				}
-				//System.out.println("Edges to add: " + DragDropMain.mvm.getCurrentFloor().getFloorEdges().size());
-				for(NodeEdge edge : model.getCurrentFloor().getFloorEdges()){
-					drawingEdge = edge;
-					drawingEdge.changeColor(Color.RED);
-					//Opacity goes from 0 to 1
-					drawingEdge.changeOpacity(0.0);
-
-					MapNode sourceNode = edge.getSource();
-					MapNode targetNode = edge.getTarget();
-
-					drawingEdge.setSource(sourceNode);
-					drawingEdge.setTarget(targetNode);
-
-					drawingEdge.updatePosViaNode(sourceNode);
-					drawingEdge.updatePosViaNode(targetNode);
-
-					model.addMapEdge(drawingEdge);
-
-					drawingEdge.updatePosViaNode(sourceNode);
-					drawingEdge.updatePosViaNode(targetNode);
-
-					drawingEdge.updatePosViaNode(sourceNode);
-					drawingEdge.updatePosViaNode(targetNode);
-
-					sourceNode.toFront();
-					targetNode.toFront();
-
-					drawingEdge.updatePosViaNode(sourceNode);
-					drawingEdge.updatePosViaNode(targetNode);
-
-					//System.out.println("drawingedge goes from " + sourceNode.getNodeID() + " to " + targetNode.getNodeID());
-
-					mapPane.getChildren().add(drawingEdge.getNodeToDisplay());
-
-					drawingEdge.updatePosViaNode(sourceNode);
-					drawingEdge.updatePosViaNode(targetNode);
-					drawingEdge = null;
-				}
-
 			}
+			for (NodeEdge edge : collectedEdges)
+			{
+				mapPane.getChildren().add(edge.getNodeToDisplay());
+
+				MapNode source = edge.getSource();
+				MapNode target = edge.getTarget();
+
+				//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
+
+
+				edge.updatePosViaNode(source);
+				edge.updatePosViaNode(target);
+
+				edge.toBack();
+				source.toFront();
+				target.toFront();
+
+				mapImage.toBack();
+			}
+		}
+
 			else{
 				model = new MapModel();
 			}

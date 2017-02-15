@@ -19,7 +19,7 @@ public class Destination extends MapNode {
     protected Info myInfo;
     Image icon;
     Image destinationView;
-    private final String popOverEditFXML = "/Admin/Popup/OfficeEditPopup.fxml";
+    private final String popOverEditFXML = "/Admin/Popup/DestinationEditPopup.fxml";
 
     public Destination() {
         myInfo = new Info();

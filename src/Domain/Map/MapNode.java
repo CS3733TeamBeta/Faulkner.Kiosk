@@ -68,6 +68,7 @@ public class MapNode implements DrawableMapEntity
         this.edges = new HashSet<NodeEdge>();
         this.nodeUID = new UID();
         icon = new DragIcon();
+        icon.setPrefSize(25, 25);
     }
 
     public MapNode(int nodeID) {
@@ -82,8 +83,6 @@ public class MapNode implements DrawableMapEntity
         this.posY = posY;
 
         this.setType(DragIconType.values()[0]);
-
-        icon.setPrefSize(25, 25);
     }
 
     public MapNode(int nodeID, int posX, int posY, int type) {
