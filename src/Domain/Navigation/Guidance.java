@@ -44,6 +44,8 @@ public class Guidance extends Path {
         MapNode fromNode = new MapNode();
         MapNode toNode = new MapNode();
 
+        int intersectionsPassed = 0;
+
         //Add the first node to the textual directions
         tempTextDirections.add("Start from " + pathNodes.get(0).getNodeID() + " facing North");
 
@@ -84,17 +86,25 @@ public class Guidance extends Path {
             //Change the directionChange into a textual string
             String directionChangeString = Guidance.directionChangeToString(changeInDirection, vFlag);
 
-
-            if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
-                tempTextDirections.add("At " + fromNode.getNodeID() + ", take elevator " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+            if (directionChangeString.equals("Straight")) {
+                System.out.println("Passing an possible intersection");
+                if (fromNode.getEdges().size() > 3) {
+                    System.out.println("Passing a definite intersection");
+                    System.out.println("fromNode has size of edges: " + fromNode.getEdges().size());
+                    intersectionsPassed++;
+                }
+                intersectionsPassed++;
+            } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
+                tempTextDirections.add("After passing " + intersectionsPassed + " intersections" +  ", take elevator" + " at " + fromNode.getNodeID()+ " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                intersectionsPassed = 0;
             } else if (!directionChangeString.equals("Straight")) {
-                //Don't add straight to the list
-                tempTextDirections.add("At " + fromNode.getNodeID() +", turn " + directionChangeString);
+                tempTextDirections.add("After passing " + intersectionsPassed + " intersections," + " turn " + directionChangeString + " at " + fromNode.getNodeID());
+                intersectionsPassed = 0;
             }
         }
 
         //Add the destination arrival string
-        tempTextDirections.add("Arrive at destination at " + toNode.getNodeID());
+        tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at destination at " + toNode.getNodeID());
         this.textDirections = tempTextDirections;
     }
 
@@ -120,49 +130,49 @@ public class Guidance extends Path {
         String stringDirection = "Error";
         switch (changeInDirection) {
             case -7:
-                stringDirection = "Slight left";
+                stringDirection = "slight left";
                 break;
             case -6:
-                stringDirection = "Left";
+                stringDirection = "left";
                 break;
             case -5:
-                stringDirection = "Hard left";
+                stringDirection = "hard left";
                 break;
             case -4:
                 stringDirection = "U-Turn";
                 break;
             case -3:
-                stringDirection = "Hard right";
+                stringDirection = "hard right";
                 break;
             case -2:
-                stringDirection = "Right";
+                stringDirection = "right";
                 break;
             case -1:
-                stringDirection = "Slight right";
+                stringDirection = "slight right";
                 break;
             case 0:
                 stringDirection = "Straight";
                 break;
             case 1:
-                stringDirection = "Slight right";
+                stringDirection = "slight right";
                 break;
             case 2:
-                stringDirection = "Left";
+                stringDirection = "left";
                 break;
             case 3:
-                stringDirection = "Hard left";
+                stringDirection = "hard left";
                 break;
             case 4:
                 stringDirection = "U-Turn";
                 break;
             case 5:
-                stringDirection = "Hard right";
+                stringDirection = "hard right";
                 break;
             case 6:
-                stringDirection = "Right";
+                stringDirection = "right";
                 break;
             case 7:
-                stringDirection = "Slight right";
+                stringDirection = "slight right";
                 break;
             case 9:
                 stringDirection = "up";
