@@ -85,8 +85,8 @@ public class Guidance extends Path {
             String directionChangeString = Guidance.directionChangeToString(changeInDirection, vFlag);
 
 
-            if (directionChangeString.equals("Up") || directionChangeString.equals("Down")) {
-                tempTextDirections.add("At " + fromNode.getNodeID() + ", take elevator " + directionChangeString);
+            if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
+                tempTextDirections.add("At " + fromNode.getNodeID() + ", take elevator " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
             } else if (!directionChangeString.equals("Straight")) {
                 //Don't add straight to the list
                 tempTextDirections.add("At " + fromNode.getNodeID() +", turn " + directionChangeString);
@@ -165,10 +165,10 @@ public class Guidance extends Path {
                 stringDirection = "Slight right";
                 break;
             case 9:
-                stringDirection = "Up";
+                stringDirection = "up";
                 break;
             case 10:
-                stringDirection = "Down";
+                stringDirection = "down";
                 break;
             default:
                 //If it reaches this, something quite wrong
