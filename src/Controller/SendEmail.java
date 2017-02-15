@@ -10,8 +10,24 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
 public class SendEmail {
-    public static void main(String[] args) {
+
+    static final String username = "faulknerkioskdirections@gmail.com";//
+    static final String password = "FaulkPassword";
+    String recipient;
+
+    String subject;
+    String message;
+
+    public SendEmail(String recipient, String subject, String message){
+        this.recipient = recipient;
+        this.subject = subject;
+        this.message = message;
+        sendEmail();
+    }
+
+    public void sendEmail() {
         final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
         // Get a Properties object
         Properties props = System.getProperties();
@@ -24,8 +40,7 @@ public class SendEmail {
         props.put("mail.debug", "true");
         props.put("mail.store.protocol", "pop3");
         props.put("mail.transport.protocol", "smtp");
-        final String username = "faulknerkioskdirections@gmail.com";//
-        final String password = "FaulkPassword";
+
         try {
             Session session = Session.getDefaultInstance(props,
                     new Authenticator() {
@@ -37,18 +52,17 @@ public class SendEmail {
             // -- Create a new message --
             Message msg = new MimeMessage(session);
 
-            String recipient = "iancj97@gmail.com";
             // -- Set the FROM and TO fields --
             msg.setFrom(new InternetAddress(username));
             msg.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipient, false));
-            msg.setSubject("Hello");
-            msg.setText("How are you");
+            msg.setSubject(subject);
+            msg.setText(message);
             msg.setSentDate(new Date());
             Transport.send(msg);
             System.out.println("Message sent.");
         } catch (MessagingException e) {
-            System.out.println("Erreur d'envoi, cause: " + e);
+            System.out.println("Message failed to send; cause:" + e);
         }
     }
 }

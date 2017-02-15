@@ -1,5 +1,6 @@
 package test.java;
 
+import Controller.SendEmail;
 import Domain.Map.*;
 import Domain.Navigation.Guidance;
 import Domain.Navigation.Path;
@@ -131,6 +132,14 @@ public class PathFindingTest2  extends TestCase{
             Guidance g6 = new Guidance(nodeK, nodeI, false);
         } catch (Exception e){
             fail("Unexpected Exception");
+        }
+    }
+
+    public void testSendEmail() {
+        try {
+            SendEmail e = new SendEmail("iancj97@gmail.com", "This is a subject", "No, this is Patrick");
+        } catch (Exception e) {
+            fail("Threw exception");
         }
     }
 
