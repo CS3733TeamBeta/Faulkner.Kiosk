@@ -1,8 +1,10 @@
 package Controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -20,23 +22,47 @@ public class FileChooser_Controller
     TextArea txtText;
 
 
-    // This is all you need to bring up the fileChooser dialogue:
-
     Stage newStage = new Stage();
     FileChooser newFileChooser = new FileChooser();
-    String filePath = new String();
+    String strFilePath = new String();
+    Alert alert = new Alert(Alert.AlertType.WARNING);
 
 
     @FXML
     private void clickChooseFile()
     {
         File selectedFile = newFileChooser.showOpenDialog(newStage);
-        filePath = selectedFile.getPath();
-        txtText.setText(filePath);
-        //Image img = new Image(filePath);
-        //imgFileShow.setImage(img);
+        strFilePath = selectedFile.getPath();
+        txtText.setText(strFilePath);
+        String strExtension = getFileExtension(selectedFile);
+        txtText.setText(strExtension);
+
+        // Adding "file:" to the front of strFilePath is necessary
+        if (strExtension.equals("png")){
+            Image img = new Image("file:" + strFilePath);
+            imgFileShow.setImage(img);
+        }
+        else if (strExtension.equals("jpg")){
+            Image img = new Image("file:" + strFilePath);
+            imgFileShow.setImage(img);
+        }
+        else if (strExtension.equals("gif")){
+            Image img = new Image("file:" + strFilePath);
+            imgFileShow.setImage(img);
+        }
+        else if (strExtension.equals("bmp")){
+            Image img = new Image("file:" + strFilePath);
+            imgFileShow.setImage(img);
+        }
+        else {
+            alert.showAndWait();
+        }
     }
 
-    // I also included a way to get the path to the file
-    // Perhaps a conditional statement could be written to make sure that fileSelected is an image format
+    // gets the extension of the selected file for comparison with valid types in clickChooseFile
+    public String getFileExtension(File f)
+    {
+        String fileName = f.getName();
+        return fileName.substring(fileName.indexOf(".") + 1, f.getName().length());
+    }
 }
