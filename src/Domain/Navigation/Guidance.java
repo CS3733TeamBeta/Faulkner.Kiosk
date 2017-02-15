@@ -18,6 +18,7 @@ public class Guidance extends Path {
 
     public Guidance (MapNode start, MapNode end) throws PathFindingException {
             this(start, end, false);
+            printTextDirections();
     }
 
     public Guidance (MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
@@ -83,9 +84,12 @@ public class Guidance extends Path {
             //Change the directionChange into a textual string
             String directionChangeString = Guidance.directionChangeToString(changeInDirection, vFlag);
 
-            //Don't add straight to the list
-            if (!directionChangeString.equals("Straight")){
-                tempTextDirections.add("Turn " + directionChangeString + " at " + fromNode.getNodeID());
+
+            if (directionChangeString.equals("Up") || directionChangeString.equals("Down")) {
+                tempTextDirections.add("At " + fromNode.getNodeID() + ", take elevator " + directionChangeString);
+            } else if (!directionChangeString.equals("Straight")) {
+                //Don't add straight to the list
+                tempTextDirections.add("At " + fromNode.getNodeID() +", turn " + directionChangeString);
             }
         }
 
