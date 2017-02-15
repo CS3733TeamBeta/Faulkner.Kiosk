@@ -7,7 +7,8 @@ import junit.framework.TestCase;
 
 
 /**
- * Created by Samuel on 2/14/2017.
+ * Created by Samuel on 2/14/2017.\
+ * pushing
  */
 public class PathFindingTest2  extends TestCase{
     MapNode nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG, nodeH, nodeI, nodeJ, nodeK, nodeL, nodeM, nodeN, nodeO, nodeP, nodeQ, nodeR, nodeS, nodeT;
