@@ -293,4 +293,22 @@ public class Guidance extends Path {
     {
         return textDirections;
     }
+
+    public boolean sendEmailGuidance(String address) {
+        String subjectLine;
+        String directionLine = "You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + "." + "\n";
+        subjectLine = "Your directions are enclosed";
+
+        for(String s: textDirections) {
+            directionLine += s;
+            directionLine += "\n";
+        }
+        try {
+            SendEmail e = new SendEmail(address, subjectLine, directionLine);
+            return true;
+        } catch(Exception e) {
+            System.out.println("Threw an exception: " + e);
+            return false;
+        }
+    }
 }

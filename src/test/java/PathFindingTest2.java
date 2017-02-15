@@ -1,9 +1,9 @@
 package test.java;
 
-import Controller.SendEmail;
 import Domain.Map.*;
 import Domain.Navigation.Guidance;
 import Domain.Navigation.Path;
+import Domain.Navigation.SendEmail;
 import junit.framework.TestCase;
 
 
@@ -137,7 +137,9 @@ public class PathFindingTest2  extends TestCase{
 
     public void testSendEmail() {
         try {
-            SendEmail e = new SendEmail("iancj97@gmail.com", "This is a subject", "No, this is Patrick");
+            Guidance g1 = new Guidance(nodeA, nodeL, true);
+            g1.sendEmailGuidance("iancj97@gmail.com");
+            //SendEmail e = new SendEmail("iancj97@gmail.com", "This is a subject", "No, this is Patrick");
         } catch (Exception e) {
             fail("Threw exception");
         }
