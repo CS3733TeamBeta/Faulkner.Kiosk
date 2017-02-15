@@ -215,7 +215,7 @@ public class Path implements Iterable {
      * @param devFlag
      * @throws PathFindingException
      */
-    /*
+
     private void createPathDepthFirst(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
 
         pathEdges = new LinkedList<NodeEdge>();
@@ -233,7 +233,7 @@ public class Path implements Iterable {
             for (NodeEdge e : newNode.getEdges()) {
                 MapNode neighbor = e.getOtherNode(newNode);
                 if (!openSet.contains(neighbor) && !visitedNodes.contains(neighbor)) {
-                    openSet.add(neighbor);
+                    openSet.addFirst(neighbor);
                     neighbor.setParent(e);
                 }
             }
@@ -271,7 +271,7 @@ public class Path implements Iterable {
             throw new PathFindingInvalidPathException("Path generated is invalid", this.pathNodes, this.pathEdges);
         }
     }
-    */
+
 
     public Path(MapNode start, MapNode end) throws PathFindingException {
         this(start, end, false, "astar");
@@ -319,8 +319,11 @@ public class Path implements Iterable {
             case "breadthfirst":
                 createPathBreadthFirst(start, end, devFlag);
                 break;
+            case "depthfirst":
+                createPathDepthFirst(start, end, devFlag);
+                break;
             default:
-                System.out.println("Input was neither \"astar\" nor \"breadthfirst\", using astar");
+                System.out.println("Input was neither \"astar\" nor \"breadthfirst\" nor \"depthfirst\", using astar");
                 createPathAStar(start, end, devFlag);
         }
     }

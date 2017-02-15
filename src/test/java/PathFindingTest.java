@@ -189,10 +189,17 @@ public class PathFindingTest extends TestCase{
 
     public void testBreadth() {
        try {
-            p1 = new Path(nodeA, nodeL, false, "breadthfirst");
+            p1 = new Path(nodeA, nodeL, true, "breadthfirst");
         } catch (Exception e) {
             fail("Threw unexpected exception in testBreadth");
         }
     }
 
+    public void testDepth() {
+        try {
+            p1 = new Path(nodeA, nodeL, true, "depthfirst");
+        } catch (Exception e) {
+            fail("Threw unexpected exception in testDepth");
+        }
+    }
 }
