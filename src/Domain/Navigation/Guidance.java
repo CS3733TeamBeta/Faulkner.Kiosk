@@ -95,16 +95,32 @@ public class Guidance extends Path {
                 }
                 intersectionsPassed++;
             } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
-                tempTextDirections.add("After passing " + intersectionsPassed + " intersections" +  ", take elevator" + " at " + fromNode.getNodeID()+ " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                if(intersectionsPassed == 0){
+                    tempTextDirections.add("Take an elevator at your next intersection from " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                }
+                else if(intersectionsPassed == 1){
+                    tempTextDirections.add("After passing 1 intersection, take an elevator at " + fromNode.getNodeID() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                }
+                else {
+                    tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take an elevator" + " at " + fromNode.getNodeID() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                }
                 intersectionsPassed = 0;
             } else if (!directionChangeString.equals("Straight")) {
-                tempTextDirections.add("After passing " + intersectionsPassed + " intersections," + " turn " + directionChangeString + " at " + fromNode.getNodeID());
+                if(intersectionsPassed  == 0) {
+                    tempTextDirections.add("Turn " + directionChangeString + " at your next intersection; ID: " + fromNode.getNodeID());
+                }
+                else if(intersectionsPassed == 1){
+                    tempTextDirections.add("After passing 1 intersection, turn " + directionChangeString + " at " + fromNode.getNodeID());
+                }
+                else{
+                    tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + " at " + fromNode.getNodeID());
+                }
                 intersectionsPassed = 0;
             }
         }
 
         //Add the destination arrival string
-        tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at destination at " + toNode.getNodeID());
+        tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination: node " + toNode.getNodeID());
         this.textDirections = tempTextDirections;
     }
 

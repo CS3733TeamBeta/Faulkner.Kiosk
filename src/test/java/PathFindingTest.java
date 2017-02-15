@@ -180,7 +180,7 @@ public class PathFindingTest extends TestCase{
     public void testGuidance() {
         try {
             g1 = new Guidance(nodeT, nodeH, false);
-            g2 = new Guidance(nodeA, nodeD, true);
+            g2 = new Guidance(nodeA, nodeO, true);
             assertTrue(true);
        } catch(Exception e) {
             fail("Threw unexpected exception in testGuidance");
