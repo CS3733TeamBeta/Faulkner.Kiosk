@@ -32,7 +32,7 @@ public class MapModel {
         hospital = new Hospital();
 
         Building b  = new Building();
-        Floor f1 = new Floor(1);
+        Floor f1 = new Floor(1,1);
 
         try //attempts to add floor 1
         {

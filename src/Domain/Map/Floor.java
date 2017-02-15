@@ -21,10 +21,12 @@ public class Floor {
     }
 
     int floorNumber;
+    int floorID;
 
-    public Floor(int floorNumber) {
+    public Floor(int floorID, int floorNumber) {
         floorNodes = new LinkedList<MapNode>();
         floorEdges = new LinkedList<NodeEdge>();
+        this.floorID = floorID;
         this.floorNumber = floorNumber;
     }
 
