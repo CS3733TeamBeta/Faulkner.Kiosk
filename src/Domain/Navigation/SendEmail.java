@@ -1,8 +1,13 @@
 package Domain.Navigation;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.util.Date;
 import java.util.Properties;
 
@@ -47,12 +52,29 @@ public class SendEmail {
             // -- Create a new message --
             Message msg = new MimeMessage(session);
 
+            MimeMultipart multipart = new MimeMultipart("related");
+
+            BodyPart messageBodyPart = new MimeBodyPart();
+            String htmlText = "<H1>" + message + "</H1>" + "<img src=\"cid:image\">";
+            messageBodyPart.setContent(htmlText, "text/html");
+            multipart.addBodyPart(messageBodyPart);
+
+            messageBodyPart = new MimeBodyPart();
+            DataSource fds = new FileDataSource(
+                    "C:/Users/IanCJ/Desktop/dog.png");
+
+            messageBodyPart.setDataHandler(new DataHandler(fds));
+            messageBodyPart.setHeader("Content-ID", "<image>");
+
+            multipart.addBodyPart(messageBodyPart);
+
+            msg.setContent(multipart);
             // -- Set the FROM and TO fields --
             msg.setFrom(new InternetAddress(username));
             msg.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipient, false));
-            msg.setSubject(subject);
-            msg.setText(message);
+            //msg.setSubject(subject);
+            //msg.setText(message);
             msg.setSentDate(new Date());
             Transport.send(msg);
             System.out.println("Message sent.");
