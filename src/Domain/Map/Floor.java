@@ -8,9 +8,11 @@ import java.util.LinkedList;
  * Represents a floor in a building. A floor will have nodes, node edges, destinations, more
  */
 public class Floor {
-    LinkedList<MapNode> floorNodes;
-    LinkedList<NodeEdge> floorEdges;
-    MapNode kioskNode = null;
+    private LinkedList<MapNode> floorNodes;
+    private LinkedList<NodeEdge> floorEdges;
+    private MapNode kioskNode = null;
+    private int floorNumber;
+
 
     public LinkedList<MapNode> getFloorNodes() {
         return floorNodes;
@@ -20,7 +22,6 @@ public class Floor {
         return floorEdges;
     }
 
-    int floorNumber;
 
     public Floor(int floorNumber) {
         floorNodes = new LinkedList<MapNode>();
