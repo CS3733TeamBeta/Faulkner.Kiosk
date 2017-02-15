@@ -1,4 +1,4 @@
-package java;
+package test.java;
 
 import Domain.Map.*;
 import Domain.Navigation.Guidance;
@@ -107,13 +107,13 @@ public class PathFindingTest2  extends TestCase{
 
     }
 
-    public void testEqualPaths() {
+    public void testEqualPaths() throws Exception{
         try{
             p1 = new Path(nodeT, nodeC);
             p2 = new Path(nodeT, nodeC);
 
             assertTrue(p1.equals(p2));
-            assertTrue(p2.equals(p3));
+            assertTrue(p2.equals(p1));
 
         } catch (Exception e){
             fail("Unexpected exception");
@@ -124,11 +124,11 @@ public class PathFindingTest2  extends TestCase{
     public void testGuidance() {
         try{
             Guidance g1 = new Guidance(nodeT, nodeE, false);
-            Guidance g2 = new Guidance(nodeB, nodeM, true);
+            Guidance g2 = new Guidance(nodeB, nodeM, false);
             Guidance g3 = new Guidance(nodeA, nodeI, false);
-            Guidance g4 = new Guidance(nodeA, nodeN, true);
+            Guidance g4 = new Guidance(nodeA, nodeN, false);
             Guidance g5 = new Guidance(nodeB, nodeJ, false);
-            Guidance g6 = new Guidance(nodeK, nodeI, true);
+            Guidance g6 = new Guidance(nodeK, nodeI, false);
         } catch (Exception e){
             fail("Unexpected Exception");
         }
