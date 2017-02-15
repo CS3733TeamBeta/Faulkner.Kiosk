@@ -19,7 +19,7 @@ public class Building {
 
         try
         {
-            getFloor(f.floorNumber);
+            getFloor(f.getFloorNumber());
             floorExists = true;
         }
         catch (Exception e)
