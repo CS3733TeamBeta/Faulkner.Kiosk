@@ -269,8 +269,7 @@ public class MapNode implements DrawableMapEntity {
      *
      * @return Drag Icon type
      */
-    public DragIconType getIconType()
-    {
+    public DragIconType getIconType() {
         return icon.getType();
     }
 
@@ -278,56 +277,50 @@ public class MapNode implements DrawableMapEntity {
      * If the node, is being hovered on during map building, slightly change opacity
      * to indicate it can be dropped on
      */
-    public void changeToHoverOpacity()
-    {
+    public void changeToHoverOpacity() {
         icon.setOpacity(NODE_HOVER_OPACITY);
     }
 
     /**
      * On mouse exit, change opacity back to solid
      */
-    public void changeToNormalOpacity()
-    {
+    public void changeToNormalOpacity() {
         icon.setOpacity(NODE__NORMAL_OPACITY);
     }
 
 
     @Override
-    public Node getNodeToDisplay()
-    {
+    public Node getNodeToDisplay() {
         return icon;
     }
 
     /**
      * Sends underlying icon to back
      */
-    public void toBack()
-    {
+    public void toBack() {
         icon.toBack();
     }
 
     /**
      * Sends underlying icon to front
      */
-    public void toFront()
-    {
+    public void toFront() {
         icon.toFront();
     }
 
     /**
-     * When handlers susbscribe, notifies them that this mapnode should be deleted
+     * When handlers subscribe, notifies them that this mapnode should be deleted
      */
-    public void deleteFromMap()
-    {
+    public void deleteFromMap() {
         raiseDeleteRequested();
     }
 
-    protected void raiseDeleteRequested()
-    {
-        if(deleteEventHandlers!=null)
-        {
-            for (DeleteRequestedHandler handler : deleteEventHandlers)
-            {
+    /**
+     * @TODO Make Javadoc for this
+     */
+    protected void raiseDeleteRequested() {
+        if(deleteEventHandlers!=null) {
+            for (DeleteRequestedHandler handler : deleteEventHandlers) {
                 handler.handle(new DeleteRequestedEvent(this));
             }
         }
@@ -336,16 +329,19 @@ public class MapNode implements DrawableMapEntity {
         }
     }
 
-    public void setOnDeleteRequested(DeleteRequestedHandler handler)
-    {
-        if(deleteEventHandlers==null)
-        {
+    /**
+     * @TODO Make Javadoc for this
+     */
+    public void setOnDeleteRequested(DeleteRequestedHandler handler) {
+        if(deleteEventHandlers==null) {
             deleteEventHandlers = new ArrayList<>();
         }
-
         deleteEventHandlers.add(handler);
     }
 
+    /**
+     * @TODO Make Javadoc for this
+     */
     /**Returns a pop over window to edit this node**/
     public PopOver getEditPopover()
     {
@@ -354,6 +350,9 @@ public class MapNode implements DrawableMapEntity {
         return getPopOver(controller, popOverEditFXML);
     }
 
+    /**
+     * @TODO Make Javadoc for this
+     */
     protected final PopOver getPopOver(AbstractPopupController controller, String fxmlPath)
     {
         PopOver popOver = new PopOver();
@@ -363,12 +362,10 @@ public class MapNode implements DrawableMapEntity {
 
         loader.setController(controller);
 
-        try
-        {
+        try {
             popOver.setContentNode(loader.load());
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             e.printStackTrace();
         }
 
