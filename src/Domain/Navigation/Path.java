@@ -23,7 +23,9 @@ public class Path implements Iterable {
 
     private static final double FLOOR_HEIGHT_CONSTANT = 1.812;
 
-    public Path() {}
+    public Path() {
+        System.out.println("Path constuctor must be called with fields");
+    }
 
     /**
      * Fills this path's field with the path genereated from start to end using Astar, printing out lots of stuff if devflag is true
@@ -32,7 +34,7 @@ public class Path implements Iterable {
      * @param devFlag
      * @throws PathFindingException
      */
-    public void createPathAStar(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
+    private void createPathAStar(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
 
         this.devFlag = devFlag;
 
@@ -150,7 +152,7 @@ public class Path implements Iterable {
      * @param devFlag
      * @throws PathFindingException
      */
-    public void createPathBreadthFirst(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
+    private void createPathBreadthFirst(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
 
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
@@ -206,6 +208,71 @@ public class Path implements Iterable {
         }
     }
 
+    /**
+     * Fills this Path's fields with the path generated from start to end using depth-first search, printing out stuff if devflag is true.
+     * @param start
+     * @param end
+     * @param devFlag
+     * @throws PathFindingException
+     */
+    /*
+    private void createPathDepthFirst(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
+
+        pathEdges = new LinkedList<NodeEdge>();
+        pathNodes = new LinkedList<MapNode>();
+
+        LinkedList<MapNode> openSet = new LinkedList<>();
+        openSet.addFirst(start);
+        boolean flagDone = false;
+        LinkedList<MapNode> visitedNodes = new LinkedList<>();
+
+        while(openSet.size() > 0 && !flagDone) {
+            MapNode newNode = openSet.pop();
+            visitedNodes.add(newNode);
+
+            for (NodeEdge e : newNode.getEdges()) {
+                MapNode neighbor = e.getOtherNode(newNode);
+                if (!openSet.contains(neighbor) && !visitedNodes.contains(neighbor)) {
+                    openSet.add(neighbor);
+                    neighbor.setParent(e);
+                }
+            }
+
+            if (newNode.equals(end)) {
+                reconstructPath(end);
+                //Set the flag to exit the algorithm
+                flagDone = true;
+
+            }
+        }
+        //Set all nodes in the open and closed set back to default values so we can iterate through the list again
+        //and find another path
+        for (MapNode n: visitedNodes) {
+            n.resetTempValues();
+        }
+        for (MapNode n: openSet) {
+            n.resetTempValues();
+        }
+
+        //Print the edges and nodes for bugfixing
+        if (devFlag) {
+            printPathEdges();
+            printPathNodes();
+        }
+
+        //Determine pathNodes from pathEdges
+        nodesFromEdges(start, end);
+        //If the loop exited without flagDone, it must have searched all nodes and found nothing
+        if (!flagDone) {
+            throw new PathFindingNoPathException("No valid path found", this.pathNodes, this.pathEdges);
+        }
+
+        if (!this.isValidPath()) {
+            throw new PathFindingInvalidPathException("Path generated is invalid", this.pathNodes, this.pathEdges);
+        }
+    }
+    */
+
     public Path(MapNode start, MapNode end) throws PathFindingException {
         this(start, end, false, "astar");
     }
@@ -215,10 +282,10 @@ public class Path implements Iterable {
     }
 
     /**
-     * Given an ending node, reconstucts the path taken to that node, given that that path has been populated with parents.
+     * Given an ending node, reconstructs the path taken to that node, given that that path has been populated with parents.
      * @param end The final node.
      */
-    public void reconstructPath(MapNode end) {
+    private void reconstructPath(MapNode end) {
         //currentInPath is the node we are looking at now to reconstruct the path
         MapNode currentInPath = end;
 
@@ -279,7 +346,7 @@ public class Path implements Iterable {
      * @param start
      * @param end
      */
-    public void nodesFromEdges(MapNode start, MapNode end) {
+    private void nodesFromEdges(MapNode start, MapNode end) {
         MapNode prev = start;
         for (int i = 0; i < pathEdges.size(); i++){
             pathNodes.add(prev);
@@ -308,7 +375,7 @@ public class Path implements Iterable {
      * @param endNode
      * @return Approximate direct distance from currentNode to endNode
      */
-    public static double findHeuristic(MapNode currentNode, MapNode endNode){
+    private static double findHeuristic(MapNode currentNode, MapNode endNode){
         //calculate the distance from one node to another via geometry
         double currentNodeX = currentNode.getPosX();
         double currentNodeY = currentNode.getPosY();
@@ -320,7 +387,7 @@ public class Path implements Iterable {
     }
 
     //Given a list of MapNodes, removes and returns the one with the smallest F value
-    public static MapNode popSmallest(LinkedList<MapNode> listOfNodes){
+    private static MapNode popSmallest(LinkedList<MapNode> listOfNodes){
 
         //Seed smallestNode with first value
         MapNode smallestNode = listOfNodes.get(0);
