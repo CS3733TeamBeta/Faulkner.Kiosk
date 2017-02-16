@@ -10,3 +10,5 @@ out/
 #Don't ignore these
 !.gitignore
 !.travis.yml
+!directions.png
+!faulknerLogo.jpg
