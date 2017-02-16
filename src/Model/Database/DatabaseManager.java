@@ -20,7 +20,7 @@ import java.util.Properties;
 public class DatabaseManager {
 
     private final String framework = "embedded";
-    private final String protocol = "jdbc:derby:";
+    private final String protocol = "jdbc:derby:/../";
     private Connection conn = null;
     private ArrayList<Statement> statements = new ArrayList<Statement>(); // list of Statements, PreparedStatements
     private PreparedStatement psInsert;
@@ -275,47 +275,7 @@ public class DatabaseManager {
         }
         conn.commit();
     }
-//    public void saveMap() throws SQLException{
-//        s.execute(createTables [3]);
-//        String query = "";
-//        s = conn.createStatement();
-//        for (int k = 0; k < edges.size(); k++) {
-//            query = "INSERT INTO " + uname + ".EDGE VALUES (" + edges.get(k).getEdgeId() + ", " + edges.get(k).getNodeAId() + ", " + edges.get(k).getNodeBId() + ", " + edges.get(k).getCost();
-//            s.executeUpdate(query);
-//        }
-//        conn.commit();
-//    }
-//    public void saveFloors() throws SQLException {
-//        s.execute(createTables[4]);
-//        String query = "";
-//        s = conn.createStatement();
-//        for (int k = 0; k < floors.size(); k++) {
-//            query = "INSERT INTO " + uname + ".FLOOR VALUES (" + floors.get(k).getFloorId() + ", " + floors.get(k).getFloorNum();
-//            s.executeUpdate(query);
-//        }
-//        conn.commit();
-////    }
-//    public void saveSuites() throws SQLException {
-//        String query = "";
-//        for (Suite suite : suites.values()) {
-//            query = "INSERT INTO USER1.SUITE (SUITE_ID, NAME, NODE_ID, FLOOR_ID) VALUES ("
-//                    + suite.getSuiteID() + ", "
-//                    + suite.getName() + ", "
-//                    + suite.getLocation().getNodeID() + ", "
-//                    + suite.getMyFloor().getFloorNumber() + ")";
-//            s.executeUpdate(query);
-//        }
-//    }
-//    public void saveDepartments() throws SQLException {
-//        s.execute(createTables[1]);
-//        String query = "";
-//        s = conn.createStatement();
-//        for (int k = 0; k < depts.size(); k++) {
-//            query = "INSERT INTO " + uname + ".DEPARTMENTS VALUES (" + depts.get(k).getDeptId() + ", " + depts.get(k).getDeptName() + ", " + depts.get(k).getFloor() + ", " + depts.get(k).getNodeID();
-//            s.executeUpdate(query);
-//        }
-//        conn.commit();
-//    }
+
     public void executeStatements(String[] states) throws SQLException {
         Statement state = conn.createStatement();
         for (String s : states) {
