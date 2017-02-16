@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controller.User.UserMapViewALTController">
+   <children>
+      <ImageView fx:id="floor3Map" fitHeight="700.0" fitWidth="1300.0" layoutX="6.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <image>
+            <Image url="@MapViewer/floor3.png" />
+         </image>
+      </ImageView>
+      <AnchorPane fx:id="searchMenu" onMouseClicked="#searchMenuUp" layoutX="-18.0" layoutY="156.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="350.0">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" />
+            <HBox layoutX="114.0" layoutY="150.0" prefHeight="160.0" prefWidth="878.0" AnchorPane.leftAnchor="114.0" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="150.0">
+               <children>
+                  <ImageView fx:id="doctorIcon" fitHeight="128.0" fitWidth="122.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="50.0" right="30.0" top="20.0" />
+                     </HBox.margin>
+                     <image>
+                        <Image url="@resources/22779-200.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="bathroomIcon" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="100.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                     <image>
+                        <Image url="@resources/Gender-Neutral-Toilet-Sign-White-1000.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="foodIcon" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="100.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                     <image>
+                        <Image url="@resources/10446-200.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="helpIcon" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="100.0" right="100.0" top="2.0" />
+                     </HBox.margin>
+                     <image>
+                        <Image url="@resources/75-Question-mark-sign.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+            <TextField fx:id="searchBar" layoutX="242.0" layoutY="88.0" prefHeight="56.0" prefWidth="800.0" promptText="Search hospital" style="-fx-border-color: ;" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0">
+               <font>
+                  <Font size="26.0" />
+               </font>
+               <effect>
+                  <DropShadow color="#00000051" height="11.51" offsetY="4.0" radius="6.1075" width="14.92" />
+               </effect>
+            </TextField>
+            <Text layoutX="383.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to Faulkner Hospital!" textAlignment="CENTER" textOrigin="CENTER" AnchorPane.leftAnchor="350.0" AnchorPane.rightAnchor="332.0">
+               <font>
+                  <Font name="System Bold" size="35.0" />
+               </font>
+            </Text>
+            <Text layoutX="183.0" layoutY="334.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doctors" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="183.0" AnchorPane.rightAnchor="930.85498046875" AnchorPane.topAnchor="307.0">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Text>
+            <Text layoutX="432.0" layoutY="333.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bathrooms">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Text>
+            <Text layoutX="709.0" layoutY="333.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Food">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Text>
+            <Text layoutX="976.0" layoutY="333.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Help" AnchorPane.bottomAnchor="363.7255859375" AnchorPane.leftAnchor="976.0" AnchorPane.rightAnchor="172.42529296875" AnchorPane.topAnchor="306.0224609375">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Text>
+            <TableView fx:id="dataTable" layoutX="237.0" layoutY="333.0" prefHeight="266.0" prefWidth="826.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
+              <columns>
+                <TableColumn prefWidth="75.0" text="C1" />
+                <TableColumn prefWidth="75.0" text="C2" />
+              </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
