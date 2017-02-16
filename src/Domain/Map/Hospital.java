@@ -44,6 +44,9 @@ public class Hospital {
     public void setMapNodes(HashMap<Integer, MapNode> mapNodes) {
         this.mapNodes = mapNodes;
     }
+    public void removeMapNodes(Integer k){
+        mapNodes.remove(k);
+    }
 
     //Alter NodeEdge HashMap: edges
     public HashMap<Integer, NodeEdge> getEdges() {
@@ -55,6 +58,10 @@ public class Hospital {
     public void setEdges(HashMap<Integer, NodeEdge> edges) {
         this.edges = edges;
     }
+    public void removeNodeEdge(Integer k){
+        edges.remove(k);
+    }
+
 
     //Alter Doctor HashMap: doctors
     public HashMap<String, Doctor> getDoctors() {
@@ -66,6 +73,10 @@ public class Hospital {
     public void setDoctors(HashMap<String, Doctor> doctors) {
         this.doctors = doctors;
     }
+    public void removeDoctors(String s){
+        doctors.remove(s);
+    }
+
 
     //Alter Floor HashMap: floors
     public HashMap<Integer, Floor> getFloors() {
@@ -77,6 +88,9 @@ public class Hospital {
     public void setFloors(HashMap<Integer, Floor> floors) {
         this.floors = floors;
     }
+    public void removeFloors(Integer k){
+        floors.remove(k);
+    }
 
     //Alter Suite HashMap: suites
     public HashMap<String, Suite> getSuites() {
@@ -87,5 +101,8 @@ public class Hospital {
     }
     public void setSuites(HashMap<String, Suite> suites) {
         this.suites = suites;
+    }
+    public void removeSuites(String s){
+        suites.remove(s);
     }
 }
