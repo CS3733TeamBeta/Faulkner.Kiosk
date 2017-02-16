@@ -1,12 +1,13 @@
 package Controller.User;
 
 import Controller.AbstractController;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
@@ -16,7 +17,7 @@ import javafx.scene.control.TextField;
 /**
  * Created by jw97 on 2/16/2017.
  */
-public class UserMapViewALTController extends AbstractController {
+public class UserMapViewALTController extends AbstractController{
     Boolean menuUp = false;
     ColorAdjust colorAdjust = new ColorAdjust();
 
@@ -41,12 +42,6 @@ public class UserMapViewALTController extends AbstractController {
     @FXML
     TextField searchBar;
 
-    Stage primaryStage;
-    public UserMapViewALTController(){}
-    public void setStage(Stage s)
-    {
-        primaryStage = s;
-    }
 
     // Show search menu
     public void searchMenuUp() {
@@ -72,25 +67,76 @@ public class UserMapViewALTController extends AbstractController {
 
 
     public void doctorSelected() {
-        colorAdjust.setSaturation(0.1);
-        doctorIcon.setEffect(colorAdjust);
+        ColorAdjust clicked = new ColorAdjust();
+        clicked.setContrast(-10);
+
+        ColorAdjust original = new ColorAdjust();
+        original.setContrast(0);
+        doctorIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                doctorIcon.setEffect(clicked);
+                bathroomIcon.setEffect(original);
+                helpIcon.setEffect(original);
+                foodIcon.setEffect(original);
+            }
+        });
 
         searchBar.setText("Search for doctors");
     }
 
     public void bathroomSelected() {
+        ColorAdjust clicked = new ColorAdjust();
+        clicked.setContrast(-10);
 
+        ColorAdjust original = new ColorAdjust();
+        original.setContrast(0);
+        doctorIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                bathroomIcon.setEffect(clicked);
+                doctorIcon.setEffect(original);
+                helpIcon.setEffect(original);
+                foodIcon.setEffect(original);
+            }
+        });
         searchBar.setText("Search for bathrooms");
     }
 
     public void foodSelected() {
+        ColorAdjust clicked = new ColorAdjust();
+        clicked.setContrast(-10);
 
+        ColorAdjust original = new ColorAdjust();
+        original.setContrast(0);
+        doctorIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                foodIcon.setEffect(clicked);
+                bathroomIcon.setEffect(original);
+                helpIcon.setEffect(original);
+                doctorIcon.setEffect(original);
+            }
+        });
         searchBar.setText("Search for food");
 
     }
 
     public void helpSelected() {
+        ColorAdjust clicked = new ColorAdjust();
+        clicked.setContrast(-10);
 
+        ColorAdjust original = new ColorAdjust();
+        original.setContrast(0);
+        doctorIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                helpIcon.setEffect(clicked);
+                bathroomIcon.setEffect(original);
+                doctorIcon.setEffect(original);
+                foodIcon.setEffect(original);
+            }
+        });
         searchBar.setText("Search for help");
     }
 }
