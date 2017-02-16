@@ -1,13 +1,13 @@
 package Controller.User;
 
 import Controller.AbstractController;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
@@ -45,6 +45,19 @@ public class UserMapViewALTController extends AbstractController{
     @FXML
     TextField searchBar;
 
+    @FXML
+    Text welcomeGreeting;
+
+    public void defaultProperty() {
+        ColorAdjust original = new ColorAdjust();
+        original.setContrast(0);
+        doctorIcon.setEffect(original);
+        bathroomIcon.setEffect(original);
+        foodIcon.setEffect(original);
+        helpIcon.setEffect(original);
+
+        searchBar.setPromptText("Search for...");
+    }
 
     // Show search menu
     public void searchMenuUp() {
@@ -54,12 +67,15 @@ public class UserMapViewALTController extends AbstractController{
         menuSlideUp.setAutoReverse(true);
 
         if (menuUp) {
-            KeyValue valDown = new KeyValue(searchMenu.translateYProperty(), (mainPane.getHeight() - 700));
+            KeyValue valDown = new KeyValue(searchMenu.translateYProperty(), (mainPane.getHeight() - 500));
             KeyFrame keyFrame = new KeyFrame(Duration.millis(600), valDown);
             menuSlideUp.getKeyFrames().add(keyFrame);
             menuUp = false;
+            welcomeGreeting.setVisible(false);
 
         } else {
+            welcomeGreeting.setVisible(true);
+            defaultProperty();
             KeyValue valUp = new KeyValue(searchMenu.translateYProperty(), -(mainPane.getHeight() - 350));
             KeyFrame keyFrame = new KeyFrame(Duration.millis(600), valUp);
             menuSlideUp.getKeyFrames().add(keyFrame);
@@ -73,59 +89,53 @@ public class UserMapViewALTController extends AbstractController{
 
 
     public void doctorSelected() {
+        defaultProperty();
+
         ColorAdjust clicked = new ColorAdjust();
         clicked.setContrast(-10);
 
-        ColorAdjust original = new ColorAdjust();
-        original.setContrast(0);
         doctorIcon.setEffect(clicked);
-        bathroomIcon.setEffect(original);
-        helpIcon.setEffect(original);
-        foodIcon.setEffect(original);
 
-        searchBar.setText("Search for doctors");
+        searchBar.setPromptText("Search for doctors");
     }
 
     public void bathroomSelected() {
+        defaultProperty();
+
         ColorAdjust clicked = new ColorAdjust();
         clicked.setContrast(-10);
 
         ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
         bathroomIcon.setEffect(clicked);
-        doctorIcon.setEffect(original);
-        helpIcon.setEffect(original);
-        foodIcon.setEffect(original);
 
-        searchBar.setText("Search for bathrooms");
+        searchBar.setPromptText("Search for bathrooms");
     }
 
     public void foodSelected() {
+        defaultProperty();
+
         ColorAdjust clicked = new ColorAdjust();
         clicked.setContrast(-10);
 
         ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
         foodIcon.setEffect(clicked);
-        bathroomIcon.setEffect(original);
-        helpIcon.setEffect(original);
-        doctorIcon.setEffect(original);
 
-        searchBar.setText("Search for food");
+        searchBar.setPromptText("Search for food");
 
     }
 
     public void helpSelected() {
+        defaultProperty();
+
         ColorAdjust clicked = new ColorAdjust();
         clicked.setContrast(-10);
 
         ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
         helpIcon.setEffect(clicked);
-        bathroomIcon.setEffect(original);
-        doctorIcon.setEffect(original);
-        foodIcon.setEffect(original);
 
-        searchBar.setText("Search for help");
+        searchBar.setPromptText("Search for help");
     }
 }
