@@ -16,10 +16,15 @@ import javafx.scene.control.TextField;
 
 /**
  * Created by jw97 on 2/16/2017.
+ *
  */
-public class UserMapViewALTController extends AbstractController{
+public class UserMapViewALTController extends AbstractController {
     Boolean menuUp = false;
     ColorAdjust colorAdjust = new ColorAdjust();
+    int numClickDr = 0;
+    int numClickFood = 0;
+    int numClickBath = 0;
+    int numClickHelp = 0;
 
     @FXML
     AnchorPane mainPane;
@@ -89,53 +94,94 @@ public class UserMapViewALTController extends AbstractController{
 
 
     public void doctorSelected() {
-        defaultProperty();
+        numClickDr = numClickDr + 1;
+        numClickHelp = 0;
+        numClickBath = 0;
+        numClickFood = 0;
 
-        ColorAdjust clicked = new ColorAdjust();
-        clicked.setContrast(-10);
+        if (numClickDr == 2) {
+            defaultProperty();
+            numClickDr = 0;
+        } else {
+            defaultProperty();
 
-        doctorIcon.setEffect(clicked);
+            ColorAdjust clicked = new ColorAdjust();
+            clicked.setContrast(-10);
 
-        searchBar.setPromptText("Search for doctors");
+            doctorIcon.setEffect(clicked);
+
+            searchBar.setPromptText("Search for doctors");
+        }
     }
 
     public void bathroomSelected() {
-        defaultProperty();
+        numClickBath = numClickBath + 1;
+        numClickHelp = 0;
+        numClickDr = 0;
+        numClickFood = 0;
 
-        ColorAdjust clicked = new ColorAdjust();
-        clicked.setContrast(-10);
+        if (numClickBath == 2) {
+            defaultProperty();
+            numClickBath = 0;
+        } else {
+            defaultProperty();
 
-        ColorAdjust original = new ColorAdjust();
-        original.setContrast(0);
-        bathroomIcon.setEffect(clicked);
+            ColorAdjust clicked = new ColorAdjust();
+            clicked.setContrast(-10);
 
-        searchBar.setPromptText("Search for bathrooms");
+            ColorAdjust original = new ColorAdjust();
+            original.setContrast(0);
+
+            bathroomIcon.setEffect(clicked);
+
+            searchBar.setPromptText("Search for bathrooms");
+        }
     }
 
     public void foodSelected() {
-        defaultProperty();
+        numClickFood = numClickFood + 1;
+        numClickHelp = 0;
+        numClickBath = 0;
+        numClickDr = 0;
 
-        ColorAdjust clicked = new ColorAdjust();
-        clicked.setContrast(-10);
+        if (numClickFood == 2) {
+            defaultProperty();
+            numClickFood = 0;
+        } else {
+            defaultProperty();
 
-        ColorAdjust original = new ColorAdjust();
-        original.setContrast(0);
-        foodIcon.setEffect(clicked);
+            ColorAdjust clicked = new ColorAdjust();
+            clicked.setContrast(-10);
 
-        searchBar.setPromptText("Search for food");
+            ColorAdjust original = new ColorAdjust();
+            original.setContrast(0);
+            foodIcon.setEffect(clicked);
 
+            searchBar.setPromptText("Search for food");
+
+        }
     }
 
     public void helpSelected() {
-        defaultProperty();
+        numClickHelp = numClickHelp + 1;
+        numClickDr = 0;
+        numClickBath = 0;
+        numClickFood = 0;
 
-        ColorAdjust clicked = new ColorAdjust();
-        clicked.setContrast(-10);
+        if (numClickHelp == 2) {
+            defaultProperty();
+            numClickHelp = 0;
+        } else {
+            defaultProperty();
 
-        ColorAdjust original = new ColorAdjust();
-        original.setContrast(0);
-        helpIcon.setEffect(clicked);
+            ColorAdjust clicked = new ColorAdjust();
+            clicked.setContrast(-10);
 
-        searchBar.setPromptText("Search for help");
+            ColorAdjust original = new ColorAdjust();
+            original.setContrast(0);
+            helpIcon.setEffect(clicked);
+
+            searchBar.setPromptText("Search for help");
+        }
     }
 }
