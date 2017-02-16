@@ -40,6 +40,9 @@ public class UserMapViewALTController extends AbstractController{
     ImageView helpIcon;
 
     @FXML
+    ImageView upIcon;
+
+    @FXML
     TextField searchBar;
 
 
@@ -55,12 +58,15 @@ public class UserMapViewALTController extends AbstractController{
             KeyFrame keyFrame = new KeyFrame(Duration.millis(600), valDown);
             menuSlideUp.getKeyFrames().add(keyFrame);
             menuUp = false;
+
         } else {
             KeyValue valUp = new KeyValue(searchMenu.translateYProperty(), -(mainPane.getHeight() - 350));
             KeyFrame keyFrame = new KeyFrame(Duration.millis(600), valUp);
             menuSlideUp.getKeyFrames().add(keyFrame);
             menuUp = true;
         }
+
+        upIcon.setRotate(upIcon.getRotate() + 180);
 
         menuSlideUp.play();
     }
@@ -72,15 +78,10 @@ public class UserMapViewALTController extends AbstractController{
 
         ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
-        doctorIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                doctorIcon.setEffect(clicked);
-                bathroomIcon.setEffect(original);
-                helpIcon.setEffect(original);
-                foodIcon.setEffect(original);
-            }
-        });
+        doctorIcon.setEffect(clicked);
+        bathroomIcon.setEffect(original);
+        helpIcon.setEffect(original);
+        foodIcon.setEffect(original);
 
         searchBar.setText("Search for doctors");
     }
@@ -91,15 +92,11 @@ public class UserMapViewALTController extends AbstractController{
 
         ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
-        doctorIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                bathroomIcon.setEffect(clicked);
-                doctorIcon.setEffect(original);
-                helpIcon.setEffect(original);
-                foodIcon.setEffect(original);
-            }
-        });
+        bathroomIcon.setEffect(clicked);
+        doctorIcon.setEffect(original);
+        helpIcon.setEffect(original);
+        foodIcon.setEffect(original);
+
         searchBar.setText("Search for bathrooms");
     }
 
@@ -109,15 +106,11 @@ public class UserMapViewALTController extends AbstractController{
 
         ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
-        doctorIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                foodIcon.setEffect(clicked);
-                bathroomIcon.setEffect(original);
-                helpIcon.setEffect(original);
-                doctorIcon.setEffect(original);
-            }
-        });
+        foodIcon.setEffect(clicked);
+        bathroomIcon.setEffect(original);
+        helpIcon.setEffect(original);
+        doctorIcon.setEffect(original);
+
         searchBar.setText("Search for food");
 
     }
@@ -128,15 +121,11 @@ public class UserMapViewALTController extends AbstractController{
 
         ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
-        doctorIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                helpIcon.setEffect(clicked);
-                bathroomIcon.setEffect(original);
-                doctorIcon.setEffect(original);
-                foodIcon.setEffect(original);
-            }
-        });
+        helpIcon.setEffect(clicked);
+        bathroomIcon.setEffect(original);
+        doctorIcon.setEffect(original);
+        foodIcon.setEffect(original);
+
         searchBar.setText("Search for help");
     }
 }

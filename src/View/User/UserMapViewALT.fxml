@@ -13,20 +13,19 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="Controller.User.UserMapViewALTController">
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.User.UserMapViewALTController">
    <children>
       <ImageView fx:id="floor3Map" fitHeight="700.0" fitWidth="1300.0" layoutX="6.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
             <Image url="@MapViewer/floor3.png" />
          </image>
       </ImageView>
-      <AnchorPane fx:id="searchMenu" onMouseClicked="#searchMenuUp" layoutX="-18.0" layoutY="156.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="350.0">
+      <AnchorPane fx:id="searchMenu" layoutX="-18.0" layoutY="156.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="350.0">
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" />
             <HBox layoutX="114.0" layoutY="150.0" prefHeight="160.0" prefWidth="878.0" AnchorPane.leftAnchor="114.0" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="150.0">
                <children>
-                  <ImageView fx:id="doctorIcon" fitHeight="128.0" fitWidth="122.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
+                  <ImageView fx:id="doctorIcon" fitHeight="128.0" fitWidth="122.0" onMouseClicked="#doctorSelected" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets bottom="10.0" left="50.0" right="30.0" top="20.0" />
                      </HBox.margin>
@@ -34,7 +33,7 @@
                         <Image url="@resources/22779-200.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="bathroomIcon" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="bathroomIcon" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#bathroomSelected" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets bottom="5.0" left="100.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -42,7 +41,7 @@
                         <Image url="@resources/Gender-Neutral-Toilet-Sign-White-1000.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="foodIcon" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="foodIcon" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#foodSelected" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets bottom="5.0" left="100.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -50,7 +49,7 @@
                         <Image url="@resources/10446-200.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="helpIcon" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="helpIcon" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#helpSelected" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets bottom="10.0" left="100.0" right="100.0" top="2.0" />
                      </HBox.margin>
@@ -99,6 +98,11 @@
                 <TableColumn prefWidth="75.0" text="C2" />
               </columns>
             </TableView>
+            <ImageView fx:id="upIcon" onMouseClicked="#searchMenuUp" fitHeight="43.0" fitWidth="43.0" layoutX="1135.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <image>
+                  <Image url="@resources/navigate_up.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
    </children>
