@@ -50,7 +50,7 @@
                   <Insets top="-15.0" />
                </VBox.margin>
             </JFXTreeTableView>
-            <JFXButton fx:id="saveButton" maxHeight="60.0" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" VBox.vgrow="NEVER">
+            <JFXButton fx:id="saveButton" maxHeight="60.0" onAction="#clickedSave" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>

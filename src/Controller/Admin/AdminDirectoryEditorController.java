@@ -28,15 +28,14 @@ public class AdminDirectoryEditorController extends AbstractController {
     @FXML
     private JFXButton newButton;
 
-    Stage primaryStage;
-
-    public void setStage(Stage s)
-    {
-        primaryStage = s;
-    }
-
     public AdminDirectoryEditorController(){
 
+    }
+
+    @FXML
+    void clickedSave() {
+        System.out.print("nameTextField: ");
+        System.out.print(nameTextField.getText());
     }
 
 }
