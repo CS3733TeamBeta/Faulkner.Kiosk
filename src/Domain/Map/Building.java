@@ -22,6 +22,22 @@ public class Building {
         this.name = name;
     }
 
+    public Floor newFloor()
+    {
+        Floor f = new Floor(buildingFloors.size() +1);
+
+        try
+        {
+            addFloor(f);
+        }
+        catch (Exception e)
+        {
+
+        }
+
+        return f;
+    }
+
     public void addFloor(Floor f) throws Exception
     {
         boolean floorExists;

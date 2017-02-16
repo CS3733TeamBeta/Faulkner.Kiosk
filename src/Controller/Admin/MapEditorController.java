@@ -2,8 +2,10 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 
 import Controller.AbstractController;
 import Controller.DragDropMain;
@@ -141,12 +143,13 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	void onNewFloor(ActionEvent event)
 	{
-		TreeView<String> treeView = (TreeView<String>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
+		TreeView<Object> treeView = (TreeView<Object>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
 
-		//@TODO handle floor creation here...
-		//add floor image
+		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
 
-		//treeView.getRoot().getChildren().add(TreeItem<String>)
+		Floor f = b.newFloor(); //makes new floor
+
+		treeView.getRoot().getChildren().add(new TreeItem<Object>(f));
 	}
 
 	public void refreshNodePositions()
@@ -312,8 +315,6 @@ public class MapEditorController extends AbstractController {
 
 		renderInitialMap();
 
-		model.getHospital().addBuilding(new Building("Building 1"));
-
 		//BuildingTabPane.getTabs().add(createEditableTab("Building 3"));
 
 		//Add one icon that will be used for the drag-drop process
@@ -359,6 +360,8 @@ public class MapEditorController extends AbstractController {
 			{
 				treeView.getRoot().getChildren().add(new TreeItem<String>(f.toString()));
 			}
+
+			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
 		}
 	}
 

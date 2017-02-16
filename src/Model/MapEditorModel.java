@@ -72,6 +72,17 @@ public class MapEditorModel
 
     }
 
+    /*/**
+     * Makes the next floor
+     *
+     * @TODO should allow any floor number, not taken to, to be created
+     * @return Next floor
+     */
+   // public Floor makeNewFloor()/*
+    /*{
+        Floor floor = new Floor("Floor " + )
+    }*/
+
     public void addBuilding(Building b, Tab tab)
     {
         if(!hospital.containsBuilding(b))
