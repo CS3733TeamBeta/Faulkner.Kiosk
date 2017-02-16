@@ -126,7 +126,7 @@ public class PathFindingTest2  extends TestCase{
         try{
             Guidance g1 = new Guidance(nodeT, nodeE, false);
             Guidance g2 = new Guidance(nodeB, nodeM, false);
-            Guidance g3 = new Guidance(nodeA, nodeI, false);
+            Guidance g3 = new Guidance(nodeA, nodeI, true);
             Guidance g4 = new Guidance(nodeA, nodeN, false);
             Guidance g5 = new Guidance(nodeB, nodeJ, false);
             Guidance g6 = new Guidance(nodeK, nodeI, false);
@@ -138,7 +138,7 @@ public class PathFindingTest2  extends TestCase{
     public void testSendEmail() {
         try {
             Guidance g1 = new Guidance(nodeA, nodeL, true);
-            g1.sendEmailGuidance("iancj97@gmail.com");
+            //g1.sendEmailGuidance("iancj97@gmail.com");
             //SendEmail e = new SendEmail("iancj97@gmail.com", "This is a subject", "No, this is Patrick");
         } catch (Exception e) {
             fail("Threw exception");

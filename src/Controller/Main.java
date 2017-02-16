@@ -51,7 +51,10 @@ public class Main extends Application {
         SceneSwitcher.switchToLoginView(primaryStage);
 
         primaryStage.show();
+
     }
+
+
 
     public static void main(String[] args) {
         try {
