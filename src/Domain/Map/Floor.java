@@ -21,13 +21,15 @@ public class Floor {
     }
 
     int floorNumber;
-    int floorID;
+    String floorName;
+    int building;
 
-    public Floor(int floorID, int floorNumber) {
+    public Floor(String floorID, int buildID, int floorNumber) {
         floorNodes = new LinkedList<MapNode>();
         floorEdges = new LinkedList<NodeEdge>();
-        this.floorID = floorID;
+        this.floorName = floorID;
         this.floorNumber = floorNumber;
+        this.building = buildID;
     }
 
     public void addNode(MapNode n) {
@@ -41,6 +43,14 @@ public class Floor {
                 this.kioskNode = kioskNode;
             }
         }
+    }
+
+    public String getFloorName() {
+        return this.floorName;
+    }
+
+    public int getBuilding() {
+        return this.building;
     }
 
     public MapNode getKioskNode(){

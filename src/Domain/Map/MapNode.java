@@ -28,6 +28,7 @@ public class MapNode implements DrawableMapEntity
 {
     double posX;
     double posY;
+    int type;
 
     protected DragIcon icon;
 
@@ -90,6 +91,7 @@ public class MapNode implements DrawableMapEntity
 
         this.posX = posX;
         this.posY = posY;
+        this.type = type;
 
         this.setType(DragIconType.values()[type]);
     }
@@ -107,6 +109,11 @@ public class MapNode implements DrawableMapEntity
     {
         this.posY = posY;
     }
+
+    public int getType() {
+        return this.type;
+    }
+
 
     /**
      *

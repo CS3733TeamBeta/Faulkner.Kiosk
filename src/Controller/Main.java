@@ -45,7 +45,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         mvm = new MapModel();
-        mvm.setCurrentFloor(new Floor(3,3));
+        mvm.setCurrentFloor(new Floor("F3",1,3));
 
         SceneSwitcher.switchToLoginView(primaryStage);
 
@@ -57,20 +57,17 @@ public class Main extends Application {
             launch(args);
             DatabaseManager test = new DatabaseManager();
             try {
-                test.loadFloors();
-                test.loadDoctorsSuites();
-                test.saveDoctors();
-                test.saveSuites();
+                test.loadData();
+                test.executeStatements(DatabaseManager.dropTables);
+                System.out.println("Dropped Tables");
+                test.executeStatements(DatabaseManager.createTables);
+                System.out.println("Created Tables");
+                test.saveData();
             }
             catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
 
-//            test.testDatabase();
-//            test.addRow("services", "Admitting/Registration", 1);
-//            test.deleteRow("departments", "floor", 4);
-//            test.addRow("services", "ATM", 3);
-//            test.addRow("services", "Atrium Cafe", 1);
         }
         catch (NullPointerException e){
             System.out.println(e.getMessage());
