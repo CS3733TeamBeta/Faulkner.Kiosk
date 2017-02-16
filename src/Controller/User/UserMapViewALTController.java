@@ -56,12 +56,12 @@ public class UserMapViewALTController extends AbstractController {
         menuSlideUp.setAutoReverse(true);
 
         if (menuUp) {
-            KeyValue valUp = new KeyValue(searchMenu.translateYProperty(), (mainPane.getHeight() - 566));
-            KeyFrame keyFrame = new KeyFrame(Duration.millis(600), valUp);
+            KeyValue valDown = new KeyValue(searchMenu.translateYProperty(), 850);
+            KeyFrame keyFrame = new KeyFrame(Duration.millis(600), valDown);
             menuSlideUp.getKeyFrames().add(keyFrame);
             menuUp = false;
         } else {
-            KeyValue valUp = new KeyValue(searchMenu.translateYProperty(), -mainPane.getHeight());
+            KeyValue valUp = new KeyValue(searchMenu.translateYProperty(), -(mainPane.getHeight() - 350));
             KeyFrame keyFrame = new KeyFrame(Duration.millis(600), valUp);
             menuSlideUp.getKeyFrames().add(keyFrame);
             menuUp = true;
