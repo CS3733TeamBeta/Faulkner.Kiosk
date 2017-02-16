@@ -1,13 +1,19 @@
 ----------------------------------------------------------------
-Fri Feb 10 02:31:34 EST 2017:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015a-26ef-3316-0000085c5958 
-on database directory /Users/benjaminhylak/Git/Faulkner.Kiosk/derbyDB with class loader sun.misc.Launcher$AppClassLoader@2f0e140b 
-Loaded from file:/Users/benjaminhylak/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar
+Tue Feb 14 15:19:46 EST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015a-3e47-f10e-000004769568 
+on database directory C:\Users\Devon\Dropbox\School\college\WPI - Senior Year\C Term\CS 3733\git folder\Faulkner.Kiosk\derbyDB with class loader sun.misc.Launcher$AppClassLoader@511d50c0 
+Loaded from file:/C:/Users/Devon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar
 java.vendor=Oracle Corporation
-java.runtime.version=1.8.0_121-b13
-user.dir=/Users/benjaminhylak/Git/Faulkner.Kiosk
-os.name=Mac OS X
-os.arch=x86_64
-os.version=10.12.2
+java.runtime.version=1.8.0_111-b14
+user.dir=C:\Users\Devon\Dropbox\School\college\WPI - Senior Year\C Term\CS 3733\git folder\Faulkner.Kiosk
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
 derby.system.home=null
+------------  Begin Error Message -------------
+
+System may be in a inconsistent state, missing file C:\Users\Devon\Dropbox\School\college\WPI - Senior Year\C Term\CS 3733\git folder\Faulkner.Kiosk\derbyDB\log\log3.dat
+------------  End Error Message -------------
+
+Deleting old Logfile C:\Users\Devon\Dropbox\School\college\WPI - Senior Year\C Term\CS 3733\git folder\Faulkner.Kiosk\derbyDB\log\log1.dat
 Database Class Loader started - derby.database.classpath=''

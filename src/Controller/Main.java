@@ -138,6 +138,7 @@ public class Main extends Application {
     }
 
     public void setUpDirectory() {
+
         // Doctors on the 3rd floor
         Doctor Byrne = new Doctor("Byrne, Jennifer", "RN, CPNP", "N/A");
         Doctor Frangieh = new Doctor("Frangieh, George", "MD", "N/A");
