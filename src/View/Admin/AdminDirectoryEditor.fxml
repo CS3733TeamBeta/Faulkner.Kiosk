@@ -9,10 +9,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <JFXTreeTableView layoutX="40.0" layoutY="78.0" prefHeight="602.0" prefWidth="874.0" AnchorPane.bottomAnchor="70.0" AnchorPane.topAnchor="100.0" />
+      <JFXTreeTableView fx:id="directoryTable" layoutX="40.0" layoutY="78.0" prefHeight="602.0" prefWidth="874.0" AnchorPane.bottomAnchor="70.0" AnchorPane.topAnchor="100.0" />
       <VBox layoutX="986.0" layoutY="79.0" prefHeight="673.0" prefWidth="250.0" spacing="30.0" AnchorPane.bottomAnchor="33.0">
          <children>
             <Label prefHeight="29.0" prefWidth="166.0" text="Profile Editor" textAlignment="CENTER" VBox.vgrow="ALWAYS">
@@ -23,12 +22,12 @@
                   <Insets left="40.0" />
                </VBox.margin>
             </Label>
-            <JFXTextField promptText="Name">
+            <JFXTextField fx:id="nameTextField" promptText="Name">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXTextField>
-            <JFXTextField promptText="Phone Number">
+            <JFXTextField fx:id="phoneNumberTextField" promptText="Phone Number">
                <font>
                   <Font size="14.0" />
                </font>
@@ -46,17 +45,17 @@
                   <Insets left="50.0" />
                </VBox.margin>
             </Label>
-            <JFXTreeTableView prefHeight="200.0">
+            <JFXTreeTableView fx:id="departmentsTable" prefHeight="200.0">
                <VBox.margin>
                   <Insets top="-15.0" />
                </VBox.margin>
             </JFXTreeTableView>
-            <JFXButton maxHeight="60.0" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" VBox.vgrow="NEVER">
+            <JFXButton fx:id="saveButton" maxHeight="60.0" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </JFXButton>
-            <JFXButton maxHeight="60.0" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #3F51B5;" text="New Profile" textFill="WHITE" VBox.vgrow="NEVER">
+            <JFXButton fx:id="newButton" maxHeight="60.0" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #3F51B5;" text="New Profile" textFill="WHITE" VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
