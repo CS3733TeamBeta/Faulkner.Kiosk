@@ -58,13 +58,13 @@ public class SendEmail {
             MimeMultipart multipart = new MimeMultipart("related");
 
             BodyPart messageBodyPart = new MimeBodyPart();
-            String htmlText = "<H1>" + message + "</H1>" + "<img src=\"cid:image\">";
+            String htmlText = this.message + "<img src=\"cid:image\">";
             messageBodyPart.setContent(htmlText, "text/html");
             multipart.addBodyPart(messageBodyPart);
 
             messageBodyPart = new MimeBodyPart();
             DataSource fds = new FileDataSource(
-                    "C:/Users/IanCJ/Desktop/jpgpuppy.jpg");
+                    "directions.png");
 
             messageBodyPart.setDataHandler(new DataHandler(fds));
             messageBodyPart.setHeader("Content-ID", "<image>");
@@ -76,7 +76,7 @@ public class SendEmail {
             msg.setFrom(new InternetAddress(username));
             msg.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipient, false));
-            //msg.setSubject(subject);
+            msg.setSubject(subject);
             //msg.setText(message);
             msg.setSentDate(new Date());
             Transport.send(msg);

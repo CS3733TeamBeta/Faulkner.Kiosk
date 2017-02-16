@@ -2,11 +2,12 @@ package Controller;
 
 import javafx.stage.Stage;
 
+import javax.swing.*;
+
 /**
  * Parent class for all controllers
  */
-public class AbstractController
-{
+public class AbstractController extends JFrame {
     Stage primaryScene;
 
     public void setStage(Stage s)

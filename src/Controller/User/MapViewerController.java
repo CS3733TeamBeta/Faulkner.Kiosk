@@ -7,6 +7,7 @@ import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
+import Domain.Navigation.Guidance;
 import Domain.Navigation.Path;
 import Domain.ViewElements.DragContainer;
 import Domain.ViewElements.DragIcon;
@@ -177,14 +178,14 @@ public class MapViewerController extends AbstractController {
 
 	protected void findPathToNode(MapNode endPoint) throws PathFindingException {
 		System.out.println("In path finding");
-		Path newRoute;
+		Guidance newRoute;
 		MapNode startPoint = model.getCurrentFloor().getKioskNode();
 		if (endPoint == startPoint) {
 			System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
 			return;//TODO add error message of some kind
 		}
 		try {
-			newRoute = new Path(startPoint, endPoint, false);
+			newRoute = new Guidance(startPoint, endPoint, false);
 		} catch (PathFindingException e) {
 			return;//TODO add error message throw
 		}
@@ -192,11 +193,16 @@ public class MapViewerController extends AbstractController {
 		for (NodeEdge edge : model.getCurrentFloor().getFloorEdges()) {
 			if(newRoute.getPathEdges().contains(edge)) {
 				edge.changeOpacity(1.0);
+				edge.changeColor(Color.RED);
 			}
 			else{
-				edge.changeOpacity(0.0);
+				edge.changeOpacity(0.8);
+				edge.changeColor(Color.BLACK);
 			}
 		}
+		newRoute.printTextDirections();
+		newRoute.sendEmailGuidance("iancj97@gmail.com", mapPane);
+
 	}
 
 }

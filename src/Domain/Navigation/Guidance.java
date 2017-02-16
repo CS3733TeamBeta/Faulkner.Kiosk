@@ -1,10 +1,19 @@
 package Domain.Navigation;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 
 import Domain.Map.*;
 import Exceptions.*;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
+
+import javax.imageio.ImageIO;
 
 /**
  * Direction tells you how to get from
@@ -130,6 +139,20 @@ public class Guidance extends Path {
         System.out.println("");
         for (String s: textDirections) {
             System.out.println(s);
+        }
+    }
+
+    public void saveMapImage(Node aNode) {
+        WritableImage image = aNode.snapshot(new SnapshotParameters(), null);
+
+        // TODO: probably use a file chooser here
+        File file = new File("directions.png");
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+        } catch (IOException e) {
+            // TODO: handle exception here
+            System.out.println("EGADS!  We have an exception!");
         }
     }
 
@@ -294,15 +317,17 @@ public class Guidance extends Path {
         return textDirections;
     }
 
-    public boolean sendEmailGuidance(String address) {
+    public boolean sendEmailGuidance(String address, Node aNode) {
+        saveMapImage(aNode);
         String subjectLine;
-        String directionLine = "You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + "." + "\n";
-        subjectLine = "Your directions are enclosed";
+        String directionLine = "<H2>You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + ".</H2>" + "<H3>";
+        subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
 
         for(String s: textDirections) {
             directionLine += s;
-            directionLine += "\n";
+            directionLine += "<br>";
         }
+        directionLine += "</H3>";
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine);
             return true;
