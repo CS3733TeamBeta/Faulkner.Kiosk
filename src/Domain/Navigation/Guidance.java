@@ -168,10 +168,24 @@ public class Guidance extends Path {
         }
 
         //Add the destination arrival string
-        if (vFlag) {
-            tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination: node " + toNode.getNodeID());
+        if (intersectionsPassed >= 2) {
+            if (vFlag) {
+                tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination: node " + toNode.getNodeID());
+            } else {
+                tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination.");
+            }
+        } else if (intersectionsPassed == 1) {
+            if (vFlag) {
+                tempTextDirections.add("After passing 1 intersection, arrive at your destination: node " + toNode.getNodeID());
+            } else {
+                tempTextDirections.add("After passing 1 intersection, arrive at your destination.");
+            }
         } else {
-            tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination.");
+            if (vFlag) {
+                tempTextDirections.add("Arrive at your destination: node " + toNode.getNodeID());
+            } else {
+                tempTextDirections.add("Arrive at your destination.");
+            }
         }
         this.textDirections = tempTextDirections;
     }
@@ -412,7 +426,26 @@ public class Guidance extends Path {
         }
         directionLine += "</H3>";
         try {
-            SendEmail e = new SendEmail(address, subjectLine, directionLine);
+            SendEmail e = new SendEmail(address, subjectLine, directionLine, true);
+            return true;
+        } catch(Exception e) {
+            System.out.println("Threw an exception: " + e);
+            return false;
+        }
+    }
+
+    public boolean sendEmailGuidance(String address) {
+        String subjectLine;
+        String directionLine = "<H2>You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + ".</H2>" + "<H3>";
+        subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
+
+        for(String s: textDirections) {
+            directionLine += s;
+            directionLine += "<br>";
+        }
+        directionLine += "</H3>";
+        try {
+            SendEmail e = new SendEmail(address, subjectLine, directionLine, false);
             return true;
         } catch(Exception e) {
             System.out.println("Threw an exception: " + e);

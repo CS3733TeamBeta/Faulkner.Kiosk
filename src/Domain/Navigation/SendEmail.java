@@ -23,10 +23,13 @@ public class SendEmail {
     String subject;
     String message;
 
-    public SendEmail(String recipient, String subject, String message){
+    boolean includeImage;
+
+    public SendEmail(String recipient, String subject, String message, boolean includeImage){
         this.recipient = recipient;
         this.subject = subject;
         this.message = message;
+        this.includeImage = includeImage;
         sendEmail();
     }
 
@@ -58,18 +61,25 @@ public class SendEmail {
             MimeMultipart multipart = new MimeMultipart("related");
 
             BodyPart messageBodyPart = new MimeBodyPart();
-            String htmlText = this.message + "<img src=\"cid:image\">";
+            String htmlText;
+            if (includeImage) {
+                htmlText = this.message + "<img src=\"cid:image\">";
+            } else {
+                htmlText = this.message;
+            }
             messageBodyPart.setContent(htmlText, "text/html");
             multipart.addBodyPart(messageBodyPart);
 
-            messageBodyPart = new MimeBodyPart();
-            DataSource fds = new FileDataSource(
-                    "directions.png");
+            if (includeImage) {
+                messageBodyPart = new MimeBodyPart();
+                DataSource fds = new FileDataSource(
+                        "directions.png");
 
-            messageBodyPart.setDataHandler(new DataHandler(fds));
-            messageBodyPart.setHeader("Content-ID", "<image>");
+                messageBodyPart.setDataHandler(new DataHandler(fds));
+                messageBodyPart.setHeader("Content-ID", "<image>");
 
-            multipart.addBodyPart(messageBodyPart);
+                multipart.addBodyPart(messageBodyPart);
+            }
 
             msg.setContent(multipart);
             // -- Set the FROM and TO fields --
