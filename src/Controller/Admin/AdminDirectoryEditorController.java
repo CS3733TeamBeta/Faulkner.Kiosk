@@ -14,7 +14,7 @@ public class AdminDirectoryEditorController  extends AbstractController{
 
     public AdminDirectoryEditorController()
     {
-        JFXTreeTableColumn<?, ?> deptColumn = new JFXTreeTableColumn<>("Thing ");
+        JFXTreeTableColumn<String, String> deptColumn = new JFXTreeTableColumn<>("Thing ");
 
         directoryTable.setShowRoot(false);
         directoryTable.setEditable(true);

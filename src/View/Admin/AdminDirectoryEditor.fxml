@@ -11,15 +11,19 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import com.jfoenix.controls.JFXTreeTableColumn?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.AdminDirectoryEditorController">
    <children>
       <JFXTreeTableView fx:id="directoryTable" layoutX="40.0" layoutY="78.0" prefHeight="602.0" prefWidth="874.0" AnchorPane.bottomAnchor="70.0" AnchorPane.topAnchor="100.0">
          <columns>
-            <TreeTableColumn minWidth="-Infinity" prefWidth="163.0" text="Name" />
-            <TreeTableColumn minWidth="-Infinity" prefWidth="170.0" text="Phone Number" />
-            <TreeTableColumn minWidth="-Infinity" prefWidth="244.0" text="Departments" />
-            <TreeTableColumn minWidth="-Infinity" prefWidth="135.0" text="Office Number" />
-            <TreeTableColumn minWidth="-Infinity" prefWidth="161.0" text="Hours" />
+
+            <JFXTreeTableColumn fx:id="firstNameColumn"
+                                minWidth="133" text="First Name" prefWidth="133" resizable="false"></JFXTreeTableColumn>
+            <JFXTreeTableColumn fx:id="lastNameColumn" text="Last Name"
+                                minWidth="133" prefWidth="133" resizable="false"></JFXTreeTableColumn>
+            <JFXTreeTableColumn fx:id="ageColumn" text="Age"
+                                minWidth="133" prefWidth="133" resizable="false"></JFXTreeTableColumn>
+
          </columns></JFXTreeTableView>
       <VBox layoutX="986.0" layoutY="79.0" prefHeight="673.0" prefWidth="250.0" spacing="30.0" AnchorPane.bottomAnchor="33.0">
          <children>
