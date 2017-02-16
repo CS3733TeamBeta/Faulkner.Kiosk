@@ -12,7 +12,7 @@ import Exceptions.*;
 public class Guidance extends Path {
 
     //This is the direction that the user of the kiosk starts off facing.
-    private static final int KIOSK_DIRECTION = 1;
+    private int kioskDirection = 1;
 
     LinkedList<String> textDirections;
 
@@ -34,20 +34,31 @@ public class Guidance extends Path {
         }
     }
 
+    public Guidance (MapNode start, MapNode end, String kioskInputDirection) throws PathFindingException{
+        super(start, end, false);
+
+        kioskDirection = Guidance.directionToNum(kioskInputDirection);
+
+        textDirections = new LinkedList<String>();
+        createTextDirections(false);
+
+
+    }
+
     public void createTextDirections() {
         createTextDirections(false);
     }
 
     public void createTextDirections(boolean vFlag) {
         LinkedList<String> tempTextDirections = new LinkedList<String>();
-        int prevDirection = KIOSK_DIRECTION;
+        int prevDirection = kioskDirection;
         MapNode fromNode = new MapNode();
         MapNode toNode = new MapNode();
 
         int intersectionsPassed = 0;
 
         //Add the first node to the textual directions
-        tempTextDirections.add("Start from " + pathNodes.get(0).getNodeID() + " facing North");
+        tempTextDirections.add("Start from " + pathNodes.get(0).getNodeID() + " facing the Kiosk");
 
         for (int i = 0; i < this.pathNodes.size() - 1; i++) {
 
@@ -96,31 +107,63 @@ public class Guidance extends Path {
                 intersectionsPassed++;
             } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
                 if(intersectionsPassed == 0){
-                    tempTextDirections.add("Take an elevator at your next intersection from " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    if (vFlag) {
+                        tempTextDirections.add("Take an elevator at your next intersection from " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    } else {
+                        tempTextDirections.add("Take an elevator at your next intersection from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    }
                 }
                 else if(intersectionsPassed == 1){
-                    tempTextDirections.add("After passing 1 intersection, take an elevator at " + fromNode.getNodeID() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    if (vFlag) {
+                        tempTextDirections.add("After passing 1 intersection, take an elevator at " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    } else {
+                        tempTextDirections.add("After passing 1 intersection, take an elevator from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+
+                    }
                 }
                 else {
-                    tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take an elevator" + " at " + fromNode.getNodeID() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    if (vFlag) {
+                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator" + " at " + fromNode.getNodeID() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    } else {
+                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+
+                    }
                 }
                 intersectionsPassed = 0;
             } else if (!directionChangeString.equals("Straight")) {
                 if(intersectionsPassed  == 0) {
-                    tempTextDirections.add("Turn " + directionChangeString + " at your next intersection; ID: " + fromNode.getNodeID());
+                    if (vFlag) {
+                        tempTextDirections.add("Turn " + directionChangeString + " at your next intersection; ID: " + fromNode.getNodeID());
+                    } else {
+                        tempTextDirections.add("Turn " + directionChangeString + " at your next intersection.");
+
+                    }
                 }
                 else if(intersectionsPassed == 1){
-                    tempTextDirections.add("After passing 1 intersection, turn " + directionChangeString + " at " + fromNode.getNodeID());
+                    if (vFlag) {
+                        tempTextDirections.add("After passing 1 intersection, turn " + directionChangeString + " at " + fromNode.getNodeID());
+                    } else {
+                        tempTextDirections.add("After passing 1 intersection, turn " + directionChangeString + ".");
+                    }
                 }
                 else{
-                    tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + " at " + fromNode.getNodeID());
+                    if (vFlag) {
+                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + " at " + fromNode.getNodeID());
+                    } else {
+                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + ".");
+
+                    }
                 }
                 intersectionsPassed = 0;
             }
         }
 
         //Add the destination arrival string
-        tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination: node " + toNode.getNodeID());
+        if (vFlag) {
+            tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination: node " + toNode.getNodeID());
+        } else {
+            tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination.");
+        }
         this.textDirections = tempTextDirections;
     }
 
@@ -287,6 +330,46 @@ public class Guidance extends Path {
                 break;
         }
         return textDirection;
+    }
+
+    public static int directionToNum(String direction) {
+        int num;
+        switch (direction) {
+            case "North":
+                num = 1;
+                break;
+            case "NorthEast":
+                num = 2;
+                break;
+            case "East":
+                num = 3;
+                break;
+            case "SouthEast":
+                num = 4;
+                break;
+            case "South":
+                num = 5;
+                break;
+            case "SouthWest":
+                num = 6;
+                break;
+            case "West":
+                num = 7;
+                break;
+            case "NorthWest":
+                num = 8;
+                break;
+            case "Up":
+                num = 9;
+                break;
+            case "Down":
+                num = 10;
+                break;
+            default:
+                num = 100;
+                break;
+        }
+        return num;
     }
 
     public LinkedList<String> getTextDirections()
