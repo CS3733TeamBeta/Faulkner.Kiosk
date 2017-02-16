@@ -20,7 +20,7 @@
             <Image url="@MapViewer/floor3.png" />
          </image>
       </ImageView>
-      <AnchorPane fx:id="searchMenu" layoutX="-18.0" layoutY="156.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="350.0">
+      <AnchorPane fx:id="searchMenu" layoutY="351.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="531.0">
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" />
             <HBox layoutX="114.0" layoutY="150.0" prefHeight="160.0" prefWidth="878.0" AnchorPane.leftAnchor="114.0" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="150.0">
@@ -67,7 +67,7 @@
                   <DropShadow color="#00000051" height="11.51" offsetY="4.0" radius="6.1075" width="14.92" />
                </effect>
             </TextField>
-            <Text layoutX="383.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to Faulkner Hospital!" textAlignment="CENTER" textOrigin="CENTER" AnchorPane.leftAnchor="350.0" AnchorPane.rightAnchor="332.0">
+            <Text fx:id="welcomeGreeting" layoutX="383.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to Faulkner Hospital!" textAlignment="CENTER" textOrigin="CENTER" visible="false" AnchorPane.leftAnchor="350.0" AnchorPane.rightAnchor="332.0">
                <font>
                   <Font name="System Bold" size="35.0" />
                </font>
@@ -98,7 +98,7 @@
                 <TableColumn prefWidth="75.0" text="C2" />
               </columns>
             </TableView>
-            <ImageView fx:id="upIcon" onMouseClicked="#searchMenuUp" fitHeight="43.0" fitWidth="43.0" layoutX="1135.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <ImageView fx:id="upIcon" fitHeight="43.0" fitWidth="43.0" layoutX="1135.0" layoutY="3.0" onMouseClicked="#searchMenuUp" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <image>
                   <Image url="@resources/navigate_up.png" />
                </image>
