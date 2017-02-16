@@ -54,7 +54,7 @@ public class UserMapViewALTController extends AbstractController{
         menuSlideUp.setAutoReverse(true);
 
         if (menuUp) {
-            KeyValue valDown = new KeyValue(searchMenu.translateYProperty(), 850);
+            KeyValue valDown = new KeyValue(searchMenu.translateYProperty(), (mainPane.getHeight() - 700));
             KeyFrame keyFrame = new KeyFrame(Duration.millis(600), valDown);
             menuSlideUp.getKeyFrames().add(keyFrame);
             menuUp = false;
