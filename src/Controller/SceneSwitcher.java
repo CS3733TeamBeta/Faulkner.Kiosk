@@ -30,6 +30,7 @@ public class SceneSwitcher
     protected static final String UserMapViewPath = UserPackage + "/UserMapView.fxml";
     protected static final String UserSearchViewPath = UserPackage + "/UserSearchView.fxml";
     protected static final String EditProfileViewPath = AdminPackage + "/EditProfileView.fxml";
+    protected static final String UserMapViewALTPath = UserPackage + "/UserMapViewALT.fxml";
 
     public static AbstractController switchToScene(Stage primaryStage, String pathToView) throws IOException
     {
@@ -115,6 +116,10 @@ public class SceneSwitcher
 
     public static void goToUserHome(Stage primaryStage) throws IOException{
         MapViewerController controller =(MapViewerController) switchToScene(primaryStage, "../User/MapViewer/MapEditorView.fxml");
+    }
+
+    public static void switchToUserMapViewALT(Stage primaryStage) throws IOException {
+        UserMapViewALTController controller = (UserMapViewALTController) switchToScene(primaryStage, UserMapViewALTPath);
     }
 }
 

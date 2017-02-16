@@ -1,10 +1,12 @@
 package Controller.User;
 
+import Controller.AbstractController;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
@@ -14,7 +16,7 @@ import javafx.scene.control.TextField;
 /**
  * Created by jw97 on 2/16/2017.
  */
-public class UserMapViewALTController {
+public class UserMapViewALTController extends AbstractController {
     Boolean menuUp = false;
     ColorAdjust colorAdjust = new ColorAdjust();
 
@@ -39,6 +41,12 @@ public class UserMapViewALTController {
     @FXML
     TextField searchBar;
 
+    Stage primaryStage;
+    public UserMapViewALTController(){}
+    public void setStage(Stage s)
+    {
+        primaryStage = s;
+    }
 
     // Show search menu
     public void searchMenuUp() {
