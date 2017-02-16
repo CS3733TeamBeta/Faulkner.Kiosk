@@ -48,6 +48,7 @@ public class SendEmail {
         props.put("mail.transport.protocol", "smtp");
 
         try {
+            DataSource fds;
             Session session = Session.getDefaultInstance(props,
                     new Authenticator() {
                         protected PasswordAuthentication getPasswordAuthentication() {
@@ -63,23 +64,33 @@ public class SendEmail {
             BodyPart messageBodyPart = new MimeBodyPart();
             String htmlText;
             if (includeImage) {
-                htmlText = this.message + "<img src=\"cid:image\">";
+                htmlText = "<img src=\"cid:imageLogo\">" + this.message + "<img src=\"cid:imageDirections\">";
             } else {
-                htmlText = this.message;
+                htmlText = "<img src=\"cid:imageLogo\">" + this.message;
             }
             messageBodyPart.setContent(htmlText, "text/html");
             multipart.addBodyPart(messageBodyPart);
 
+            messageBodyPart = new MimeBodyPart();
+            fds = new FileDataSource(
+                    "faulknerLogo.jpg");
+
+            messageBodyPart.setDataHandler(new DataHandler(fds));
+            messageBodyPart.setHeader("Content-ID", "<imageLogo>");
+
+            multipart.addBodyPart(messageBodyPart);
+
             if (includeImage) {
                 messageBodyPart = new MimeBodyPart();
-                DataSource fds = new FileDataSource(
+                fds = new FileDataSource(
                         "directions.png");
 
                 messageBodyPart.setDataHandler(new DataHandler(fds));
-                messageBodyPart.setHeader("Content-ID", "<image>");
+                messageBodyPart.setHeader("Content-ID", "<imageDirections>");
 
                 multipart.addBodyPart(messageBodyPart);
             }
+
 
             msg.setContent(multipart);
             // -- Set the FROM and TO fields --

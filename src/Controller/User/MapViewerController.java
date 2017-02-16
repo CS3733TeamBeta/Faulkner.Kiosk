@@ -194,6 +194,7 @@ public class MapViewerController extends AbstractController {
 			if(newRoute.getPathEdges().contains(edge)) {
 				edge.changeOpacity(1.0);
 				edge.changeColor(Color.RED);
+				edge.toFront();
 			}
 			else{
 				edge.changeOpacity(0.8);
@@ -201,7 +202,7 @@ public class MapViewerController extends AbstractController {
 			}
 		}
 		newRoute.printTextDirections();
-		newRoute.sendEmailGuidance("iancj97@gmail.com", mapPane);
+		//newRoute.sendEmailGuidance("iancj97@gmail.com", mapPane);
 
 	}
 
