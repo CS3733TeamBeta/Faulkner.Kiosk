@@ -66,4 +66,10 @@ public class Floor {
     {
         floorEdges.remove(edge);
     }
+
+    @Override
+    public String toString()
+    {
+        return "Floor " + floorNumber;
+    }
 }

@@ -32,4 +32,5 @@ public class Hospital {
     {
         return buildings;
     }
+
 }

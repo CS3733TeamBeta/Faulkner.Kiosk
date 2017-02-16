@@ -114,9 +114,14 @@ public class MapEditorController extends AbstractController {
 			}
 		});
 
-		tab.setContent(new TreeView<String>());
-		model.addBuilding(b, tab);
+		TreeView<String> tV = new TreeView<String>();
 
+		tV.setRoot(new TreeItem<String>());
+		tV.setShowRoot(false);
+
+		tab.setContent(tV);
+
+		model.addBuilding(b, tab);
 		BuildingTabPane.getTabs().add(tab);
 
 		return tab;
@@ -128,11 +133,21 @@ public class MapEditorController extends AbstractController {
 		addBuilding(null);
 	}
 
+	/**
+	 * Runs when "New Floor" is clicked
+	 *
+	 * @param event from button click
+	 */
 	@FXML
-	void onNewFloor(ActionEvent event) {
+	void onNewFloor(ActionEvent event)
+	{
+		TreeView<String> treeView = (TreeView<String>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
 
+		//@TODO handle floor creation here...
+		//add floor image
+
+		//treeView.getRoot().getChildren().add(TreeItem<String>)
 	}
-
 
 	public void refreshNodePositions()
 	{
@@ -197,11 +212,6 @@ public class MapEditorController extends AbstractController {
 		else if(Main.mvm != null) {
 			model.setCurrentFloor(Main.mvm.getCurrentFloor());
 		}
-
-		//treeFloor3 = new TreeItem<String> ("Floor 3");
-	//	treeFloor3.setExpanded(true);
-
-		//treeViewBuilding1.setRoot(treeFloor3);
 
 		if(DragDropMain.mvm != null || Main.mvm != null){
 			//and then set all the existing nodes up
@@ -337,9 +347,18 @@ public class MapEditorController extends AbstractController {
 
 		buildDragHandlers();
 
+		/*
+		 * Adds buildings to tab pane.
+		 */
 		for(Building b : model.getHospital().getBuildings())
 		{
-			addBuilding(b);
+			Tab t = addBuilding(b);
+			TreeView<String> treeView = (TreeView<String>)t.getContent();
+
+			for(Floor f: b.getFloors())
+			{
+				treeView.getRoot().getChildren().add(new TreeItem<String>(f.toString()));
+			}
 		}
 	}
 

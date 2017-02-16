@@ -17,6 +17,7 @@ public class MapEditorModel
 
     HashSet<MapNode> mapNodes;
     HashSet<NodeEdge> mapEdges;
+
     HashMap<Tab, Building> buildingTabMap;
 
     Hospital hospital;
@@ -32,21 +33,35 @@ public class MapEditorModel
 
         hospital = new Hospital();
 
-        Building b  = new Building("Building 1");
+        Building b1  = new Building("Building 1");
 
-        Floor f1 = new Floor(1);
+        Building b2 = new Building("Building 2");
+
+        Floor f1a = new Floor(1);
+        Floor f2a = new Floor(2);
+
+        Floor f1b = new Floor(1);
+        Floor f2b = new Floor(2);
+        Floor f3b = new Floor(3);
 
         try //attempts to add floor 1
         {
-            b.addFloor(f1);
+            b1.addFloor(f1a);
+            b1.addFloor(f2a);
+
+            b2.addFloor(f1b);
+            b2.addFloor(f2b);
+            b2.addFloor(f3b);
+
         } catch (Exception e)
         {
             e.printStackTrace();
         }
 
-        hospital.addBuilding(b);
+        hospital.addBuilding(b1);
+        hospital.addBuilding(b2);
 
-        currentFloor = f1;
+        currentFloor = f1a;
 
         buildingTabMap = new HashMap<>();
     }
@@ -70,6 +85,25 @@ public class MapEditorModel
     public Building getBuildingFromTab(Tab t)
     {
         return buildingTabMap.get(t);
+    }
+
+    /**
+     *
+     * @param b Building
+     * @return Building's tab in TabPanel.
+     * @TODO Make doubly linked hashmap
+     */
+    public Tab getTabFromBuilding(Building b)
+    {
+        for (Tab t: buildingTabMap.keySet())
+        {
+            if(buildingTabMap.get(t).equals(b))
+            {
+                return t;
+            }
+        }
+
+        return null;
     }
 
     public boolean containsBuilding(Building b)

@@ -1,5 +1,6 @@
 package Domain.Map;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 /**
@@ -61,6 +62,11 @@ public class Building {
         }
 
         throw new Exception("Floor not found");
+    }
+
+    public Collection<Floor> getFloors()
+    {
+        return buildingFloors;
     }
 
     /**
