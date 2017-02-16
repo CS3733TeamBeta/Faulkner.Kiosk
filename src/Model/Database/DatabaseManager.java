@@ -14,7 +14,7 @@ import java.util.Properties;
 public class DatabaseManager {
 
     private final String framework = "embedded";
-    private final String protocol = "jdbc:derby:/../";
+    private final String protocol = "jdbc:derby:";
     private Connection conn = null;
     private ArrayList<Statement> statements = new ArrayList<Statement>(); // list of Statements, PreparedStatements
     private PreparedStatement psInsert;

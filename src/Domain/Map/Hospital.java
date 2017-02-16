@@ -7,18 +7,13 @@ import java.util.HashMap;
   * Created by IanCJ on 1/29/2017.
   */
 public class Hospital {
-     HashSet<Building> buildings;
-
-
+    HashSet<Building> buildings;
 
     private HashMap<Integer, MapNode> mapNodes;
     private HashMap<Integer, NodeEdge> edges;
     private HashMap<String, Doctor> doctors;
     private HashMap<Integer, Floor> floors;
     private HashMap<String, Suite> suites;
-
-
-
 
     public Hospital() {
         buildings = new HashSet<Building>();
