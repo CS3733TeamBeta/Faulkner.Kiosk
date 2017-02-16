@@ -37,7 +37,11 @@ public class DatabaseManager {
     public HashMap<String, Suite> suites = new HashMap<>();
     public HashMap<String, Office> offices = new HashMap<>();
 
+
     public static final String[] createTables = {
+            "CREATE TABLE USER1.FLOOR (FLOOR_ID VARCHAR(5) PRIMARY KEY NOT NULL, " +
+                    "BUILD_ID INT," +
+                    "NUMBER INT)",
             "CREATE TABLE USER1.DOCTOR (DOC_ID INT PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(50), " +
                     "DESCRIPTION VARCHAR(25), " +
@@ -51,8 +55,9 @@ public class DatabaseManager {
             "CREATE TABLE USER1.SUITE (SUITE_ID INT PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(200), " +
                     "NODE_ID INT, " +
-                    "FLOOR_ID INT, " +
-                    "CONSTRAINT NODE_ID___FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID))",
+                    "FLOOR_ID VARCHAR(5), " +
+                    //"CONSTRAINT NODE_ID___FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID), " +
+                    "CONSTRAINT FLOOR_ID___FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
             "CREATE TABLE USER1.SUITE_DOC (SUITE_ID INT," +
                     "DOC_ID INT," +
                     "CONSTRAINT SUITE_DOC___FK1 FOREIGN KEY (SUITE_ID) REFERENCES SUITE (SUITE_ID)," +
@@ -66,11 +71,7 @@ public class DatabaseManager {
                     "NODEB INT," +
                     "COST DOUBLE," +
                     "CONSTRAINT EDGE___FKA FOREIGN KEY (NODEA) REFERENCES NODE (NODE_ID)," +
-                    "CONSTRAINT EDGE___FKB FOREIGN KEY (NODEB) REFERENCES NODE (NODE_ID))",
-            "CREATE TABLE USER1.FLOOR (FLOOR_ID INT PRIMARY KEY NOT NULL, " +
-                    "NAME VARCHAR(5)," +
-                    "BUILD_ID INT," +
-                    "NUMBER INT)"};
+                    "CONSTRAINT EDGE___FKB FOREIGN KEY (NODEB) REFERENCES NODE (NODE_ID))"};
 
     public static final String[] dropTables = {
             "DROP TABLE USER1.EDGE",
@@ -117,6 +118,7 @@ public class DatabaseManager {
 
     private void loadDoctorsSuites() throws SQLException{
         HashMap<String, Suite> suites = new HashMap<>();
+        HashMap<Integer, Suite> suitesID = new HashMap<>();
         HashMap<String, Doctor> doctors = new HashMap<>();
         PreparedStatement suiteDoc = conn.prepareStatement("select suite_id from USER1.SUITE_DOC where doc_id = ?");
         PreparedStatement docSuite = conn.prepareStatement("select doc_id from USER1.DOCTOR where suites like '%?%'");
@@ -124,6 +126,13 @@ public class DatabaseManager {
         ResultSet rs = s.executeQuery("select * from USER1.SUITE");
         while (rs.next()) {
             suites.put(rs.getString(2),
+                    new Suite(rs.getInt(1),
+                            rs.getString(2),
+                            floors.get(rs.getString(4)),
+                            mapNodes.get(rs.getInt(3)),
+                            new HashSet<String>()));
+
+            suitesID.put(rs.getInt(1),
                     new Suite(rs.getInt(1),
                             rs.getString(2),
                             floors.get(rs.getString(4)),
@@ -140,7 +149,7 @@ public class DatabaseManager {
             suiteDoc.setInt(1, rs.getInt(1));
             ResultSet results = suiteDoc.executeQuery();
             while(results.next()) {
-                locations.add(suites.get(results.getInt(1)));
+                locations.add(suitesID.get(results.getInt(1)));
                 //suites.get(results.getInt(1)).addDoctor(rs.getString(2));
             }
 
@@ -195,66 +204,76 @@ public class DatabaseManager {
         PreparedStatement insertSuites = conn.prepareStatement("INSERT INTO USER1.SUITE (SUITE_ID, NAME, NODE_ID, FLOOR_ID) VALUES (?, ?, ?, ?)");
         PreparedStatement insertAssoc = conn.prepareStatement("INSERT INTO USER1.SUITE_DOC (SUITE_ID, DOC_ID) VALUES (?, ?)");
         PreparedStatement insertOffices = conn.prepareStatement("INSERT INTO USER1.OFFICES (OFFICE_ID, NAME, SUITE_ID) VALUES (?, ?, ?)");
+        PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO USER1.FLOOR (FLOOR_ID, BUILD_ID, NUMBER) VALUES (?, ?, ?)");
+
         System.out.println("Here");
+        for (Floor floor : floors.values()) {
+            insertFloors.setString(1, floor.getFloorName());
+            insertFloors.setInt(2,floor.getBuilding());
+            insertFloors.setInt(3, floor.getFloorNumber());
+            insertFloors.executeUpdate();
+            conn.commit();
+            System.out.println("Saved Floor");
+        }
+        conn.commit();
+        for (Domain.Map.Suite suite : suites.values()) {
+            insertSuites.setInt(1, suite.getSuiteID());
+            insertSuites.setString(2, suite.getName());
+            insertSuites.setInt(3, 0);
+            insertSuites.setString(4, suite.getMyFloor().getFloorName());
+            insertSuites.executeUpdate();
+            conn.commit();
+        }
         for (Doctor doc : doctors.values()) {
             String locations = "";
             System.out.println("Here");
-            for (Suite ste : doc.getSuites()) {
-                insertAssoc.setInt(1, ste.getSuiteID());
-                insertAssoc.setInt(2, doc.getDocID());
-                System.out.println("Here");
-                insertAssoc.executeUpdate();
-                System.out.println("Added Suites");
-                locations = locations + ste.getName() + ", ";
-            }
             insertDoctors.setInt(1, doc.getDocID());
             insertDoctors.setString(2, doc.getName());
             insertDoctors.setString(3, doc.getDescription());
             insertDoctors.setString(4, doc.getHours());
             insertDoctors.setString(5, locations);
             insertDoctors.executeUpdate();
-        }
-        for (Suite suite : suites.values()) {
-            insertSuites.setInt(1, suite.getSuiteID());
-            insertSuites.setString(2, suite.getName());
-            insertSuites.setInt(3, suite.getLocation().getNodeID());
-            insertSuites.setString(4, suite.getMyFloor().getFloorName());
-            insertSuites.executeUpdate();
+            for (Domain.Map.Suite ste : doc.getSuites()) {
+                insertAssoc.setInt(1, ste.getSuiteID());
+                insertAssoc.setInt(2, doc.getDocID());
+                System.out.println("Here");
+                insertAssoc.executeUpdate();
+                conn.commit();
+                System.out.println("Added Suites");
+            }
+
+            conn.commit();
         }
         for (Office office : offices.values()) {
             insertOffices.setInt(1, office.getId());
             insertOffices.setString(2, office.getName());
             insertOffices.setInt(3, office.getSuite().getSuiteID());
             insertOffices.executeUpdate();
+            conn.commit();
         }
-
+        conn.commit();
     }
 
     public void saveMap() throws SQLException {
         PreparedStatement insertNodes = conn.prepareStatement("INSERT INTO USER1.NODE (NODE_ID, POSX, POSY, TYPE) VALUES (?, ?, ?, ?)");
         PreparedStatement insertEdges = conn.prepareStatement("INSERT INTO USER1.EDGE (EDGE_ID, NODEA, NODEB, COST) VALUES (?, ?, ?, ?)");
-        PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO USER1.FLOOR (FLOOR_ID, NAME, BUILD_ID, NUMBER) VALUES (?, ?, ?, ?)");
         for (MapNode node : mapNodes.values()) {
             insertNodes.setInt(1, node.getNodeID());
             insertNodes.setDouble(2, node.getPosX());
             insertNodes.setDouble(3, node.getPosY());
             insertNodes.setInt(4, node.getType());
             insertNodes.executeUpdate();
+            conn.commit();
         }
-
+        conn.commit();
         for (NodeEdge edge : edges.values()) {
             insertEdges.setInt(2, edge.getSource().getNodeID());
             insertEdges.setInt(3, edge.getOtherNode(edge.getSource()).getNodeID());
             insertEdges.setDouble(4, edge.getCost());
             insertEdges.executeUpdate();
+            conn.commit();
         }
-
-        for (Floor floor : floors.values()) {
-            insertFloors.setString(1, floor.getFloorName());
-            insertFloors.setInt(2,floor.getBuilding());
-            insertFloors.setInt(3, floor.getFloorNumber());
-            insertFloors.executeUpdate();
-        }
+        conn.commit();
     }
 //    public void saveMap() throws SQLException{
 //        s.execute(createTables [3]);
@@ -301,8 +320,8 @@ public class DatabaseManager {
         Statement state = conn.createStatement();
         for (String s : states) {
             state.executeUpdate(s);
+            conn.commit();
         }
-        conn.commit();
         state.close();
     }
 
