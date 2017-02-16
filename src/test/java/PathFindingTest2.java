@@ -138,7 +138,7 @@ public class PathFindingTest2  extends TestCase{
     public void testSendEmail() {
         try {
             Guidance g1 = new Guidance(nodeA, nodeL, true);
-            g1.sendEmailGuidance("iancj97@gmail.com");
+            //g1.sendEmailGuidance("iancj97@gmail.com");
         } catch (Exception e) {
             fail("Threw exception");
         }
