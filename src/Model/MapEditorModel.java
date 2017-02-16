@@ -3,11 +3,9 @@ package Model;
 import Domain.Map.*;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
+import javafx.scene.control.Tab;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by benhylak on 2/4/17.
@@ -19,6 +17,7 @@ public class MapEditorModel
 
     HashSet<MapNode> mapNodes;
     HashSet<NodeEdge> mapEdges;
+    HashMap<Tab, Building> buildingTabMap;
 
     Hospital hospital;
     Floor currentFloor;
@@ -33,7 +32,8 @@ public class MapEditorModel
 
         hospital = new Hospital();
 
-        Building b  = new Building();
+        Building b  = new Building("Building 1");
+
         Floor f1 = new Floor(1);
 
         try //attempts to add floor 1
@@ -47,6 +47,39 @@ public class MapEditorModel
         hospital.addBuilding(b);
 
         currentFloor = f1;
+
+        buildingTabMap = new HashMap<>();
+    }
+
+    public void makeNewBuilding(String name, Tab tab)
+    {
+        hospital.addBuilding(new Building());
+
+    }
+
+    public void addBuilding(Building b, Tab tab)
+    {
+        if(!hospital.containsBuilding(b))
+        {
+            hospital.addBuilding(b);
+        }
+
+        buildingTabMap.put(tab, b);
+    }
+
+    public Building getBuildingFromTab(Tab t)
+    {
+        return buildingTabMap.get(t);
+    }
+
+    public boolean containsBuilding(Building b)
+    {
+        return hospital.containsBuilding(b);
+    }
+
+    public int getBuildingCount()
+    {
+        return hospital.buildingCount();
     }
 
     public Hospital getHospital()
@@ -57,6 +90,7 @@ public class MapEditorModel
     public void setCurrentFloor(Floor floor){
         this.currentFloor = floor;
         mapNodes.clear();
+
         for(MapNode n : floor.getFloorNodes()) {
             mapNodes.add(n);
         }

@@ -7,10 +7,18 @@ import java.util.HashSet;
  */
 public class Building {
 
+    String name;
+
     HashSet<Floor> buildingFloors;
 
     public Building() {
         this.buildingFloors = new HashSet<>();
+    }
+
+    public Building(String name)
+    {
+        this();
+        this.name = name;
     }
 
     public void addFloor(Floor f) throws Exception
@@ -54,4 +62,14 @@ public class Building {
 
         throw new Exception("Floor not found");
     }
+
+    /**
+     *
+     * @return name of building
+     */
+    public String getName()
+    {
+        return name;
+    }
+
 }
