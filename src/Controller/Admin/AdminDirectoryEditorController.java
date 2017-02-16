@@ -1,12 +1,14 @@
 package Controller.Admin;
 
+import Controller.AbstractController;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableView;
 import javafx.fxml.FXML;
+import javafx.stage.Stage;
 
 
-public class AdminDirectoryEditorController {
+public class AdminDirectoryEditorController extends AbstractController {
 
     @FXML
     private JFXTreeTableView<?> directoryTable;
@@ -25,5 +27,16 @@ public class AdminDirectoryEditorController {
 
     @FXML
     private JFXButton newButton;
+
+    Stage primaryStage;
+
+    public void setStage(Stage s)
+    {
+        primaryStage = s;
+    }
+
+    public AdminDirectoryEditorController(){
+
+    }
 
 }
