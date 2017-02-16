@@ -68,9 +68,9 @@ public class DatabaseManager {
                     "CONSTRAINT EDGE___FKB FOREIGN KEY (NODEB) REFERENCES NODE (NODE_ID))"};
 
     public static final String[] dropTables = {
-            "DROP TABLE USER1.EDGE",
-            "DROP TABLE USER1.SUITE_DOC",
-            "DROP TABLE USER1.DOCTOR",
+            //"DROP TABLE USER1.EDGE",
+            //"DROP TABLE USER1.SUITE_DOC",
+            //"DROP TABLE USER1.DOCTOR",
             "DROP TABLE USER1.OFFICES",
             "DROP TABLE USER1.SUITE",
             "DROP TABLE USER1.FLOOR",
@@ -83,6 +83,7 @@ public class DatabaseManager {
         loadDoctorsSuites();
         loadOffices();
         conn.commit();
+        rs.close();
     }
 
     public void saveData() throws SQLException {
@@ -106,8 +107,8 @@ public class DatabaseManager {
                             rs.getString(2),
                             suites.get(rs.getInt(3))));
         }
-        rs.close();
-
+        this.offices = offices;
+        System.out.println(offices);
     }
 
     private void loadDoctorsSuites() throws SQLException{
@@ -201,6 +202,7 @@ public class DatabaseManager {
         PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO USER1.FLOOR (FLOOR_ID, BUILD_ID, NUMBER) VALUES (?, ?, ?)");
 
         System.out.println("Here");
+        // saves Floors
         for (Floor floor : floors.values()) {
             insertFloors.setString(1, floor.getFloorName());
             insertFloors.setInt(2,floor.getBuilding());
@@ -210,6 +212,7 @@ public class DatabaseManager {
             System.out.println("Saved Floor");
         }
         conn.commit();
+        // saves Suites
         for (Domain.Map.Suite suite : suites.values()) {
             insertSuites.setInt(1, suite.getSuiteID());
             insertSuites.setString(2, suite.getName());
@@ -218,6 +221,7 @@ public class DatabaseManager {
             insertSuites.executeUpdate();
             conn.commit();
         }
+        // saves Doctors
         for (Doctor doc : doctors.values()) {
             String locations = "";
             System.out.println("Here");
@@ -227,6 +231,7 @@ public class DatabaseManager {
             insertDoctors.setString(4, doc.getHours());
             insertDoctors.setString(5, locations);
             insertDoctors.executeUpdate();
+            // saves Suite and Doctor Relationships
             for (Domain.Map.Suite ste : doc.getSuites()) {
                 insertAssoc.setInt(1, ste.getSuiteID());
                 insertAssoc.setInt(2, doc.getDocID());
@@ -235,9 +240,8 @@ public class DatabaseManager {
                 conn.commit();
                 System.out.println("Added Suites");
             }
-
-            conn.commit();
         }
+        // saves Offices
         for (Office office : offices.values()) {
             insertOffices.setInt(1, office.getId());
             insertOffices.setString(2, office.getName());
@@ -245,7 +249,6 @@ public class DatabaseManager {
             insertOffices.executeUpdate();
             conn.commit();
         }
-        conn.commit();
     }
 
     public void saveMap() throws SQLException {
