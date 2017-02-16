@@ -21,7 +21,7 @@ import javax.imageio.ImageIO;
 public class Guidance extends Path {
 
     //This is the direction that the user of the kiosk starts off facing.
-    private int kioskDirection = 1;
+    private int kioskDirection = 3;
 
     LinkedList<String> textDirections;
 
@@ -67,7 +67,7 @@ public class Guidance extends Path {
         int intersectionsPassed = 0;
 
         //Add the first node to the textual directions
-        tempTextDirections.add("Start from " + pathNodes.get(0).getNodeID() + " facing the Kiosk");
+        tempTextDirections.add("Start at the Kiosk. (Node " + pathNodes.get(0).getNodeID() + ")");
 
         for (int i = 0; i < this.pathNodes.size() - 1; i++) {
 
@@ -114,37 +114,12 @@ public class Guidance extends Path {
                     intersectionsPassed++;
                 }
                 intersectionsPassed++;
-            } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
-                if(intersectionsPassed == 0){
-                    if (vFlag) {
-                        tempTextDirections.add("Take an elevator at your next intersection from " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                    } else {
-                        tempTextDirections.add("Take an elevator at your next intersection from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                    }
-                }
-                else if(intersectionsPassed == 1){
-                    if (vFlag) {
-                        tempTextDirections.add("After passing 1 intersection, take an elevator at " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                    } else {
-                        tempTextDirections.add("After passing 1 intersection, take an elevator from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-
-                    }
-                }
-                else {
-                    if (vFlag) {
-                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator" + " at " + fromNode.getNodeID() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                    } else {
-                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-
-                    }
-                }
-                intersectionsPassed = 0;
-            } else if (!directionChangeString.equals("Straight")) {
+            } else if (!directionChangeString.equals("Straight") && (!directionChangeString.equals("up")) && (!directionChangeString.equals("down"))) {
                 if(intersectionsPassed  == 0) {
                     if (vFlag) {
-                        tempTextDirections.add("Turn " + directionChangeString + " at your next intersection; ID: " + fromNode.getNodeID());
+                        tempTextDirections.add("Turn " + directionChangeString + " at the next intersection; ID: " + fromNode.getNodeID());
                     } else {
-                        tempTextDirections.add("Turn " + directionChangeString + " at your next intersection.");
+                        tempTextDirections.add("Turn " + directionChangeString + " at the next intersection.");
 
                     }
                 }
@@ -160,6 +135,32 @@ public class Guidance extends Path {
                         tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + " at " + fromNode.getNodeID());
                     } else {
                         tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + ".");
+
+                    }
+                }
+
+                intersectionsPassed = 0;
+            } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
+                if(intersectionsPassed == 0){
+                    if (vFlag) {
+                        tempTextDirections.add("Take an elevator at the next intersection from " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    } else {
+                        tempTextDirections.add("Take an elevator at the next intersection from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    }
+                }
+                else if(intersectionsPassed == 1){
+                    if (vFlag) {
+                        tempTextDirections.add("After passing 1 intersection, take an elevator at " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    } else {
+                        tempTextDirections.add("After passing 1 intersection, take an elevator from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+
+                    }
+                }
+                else {
+                    if (vFlag) {
+                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator" + " at " + fromNode.getNodeID() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    } else {
+                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
 
                     }
                 }
@@ -436,13 +437,19 @@ public class Guidance extends Path {
 
     public boolean sendEmailGuidance(String address) {
         String subjectLine;
-        String directionLine = "<H2>You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + ".</H2>" + "<H3>";
+        String directionLine = "<H2><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H2>" + "<H3>";
         subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
 
+        for (int i = 0; i < textDirections.size(); i++) {
+            directionLine += "<b>" + (i+1) + ":</b> ";
+            directionLine += textDirections.get(i);
+            directionLine += "<br>";
+        }
+        /*
         for(String s: textDirections) {
             directionLine += s;
             directionLine += "<br>";
-        }
+        } */
         directionLine += "</H3>";
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine, false);
