@@ -159,10 +159,24 @@ public class Guidance extends Path {
         }
 
         //Add the destination arrival string
-        if (vFlag) {
-            tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination: node " + toNode.getNodeID());
+        if (intersectionsPassed >= 2) {
+            if (vFlag) {
+                tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination: node " + toNode.getNodeID());
+            } else {
+                tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination.");
+            }
+        } else if (intersectionsPassed == 1) {
+            if (vFlag) {
+                tempTextDirections.add("After passing 1 intersection, arrive at your destination: node " + toNode.getNodeID());
+            } else {
+                tempTextDirections.add("After passing 1 intersection, arrive at your destination.");
+            }
         } else {
-            tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination.");
+            if (vFlag) {
+                tempTextDirections.add("Arrive at your destination: node " + toNode.getNodeID());
+            } else {
+                tempTextDirections.add("Arrive at your destination.");
+            }
         }
         this.textDirections = tempTextDirections;
     }
