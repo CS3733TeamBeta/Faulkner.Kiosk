@@ -11,9 +11,12 @@ import javax.mail.internet.MimeMultipart;
 import java.util.Date;
 import java.util.Properties;
 
+//http://www.codejava.net/java-se/graphics/how-to-capture-screenshot-programmatically-in-java
+//use this link AS IS to capture screenshots
+
 public class SendEmail {
 
-    static final String username = "faulknerkioskdirections@gmail.com";//
+    static final String username = "faulknerkioskdirections@gmail.com";
     static final String password = "FaulkPassword";
     String recipient;
 
@@ -61,7 +64,7 @@ public class SendEmail {
 
             messageBodyPart = new MimeBodyPart();
             DataSource fds = new FileDataSource(
-                    "C:/Users/IanCJ/Desktop/dog.png");
+                    "C:/Users/IanCJ/Desktop/jpgpuppy.jpg");
 
             messageBodyPart.setDataHandler(new DataHandler(fds));
             messageBodyPart.setHeader("Content-ID", "<image>");
