@@ -2,9 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -93,17 +93,27 @@
                   <Font size="25.0" />
                </font>
             </Text>
-            <TableView fx:id="dataTable" layoutX="237.0" layoutY="333.0" prefHeight="266.0" prefWidth="826.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
-              <columns>
-                <TableColumn prefWidth="75.0" text="C1" />
-                <TableColumn prefWidth="75.0" text="C2" />
-              </columns>
-            </TableView>
             <ImageView fx:id="upIcon" fitHeight="43.0" fitWidth="43.0" layoutX="1135.0" layoutY="3.0" onMouseClicked="#searchMenuUp" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <image>
                   <Image url="@resources/navigate_up.png" />
                </image>
             </ImageView>
+            <TreeTableView fx:id="doctorTable" layoutX="359.0" layoutY="381.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
+              <columns>
+                <TreeTableColumn fx:id="docName" minWidth="100.0" prefWidth="297.00001525878906" text="Name" />
+                <TreeTableColumn fx:id="jobTitle" minWidth="0.0" prefWidth="128.0000457763672" text="Job Title" />
+                  <TreeTableColumn fx:id="docDepts" minWidth="0.0" prefWidth="413.3334045410156" text="Department(s)" />
+                  <TreeTableColumn fx:id="navigateCol" prefWidth="162.666748046875" text="Navigate to Here" />
+              </columns>
+            </TreeTableView>
+            <TreeTableView fx:id="deptTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
+              <columns>
+                <TreeTableColumn fx:id="deptName" prefWidth="358.99998474121094" text="Name" />
+                <TreeTableColumn fx:id="deptPhoneNum" minWidth="0.0" prefWidth="252.33328247070312" text="Phone Number" />
+                  <TreeTableColumn fx:id="deptLocation" prefWidth="239.9998779296875" text="Location" />
+                  <TreeTableColumn fx:id="navigateCol" prefWidth="150.00006103515625" text="Navigate to Here" />
+              </columns>
+            </TreeTableView>
          </children>
       </AnchorPane>
       <Label fx:id="test" layoutX="104.0" layoutY="39.0" prefHeight="75.0" prefWidth="312.0" text="sdpknbxaerklfds;'/kae;fnsdjc/" visible="false" />
