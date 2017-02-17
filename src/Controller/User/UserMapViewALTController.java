@@ -1,6 +1,7 @@
 package Controller.User;
 
 import Controller.AbstractController;
+import Controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableView;
@@ -9,10 +10,14 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
+import sun.invoke.empty.Empty;
+
+import java.io.IOException;
 
 
 /**
@@ -60,7 +65,16 @@ public class UserMapViewALTController extends AbstractController {
     @FXML
     TreeTableView doctorTable;
 
+    Stage primaryStage;
+
+    public void setStage(Stage s)
+    {
+        primaryStage = s;
+    }
+
     public void defaultProperty() {
+        searchMenu.setStyle("-fx-background-color:  #e6e6fa;");
+
         // Sets the color of the icons to black
         ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
@@ -90,6 +104,7 @@ public class UserMapViewALTController extends AbstractController {
             keyFrame = new KeyFrame(Duration.millis(600), welcomeDown);
             welcomeGreeting.setVisible(false);
             downArrow = false; // Changes to up icon
+            searchMenu.setStyle("-fx-background-color: transparent;");
         } else { // Navigate up icon -> show welcome page
             KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
             keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
@@ -113,7 +128,7 @@ public class UserMapViewALTController extends AbstractController {
     }
 
     public void loadMenu() {
-        welcomeGreeting.setVisible(true);
+        defaultProperty();
 
         Timeline menuSlideUp = new Timeline();
         menuSlideUp.setCycleCount(1);
@@ -222,5 +237,9 @@ public class UserMapViewALTController extends AbstractController {
 
             searchBar.setPromptText("Search for help");
         }
+    }
+
+    public void adminLogin() throws IOException {
+        SceneSwitcher.switchToLoginView(primaryStage);
     }
 }
