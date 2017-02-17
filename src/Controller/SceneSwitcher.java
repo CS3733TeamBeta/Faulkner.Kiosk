@@ -19,7 +19,7 @@ public class SceneSwitcher
     protected static final String AdminLoginViewPath = AdminPackage + "/AdminLoginView.fxml";
     protected static final String AdminWelcomeViewPath = AdminPackage + "/AdminWelcomeView.fxml";
     protected static final String AddNewProfileViewPath = AdminPackage + "/AddNewProfileView.fxml";
-    protected static final String ModifyDirectoryViewPath = AdminPackage + "/AdminDirectoryEditor.fxml";
+    protected static final String ModifyDirectoryViewPath = AdminPackage + "/ModifyDirectoryView.fxml";
     protected static final String ChooseProfileToModifyViewPath = AdminPackage + "/ChooseProfileToModifyView.fxml";
     //protected static final String EditDepartmentViewPath = AdminPackage + "/EditDepartmentView.fxml";
     protected static final String EditDoctorViewPath = AdminPackage + "/EditDoctorView.fxml";
@@ -30,7 +30,7 @@ public class SceneSwitcher
     protected static final String UserMapViewPath = UserPackage + "/UserMapView.fxml";
     protected static final String UserSearchViewPath = UserPackage + "/UserSearchView.fxml";
     protected static final String EditProfileViewPath = AdminPackage + "/EditProfileView.fxml";
-    protected static final String AdminDirectoryEditorPath = AdminPackage + "/AdminDirectoryEditor.fxml";
+    protected static final String UserMapViewALTPath = UserPackage + "/UserMapView.fxml";
 
     public static AbstractController switchToScene(Stage primaryStage, String pathToView) throws IOException
     {
@@ -84,7 +84,7 @@ public class SceneSwitcher
     }
 
     public static void switchToMapEditorView(Stage primaryStage) throws IOException {
-        EditNodeGraphController controller = (EditNodeGraphController) switchToScene(primaryStage, MapEditorViewPath);
+        MapEditorController controller = (MapEditorController) switchToScene(primaryStage, MapEditorViewPath);
     }
 
     public static void switchToEditDoctorView(Stage primaryStage) throws IOException {
@@ -103,7 +103,7 @@ public class SceneSwitcher
     }
 
     public static void switchToUserMapView(Stage primaryStage) throws IOException {
-        UserMapController controller = (UserMapController) switchToScene(primaryStage, UserMapViewPath);
+        UserMapViewController controller = (UserMapViewController) switchToScene(primaryStage, UserMapViewPath);
     }
 
     public static void switchToUserSearchView(Stage primaryStage) throws IOException {
@@ -116,10 +116,6 @@ public class SceneSwitcher
 
     public static void goToUserHome(Stage primaryStage) throws IOException{
         MapViewerController controller =(MapViewerController) switchToScene(primaryStage, "../User/MapViewer/MapEditorView.fxml");
-    }
-
-    public static void switchToAdminDirectoryEditorView(Stage primaryStage) throws IOException {
-        AdminDirectoryEditorController controller = (AdminDirectoryEditorController) switchToScene(primaryStage, AdminDirectoryEditorPath);
     }
 }
 

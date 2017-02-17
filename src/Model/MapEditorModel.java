@@ -3,11 +3,10 @@ package Model;
 import Domain.Map.*;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TreeItem;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by benhylak on 2/4/17.
@@ -20,11 +19,17 @@ public class MapEditorModel
     HashSet<MapNode> mapNodes;
     HashSet<NodeEdge> mapEdges;
 
+    HashMap<Tab, Building> buildingTabMap;
+
+    HashMap<TreeItem<Object>, Floor> floorTreeMap; //sets relation between tree objects and floors
+
     Hospital hospital;
     Floor currentFloor;
 
     public MapEditorModel()
     {
+        floorTreeMap = new HashMap<>();
+
         edgeCompleteHandlers = new LinkedList<EdgeCompleteEventHandler>(); //instantiate empty linked list for handlers;
 
         sideBarIcons = new ArrayList<DragIcon>();
@@ -33,20 +38,102 @@ public class MapEditorModel
 
         hospital = new Hospital();
 
-        Building b  = new Building();
-        Floor f1 = new Floor(1);
+        Building b1  = new Building("Building 1");
+
+        Building b2 = new Building("Building 2");
+
+        Floor f1a = new Floor(1);
+        Floor f2a = new Floor(2);
+
+        Floor f1b = new Floor(1);
+        Floor f2b = new Floor(2);
+        Floor f3b = new Floor(3);
 
         try //attempts to add floor 1
         {
-            b.addFloor(f1);
+            b1.addFloor(f1a);
+            b1.addFloor(f2a);
+
+            b2.addFloor(f1b);
+            b2.addFloor(f2b);
+            b2.addFloor(f3b);
+
         } catch (Exception e)
         {
             e.printStackTrace();
         }
 
-        hospital.addBuilding(b);
+        hospital.addBuilding(b1);
+        hospital.addBuilding(b2);
 
-        currentFloor = f1;
+        currentFloor = f1a;
+
+        buildingTabMap = new HashMap<>();
+    }
+
+    public void makeNewBuilding(String name, Tab tab)
+    {
+        hospital.addBuilding(new Building());
+    }
+
+    public void addFloorTreeItem(TreeItem<Object> item, Floor floor)
+    {
+        floorTreeMap.put(item, floor);
+    }
+
+    /*/**
+     * Makes the next floor
+     *
+     * @TODO should allow any floor number, not taken to, to be created
+     * @return Next floor
+     */
+   // public Floor makeNewFloor()/*
+    /*{
+        Floor floor = new Floor("Floor " + )
+    }*/
+
+    public void addBuilding(Building b, Tab tab)
+    {
+        if(!hospital.containsBuilding(b))
+        {
+            hospital.addBuilding(b);
+        }
+
+        buildingTabMap.put(tab, b);
+    }
+
+    public Building getBuildingFromTab(Tab t)
+    {
+        return buildingTabMap.get(t);
+    }
+
+    /**
+     *
+     * @param b Building
+     * @return Building's tab in TabPanel.
+     * @TODO Make doubly linked hashmap
+     */
+    public Tab getTabFromBuilding(Building b)
+    {
+        for (Tab t: buildingTabMap.keySet())
+        {
+            if(buildingTabMap.get(t).equals(b))
+            {
+                return t;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean containsBuilding(Building b)
+    {
+        return hospital.containsBuilding(b);
+    }
+
+    public int getBuildingCount()
+    {
+        return hospital.buildingCount();
     }
 
     public Hospital getHospital()
@@ -57,6 +144,7 @@ public class MapEditorModel
     public void setCurrentFloor(Floor floor){
         this.currentFloor = floor;
         mapNodes.clear();
+
         for(MapNode n : floor.getFloorNodes()) {
             mapNodes.add(n);
         }

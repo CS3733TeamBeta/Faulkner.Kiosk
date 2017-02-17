@@ -59,7 +59,7 @@ public class AdminLoginController extends AbstractController
         System.out.println("Login clicked");
 
         if(infoForLoggingIn.admins.checkValidity(txtUsername.getText(), txtPassword.getText())) {
-            SceneSwitcher.switchToAdminWelcomeView(primaryStage, new AdminProfile("Admin", "Admin"));
+            SceneSwitcher.switchToMapEditorView(primaryStage);
         }
     }
 

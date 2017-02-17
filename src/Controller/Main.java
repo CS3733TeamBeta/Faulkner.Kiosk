@@ -49,10 +49,13 @@ public class Main extends Application {
         setUpDirectory();
 
         //SceneSwitcher.switchToLoginView(primaryStage);
-        SceneSwitcher.switchToAdminDirectoryEditorView(primaryStage);
+        SceneSwitcher.switchToUserMapView(primaryStage);
 
         primaryStage.show();
+
     }
+
+
 
     public static void main(String[] args) {
         try {
