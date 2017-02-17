@@ -48,7 +48,8 @@ public class Main extends Application {
 
         setUpDirectory();
 
-        SceneSwitcher.switchToLoginView(primaryStage);
+        //SceneSwitcher.switchToLoginView(primaryStage);
+        SceneSwitcher.switchToAdminDirectoryEditorView(primaryStage);
 
         primaryStage.show();
     }
