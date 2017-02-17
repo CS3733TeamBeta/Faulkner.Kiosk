@@ -13,6 +13,8 @@ public class Office extends Destination
 {
     int id;
 
+    String rm = "N/A";
+
     HashSet<Doctor> occupants;
     protected String department;
     private final String popOverEditFXML = "/Admin/Popup/OfficeEditPopup.fxml";
@@ -25,6 +27,15 @@ public class Office extends Destination
     public Office()
     {
 
+    }
+
+    // For demonstration purposes:
+    public Office(String rm) {
+        this.rm = rm;
+    }
+
+    public String getOfficeNum() {
+        return this.rm;
     }
 
     @Override

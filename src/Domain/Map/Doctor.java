@@ -12,7 +12,9 @@ public class Doctor extends Info
     int docID;
     HashSet<String> department;
     HashSet<String> myOffice;
+    Office office;
     String phoneNum = "N/A";
+    String depts = ""; // For iteration 2, demonstration purposes
 
     public Doctor(String name, String description, String hours) {
         super(name, description, hours);
@@ -26,11 +28,30 @@ public class Doctor extends Info
         super(name, description, hours);
 
         //this.department.add(dept);
+        this.depts = dept;
         this.phoneNum = phoneNum;
         //this.myOffice.add(docOff);
         super.name = name;
         super.description = description;
         super.hours = hours;
+
+        this.office = docOff;
+    }
+
+    public String getDepts() {
+        return this.depts;
+    }
+
+    public void setDepts(String dept) {
+        this.depts = dept;
+    }
+
+    public Office getOffice() {
+        return this.office;
+    }
+
+    public void setOffice(Office office) {
+        this.office = office;
     }
 
     public int getDocID() {
