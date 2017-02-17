@@ -1,5 +1,7 @@
 package Domain.Map;
 
+
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.HashMap;
 
@@ -100,4 +102,19 @@ public class Hospital {
     public void removeSuites(String s){
         suites.remove(s);
     }
+    public boolean containsBuilding(Building b)
+    {
+        return buildings.contains(b);
+    }
+
+    public int buildingCount()
+    {
+        return buildings.size();
+    }
+
+    public Collection<Building> getBuildings()
+    {
+        return buildings;
+    }
+
 }

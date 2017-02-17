@@ -1,3 +1,23 @@
+<<<<<<< HEAD
+----------------------------------------------------------------
+Thu Feb 16 17:46:43 EST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015a-491b-30b1-00000c01a7a8 
+on database directory /Users/benhylak/Documents/Git/Faulkner.Kiosk/derbyDB with class loader sun.misc.Launcher$AppClassLoader@4554617c 
+Loaded from file:/Users/benhylak/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_111-b14
+user.dir=/Users/benhylak/Documents/Git/Faulkner.Kiosk
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.12.1
+derby.system.home=null
+------------  Begin Error Message -------------
+
+System may be in a inconsistent state, missing file /Users/benhylak/Documents/Git/Faulkner.Kiosk/derbyDB/log/log3.dat
+------------  End Error Message -------------
+
+Database Class Loader started - derby.database.classpath=''
+=======
 Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.replication.master in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
 Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.resultSetStatisticsFactory in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
 Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.NoneAuthentication in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
@@ -71,3 +91,4 @@ os.arch=amd64
 os.version=10.0
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''
+>>>>>>> database

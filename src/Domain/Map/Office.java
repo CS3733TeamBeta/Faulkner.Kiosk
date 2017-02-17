@@ -27,7 +27,8 @@ public class Office extends Destination
 
     public Office()
     {
-
+        super();
+        this.myInfo.setName("Office");
     }
 
     public String getName() {
