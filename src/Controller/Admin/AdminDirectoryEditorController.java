@@ -2,20 +2,19 @@ package Controller.Admin;
 
 import Controller.AbstractController;
 import Domain.Map.Office;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.controls.JFXTreeTableColumn;
-import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.*;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import Domain.Map.Doctor;
 import Domain.Map.Office;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 import javax.print.Doc;
 import java.util.HashMap;
@@ -24,10 +23,11 @@ import java.util.List;
 
 import static com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table;
 
-public class AdminDirectoryEditorController  extends AbstractController{
+public class AdminDirectoryEditorController  extends AbstractController {
 
-    private HashSet<Doctor> doctors;
+    private ObservableList<Doctor> doctors = FXCollections.observableArrayList();
     private ObservableList<Doctor> tableData;
+    private ObservableList<String> departments = FXCollections.observableArrayList();
 
     @FXML
     private TableView<Doctor> directoryTable;
@@ -45,7 +45,7 @@ public class AdminDirectoryEditorController  extends AbstractController{
     private JFXTextField phoneNumberThreeTextField;
 
     @FXML
-    private JFXTreeTableView<?> departmentsTable;
+    private JFXListView<String> departmentsList;
 
     @FXML
     private JFXTextField officeNumberTextField;
@@ -72,47 +72,193 @@ public class AdminDirectoryEditorController  extends AbstractController{
     private TableColumn<Doctor, String> departmentColumn;
 
     @FXML
-    private TableColumn<Doctor, String> hoursColumn;
+    private TableColumn<Doctor, String> officeNumberColumn;
 
     @FXML
-    void clickedSave()
-    {
-        System.out.println("Thing");
+    private TableColumn<Doctor, String> hoursColumn;
+
+    public AdminDirectoryEditorController() {
     }
 
-    public AdminDirectoryEditorController()
-    {
-        nameColumn = new TableColumn<Doctor, String>();
-        phoneNumberColumn = new TableColumn<Doctor, String>();
-        departmentColumn = new TableColumn<Doctor, String>();
-        hoursColumn = new TableColumn<Doctor, String>();
-        doctors = new HashSet<>();
-    }
-
-    public void initialize()
-    {
-
-        Office tmpoffice = new Office();
-
-        Doctor drByrne = new Doctor("3A","N/A", tmpoffice,"Jennifer Byrne","RN, CPNP","N/A");
-        Doctor drFrangieh = new Doctor("3B","N/A", tmpoffice,"George Frangieh","MD","N/A");
-        Doctor drGreenberg = new Doctor("3C","N/A",tmpoffice,"James Adam Greenberg","MD","N/A");
-        Doctor drGrossi = new Doctor("3A","N/A",tmpoffice,"Lisa Grossi","RN, MS, CPNP","N/A");
-
-        doctors.add(drByrne);
-        doctors.add(drFrangieh);
-        doctors.add(drGreenberg);
-        doctors.add(drGrossi);
-
+    @FXML
+    public void initialize() {
         nameColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         phoneNumberColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("phoneNum"));
-        departmentColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
-        hoursColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
+        departmentColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("depts"));
+
+        officeNumberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Doctor, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Doctor, String> p) {
+                return new ReadOnlyObjectWrapper(p.getValue().getOffice().getOfficeNum());
+            }
+        });
+
+        hoursColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("hours"));
+
+        Office tmpoffice = new Office("N/A");
+
+        Doctor drByrne = new Doctor("3A, 3C", "N/A", tmpoffice, "Jennifer Byrne", "RN, CPNP", "N/A");
+        Doctor drFrangieh = new Doctor("3B", "N/A", tmpoffice, "George Frangieh", "MD", "N/A");
+        Doctor drGreenberg = new Doctor("3C", "N/A", tmpoffice, "James Adam Greenberg", "MD", "N/A");
+        Doctor drGrossi = new Doctor("3A", "N/A", tmpoffice, "Lisa Grossi", "RN, MS, CPNP", "N/A");
+
+        doctors.addAll(drByrne, drFrangieh, drGreenberg, drGrossi);
+        directoryTable.setItems(doctors);
+
+        // All the departments on the 3rd floor
+
+        departments.addAll("3A", "3B", "3C");
+
+        departmentsList.setItems(departments);
+        departmentsList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
+    /*
     private void addDoctor(Doctor d)
     {
         tableData.add(d);
         directoryTable.setItems(tableData);
+    }
+    */
+
+    private void newProfileSetUp() {
+        nameTextField.clear();
+        phoneNumberOneTextField.clear();
+        phoneNumberTwoTextField.clear();
+        phoneNumberThreeTextField.clear();
+
+        departmentsList.getSelectionModel().clearSelection();
+
+        officeNumberTextField.clear();
+        hoursStartTimeTextField.clear();
+        hoursEndTimeTextField.clear();
+    }
+
+    @FXML
+    private void reset() {
+        newProfileSetUp();
+        directoryTable.getSelectionModel().clearSelection();
+    }
+
+
+    @FXML
+    private void saveProfile() {
+        if (isProcessable()) {
+            String name = nameTextField.getText();
+            String phoneNum = phoneNumberOneTextField.getText() + "-" + phoneNumberTwoTextField.getText() + "-" +
+                    phoneNumberThreeTextField.getText();
+
+            ObservableList<String> dept = departmentsList.getSelectionModel().getSelectedItems();
+
+            String deptSelected = dept.get(0);
+
+            int i = 0;
+            for (String d : dept) {
+                if (!(deptSelected.contains(d))) {
+                    deptSelected = deptSelected + ", " + d;
+                }
+            }
+
+            Office office = new Office(officeNumberTextField.getText());
+            String hours = hoursStartTimeTextField.getText() + "-" + hoursEndTimeTextField.getText();
+            String description = "N/A";
+
+
+            Doctor toEdit = directoryTable.getSelectionModel().getSelectedItem();
+            if (toEdit != null) {
+                doctors.remove(toEdit);
+            }
+
+            doctors.add(new Doctor(deptSelected, phoneNum, office, name, description, hours));
+
+            directoryTable.setItems(doctors);
+            reset();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
+            alert.setTitle("Action denied.");
+            alert.setHeaderText(null);
+            alert.showAndWait();
+        }
+    }
+
+    private Boolean isProcessable() {
+        if (nameTextField.getText() == null || (nameTextField.getText().isEmpty())){
+            return false;
+        }
+
+        if (departmentsList.getSelectionModel().getSelectedItems() == null) {
+            return false;
+        }
+
+        if (officeNumberTextField.getText() == null || (officeNumberTextField.getText().isEmpty())) {
+            return false;
+        }
+
+        if (phoneNumberOneTextField.getText() == null || (phoneNumberOneTextField.getText().isEmpty())) {
+            return false;
+        }
+
+        if (phoneNumberTwoTextField.getText() == null || (phoneNumberTwoTextField.getText().isEmpty())) {
+            return false;
+        }
+
+        if (phoneNumberThreeTextField.getText() == null || (phoneNumberThreeTextField.getText().isEmpty())) {
+            return false;
+        }
+
+        if (hoursStartTimeTextField.getText() == null || (hoursStartTimeTextField.getText().isEmpty())) {
+            return false;
+        }
+
+        if (hoursEndTimeTextField.getText() == null || (hoursEndTimeTextField.getText().isEmpty())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @FXML
+    private void displaySelectedDocInfo() {
+        newProfileSetUp();
+        Doctor selectedDoc = directoryTable.getSelectionModel().getSelectedItem();
+
+        nameTextField.setText(selectedDoc.getName());
+
+        String phoneNum = selectedDoc.getPhoneNum();
+
+        if (!phoneNum.equals("N/A")) {
+            String[] phoneNumber = phoneNum.split("-");
+
+            phoneNumberOneTextField.setText(phoneNumber[0]);
+            phoneNumberTwoTextField.setText(phoneNumber[1]);
+            phoneNumberThreeTextField.setText(phoneNumber[2]);
+        }
+
+        if (!(selectedDoc.getOffice().getOfficeNum().equals("N/A"))) {
+            officeNumberTextField.setText(selectedDoc.getOffice().getOfficeNum());
+        }
+
+        String dept = selectedDoc.getDepts();
+        String[] depts = dept.split(", ");
+
+        for (String d: depts) {
+            int i = 0;
+            for (String dpt: departments) {
+                if (dpt.equals(d)) {
+                    departmentsList.getSelectionModel().selectIndices(i);
+                }
+
+                i += 1;
+            }
+        }
+
+        String hour = selectedDoc.getHours();
+
+        if (!(hour.equals("N/A"))) {
+            String[] hours = hour.split("-");
+
+            hoursStartTimeTextField.setText(hours[0]);
+            hoursEndTimeTextField.setText(hours[1]);
+        }
+
     }
 }
