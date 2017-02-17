@@ -28,17 +28,13 @@ public class Office extends Destination {
         this.occupants = doctors;
     }
 
-<<<<<<< HEAD
     /**
      * Create an empty office
      */
-    public Office() {
-=======
     public Office()
     {
         super();
         this.myInfo.setName("Office");
->>>>>>> 329db804f9dc46cc93de156c66959fe52780aae0
     }
 
     /**
