@@ -201,7 +201,8 @@ public class MapViewerController extends AbstractController {
 			}
 		}
 		newRoute.printTextDirections();
-		newRoute.sendEmailGuidance("iancj97@gmail.com", mapPane);
+		//Please don't uncomment this line unless you replace the email with your own. I'm getting a lot of spam -Ian
+		//newRoute.sendEmailGuidance("iancj97@gmail.com", mapPane);
 
 	}
 
