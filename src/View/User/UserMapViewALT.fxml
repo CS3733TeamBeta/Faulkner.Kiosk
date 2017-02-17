@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeTableColumn?>
 <?import javafx.scene.control.TreeTableView?>
@@ -24,9 +23,9 @@
       <AnchorPane fx:id="searchMenu" layoutY="351.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="530.0">
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" />
-            <HBox layoutX="114.0" layoutY="150.0" prefHeight="160.0" prefWidth="878.0" AnchorPane.leftAnchor="114.0" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="150.0">
+            <HBox layoutX="174.0" layoutY="168.0" prefHeight="138.0" prefWidth="842.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="184.0" AnchorPane.topAnchor="168.0">
                <children>
-                  <ImageView fx:id="doctorIcon" fitHeight="128.0" fitWidth="122.0" onMouseClicked="#doctorSelected" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
+                  <ImageView fx:id="doctorIcon" fitHeight="80.0" fitWidth="108.0" onMouseClicked="#doctorSelected" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets bottom="10.0" left="50.0" right="30.0" top="20.0" />
                      </HBox.margin>
@@ -34,7 +33,7 @@
                         <Image url="@resources/22779-200.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="bathroomIcon" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#bathroomSelected" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="bathroomIcon" fitHeight="106.0" fitWidth="128.0" onMouseClicked="#bathroomSelected" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets bottom="5.0" left="100.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -42,7 +41,7 @@
                         <Image url="@resources/Gender-Neutral-Toilet-Sign-White-1000.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="foodIcon" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#foodSelected" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="foodIcon" fitHeight="108.0" fitWidth="144.0" onMouseClicked="#foodSelected" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets bottom="5.0" left="100.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -50,7 +49,7 @@
                         <Image url="@resources/10446-200.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="helpIcon" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#helpSelected" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="helpIcon" fitHeight="104.0" fitWidth="124.0" onMouseClicked="#helpSelected" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets bottom="10.0" left="100.0" right="100.0" top="2.0" />
                      </HBox.margin>
@@ -59,6 +58,9 @@
                      </image>
                   </ImageView>
                </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
             </HBox>
             <TextField fx:id="searchBar" layoutX="242.0" layoutY="88.0" prefHeight="56.0" prefWidth="800.0" promptText="Search hospital" style="-fx-border-color: ;" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0">
                <font>
@@ -73,32 +75,12 @@
                   <Font name="System Bold" size="35.0" />
                </font>
             </Text>
-            <Text layoutX="183.0" layoutY="334.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doctors" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="183.0" AnchorPane.rightAnchor="930.85498046875" AnchorPane.topAnchor="307.0">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Text>
-            <Text layoutX="432.0" layoutY="333.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bathrooms">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Text>
-            <Text layoutX="709.0" layoutY="333.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Food">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Text>
-            <Text layoutX="976.0" layoutY="333.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Help" AnchorPane.bottomAnchor="363.7255859375" AnchorPane.leftAnchor="976.0" AnchorPane.rightAnchor="172.42529296875" AnchorPane.topAnchor="306.0224609375">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Text>
             <ImageView fx:id="upIcon" fitHeight="43.0" fitWidth="43.0" layoutX="1135.0" layoutY="3.0" onMouseClicked="#searchMenuUp" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <image>
                   <Image url="@resources/navigate_up.png" />
                </image>
             </ImageView>
-            <TreeTableView fx:id="doctorTable" layoutX="359.0" layoutY="381.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
+            <TreeTableView fx:id="doctorTable" layoutX="359.0" layoutY="381.0" opacity="0.82" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
               <columns>
                 <TreeTableColumn fx:id="docName" minWidth="100.0" prefWidth="297.00001525878906" text="Name" />
                 <TreeTableColumn fx:id="jobTitle" minWidth="0.0" prefWidth="128.0000457763672" text="Job Title" />
@@ -106,7 +88,7 @@
                   <TreeTableColumn fx:id="navigateCol" prefWidth="162.666748046875" text="Navigate to Here" />
               </columns>
             </TreeTableView>
-            <TreeTableView fx:id="deptTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
+            <TreeTableView fx:id="deptTable" opacity="0.82" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
               <columns>
                 <TreeTableColumn fx:id="deptName" prefWidth="358.99998474121094" text="Name" />
                 <TreeTableColumn fx:id="deptPhoneNum" minWidth="0.0" prefWidth="252.33328247070312" text="Phone Number" />
@@ -114,8 +96,43 @@
                   <TreeTableColumn fx:id="navigateCol" prefWidth="150.00006103515625" text="Navigate to Here" />
               </columns>
             </TreeTableView>
+            <HBox layoutX="220.0" layoutY="273.0" prefHeight="62.0" prefWidth="792.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Doctors">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="30.0" right="10.0" top="5.0" />
+                     </HBox.margin>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Bathrooms">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="30.0" left="100.0" right="30.0" top="5.0" />
+                     </HBox.margin>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Food">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="90.0" top="5.0" />
+                     </HBox.margin>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Help">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="165.0" top="5.0" />
+                     </HBox.margin>
+                  </Text>
+               </children>
+            </HBox>
          </children>
       </AnchorPane>
-      <Label fx:id="test" layoutX="104.0" layoutY="39.0" prefHeight="75.0" prefWidth="312.0" text="sdpknbxaerklfds;'/kae;fnsdjc/" visible="false" />
    </children>
 </AnchorPane>
