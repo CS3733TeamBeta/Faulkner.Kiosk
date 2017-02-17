@@ -58,12 +58,12 @@ public class Main extends Application {
             launch(args);
             DatabaseManager test = new DatabaseManager();
             try {
-                test.loadData();
-                test.executeStatements(DatabaseManager.dropTables);
+                //test.loadData();
+                //test.executeStatements(DatabaseManager.dropTables);
                 System.out.println("Dropped Tables");
                 test.executeStatements(DatabaseManager.createTables);
                 System.out.println("Created Tables");
-                test.saveData();
+                //test.saveData();
             }
             catch (SQLException e) {
                 System.out.println(e.getMessage());

@@ -42,12 +42,12 @@ public class MapEditorModel
 
         Building b2 = new Building("Building 2");
 
-        Floor f1a = new Floor(1);
-        Floor f2a = new Floor(2);
+        Floor f1a = new Floor("F1",1,1);
+        Floor f2a = new Floor("F2",1,2);
 
-        Floor f1b = new Floor(1);
-        Floor f2b = new Floor(2);
-        Floor f3b = new Floor(3);
+        Floor f1b = new Floor("B1",2,1);
+        Floor f2b = new Floor("B2", 2,2);
+        Floor f3b = new Floor("B3",2,3);
 
         try //attempts to add floor 1
         {

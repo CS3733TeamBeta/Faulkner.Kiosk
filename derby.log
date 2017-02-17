@@ -1,94 +1,148 @@
-<<<<<<< HEAD
-----------------------------------------------------------------
-Thu Feb 16 17:46:43 EST 2017:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015a-491b-30b1-00000c01a7a8 
-on database directory /Users/benhylak/Documents/Git/Faulkner.Kiosk/derbyDB with class loader sun.misc.Launcher$AppClassLoader@4554617c 
-Loaded from file:/Users/benhylak/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar
-java.vendor=Oracle Corporation
-java.runtime.version=1.8.0_111-b14
-user.dir=/Users/benhylak/Documents/Git/Faulkner.Kiosk
-os.name=Mac OS X
-os.arch=x86_64
-os.version=10.12.1
-derby.system.home=null
-------------  Begin Error Message -------------
-
-System may be in a inconsistent state, missing file /Users/benhylak/Documents/Git/Faulkner.Kiosk/derbyDB/log/log3.dat
-------------  End Error Message -------------
-
-Database Class Loader started - derby.database.classpath=''
-=======
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.replication.master in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.resultSetStatisticsFactory in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.NoneAuthentication in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.lockManagerJ6 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.log.readonly in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.jdbcJ8 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.resourceAdapterJ2 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.validation in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.lcf in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.optimizer in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.XPLAINFactory in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.javaCompiler in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.tcf in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.dataDictionary in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.jdk.cacheManagerJ6 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.ef in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.dvfJ2 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.jdk.dvfJ2 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.daemon in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.cacheManagerJ6 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.data.genericJ4 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.timerJ1 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.jdk.rawStore.data.genericJ4 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.data.genericJ1 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.basicAuthentication in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.jdk.rawStore.data.genericJ1 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.classes.JNDIAuthentication in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.database in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.transaction in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.streams in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.classes.dvfJ2 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.jdk.mgmt.jmx in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.nativeAuthentication in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.jdk.cryptographyJ2 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.access.sort in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.classes.jdbcJ8 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.classes.cryptographyJ2 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.classes.rawStore.data.genericJ4 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.jdk.jdbcJ8 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.jdk.lockManagerJ6 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.cryptographyJ2 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.specificAuthentication in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.mgmt.jmx in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.netServer.autoStart in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.access.uniquewithduplicatenullssort in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.classManagerJ2 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.JNDIAuthentication in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.log in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.access.heap in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.database.slave in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.jdk.resourceAdapterJ2 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.mgmt.null in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.env.classes.resourceAdapterJ2 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.access in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.replication.slave in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.lf in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.uuidJ1 in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.access.btree in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main] Ignored duplicate property derby.module.rawStore in jar:file:/C:/Users/Brandon/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar!/org/apache/derby/modules.properties
-Thu Feb 16 20:22:15 EST 2017 Thread[main,5,main]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-----------------------------------------------------------------
-Thu Feb 16 20:22:15 EST 2017:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): instance a816c00e-015a-49a9-9846-000006b81508 
-on database directory C:\derbyDB with class loader sun.misc.Launcher$AppClassLoader@452b3a41 
-Loaded from file:/C:/Program%20Files/Java/jdk1.8.0_121/db/lib/derby.jar
-java.vendor=Oracle Corporation
-java.runtime.version=1.8.0_121-b13
-user.dir=C:\Users\Brandon\Documents\College\Junior\C Term\GitHub\SoftEng\Faulkner.Kiosk
-os.name=Windows 10
-os.arch=amd64
-os.version=10.0
-derby.system.home=null
-Database Class Loader started - derby.database.classpath=''
->>>>>>> database
+Thu Feb 16 21:03:04 EST 2017 Thread[main,5,main] Cleanup action starting
+ERROR XBM0J: Directory /Users/benhylak/Documents/Git/Faulkner.Kiosk/derbyDB already exists.
+	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
+	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
+	at org.apache.derby.impl.services.monitor.StorageFactoryService$10.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.derby.impl.services.monitor.StorageFactoryService.createServiceRoot(Unknown Source)
+	at org.apache.derby.impl.services.monitor.BaseMonitor.bootService(Unknown Source)
+	at org.apache.derby.impl.services.monitor.BaseMonitor.createPersistentService(Unknown Source)
+	at org.apache.derby.impl.services.monitor.FileMonitor.createPersistentService(Unknown Source)
+	at org.apache.derby.iapi.services.monitor.Monitor.createPersistentService(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection$5.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.derby.impl.jdbc.EmbedConnection.createPersistentService(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.createDatabase(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.<init>(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver$1.run(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver$1.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.derby.jdbc.InternalDriver.getNewEmbedConnection(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
+	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
+	at java.sql.DriverManager.getConnection(DriverManager.java:664)
+	at java.sql.DriverManager.getConnection(DriverManager.java:208)
+	at Model.Database.DatabaseManager.<init>(DatabaseManager.java:349)
+	at Controller.Main.main(Main.java:59)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:147)
+Cleanup action completed
+Thu Feb 16 21:03:04 EST 2017 Thread[main,5,main] Cleanup action starting
+java.sql.SQLException: Failed to create database 'derbyDB', see the next exception for details.
+	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.Util.seeNextException(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.createDatabase(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.<init>(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver$1.run(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver$1.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.derby.jdbc.InternalDriver.getNewEmbedConnection(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
+	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
+	at java.sql.DriverManager.getConnection(DriverManager.java:664)
+	at java.sql.DriverManager.getConnection(DriverManager.java:208)
+	at Model.Database.DatabaseManager.<init>(DatabaseManager.java:349)
+	at Controller.Main.main(Main.java:59)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:147)
+Caused by: ERROR XJ041: Failed to create database 'derbyDB', see the next exception for details.
+	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
+	at org.apache.derby.impl.jdbc.SQLExceptionFactory.wrapArgsForTransportAcrossDRDA(Unknown Source)
+	... 21 more
+Caused by: ERROR XBM0J: Directory /Users/benhylak/Documents/Git/Faulkner.Kiosk/derbyDB already exists.
+	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
+	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
+	at org.apache.derby.impl.services.monitor.StorageFactoryService$10.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.derby.impl.services.monitor.StorageFactoryService.createServiceRoot(Unknown Source)
+	at org.apache.derby.impl.services.monitor.BaseMonitor.bootService(Unknown Source)
+	at org.apache.derby.impl.services.monitor.BaseMonitor.createPersistentService(Unknown Source)
+	at org.apache.derby.impl.services.monitor.FileMonitor.createPersistentService(Unknown Source)
+	at org.apache.derby.iapi.services.monitor.Monitor.createPersistentService(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection$5.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.derby.impl.jdbc.EmbedConnection.createPersistentService(Unknown Source)
+	... 18 more
+============= begin nested exception, level (1) ===========
+java.sql.SQLException: Directory /Users/benhylak/Documents/Git/Faulkner.Kiosk/derbyDB already exists.
+	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.TransactionResourceImpl.wrapInSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.TransactionResourceImpl.handleException(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.handleException(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.createDatabase(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.<init>(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver$1.run(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver$1.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.derby.jdbc.InternalDriver.getNewEmbedConnection(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
+	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
+	at java.sql.DriverManager.getConnection(DriverManager.java:664)
+	at java.sql.DriverManager.getConnection(DriverManager.java:208)
+	at Model.Database.DatabaseManager.<init>(DatabaseManager.java:349)
+	at Controller.Main.main(Main.java:59)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:147)
+Caused by: ERROR XBM0J: Directory /Users/benhylak/Documents/Git/Faulkner.Kiosk/derbyDB already exists.
+	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
+	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
+	at org.apache.derby.impl.services.monitor.StorageFactoryService$10.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.derby.impl.services.monitor.StorageFactoryService.createServiceRoot(Unknown Source)
+	at org.apache.derby.impl.services.monitor.BaseMonitor.bootService(Unknown Source)
+	at org.apache.derby.impl.services.monitor.BaseMonitor.createPersistentService(Unknown Source)
+	at org.apache.derby.impl.services.monitor.FileMonitor.createPersistentService(Unknown Source)
+	at org.apache.derby.iapi.services.monitor.Monitor.createPersistentService(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection$5.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.derby.impl.jdbc.EmbedConnection.createPersistentService(Unknown Source)
+	... 18 more
+============= end nested exception, level (1) ===========
+============= begin nested exception, level (2) ===========
+ERROR XBM0J: Directory /Users/benhylak/Documents/Git/Faulkner.Kiosk/derbyDB already exists.
+	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
+	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
+	at org.apache.derby.impl.services.monitor.StorageFactoryService$10.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.derby.impl.services.monitor.StorageFactoryService.createServiceRoot(Unknown Source)
+	at org.apache.derby.impl.services.monitor.BaseMonitor.bootService(Unknown Source)
+	at org.apache.derby.impl.services.monitor.BaseMonitor.createPersistentService(Unknown Source)
+	at org.apache.derby.impl.services.monitor.FileMonitor.createPersistentService(Unknown Source)
+	at org.apache.derby.iapi.services.monitor.Monitor.createPersistentService(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection$5.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.derby.impl.jdbc.EmbedConnection.createPersistentService(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.createDatabase(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.<init>(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver$1.run(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver$1.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.derby.jdbc.InternalDriver.getNewEmbedConnection(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
+	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
+	at java.sql.DriverManager.getConnection(DriverManager.java:664)
+	at java.sql.DriverManager.getConnection(DriverManager.java:208)
+	at Model.Database.DatabaseManager.<init>(DatabaseManager.java:349)
+	at Controller.Main.main(Main.java:59)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:147)
+============= end nested exception, level (2) ===========
+Cleanup action completed
