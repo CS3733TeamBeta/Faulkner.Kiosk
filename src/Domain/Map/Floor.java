@@ -7,11 +7,12 @@ import java.util.LinkedList;
 /**
  * Represents a floor in a building. A floor will have nodes, node edges, destinations, more
  */
-public class Floor {
-    private LinkedList<MapNode> floorNodes;
-    private LinkedList<NodeEdge> floorEdges;
-    private MapNode kioskNode = null;
-    private int floorNumber;
+public class Floor implements Comparable{
+    LinkedList<MapNode> floorNodes;
+    LinkedList<NodeEdge> floorEdges;
+    MapNode kioskNode = null;
+    int floorNumber;
+
 
 
     /**
@@ -79,10 +80,6 @@ public class Floor {
      */
     public void removeNode(MapNode n) {
         floorNodes.remove(n);
-        if(n.equals(kioskNode)){
-            System.out.println("DANGER: KIOSK DELETED");
-            this.kioskNode = null;
-        }
     }
 
     /**
@@ -94,6 +91,7 @@ public class Floor {
         floorEdges.remove(edge);
     }
 
+
     /**
      * Sets this floor's KioskNode, which is the node that navigation begins from, to the given MapNode
      * @param kioskNode
@@ -104,6 +102,19 @@ public class Floor {
                 this.kioskNode = kioskNode;
             }
         }
+    }
+
+
+    @Override
+    public String toString()
+    {
+        return "Floor " + floorNumber;
+    }
+
+    @Override
+    public int compareTo(Object o)
+    {
+        return Integer.compare(this.floorNumber, ((Floor)o).getFloorNumber());
     }
 
 }

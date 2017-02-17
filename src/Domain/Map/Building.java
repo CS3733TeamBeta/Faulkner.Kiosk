@@ -1,11 +1,14 @@
 package Domain.Map;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 /**
  * Represents a building with floors
  */
 public class Building {
+
+    String name;
 
     HashSet<Floor> buildingFloors;
 
@@ -16,12 +19,39 @@ public class Building {
         this.buildingFloors = new HashSet<>();
     }
 
+<<<<<<< HEAD
     /**
      * Adds a floor to this building, throwing an exception if the floor already exists
      * @param f the floor to be added
      * @throws Exception if the floor already exists
      */
     public void addFloor(Floor f) throws Exception {
+=======
+    public Building(String name)
+    {
+        this();
+        this.name = name;
+    }
+
+    public Floor newFloor()
+    {
+        Floor f = new Floor(buildingFloors.size() +1);
+
+        try
+        {
+            addFloor(f);
+        }
+        catch (Exception e)
+        {
+
+        }
+
+        return f;
+    }
+
+    public void addFloor(Floor f) throws Exception
+    {
+>>>>>>> 329db804f9dc46cc93de156c66959fe52780aae0
         boolean floorExists;
 
         try
@@ -51,4 +81,19 @@ public class Building {
         }
         throw new Exception("Floor not found");
     }
+
+    public Collection<Floor> getFloors()
+    {
+        return buildingFloors;
+    }
+
+    /**
+     *
+     * @return name of building
+     */
+    public String getName()
+    {
+        return name;
+    }
+
 }
