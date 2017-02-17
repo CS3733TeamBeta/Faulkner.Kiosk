@@ -3,6 +3,7 @@ package Controller.User;
 import Controller.AbstractController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -53,6 +54,12 @@ public class UserMapViewALTController extends AbstractController {
     @FXML
     Text welcomeGreeting;
 
+    @FXML
+    TreeTableView deptTable;
+
+    @FXML
+    TreeTableView doctorTable;
+
     public void defaultProperty() {
         ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
@@ -60,6 +67,11 @@ public class UserMapViewALTController extends AbstractController {
         bathroomIcon.setEffect(original);
         foodIcon.setEffect(original);
         helpIcon.setEffect(original);
+
+
+        deptTable.setVisible(true);
+        // Set all other tables false
+        doctorTable.setVisible(false);
 
         searchBar.setPromptText("Search for...");
     }
@@ -72,7 +84,7 @@ public class UserMapViewALTController extends AbstractController {
         menuSlideUp.setAutoReverse(true);
 
         if (menuUp) {
-            KeyValue valDown = new KeyValue(searchMenu.translateYProperty(), (mainPane.getHeight() - 1000));
+            KeyValue valDown = new KeyValue(searchMenu.translateYProperty(), (mainPane.getHeight() - 700));
             KeyFrame keyFrame = new KeyFrame(Duration.millis(600), valDown);
             menuSlideUp.getKeyFrames().add(keyFrame);
             menuUp = false;
@@ -111,6 +123,9 @@ public class UserMapViewALTController extends AbstractController {
             doctorIcon.setEffect(clicked);
 
             searchBar.setPromptText("Search for doctors");
+
+            deptTable.setVisible(false);
+            doctorTable.setVisible(true);
         }
     }
 
