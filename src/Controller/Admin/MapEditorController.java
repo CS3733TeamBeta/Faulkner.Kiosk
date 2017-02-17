@@ -171,8 +171,7 @@ public class MapEditorController extends AbstractController {
 		//change image
 		//clear nodes
 		//load nodes
-
-
+		//devon @TODO
 	}
 
 	public void refreshNodePositions()
