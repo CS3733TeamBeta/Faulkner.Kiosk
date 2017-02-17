@@ -20,7 +20,7 @@
             <Image url="@MapViewer/floor3.png" />
          </image>
       </ImageView>
-      <AnchorPane fx:id="searchMenu" layoutY="351.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.82" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #e6e6fa;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="350.0">
+      <AnchorPane fx:id="searchMenu" layoutY="351.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.9" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #f2f2f2;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="350.0">
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" />
             <HBox layoutX="25.0" layoutY="168.0" prefHeight="138.0" prefWidth="1075.0" spacing="46.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="180.0">

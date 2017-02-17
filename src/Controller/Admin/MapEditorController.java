@@ -336,8 +336,6 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	private void initialize() {
 
-		renderInitialMap();
-
 		//BuildingTabPane.getTabs().add(createEditableTab("Building 3"));
 
 		//Add one icon that will be used for the drag-drop process
@@ -401,6 +399,8 @@ public class MapEditorController extends AbstractController {
 
 
 		getCurrentTreeView().getSelectionModel().select(0);
+
+		renderInitialMap();
 	}
 
 	/**
@@ -848,13 +848,11 @@ public class MapEditorController extends AbstractController {
 			model.getCurrentFloor().setKioskLocation(model.getCurrentFloor().getFloorNodes().get(0));
 		}
 
-		if(DragDropMain.mvm != null) {
-			DragDropMain.mvm.setCurrentFloor(this.model.getCurrentFloor());
-		}
-		else if(Main.mvm != null) {
+		if(Main.mvm != null) {
 			Main.mvm.setCurrentFloor(this.model.getCurrentFloor());
 		}
-		SceneSwitcher.switchToModifyLocationsView(this.getStage());
+
+		SceneSwitcher.switchToUserMapView(this.getStage());
 	}
 
 	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException

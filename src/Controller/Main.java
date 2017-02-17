@@ -80,12 +80,12 @@ public class Main extends Application {
         myBuilding = new Building();
 
         floor1 = new Floor(1);
-        nodeA = new MapNode(1, 489 + xoffset, 151 + yoffset, BATHROOM);
-        nodeB = new MapNode(2, 517 + xoffset, 149 + yoffset, BATHROOM);
-        nodeC = new MapNode(3, 471 + xoffset, 517 + yoffset, BATHROOM);
-        nodeD = new MapNode(4, 457 + xoffset, 262 + yoffset, BATHROOM);
-        nodeE = new MapNode(5, 458 + xoffset, 298 + yoffset, CONNECTOR);
-        nodeF = new MapNode(6, 488 + xoffset, 299 + yoffset, CONNECTOR);
+        //nodeA = new MapNode(1, 489 + xoffset, 151 + yoffset, BATHROOM);
+        //nodeB = new MapNode(2, 517 + xoffset, 149 + yoffset, BATHROOM);
+      //  nodeC = new MapNode(3, 471 + xoffset, 517 + yoffset, BATHROOM);
+      //  nodeD = new MapNode(4, 457 + xoffset, 262 + yoffset, BATHROOM);
+       // nodeE = new MapNode(5, 458 + xoffset, 298 + yoffset, CONNECTOR);
+       /* nodeF = new MapNode(6, 488 + xoffset, 299 + yoffset, CONNECTOR);
         nodeG = new MapNode(7, 485 + xoffset, 214 + yoffset, CONNECTOR);
         nodeH = new MapNode(8, 539 + xoffset, 211 + yoffset, CONNECTOR);
         nodeI = new MapNode(9, 501 + xoffset, 187 + yoffset, CONNECTOR);
@@ -134,7 +134,7 @@ public class Main extends Application {
         floor1.addEdge(edgeK);
         floor1.addEdge(edgeL);
         floor1.addEdge(edgeM);
-        floor1.setKioskLocation(nodeM);
+        floor1.setKioskLocation(nodeM);*/
 
 
         mvm = new MapModel();

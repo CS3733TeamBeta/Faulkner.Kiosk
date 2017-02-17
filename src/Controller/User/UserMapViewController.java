@@ -1,14 +1,26 @@
 package Controller.User;
 
 import Controller.AbstractController;
+import Controller.DragDropMain;
+import Controller.Main;
 import Controller.SceneSwitcher;
+import Domain.Map.MapNode;
+import Domain.Map.NodeEdge;
+import Domain.Navigation.Guidance;
+import Domain.ViewElements.DragIcon;
+import Domain.ViewElements.DragIconType;
+import Exceptions.PathFindingException;
+import Model.MapEditorModel;
+import Model.MapModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -17,6 +29,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.util.HashSet;
 
 
 /**
@@ -30,6 +44,9 @@ public class UserMapViewController extends AbstractController {
     int numClickFood = 0;
     int numClickBath = 0;
     int numClickHelp = 0;
+
+    double xNodeScale = 1200/941;
+    double yNodeScale = 700/546;
 
     @FXML
     AnchorPane mainPane;
@@ -66,13 +83,160 @@ public class UserMapViewController extends AbstractController {
 
     Stage primaryStage;
 
+    MapModel model;
+
+    protected void renderInitialMap()
+    {
+        if(Main.mvm != null) {
+            model.setCurrentFloor(Main.mvm.getCurrentFloor());
+        }
+
+        if(Main.mvm != null){
+            //and then set all the existing nodes up
+            HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+
+            for(MapNode n : model.getCurrentFloor().getFloorNodes())
+            {
+                for(NodeEdge edge: n.getEdges())
+                {
+                    if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+                }
+
+                if(!mainPane.getChildren().contains(n.getNodeToDisplay()))
+                {
+                    mainPane.getChildren().add(n.getNodeToDisplay());
+                }
+
+
+                System.out.println("Adding node at X:" + n.getPosX() + "Y: " + n.getPosY());
+
+                n.getNodeToDisplay().relocate(n.getPosX()*xNodeScale*1.27, 1.27*n.getPosY()*yNodeScale);
+                n.getNodeToDisplay().setOnMouseClicked(null);
+                n.getNodeToDisplay().setOnMouseEntered(null);
+                n.getNodeToDisplay().setOnMouseDragged(null);
+
+                setupImportedNode(n);
+            }
+
+
+            for(NodeEdge edge : collectedEdges)
+            {
+
+                if(!mainPane.getChildren().contains(edge.getEdgeLine()))
+                {
+                    mainPane.getChildren().add(edge.getEdgeLine());
+                }
+
+                MapNode source = edge.getSource();
+                MapNode target = edge.getTarget();
+
+                //@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
+
+                if(!mainPane.getChildren().contains(source.getNodeToDisplay()))
+                {
+
+                    mainPane.getChildren().add(source.getNodeToDisplay());
+
+                    source.getNodeToDisplay().relocate(source.getPosX() * 2*xNodeScale, source.getPosY() * 2* yNodeScale);
+                }
+
+                if(!mainPane.getChildren().contains(target.getNodeToDisplay()))
+                {
+                    mainPane.getChildren().add(target.getNodeToDisplay());
+                    target.getNodeToDisplay().relocate(target.getPosX() * 2*xNodeScale, target.getPosY() * 2*yNodeScale);
+                }
+
+                edge.updatePosViaNode(source);
+                edge.updatePosViaNode(target);
+
+                edge.setSource(source);
+                edge.setTarget(target);
+
+                source.toFront();
+                target.toFront();
+
+                edge.getEdgeLine().setOnMouseEntered(null);
+                edge.getEdgeLine().setOnMouseClicked(null);
+
+                mainPane.toBack();
+            }
+        }
+        else{
+            model = new MapModel();
+        }
+
+        searchMenu.toFront();
+    }
+
+    @FXML
+    private void initialize()
+    {
+        model = new MapModel();
+        renderInitialMap();
+    }
+
+    private void setupImportedNode(MapNode droppedNode){
+
+        //droppedNode.setType(droppedNode.getIconType()); //set the type
+
+
+        droppedNode.getNodeToDisplay().setOnMouseClicked(ev -> {
+            if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
+                try{
+                    findPathToNode(droppedNode);
+                }catch(PathFindingException e){
+
+                }
+            }
+        });
+
+        droppedNode.getNodeToDisplay().setOnMouseEntered(ev->
+        {
+            droppedNode.getNodeToDisplay().setOpacity(.65);
+        });
+
+        droppedNode.getNodeToDisplay().setOnMouseExited(ev->
+        {
+            droppedNode.getNodeToDisplay().setOpacity(1);
+        });
+    }
+
+    protected void findPathToNode(MapNode endPoint) throws PathFindingException {
+        System.out.println("In path finding");
+        Guidance newRoute;
+        MapNode startPoint = model.getCurrentFloor().getKioskNode();
+        if (endPoint == startPoint) {
+            System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
+            return;//TODO add error message of some kind
+        }
+        try {
+            newRoute = new Guidance(startPoint, endPoint, false);
+        } catch (PathFindingException e) {
+            return;//TODO add error message throw
+        }
+
+        for (NodeEdge edge : model.getCurrentFloor().getFloorEdges()) {
+            if(newRoute.getPathEdges().contains(edge)) {
+                edge.changeOpacity(1.0);
+                edge.changeColor(Color.RED);
+            }
+            else{
+                edge.changeOpacity(0.8);
+                edge.changeColor(Color.BLACK);
+            }
+        }
+
+        newRoute.printTextDirections();
+        newRoute.sendEmailGuidance("iancj97@gmail.com", mainPane);
+
+    }
     public void setStage(Stage s)
     {
         primaryStage = s;
     }
 
     public void defaultProperty() {
-        searchMenu.setStyle("-fx-background-color:  #e6e6fa;");
+        searchMenu.setStyle("-fx-background-color:  #f2f2f2;");
 
         // Sets the color of the icons to black
         ColorAdjust original = new ColorAdjust();
