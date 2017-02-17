@@ -2,7 +2,6 @@ package Model.Database;
 
 import Domain.Map.*;
 
-import javax.print.Doc;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -74,9 +73,9 @@ public class DatabaseManager {
                     "CONSTRAINT EDGE___FKB FOREIGN KEY (NODEB) REFERENCES NODE (NODE_ID))"};
 
     public static final String[] dropTables = {
-            //"DROP TABLE USER1.EDGE",
-            //"DROP TABLE USER1.SUITE_DOC",
-            //"DROP TABLE USER1.DOCTOR",
+            "DROP TABLE USER1.EDGE",
+            "DROP TABLE USER1.SUITE_DOC",
+            "DROP TABLE USER1.DOCTOR",
             "DROP TABLE USER1.OFFICES",
             "DROP TABLE USER1.SUITE",
             "DROP TABLE USER1.FLOOR",
@@ -87,9 +86,7 @@ public class DatabaseManager {
         loadFloors();
         loadMap();
         loadDoctorsSuites();
-        loadOffices();
         conn.commit();
-        rs.close();
     }
 
     public void saveData() throws SQLException {
@@ -103,24 +100,26 @@ public class DatabaseManager {
         System.out.println("Data Saved Correctly");
     }
 
-    private void loadOffices() throws SQLException {
-        HashMap<String, Office> offices = new HashMap<>();
-
-        ResultSet rs = s.executeQuery("select * from OFFICES");
-        while(rs.next()) {
-            offices.put(rs.getString(2),
-                    new Office(rs.getInt(1),
-                            rs.getString(2),
-                            suites.get(rs.getInt(3))));
-        }
-        this.offices = offices;
-        System.out.println(offices);
-    }
+//    private void loadOffices() throws SQLException {
+//        HashMap<String, Office> offices = new HashMap<>();
+//
+//        ResultSet rs = s.executeQuery("select * from OFFICES");
+//        while(rs.next()) {
+//            offices.put(rs.getString(2),
+//                    new Office(rs.getInt(1),
+//                            rs.getString(2),
+//                            suites.get(rs.getInt(3))));
+//        }
+//        this.offices = offices;
+//        System.out.println(offices);
+//        rs.close();
+//    }
 
     private void loadDoctorsSuites() throws SQLException{
         HashMap<String, Suite> suites = new HashMap<>();
         HashMap<Integer, Suite> suitesID = new HashMap<>();
         HashMap<String, Doctor> doctors = new HashMap<>();
+        HashMap<String, Office> offices = new HashMap<>();
         PreparedStatement suiteDoc = conn.prepareStatement("select suite_id from USER1.SUITE_DOC where doc_id = ?");
         PreparedStatement docSuite = conn.prepareStatement("select doc_id from USER1.DOCTOR where suites like '%?%'");
 
@@ -163,6 +162,17 @@ public class DatabaseManager {
         }
         this.doctors = doctors;
         System.out.println(doctors.keySet());
+
+        rs = s.executeQuery("select * from OFFICES");
+        while(rs.next()) {
+            offices.put(rs.getString(2),
+                    new Office(rs.getInt(1),
+                            rs.getString(2),
+                            suitesID.get(rs.getInt(3))));
+        }
+        this.offices = offices;
+        System.out.println(offices);
+        rs.close();
     }
 
     public void loadMap() throws SQLException{
