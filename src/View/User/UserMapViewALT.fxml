@@ -20,7 +20,7 @@
             <Image url="@MapViewer/floor3.png" />
          </image>
       </ImageView>
-      <AnchorPane fx:id="searchMenu" layoutY="351.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="530.0">
+      <AnchorPane fx:id="searchMenu" layoutY="351.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" opacity="0.82" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #e6e6fa;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="350.0">
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" />
             <HBox layoutX="174.0" layoutY="168.0" prefHeight="138.0" prefWidth="842.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="184.0" AnchorPane.topAnchor="168.0">
@@ -62,7 +62,7 @@
                   <Insets />
                </opaqueInsets>
             </HBox>
-            <TextField fx:id="searchBar" layoutX="242.0" layoutY="88.0" prefHeight="56.0" prefWidth="800.0" promptText="Search hospital" style="-fx-border-color: ;" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0">
+            <TextField fx:id="searchBar" onKeyTyped="#loadMenu" layoutX="242.0" layoutY="88.0" prefHeight="56.0" prefWidth="800.0" promptText="Search hospital" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0">
                <font>
                   <Font size="26.0" />
                </font>
@@ -70,14 +70,14 @@
                   <DropShadow color="#00000051" height="11.51" offsetY="4.0" radius="6.1075" width="14.92" />
                </effect>
             </TextField>
-            <Text fx:id="welcomeGreeting" layoutX="383.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to Faulkner Hospital!" textAlignment="CENTER" textOrigin="CENTER" visible="false" AnchorPane.leftAnchor="350.0" AnchorPane.rightAnchor="332.0">
+            <Text fx:id="welcomeGreeting" layoutX="383.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to Faulkner Hospital!" textAlignment="CENTER" textOrigin="CENTER" AnchorPane.leftAnchor="350.0" AnchorPane.rightAnchor="332.0">
                <font>
                   <Font name="System Bold" size="35.0" />
                </font>
             </Text>
-            <ImageView fx:id="upIcon" fitHeight="43.0" fitWidth="43.0" layoutX="1135.0" layoutY="3.0" onMouseClicked="#searchMenuUp" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <ImageView fx:id="navigateArrow" fitHeight="43.0" fitWidth="43.0" layoutX="1135.0" layoutY="3.0" onMouseClicked="#searchMenuUp" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <image>
-                  <Image url="@resources/navigate_up.png" />
+                  <Image url="@resources/navigate_down.png" />
                </image>
             </ImageView>
             <TreeTableView fx:id="doctorTable" layoutX="359.0" layoutY="381.0" opacity="0.82" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
@@ -88,7 +88,7 @@
                   <TreeTableColumn fx:id="navigateCol" prefWidth="162.666748046875" text="Navigate to Here" />
               </columns>
             </TreeTableView>
-            <TreeTableView fx:id="deptTable" opacity="0.82" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
+            <TreeTableView fx:id="deptTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
               <columns>
                 <TreeTableColumn fx:id="deptName" prefWidth="358.99998474121094" text="Name" />
                 <TreeTableColumn fx:id="deptPhoneNum" minWidth="0.0" prefWidth="252.33328247070312" text="Phone Number" />

@@ -20,7 +20,7 @@ import javafx.scene.control.TextField;
  *
  */
 public class UserMapViewALTController extends AbstractController {
-    Boolean menuUp = false;
+    Boolean downArrow = true; // By default, the navigation arrow is to minimize the welcome page
     ColorAdjust colorAdjust = new ColorAdjust();
     int numClickDr = 0;
     int numClickFood = 0;
@@ -46,7 +46,7 @@ public class UserMapViewALTController extends AbstractController {
     ImageView helpIcon;
 
     @FXML
-    ImageView upIcon;
+    ImageView navigateArrow;
 
     @FXML
     TextField searchBar;
@@ -61,6 +61,7 @@ public class UserMapViewALTController extends AbstractController {
     TreeTableView doctorTable;
 
     public void defaultProperty() {
+        // Sets the color of the icons to black
         ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
         doctorIcon.setEffect(original);
@@ -68,44 +69,64 @@ public class UserMapViewALTController extends AbstractController {
         foodIcon.setEffect(original);
         helpIcon.setEffect(original);
 
-
+        // By default, only the departments table is shown
         deptTable.setVisible(true);
         // Set all other tables false
         doctorTable.setVisible(false);
+        searchBar.setPromptText("Search for Departments");
 
-        searchBar.setPromptText("Search for...");
+        // Title shown
+        welcomeGreeting.setVisible(true);
     }
 
-    // Show search menu
     public void searchMenuUp() {
-        Timeline menuSlideUp = new Timeline();
+        Timeline menuSlideDown = new Timeline();
+        KeyFrame keyFrame;
+        menuSlideDown.setCycleCount(1);
+        menuSlideDown.setAutoReverse(true);
 
+        if (downArrow) { // Navigate down icon -> welcome page down (left with search bar)
+            KeyValue welcomeDown = new KeyValue(searchMenu.translateYProperty(), 180);
+            keyFrame = new KeyFrame(Duration.millis(600), welcomeDown);
+            welcomeGreeting.setVisible(false);
+            downArrow = false; // Changes to up icon
+        } else { // Navigate up icon -> show welcome page
+            KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
+            keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
+
+            // Reset to default
+            defaultProperty();
+
+            downArrow = true;
+            numClickDr = 0;
+            numClickFood = 0;
+            numClickBath = 0;
+            numClickHelp = 0;
+
+            searchBar.clear();
+        }
+
+        navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
+
+        menuSlideDown.getKeyFrames().add(keyFrame);
+        menuSlideDown.play();
+    }
+
+    public void loadMenu() {
+        Timeline menuSlideUp = new Timeline();
         menuSlideUp.setCycleCount(1);
         menuSlideUp.setAutoReverse(true);
 
-        if (menuUp) {
-            KeyValue valDown = new KeyValue(searchMenu.translateYProperty(), (mainPane.getHeight() - 700));
-            KeyFrame keyFrame = new KeyFrame(Duration.millis(600), valDown);
-            menuSlideUp.getKeyFrames().add(keyFrame);
-            menuUp = false;
-            welcomeGreeting.setVisible(false);
+        KeyValue menuUp = new KeyValue(searchMenu.translateYProperty(), -(mainPane.getHeight() - 350));
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), menuUp);
 
-        } else {
-            welcomeGreeting.setVisible(true);
-            defaultProperty();
-            KeyValue valUp = new KeyValue(searchMenu.translateYProperty(), -(mainPane.getHeight() - (mainPane.getHeight() - 530)));
-            KeyFrame keyFrame = new KeyFrame(Duration.millis(600), valUp);
-            menuSlideUp.getKeyFrames().add(keyFrame);
-            menuUp = true;
-        }
-
-        upIcon.setRotate(upIcon.getRotate() + 180);
+        menuSlideUp.getKeyFrames().add(keyFrame);
 
         menuSlideUp.play();
     }
 
-
     public void doctorSelected() {
+        loadMenu();
         numClickDr = numClickDr + 1;
         numClickHelp = 0;
         numClickBath = 0;
@@ -130,6 +151,7 @@ public class UserMapViewALTController extends AbstractController {
     }
 
     public void bathroomSelected() {
+        loadMenu();
         numClickBath = numClickBath + 1;
         numClickHelp = 0;
         numClickDr = 0;
@@ -154,6 +176,7 @@ public class UserMapViewALTController extends AbstractController {
     }
 
     public void foodSelected() {
+        loadMenu();
         numClickFood = numClickFood + 1;
         numClickHelp = 0;
         numClickBath = 0;
@@ -173,11 +196,11 @@ public class UserMapViewALTController extends AbstractController {
             foodIcon.setEffect(clicked);
 
             searchBar.setPromptText("Search for food");
-
         }
     }
 
     public void helpSelected() {
+        loadMenu();
         numClickHelp = numClickHelp + 1;
         numClickDr = 0;
         numClickBath = 0;
@@ -188,7 +211,6 @@ public class UserMapViewALTController extends AbstractController {
             numClickHelp = 0;
         } else {
             defaultProperty();
-
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
 
