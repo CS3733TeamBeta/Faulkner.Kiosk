@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class UserMapController extends AbstractController
+public class UserMapController_Legacy extends AbstractController
 {
     @FXML
     Button btnBack;
@@ -25,7 +25,7 @@ public class UserMapController extends AbstractController
     ImageView imgMap;
 
     Stage primaryStage;
-    public UserMapController(){}
+    public UserMapController_Legacy(){}
     public void setStage(Stage s)
     {
         primaryStage = s;

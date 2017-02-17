@@ -15,7 +15,6 @@ import javafx.util.Duration;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
-import sun.invoke.empty.Empty;
 
 import java.io.IOException;
 
@@ -24,7 +23,7 @@ import java.io.IOException;
  * Created by jw97 on 2/16/2017.
  *
  */
-public class UserMapViewALTController extends AbstractController {
+public class UserMapViewController extends AbstractController {
     Boolean downArrow = true; // By default, the navigation arrow is to minimize the welcome page
     ColorAdjust colorAdjust = new ColorAdjust();
     int numClickDr = 0;

@@ -103,7 +103,7 @@ public class SceneSwitcher
     }
 
     public static void switchToUserMapView(Stage primaryStage) throws IOException {
-        UserMapController controller = (UserMapController) switchToScene(primaryStage, UserMapViewPath);
+        UserMapController_Legacy controller = (UserMapController_Legacy) switchToScene(primaryStage, UserMapViewPath);
     }
 
     public static void switchToUserSearchView(Stage primaryStage) throws IOException {
@@ -119,7 +119,7 @@ public class SceneSwitcher
     }
 
     public static void switchToUserMapViewALT(Stage primaryStage) throws IOException {
-        UserMapViewALTController controller = (UserMapViewALTController) switchToScene(primaryStage, UserMapViewALTPath);
+        UserMapViewController controller = (UserMapViewController) switchToScene(primaryStage, UserMapViewALTPath);
     }
 }
 
