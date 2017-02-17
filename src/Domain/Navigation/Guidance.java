@@ -460,12 +460,6 @@ public class Guidance extends Path {
                 stepNumber++;
             }
         }
-
-        /*
-        for(String s: textDirections) {
-            directionLine += s;
-            directionLine += "<br>";
-        } */
         directionLine += "</H3>";
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine, false);
