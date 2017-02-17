@@ -180,7 +180,8 @@ public class PathFindingTest extends TestCase{
     public void testGuidance() {
         try {
             g1 = new Guidance(nodeT, nodeH, false);
-            g2 = new Guidance(nodeO, nodeI, true);
+            g2 = new Guidance(nodeA, nodeL, false);
+            g2.printTextDirections();
             assertTrue(true);
        } catch(Exception e) {
             fail("Threw unexpected exception in testGuidance");
@@ -208,6 +209,15 @@ public class PathFindingTest extends TestCase{
             p1 = new Path(nodeA, nodeL, true, "random");
         } catch (Exception e) {
             fail("Threw unexpected exception in testRandom");
+        }
+    }
+
+    public void testSendEmail() {
+        try {
+            Guidance g1 = new Guidance(nodeA, nodeL, false);
+            g1.sendEmailGuidance("iancj97@gmail.com");
+        } catch (Exception e) {
+            fail("Threw exception");
         }
     }
 }

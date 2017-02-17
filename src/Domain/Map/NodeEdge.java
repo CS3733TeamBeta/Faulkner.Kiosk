@@ -140,10 +140,18 @@ public class NodeEdge implements DrawableMapEntity
     }
 
     /**
-     * Moves this NodeEdge's line to the back of the pane, behind othero bjects.
+     * Moves this NodeEdge's line to the back of the pane, behind other  objects.
      */
     public void toBack() {
         edgeLine.toBack();
+    }
+
+
+    /**
+     * Moves this NodeEdge's line to the front of the pane, in front of other objects
+     */
+    public void toFront() {
+        edgeLine.toFront();
     }
 
     /**

@@ -1,10 +1,19 @@
 package Domain.Navigation;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 
 import Domain.Map.*;
 import Exceptions.*;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
+
+import javax.imageio.ImageIO;
 
 /**
  * Direction tells you how to get from
@@ -12,9 +21,9 @@ import Exceptions.*;
 public class Guidance extends Path {
 
     //This is the direction that the user of the kiosk starts off facing.
-    private static final int KIOSK_DIRECTION = 1;
+    private int kioskDirection = 3;
 
-    LinkedList<String> textDirections;
+    LinkedList<DirectionStep> textDirections;
 
     public Guidance (MapNode start, MapNode end) throws PathFindingException {
             this(start, end, false);
@@ -26,12 +35,23 @@ public class Guidance extends Path {
         super(start, end, vFlag);
 
         //Declare and initialize directions
-        textDirections = new LinkedList<String>();
+        textDirections = new LinkedList<DirectionStep>();
         createTextDirections(vFlag);
 
         if (vFlag) {
             printTextDirections();
         }
+    }
+
+    public Guidance (MapNode start, MapNode end, String kioskInputDirection) throws PathFindingException{
+        super(start, end, false);
+
+        kioskDirection = Guidance.directionToNum(kioskInputDirection);
+
+        textDirections = new LinkedList<DirectionStep>();
+        createTextDirections(false);
+
+
     }
 
     public void createTextDirections() {
@@ -40,12 +60,14 @@ public class Guidance extends Path {
 
     public void createTextDirections(boolean vFlag) {
         LinkedList<String> tempTextDirections = new LinkedList<String>();
-        int prevDirection = KIOSK_DIRECTION;
+        int prevDirection = kioskDirection;
         MapNode fromNode = new MapNode();
         MapNode toNode = new MapNode();
 
+        int intersectionsPassed = 0;
+
         //Add the first node to the textual directions
-        tempTextDirections.add("Start from " + pathNodes.get(0).getNodeID() + " facing North");
+        tempTextDirections.add("Start at the Kiosk. (Node " + pathNodes.get(0).getNodeID() + ")");
 
         for (int i = 0; i < this.pathNodes.size() - 1; i++) {
 
@@ -84,26 +106,117 @@ public class Guidance extends Path {
             //Change the directionChange into a textual string
             String directionChangeString = Guidance.directionChangeToString(changeInDirection, vFlag);
 
+            if (directionChangeString.equals("Straight")) {
+                System.out.println("Passing an possible intersection");
+                if (fromNode.getEdges().size() > 3) {
+                    System.out.println("Passing a definite intersection");
+                    System.out.println("fromNode has size of edges: " + fromNode.getEdges().size());
+                    intersectionsPassed++;
+                }
+                intersectionsPassed++;
+            } else if (!directionChangeString.equals("Straight") && (!directionChangeString.equals("up")) && (!directionChangeString.equals("down"))) {
+                if(intersectionsPassed  == 0) {
+                    if (vFlag) {
+                        tempTextDirections.add("Turn " + directionChangeString + " at the next intersection; ID: " + fromNode.getNodeID());
+                    } else {
+                        tempTextDirections.add("Turn " + directionChangeString + " at the next intersection.");
 
-            if (directionChangeString.equals("Up") || directionChangeString.equals("Down")) {
-                tempTextDirections.add("At " + fromNode.getNodeID() + ", take elevator " + directionChangeString);
-            } else if (!directionChangeString.equals("Straight")) {
-                //Don't add straight to the list
-                tempTextDirections.add("At " + fromNode.getNodeID() +", turn " + directionChangeString);
+                    }
+                }
+                else if(intersectionsPassed == 1){
+                    if (vFlag) {
+                        tempTextDirections.add("After passing 1 intersection, turn " + directionChangeString + " at " + fromNode.getNodeID());
+                    } else {
+                        tempTextDirections.add("After passing 1 intersection, turn " + directionChangeString + ".");
+                    }
+                }
+                else{
+                    if (vFlag) {
+                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + " at " + fromNode.getNodeID());
+                    } else {
+                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + ".");
+
+                    }
+                }
+
+                intersectionsPassed = 0;
+            } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
+                if(intersectionsPassed == 0){
+                    if (vFlag) {
+                        tempTextDirections.add("Take an elevator at the next intersection from " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    } else {
+                        tempTextDirections.add("Take an elevator at the next intersection from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    }
+                }
+                else if(intersectionsPassed == 1){
+                    if (vFlag) {
+                        tempTextDirections.add("After passing 1 intersection, take an elevator at " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    } else {
+                        tempTextDirections.add("After passing 1 intersection, take an elevator from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+
+                    }
+                }
+                else {
+                    if (vFlag) {
+                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator" + " at " + fromNode.getNodeID() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    } else {
+                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+
+                    }
+                }
+                this.textDirections.addLast(new DirectionStep(fromNode.getMyFloor()));
+                this.textDirections.getLast().setDirections(tempTextDirections);
+                tempTextDirections.clear();
+                intersectionsPassed = 0;
             }
         }
 
         //Add the destination arrival string
-        tempTextDirections.add("Arrive at destination at " + toNode.getNodeID());
-        this.textDirections = tempTextDirections;
+        if (intersectionsPassed >= 2) {
+            if (vFlag) {
+                tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination: node " + toNode.getNodeID());
+            } else {
+                tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination.");
+            }
+        } else if (intersectionsPassed == 1) {
+            if (vFlag) {
+                tempTextDirections.add("After passing 1 intersection, arrive at your destination: node " + toNode.getNodeID());
+            } else {
+                tempTextDirections.add("After passing 1 intersection, arrive at your destination.");
+            }
+        } else {
+            if (vFlag) {
+                tempTextDirections.add("Arrive at your destination: node " + toNode.getNodeID());
+            } else {
+                tempTextDirections.add("Arrive at your destination.");
+            }
+        }
+        this.textDirections.add(new DirectionStep(toNode.getMyFloor()));
+        this.textDirections.getLast().setDirections(tempTextDirections);
     }
 
     public void printTextDirections() {
         System.out.println("");
         System.out.println("Printing Textual Directions");
         System.out.println("");
-        for (String s: textDirections) {
-            System.out.println(s);
+        for (DirectionStep step: textDirections) {
+            for(String s : step.getDirections()) {
+                System.out.println(s);
+            }
+        }
+    }
+
+    public void saveMapImage(Node aNode) {
+        WritableImage image = aNode.snapshot(new SnapshotParameters(), null);
+
+        // TODO: probably use a file chooser here
+        File file = new File("directions.png");
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+        } catch (IOException e) {
+            // TODO: handle exception here
+            System.out.println("EGADS!  We have an exception!");
         }
     }
 
@@ -120,55 +233,55 @@ public class Guidance extends Path {
         String stringDirection = "Error";
         switch (changeInDirection) {
             case -7:
-                stringDirection = "Slight left";
+                stringDirection = "slight left";
                 break;
             case -6:
-                stringDirection = "Left";
+                stringDirection = "left";
                 break;
             case -5:
-                stringDirection = "Hard left";
+                stringDirection = "hard left";
                 break;
             case -4:
                 stringDirection = "U-Turn";
                 break;
             case -3:
-                stringDirection = "Hard right";
+                stringDirection = "hard right";
                 break;
             case -2:
-                stringDirection = "Right";
+                stringDirection = "right";
                 break;
             case -1:
-                stringDirection = "Slight right";
+                stringDirection = "slight right";
                 break;
             case 0:
                 stringDirection = "Straight";
                 break;
             case 1:
-                stringDirection = "Slight right";
+                stringDirection = "slight right";
                 break;
             case 2:
-                stringDirection = "Left";
+                stringDirection = "left";
                 break;
             case 3:
-                stringDirection = "Hard left";
+                stringDirection = "hard left";
                 break;
             case 4:
                 stringDirection = "U-Turn";
                 break;
             case 5:
-                stringDirection = "Hard right";
+                stringDirection = "hard right";
                 break;
             case 6:
-                stringDirection = "Right";
+                stringDirection = "right";
                 break;
             case 7:
-                stringDirection = "Slight right";
+                stringDirection = "slight right";
                 break;
             case 9:
-                stringDirection = "Up";
+                stringDirection = "up";
                 break;
             case 10:
-                stringDirection = "Down";
+                stringDirection = "down";
                 break;
             default:
                 //If it reaches this, something quite wrong
@@ -263,8 +376,97 @@ public class Guidance extends Path {
         return textDirection;
     }
 
-    public LinkedList<String> getTextDirections()
+    public static int directionToNum(String direction) {
+        int num;
+        switch (direction) {
+            case "North":
+                num = 1;
+                break;
+            case "NorthEast":
+                num = 2;
+                break;
+            case "East":
+                num = 3;
+                break;
+            case "SouthEast":
+                num = 4;
+                break;
+            case "South":
+                num = 5;
+                break;
+            case "SouthWest":
+                num = 6;
+                break;
+            case "West":
+                num = 7;
+                break;
+            case "NorthWest":
+                num = 8;
+                break;
+            case "Up":
+                num = 9;
+                break;
+            case "Down":
+                num = 10;
+                break;
+            default:
+                num = 100;
+                break;
+        }
+        return num;
+    }
+
+    public LinkedList<DirectionStep> getTextDirections()
     {
         return textDirections;
+    }
+
+    public boolean sendEmailGuidance(String address, Node aNode) {
+        saveMapImage(aNode);
+        String subjectLine;
+        String directionLine = "<H2>You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + ".</H2>" + "<H3>";
+        subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
+
+        for (DirectionStep step: textDirections) {
+            for(String s: step.getDirections()) {
+
+                System.out.println(s);
+                directionLine += s;
+                directionLine += "<br>";
+            }
+        }
+
+        directionLine += "</H3>";
+        try {
+            SendEmail e = new SendEmail(address, subjectLine, directionLine, true);
+            return true;
+        } catch(Exception e) {
+            System.out.println("Threw an exception: " + e);
+            return false;
+        }
+    }
+
+    public boolean sendEmailGuidance(String address) {
+        String subjectLine;
+        String directionLine = "<H2><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H2>" + "<H3>";
+        subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
+
+        int stepNumber = 1;
+        for (DirectionStep step: textDirections) {
+            for(String s: step.getDirections()) {
+                directionLine += "<b>" + stepNumber + ":</b> ";
+                directionLine += s;
+                directionLine += "<br>";
+                stepNumber++;
+            }
+        }
+        directionLine += "</H3>";
+        try {
+            SendEmail e = new SendEmail(address, subjectLine, directionLine, false);
+            return true;
+        } catch(Exception e) {
+            System.out.println("Threw an exception: " + e);
+            return false;
+        }
     }
 }

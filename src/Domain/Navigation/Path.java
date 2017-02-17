@@ -19,7 +19,7 @@ public class Path implements Iterable {
     LinkedList<MapNode> pathNodes;
 
     //Set to true for verbose debugging
-    private boolean devFlag;
+    public boolean vFlag;
 
     private static final double FLOOR_HEIGHT_CONSTANT = 1.812;
 
@@ -28,15 +28,15 @@ public class Path implements Iterable {
     }
 
     /**
-     * Fills this path's field with the path genereated from start to end using Astar, printing out lots of stuff if devflag is true
+     * Fills this path's field with the path genereated from start to end using Astar, printing out lots of stuff if vFlag is true
      * @param start
      * @param end
-     * @param devFlag
+     * @param vFlag
      * @throws PathFindingException
      */
-    private void createPathAStar(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
+    private void createPathAStar(MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
 
-        this.devFlag = devFlag;
+        this.vFlag = vFlag;
 
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
@@ -129,7 +129,7 @@ public class Path implements Iterable {
         nodesFromEdges(start, end);
 
         //Print the edges and nodes for bugfixing
-        if (devFlag) {
+        if (vFlag) {
             printPathEdges();
             printPathNodes();
         }
@@ -145,15 +145,15 @@ public class Path implements Iterable {
 
     }
     /**
-     * Fills this path's field with the path genereated from start to end using Astar, printing out lots of stuff if devflag is true
+     * Fills this path's field with the path genereated from start to end using Astar, printing out lots of stuff if vFlag is true
      * @param start
      * @param end
-     * @param devFlag
+     * @param vFlag
      * @throws PathFindingException
      */
-    private void createPathRandom(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
+    private void createPathRandom(MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
 
-        this.devFlag = devFlag;
+        this.vFlag = vFlag;
 
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
@@ -246,7 +246,7 @@ public class Path implements Iterable {
         nodesFromEdges(start, end);
 
         //Print the edges and nodes for bugfixing
-        if (devFlag) {
+        if (vFlag) {
             printPathEdges();
             printPathNodes();
         }
@@ -262,13 +262,13 @@ public class Path implements Iterable {
 
     }
     /**
-     * Fills this Path's fields with the path generated from start to end using breadth-first search, printing out stuff if devflag is true.
+     * Fills this Path's fields with the path generated from start to end using breadth-first search, printing out stuff if vFlag is true.
      * @param start
      * @param end
-     * @param devFlag
+     * @param vFlag
      * @throws PathFindingException
      */
-    private void createPathBreadthFirst(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
+    private void createPathBreadthFirst(MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
 
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
@@ -307,7 +307,7 @@ public class Path implements Iterable {
         }
 
         //Print the edges and nodes for bugfixing
-        if (devFlag) {
+        if (vFlag) {
             printPathEdges();
             printPathNodes();
         }
@@ -325,14 +325,14 @@ public class Path implements Iterable {
     }
 
     /**
-     * Fills this Path's fields with the path generated from start to end using depth-first search, printing out stuff if devflag is true.
+     * Fills this Path's fields with the path generated from start to end using depth-first search, printing out stuff if vFlag is true.
      * @param start
      * @param end
-     * @param devFlag
+     * @param vFlag
      * @throws PathFindingException
      */
 
-    private void createPathDepthFirst(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
+    private void createPathDepthFirst(MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
 
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
@@ -371,7 +371,7 @@ public class Path implements Iterable {
         }
 
         //Print the edges and nodes for bugfixing
-        if (devFlag) {
+        if (vFlag) {
             printPathEdges();
             printPathNodes();
         }
@@ -393,8 +393,8 @@ public class Path implements Iterable {
         this(start, end, false, "astar");
     }
 
-    public Path(MapNode start, MapNode end, boolean devFlag) throws PathFindingException {
-        this(start, end, devFlag, "astar");
+    public Path(MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
+        this(start, end, vFlag, "astar");
     }
 
     /**
@@ -421,29 +421,30 @@ public class Path implements Iterable {
 
     /**
      * Constructs itself as a path between the two given nodes.
-     * If devFlag is true, prints verbose logs as it does so.
+     * If vFlag is true, prints verbose logs as it does so.
      * @param start
      * @param end
-     * @param devFlag
+     * @param vFlag
      * @throws PathFindingException
      */
-    public Path(MapNode start, MapNode end, boolean devFlag, String algo) throws PathFindingException{
+    public Path(MapNode start, MapNode end, boolean vFlag, String algo) throws PathFindingException{
+        this.vFlag = vFlag;
         switch (algo) {
             case "astar":
-                createPathAStar(start, end, devFlag);
+                createPathAStar(start, end, vFlag);
                 break;
             case "breadthfirst":
-                createPathBreadthFirst(start, end, devFlag);
+                createPathBreadthFirst(start, end, vFlag);
                 break;
             case "depthfirst":
-                createPathDepthFirst(start, end, devFlag);
+                createPathDepthFirst(start, end, vFlag);
                 break;
             case "random":
-                createPathRandom(start, end, devFlag);
+                createPathRandom(start, end, vFlag);
                 break;
             default:
                 System.out.println("Input was neither \"astar\" nor \"breadthfirst\" nor \"depthfirst\" nor \"random\", using astar");
-                createPathAStar(start, end, devFlag);
+                createPathAStar(start, end, vFlag);
         }
     }
 
