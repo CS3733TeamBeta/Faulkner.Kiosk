@@ -23,7 +23,7 @@ public class Guidance extends Path {
     //This is the direction that the user of the kiosk starts off facing.
     private int kioskDirection = 3;
 
-    LinkedList<String> textDirections;
+    LinkedList<DirectionStep> textDirections;
 
     public Guidance (MapNode start, MapNode end) throws PathFindingException {
             this(start, end, false);
@@ -35,7 +35,7 @@ public class Guidance extends Path {
         super(start, end, vFlag);
 
         //Declare and initialize directions
-        textDirections = new LinkedList<String>();
+        textDirections = new LinkedList<DirectionStep>();
         createTextDirections(vFlag);
 
         if (vFlag) {
@@ -48,7 +48,7 @@ public class Guidance extends Path {
 
         kioskDirection = Guidance.directionToNum(kioskInputDirection);
 
-        textDirections = new LinkedList<String>();
+        textDirections = new LinkedList<DirectionStep>();
         createTextDirections(false);
 
 
@@ -164,6 +164,9 @@ public class Guidance extends Path {
 
                     }
                 }
+                this.textDirections.addLast(new DirectionStep(fromNode.getMyFloor()));
+                this.textDirections.getLast().setDirections(tempTextDirections);
+                tempTextDirections.clear();
                 intersectionsPassed = 0;
             }
         }
@@ -188,15 +191,18 @@ public class Guidance extends Path {
                 tempTextDirections.add("Arrive at your destination.");
             }
         }
-        this.textDirections = tempTextDirections;
+        this.textDirections.add(new DirectionStep(toNode.getMyFloor()));
+        this.textDirections.getLast().setDirections(tempTextDirections);
     }
 
     public void printTextDirections() {
         System.out.println("");
         System.out.println("Printing Textual Directions");
         System.out.println("");
-        for (String s: textDirections) {
-            System.out.println(s);
+        for (DirectionStep step: textDirections) {
+            for(String s : step.getDirections()) {
+                System.out.println(s);
+            }
         }
     }
 
@@ -410,7 +416,7 @@ public class Guidance extends Path {
         return num;
     }
 
-    public LinkedList<String> getTextDirections()
+    public LinkedList<DirectionStep> getTextDirections()
     {
         return textDirections;
     }
@@ -421,10 +427,15 @@ public class Guidance extends Path {
         String directionLine = "<H2>You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + ".</H2>" + "<H3>";
         subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
 
-        for(String s: textDirections) {
-            directionLine += s;
-            directionLine += "<br>";
+        for (DirectionStep step: textDirections) {
+            for(String s: step.getDirections()) {
+
+                System.out.println(s);
+                directionLine += s;
+                directionLine += "<br>";
+            }
         }
+
         directionLine += "</H3>";
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine, true);
@@ -440,11 +451,16 @@ public class Guidance extends Path {
         String directionLine = "<H2><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H2>" + "<H3>";
         subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
 
-        for (int i = 0; i < textDirections.size(); i++) {
-            directionLine += "<b>" + (i+1) + ":</b> ";
-            directionLine += textDirections.get(i);
-            directionLine += "<br>";
+        int stepNumber = 1;
+        for (DirectionStep step: textDirections) {
+            for(String s: step.getDirections()) {
+                directionLine += "<b>" + stepNumber + ":</b> ";
+                directionLine += s;
+                directionLine += "<br>";
+                stepNumber++;
+            }
         }
+
         /*
         for(String s: textDirections) {
             directionLine += s;
