@@ -12,24 +12,27 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="798.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.AdminDirectoryEditorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.AdminDirectoryEditorController">
    <children>
-      <VBox layoutX="974.0" layoutY="57.0" prefHeight="738.0" prefWidth="279.0" spacing="25.0" AnchorPane.bottomAnchor="30.0" AnchorPane.topAnchor="30.0">
+      <VBox layoutX="960.0" layoutY="57.0" prefHeight="740.0" prefWidth="309.0" spacing="25.0" AnchorPane.bottomAnchor="30.0" AnchorPane.topAnchor="30.0">
          <children>
             <Label alignment="CENTER" prefHeight="29.0" prefWidth="166.0" text="Profile Editor" textAlignment="CENTER" VBox.vgrow="ALWAYS">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
                <VBox.margin>
-                  <Insets left="40.0" />
+                  <Insets left="40.0" top="20.0" />
                </VBox.margin>
             </Label>
-            <JFXTextField fx:id="nameTextField" promptText="Name">
+            <JFXTextField fx:id="nameTextField" labelFloat="true" promptText="Name">
                <font>
                   <Font size="14.0" />
                </font>
+               <VBox.margin>
+                  <Insets right="100.0" top="40.0" />
+               </VBox.margin>
             </JFXTextField>
-            <Label text="Phone Number">
+            <Label alignment="TOP_LEFT" text="Phone Number">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
@@ -39,7 +42,7 @@
             </Label>
             <HBox prefHeight="28.0" prefWidth="250.0">
                <children>
-                  <JFXTextField fx:id="phoneNumberOneTextField" prefHeight="25.0" prefWidth="60.0" promptText="555">
+                  <JFXTextField fx:id="phoneNumberOneTextField" prefHeight="26.0" prefWidth="46.0" promptText="555">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -49,7 +52,7 @@
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="phoneNumberTwoTextField" prefHeight="25.0" prefWidth="60.0" promptText="555">
+                  <JFXTextField fx:id="phoneNumberTwoTextField" prefHeight="26.0" prefWidth="46.0" promptText="555">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -59,13 +62,42 @@
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="phoneNumberThreeTextField" prefHeight="25.0" prefWidth="80.0" promptText="5555">
+                  <JFXTextField fx:id="phoneNumberThreeTextField" prefHeight="26.0" prefWidth="55.0" promptText="5555">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </JFXTextField>
                </children>
             </HBox>
+            <Label alignment="TOP_LEFT" text="Hours">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <JFXTextField fx:id="hoursStartTimeTextField" prefHeight="28.0" prefWidth="75.0" promptText="Start Time">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets right="150.0" />
+               </VBox.margin>
+            </JFXTextField>
+            <JFXTextField fx:id="hoursEndTimeTextField" prefHeight="28.0" prefWidth="75.0" promptText="End Time">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets right="150.0" />
+               </VBox.margin>
+            </JFXTextField>
+            <JFXTextField fx:id="officeNumberTextField" prefHeight="26.0" prefWidth="186.0" promptText="Office Number" VBox.vgrow="NEVER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets right="150.0" />
+               </VBox.margin>
+            </JFXTextField>
             <Label text="Choose Departments">
                <font>
                   <Font name="System Bold" size="15.0" />
@@ -74,44 +106,11 @@
                   <Insets />
                </VBox.margin>
             </Label>
-            <JFXListView fx:id="departmentsList" />
-            <JFXTextField fx:id="officeNumberTextField" promptText="Office Number">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </JFXTextField>
-            <Label text="Hours">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-            <HBox prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="100.0" prefWidth="50.0" text="Start:">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <JFXTextField fx:id="hoursStartTimeTextField" prefHeight="28.0" prefWidth="75.0" promptText="9:00AM">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </JFXTextField>
-                  <Label alignment="CENTER" prefHeight="100.0" prefWidth="50.0" text="End: ">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <JFXTextField fx:id="hoursEndTimeTextField" prefHeight="28.0" prefWidth="75.0" promptText="5:00PM">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </JFXTextField>
-               </children>
-            </HBox>
-            <JFXButton fx:id="saveButton" onAction="#saveProfile" maxHeight="60.0" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" VBox.vgrow="NEVER">
+            <JFXListView fx:id="departmentsList" prefHeight="285.0" prefWidth="309.0" />
+            <HBox prefHeight="100.0" prefWidth="200.0" />
+            <JFXButton fx:id="saveButton" maxHeight="60.0" onAction="#saveProfile" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" VBox.vgrow="NEVER">
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets top="-20.0" />
                </VBox.margin>
             </JFXButton>
             <JFXButton fx:id="newButton" maxHeight="60.0" onAction="#reset" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #3F51B5;" text="New Profile" textFill="WHITE" VBox.vgrow="NEVER">
@@ -126,7 +125,7 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <TableView fx:id="directoryTable" layoutX="74.0" layoutY="89.0" onMouseClicked="#displaySelectedDocInfo" prefHeight="629.0" prefWidth="856.0">
+      <TableView fx:id="directoryTable" layoutX="74.0" layoutY="89.0" onMouseClicked="#displaySelectedDocInfo" prefHeight="629.0" prefWidth="856.0" AnchorPane.topAnchor="140.0">
          <columns>
             <TableColumn fx:id="nameColumn" prefWidth="181.6666717529297" text="Name" />
             <TableColumn fx:id="phoneNumberColumn" prefWidth="153.0" text="Phone Number" />
@@ -135,5 +134,10 @@
             <TableColumn fx:id="hoursColumn" prefWidth="108.33331298828125" text="Hours" />
          </columns>
       </TableView>
+      <JFXTextField fx:id="nameTextField1" labelFloat="true" layoutX="74.0" layoutY="97.0" promptText="Search Directory">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXTextField>
    </children>
 </AnchorPane>

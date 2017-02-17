@@ -15,7 +15,7 @@ public class AdminDirectoryEditorMain extends Application {
 
         try {
 
-            Scene scene = new Scene(root,1300,750);
+            Scene scene = new Scene(root);
             SceneSwitcher.switchToScene(primaryStage, "../Admin/AdminDirectoryEditor.fxml");
             primaryStage.show();
 
