@@ -107,17 +107,21 @@
                </VBox.margin>
             </Label>
             <JFXListView fx:id="departmentsList" prefHeight="285.0" prefWidth="309.0" />
-            <HBox prefHeight="100.0" prefWidth="200.0" />
-            <JFXButton fx:id="saveButton" maxHeight="60.0" onAction="#saveProfile" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" VBox.vgrow="NEVER">
-               <VBox.margin>
-                  <Insets top="-20.0" />
-               </VBox.margin>
-            </JFXButton>
-            <JFXButton fx:id="newButton" maxHeight="60.0" onAction="#reset" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #3F51B5;" text="New Profile" textFill="WHITE" VBox.vgrow="NEVER">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </JFXButton>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <JFXButton fx:id="saveButton" maxHeight="60.0" onAction="#saveProfile" prefHeight="27.0" prefWidth="310.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </JFXButton>
+                  <JFXButton fx:id="newButton" maxHeight="60.0" onAction="#reset" prefHeight="27.0" prefWidth="310.0" style="-fx-background-color: #3F51B5;" text="New Profile" textFill="WHITE">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <JFXButton fx:id="newButton1" maxHeight="60.0" onAction="#reset" prefHeight="27.0" prefWidth="310.0" style="-fx-background-color: #3F51B5;" text="Map Builder" textFill="WHITE" />
          </children>
       </VBox>
       <Label layoutX="372.0" layoutY="27.0" prefHeight="29.0" prefWidth="215.0" text="Hospital Directory" textAlignment="CENTER" AnchorPane.leftAnchor="400.0" AnchorPane.topAnchor="40.0">
