@@ -19,14 +19,7 @@ public class Building {
         this.buildingFloors = new HashSet<>();
     }
 
-<<<<<<< HEAD
-    /**
-     * Adds a floor to this building, throwing an exception if the floor already exists
-     * @param f the floor to be added
-     * @throws Exception if the floor already exists
-     */
-    public void addFloor(Floor f) throws Exception {
-=======
+
     public Building(String name)
     {
         this();
@@ -48,10 +41,12 @@ public class Building {
 
         return f;
     }
-
-    public void addFloor(Floor f) throws Exception
-    {
->>>>>>> 329db804f9dc46cc93de156c66959fe52780aae0
+    /**
+     * Adds a floor to this building, throwing an exception if the floor already exists
+     * @param f the floor to be added
+     * @throws Exception if the floor already exists
+     */
+    public void addFloor(Floor f) throws Exception {
         boolean floorExists;
 
         try
