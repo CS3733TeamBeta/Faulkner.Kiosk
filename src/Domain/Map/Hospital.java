@@ -1,5 +1,7 @@
 package Domain.Map;
 
+
+import java.util.Collection;
 import java.util.HashSet;
 
 /**
@@ -15,4 +17,20 @@ public class Hospital {
     public void addBuilding(Building b) {
         buildings.add(b);
     }
+
+    public boolean containsBuilding(Building b)
+    {
+        return buildings.contains(b);
+    }
+
+    public int buildingCount()
+    {
+        return buildings.size();
+    }
+
+    public Collection<Building> getBuildings()
+    {
+        return buildings;
+    }
+
 }

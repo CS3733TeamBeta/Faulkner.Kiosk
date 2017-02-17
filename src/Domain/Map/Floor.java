@@ -7,7 +7,7 @@ import java.util.LinkedList;
 /**
  * Represents a floor in a building. A floor will have nodes, node edges, destinations, more
  */
-public class Floor {
+public class Floor implements Comparable{
     LinkedList<MapNode> floorNodes;
     LinkedList<NodeEdge> floorEdges;
     MapNode kioskNode = null;
@@ -56,14 +56,22 @@ public class Floor {
     public void removeNode(MapNode n)
     {
         floorNodes.remove(n);
-        if(n.equals(kioskNode)){
-            System.out.println("DANGER: KIOSK DELETED");
-            this.kioskNode = null;
-        }
     }
 
     public void removeEdge(NodeEdge edge)
     {
         floorEdges.remove(edge);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Floor " + floorNumber;
+    }
+
+    @Override
+    public int compareTo(Object o)
+    {
+        return Integer.compare(this.floorNumber, ((Floor)o).getFloorNumber());
     }
 }

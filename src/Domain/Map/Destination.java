@@ -23,6 +23,7 @@ public class Destination extends MapNode {
 
     public Destination() {
         myInfo = new Info();
+        myInfo.setName("Node");
     }
 
     public Info getInfo()
@@ -39,4 +40,9 @@ public class Destination extends MapNode {
         return getPopOver(controller, popOverEditFXML);
     }
 
+    @Override
+    public String toString()
+    {
+        return myInfo.getName();
+    }
 }
