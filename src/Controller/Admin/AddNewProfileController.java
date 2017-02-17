@@ -98,7 +98,7 @@ public class AddNewProfileController extends AbstractController
     @FXML
     private void saveHit() throws IOException {
         if (isProcessable()) {
-            processInformation();
+            //processInformation();
 
             SceneSwitcher.switchToModifyDirectoryView(primaryStage);
         } else {
@@ -161,26 +161,26 @@ public class AddNewProfileController extends AbstractController
         return true;
     }
 
-    private void processInformation() {
-        String name = lastName.getText() + ", " + firstName.getText();
-        String hour = "N/A";
-
-        if (hours.getText() != null && !(hours.getText().isEmpty())) {
-            hour = hours.getText();
-        }
-
-        Doctor newProfile = new Doctor(name, description.getText(), hour);
-
-        if (phoneNum.getText() != null && !(phoneNum.getText().isEmpty())) {
-            newProfile.setPhoneNum(phoneNum.getText());
-        }
-
-        newProfile.addOffice(roomNum.getText());
-
-        for (String dept: addedDept) {
-            newProfile.addDepartment(dept);
-        }
-
-        Main.FaulknerHospitalDirectory.add(newProfile);
-    }
+//    private void processInformation() {
+//        String name = lastName.getText() + ", " + firstName.getText();
+//        String hour = "N/A";
+//
+//        if (hours.getText() != null && !(hours.getText().isEmpty())) {
+//            hour = hours.getText();
+//        }
+//
+//        Doctor newProfile = new Doctor(name, description.getText(), hour);
+//
+//        if (phoneNum.getText() != null && !(phoneNum.getText().isEmpty())) {
+//            newProfile.setPhoneNum(phoneNum.getText());
+//        }
+//
+//        newProfile.addOffice(roomNum.getText());
+//
+//        for (String dept: addedDept) {
+//            newProfile.addDepartment(dept);
+//        }
+//
+//        Main.FaulknerHospitalDirectory.add(newProfile);
+//    }
 }

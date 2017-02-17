@@ -53,8 +53,8 @@ public class DragDropMain extends Application {
 
 		myBuilding = new Building();
 
-		floor1 = new Floor(1);
-		floor2 = new Floor(2);
+		floor1 = new Floor("F1",1,1);
+		floor2 = new Floor("F2",1,2);
 		nodeA = new MapNode(1, 00 + offset, 100 + offset);
 		nodeB = new MapNode(2, 100 + offset, 100 + offset);
 		nodeC = new MapNode(3, 150 + offset, 100 + offset);

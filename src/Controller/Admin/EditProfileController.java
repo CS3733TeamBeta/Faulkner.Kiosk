@@ -84,7 +84,7 @@ public class EditProfileController extends AbstractController
         hours.setText(editDoc.getHours());
         phoneNum.setText(editDoc.getPhoneNum());
 
-        addedDept = FXCollections.observableArrayList(editDoc.getDepartment());
+        //addedDept = FXCollections.observableArrayList(editDoc);
         deptAddedListView.setItems(addedDept);
         deptList = Main.departments;
         deptListView.setItems(FXCollections.observableList(deptList));
@@ -188,11 +188,11 @@ public class EditProfileController extends AbstractController
         this.editDoc.setDescription(description.getText());
         this.editDoc.setHours(hour);
 
-        this.editDoc.setDepartment(new HashSet<String>());
+        //this.editDoc.setDepartment(new HashSet<String>());
 
-        for (String dept: addedDept) {
-            this.editDoc.addDepartment(dept);
-        }
+//        for (String dept: addedDept) {
+//            this.editDoc.addDepartment(dept);
+//        }
 
         this.editDoc.setMyOffice(new HashSet<String>());
         this.editDoc.addOffice(roomNum.getText());
