@@ -132,6 +132,7 @@ public class Main extends Application {
         floor1.addEdge(edgeM);
         floor1.setKioskLocation(nodeM);
 
+        floor1.setImageName("@floor3.png");
 
         mvm = new MapModel();
         mvm.setCurrentFloor(floor1);

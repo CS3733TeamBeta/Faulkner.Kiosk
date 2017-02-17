@@ -69,7 +69,7 @@
                <children>
                   <ImageView fx:id="mapImage" fitHeight="546.0" fitWidth="941.0" layoutX="-9.0" layoutY="-12.0" preserveRatio="true" AnchorPane.bottomAnchor="-3.0" AnchorPane.leftAnchor="-9.0" AnchorPane.rightAnchor="-21.0">
                      <image>
-                        <Image url="@floor3.png" />
+                        <Image url=currentImageBackground />
                      </image>
                   </ImageView>
                </children>

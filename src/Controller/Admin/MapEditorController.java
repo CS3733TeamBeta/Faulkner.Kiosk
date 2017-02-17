@@ -2,6 +2,7 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -43,6 +44,11 @@ public class MapEditorController extends AbstractController {
 	TreeView treeViewBuilding1;
 
 	@FXML
+    String currentImageBackground;
+
+
+
+	@FXML
 	TreeItem<String> treeFloor3;
 
 	private DragIcon mDragOverIcon = null;
@@ -53,6 +59,8 @@ public class MapEditorController extends AbstractController {
 	private MapModel model;
 
 	NodeEdge drawingEdge;
+
+	public static Floor newFloor = null;
 
 
 	@FXML
@@ -152,12 +160,15 @@ public class MapEditorController extends AbstractController {
 			model.setCurrentFloor(Main.mvm.getCurrentFloor());
 		}
 
+		currentImageBackground = model.getCurrentFloor().getImageName();
+
 		treeFloor3 = new TreeItem<String> ("Floor 3");
 		treeFloor3.setExpanded(true);
 
 		treeViewBuilding1.setRoot(treeFloor3);
 
 		if(DragDropMain.mvm != null || Main.mvm != null){
+
 			//and then set all the existing nodes up
 			HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
 
