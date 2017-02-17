@@ -113,6 +113,8 @@ public class UserMapViewALTController extends AbstractController {
     }
 
     public void loadMenu() {
+        welcomeGreeting.setVisible(true);
+
         Timeline menuSlideUp = new Timeline();
         menuSlideUp.setCycleCount(1);
         menuSlideUp.setAutoReverse(true);
