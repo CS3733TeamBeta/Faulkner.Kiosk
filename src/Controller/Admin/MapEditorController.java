@@ -82,6 +82,12 @@ public class MapEditorController extends AbstractController {
 		SceneSwitcher.switchToModifyLocationsView(this.getStage());
 	}
 
+	@FXML
+	private void addNewFloor()throws IOException{
+		SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/FileChooser_View.fxml");
+
+	}
+
 	public void refreshNodePositions()
 	{
 		for (MapNode n : model.getCurrentFloor().getFloorNodes())

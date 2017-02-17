@@ -13,7 +13,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="737.0" prefWidth="1295.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.MapEditorController">
+<AnchorPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="737.0" prefWidth="1295.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.Admin.MapEditorController">
    <children>
       <TabPane layoutX="839.0" layoutY="48.0" opacity="0.82" prefHeight="456.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="145.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0">
         <tabs>
@@ -52,7 +53,7 @@
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton contentDisplay="TOP" layoutX="164.0" layoutY="1.0" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="New Floor" textFill="WHITE" AnchorPane.rightAnchor="5.0">
+            <JFXButton contentDisplay="TOP" onAction="#addNewFloor" layoutX="164.0" layoutY="1.0" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="New Floor" textFill="WHITE" AnchorPane.rightAnchor="5.0">
                <font>
                   <Font size="14.0" />
                </font>
