@@ -1,6 +1,5 @@
 package Domain.Map;
 
-import java.util.Collection;
 import java.util.HashSet;
 
 /**
@@ -8,34 +7,10 @@ import java.util.HashSet;
  */
 public class Building {
 
-    String name;
-
     HashSet<Floor> buildingFloors;
 
     public Building() {
         this.buildingFloors = new HashSet<>();
-    }
-
-    public Building(String name)
-    {
-        this();
-        this.name = name;
-    }
-
-    public Floor newFloor()
-    {
-        Floor f = new Floor("", 1, buildingFloors.size() + 1);
-
-        try
-        {
-            addFloor(f);
-        }
-        catch (Exception e)
-        {
-
-        }
-
-        return f;
     }
 
     public void addFloor(Floor f) throws Exception
@@ -79,19 +54,4 @@ public class Building {
 
         throw new Exception("Floor not found");
     }
-
-    public Collection<Floor> getFloors()
-    {
-        return buildingFloors;
-    }
-
-    /**
-     *
-     * @return name of building
-     */
-    public String getName()
-    {
-        return name;
-    }
-
 }

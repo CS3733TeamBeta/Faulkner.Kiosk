@@ -2,10 +2,8 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 
 import Controller.AbstractController;
 import Controller.DragDropMain;
@@ -15,19 +13,15 @@ import Domain.Map.*;
 import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
-import Model.DataSourceClasses.MapTreeItem;
-import Model.DataSourceClasses.TreeViewWithItems;
-import Model.MapEditorModel;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
+import Model.MapModel;
+//import apple.laf.JRSUIUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
-import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -44,134 +38,48 @@ public class MapEditorController extends AbstractController {
 	@FXML HBox bottom_bar;
 	@FXML AnchorPane root_pane;
 	@FXML ImageView mapImage;
+	@FXML Tab tabBuilding1;
+	@FXML
+	TreeView treeViewBuilding1;
 
 	@FXML
-	Button newBuildingButton;
-
-	@FXML
-	Button newFloorButton;
-
-	@FXML
-	private TabPane BuildingTabPane;
+	TreeItem<String> treeFloor3;
 
 	private DragIcon mDragOverIcon = null;
 
 	private EventHandler<DragEvent> onIconDragOverRoot = null;
 	private EventHandler<DragEvent> onIconDragDropped = null;
 	private EventHandler<DragEvent> onIconDragOverRightPane = null;
-	private MapEditorModel model;
+	private MapModel model;
 
 	NodeEdge drawingEdge;
 
-	public Tab addBuilding(Building b)
-	{
-		if(b==null)
-		{
-			b = new Building("Building " + model.getBuildingCount());
+
+	@FXML
+	public void saveInfoAndExit() throws IOException{
+		//removeHandlers();
+		updateEdgeWeights();
+
+		refreshNodePositions();
+
+		int i = 0;
+		for(NodeEdge e: model.getCurrentFloor().getFloorEdges()){
+			System.out.println(Integer.toString(i) + ": Node " + e.getSource().getNodeID() + " Finalized to: " + e.getTarget().getNodeID());
+			i++;
 		}
 
-		final Label label = new Label(b.getName());
-		final Tab tab = new Tab();
-		tab.setGraphic(label);
-		final TextField textField = new TextField();
+		if(model.getCurrentFloor().getKioskNode() == null && model.getCurrentFloor().getFloorNodes().size() > 0){
+			System.out.println("ERROR; NO KIOSK NODE SET; SETTING ONE RANDOMLY");
+			model.getCurrentFloor().setKioskLocation(model.getCurrentFloor().getFloorNodes().get(0));
+		}
 
-		label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getClickCount()==2)
-				{
-					textField.setText(label.getText());
-					tab.setGraphic(textField);
-					textField.selectAll();
-					textField.requestFocus();
-				}
-				else
-				{
-
-				}
-			}
-		});
-
-
-		textField.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				label.setText(textField.getText());
-				tab.setGraphic(label);
-			}
-		});
-
-
-		textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable,
-								Boolean oldValue, Boolean newValue) {
-				if (! newValue) {
-					label.setText(textField.getText());
-					tab.setGraphic(label);
-				}
-			}
-		});
-
-		TreeViewWithItems<MapTreeItem> tV = new TreeViewWithItems<MapTreeItem>();
-
-		tV.setRoot(new TreeItem<MapTreeItem>(null));
-		tV.setShowRoot(false);
-
-		tab.setContent(tV);
-
-		model.addBuilding(b, tab);
-		BuildingTabPane.getTabs().add(tab);
-
-		return tab;
-	}
-
-	@FXML
-	void onNewBuilding(ActionEvent event)
-	{
-		addBuilding(null);
-	}
-
-	/**
-	 * Runs when "New Floor" is clicked
-	 *
-	 * @param event from button click
-	 */
-	@FXML
-	void onNewFloor(ActionEvent event)
-	{
-		TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
-
-		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
-
-		Floor f = b.newFloor(); //makes new floor
-
-		treeView.getRoot().getChildren().add(makeTreeItem(f));
-	}
-
-	public TreeItem<MapTreeItem> makeTreeItem(Object o)
-	{
-		//TreeItem<Object> treeItem = new TreeItem<Object>(o);
-
-		MapTreeItem treeObj = new MapTreeItem(o);
-
-		//treeItem.setValue(o);
-
-		TreeItem<MapTreeItem> treeItem = new TreeItem<>(treeObj);
-
-		treeItem.setExpanded(true);
-
-		return treeItem;
-	}
-
-	public void changeFloorSelection(Floor f)
-	{
-		model.setCurrentFloor(f);
-
-		//change image
-		//clear nodes
-		//load nodes
-		//devon @TODO
+		if(DragDropMain.mvm != null) {
+			DragDropMain.mvm.setCurrentFloor(this.model.getCurrentFloor());
+		}
+		else if(Main.mvm != null) {
+			Main.mvm.setCurrentFloor(this.model.getCurrentFloor());
+		}
+		SceneSwitcher.switchToModifyLocationsView(this.getStage());
 	}
 
 	public void refreshNodePositions()
@@ -190,7 +98,7 @@ public class MapEditorController extends AbstractController {
 
 	public MapEditorController() {
 
-		model = new MapEditorModel();
+		model = new MapModel();
 
 		//Runs once the edge is drawn from one node to another
 		//connects the two, sends sources, positions them etc.
@@ -237,6 +145,11 @@ public class MapEditorController extends AbstractController {
 		else if(Main.mvm != null) {
 			model.setCurrentFloor(Main.mvm.getCurrentFloor());
 		}
+
+		treeFloor3 = new TreeItem<String> ("Floor 3");
+		treeFloor3.setExpanded(true);
+
+		treeViewBuilding1.setRoot(treeFloor3);
 
 		if(DragDropMain.mvm != null || Main.mvm != null){
 			//and then set all the existing nodes up
@@ -285,7 +198,7 @@ public class MapEditorController extends AbstractController {
 			}
 		}
 		else{
-			model = new MapEditorModel();
+			model = new MapModel();
 		}
 
 	}
@@ -337,8 +250,6 @@ public class MapEditorController extends AbstractController {
 
 		renderInitialMap();
 
-		//BuildingTabPane.getTabs().add(createEditableTab("Building 3"));
-
 		//Add one icon that will be used for the drag-drop process
 		//This is added as a child to the root anchorpane so it can be visible
 		//on both sides of the split pane.
@@ -369,37 +280,6 @@ public class MapEditorController extends AbstractController {
 		}
 
 		buildDragHandlers();
-
-		/*
-		 * Adds buildings to tab pane.
-		 */
-		for(Building b : model.getHospital().getBuildings())
-		{
-			Tab t = addBuilding(b);
-
-			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>)t.getContent();
-
-			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldvalue, newvalue) -> {
-				if(newvalue.getValue().getValue() instanceof Floor)
-				{
-					changeFloorSelection((Floor)newvalue.getValue().getValue());
-				}
-				else
-				{
-					changeFloorSelection((Floor)(newvalue.getParent().getValue().getValue()));
-				}
-			});
-
-			for(Floor f: b.getFloors())
-			{
-				treeView.getRoot().getChildren().add(makeTreeItem(f));
-			}
-
-			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
-		}
-
-
-		getCurrentTreeView().getSelectionModel().select(0);
 	}
 
 	/**
@@ -566,10 +446,6 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	/**
-	 * Adds a fresh node to the admin map, handles event handler creation, layering etc.
-	 * @param mapNode
-	 */
 	public void addToAdminMap(MapNode mapNode)
 	{
 		addEventHandlersToNode(mapNode);
@@ -593,37 +469,8 @@ public class MapEditorController extends AbstractController {
 
 		if(mapNode instanceof Destination && !((Destination)mapNode).getInfo().getName().isEmpty())
 		{
-			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
-
-			TreeItem<MapTreeItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
-
-			MapTreeItem selectedObject = selectedTreeItem.getValue();
-
-			if(selectedObject!=null)
-			{
-				TreeItem<MapTreeItem> floorTreeItem;
-
-				//selectedObject.
-				if(selectedObject.getValue() instanceof Floor)
-				{
-					floorTreeItem = selectedTreeItem;
-				}
-				else
-				{
-					floorTreeItem = selectedTreeItem.getParent();
-				}
-
-				((Floor)floorTreeItem.getValue().getValue()).addNode(mapNode);
-				floorTreeItem.getChildren().add(makeTreeItem(mapNode));
-			}
-
-			treeView.refresh();
+			treeFloor3.getChildren().add(new TreeItem<String>(((Destination) mapNode).getInfo().getName()));
 		}
-	}
-
-	public TreeViewWithItems<MapTreeItem> getCurrentTreeView()
-	{
-		return (TreeViewWithItems<MapTreeItem>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
 	}
 	/**
 	 * Adds all of the event handlers to handle dragging, edge creation, deletion etc.
@@ -650,7 +497,7 @@ public class MapEditorController extends AbstractController {
 				popOver.setOnHiding(event -> {
 					if(mapNode instanceof Destination && !((Destination)mapNode).getInfo().getName().isEmpty())
 					{
-						getCurrentTreeView().refresh();
+						treeFloor3.getChildren().add(new TreeItem<String>(((Destination) mapNode).getInfo().getName()));
 					}
 				});
 
@@ -763,33 +610,28 @@ public class MapEditorController extends AbstractController {
 
 		/*********REALLY SHITTY CODEEEE, should specifically use iterator for removal**************/
 
-		TreeItem<MapTreeItem> toDelete = null;
+		TreeItem<String> toDelete = null;
 
 		if(node instanceof Destination)
 		{
-			for (TreeItem<MapTreeItem> floorItem : getCurrentTreeView().getRoot().getChildren())
+			for (TreeItem<String> nodeItem : treeFloor3.getChildren())
 			{
-				for(TreeItem<MapTreeItem>  nodeItem : floorItem.getChildren())
+				if (nodeItem.getValue().equals(((Destination)node).getInfo().getName()))
 				{
-					if (nodeItem.getValue().getValue().equals((node)))
-					{
-						toDelete = nodeItem;
-						break;
-					}
+					toDelete = nodeItem;
+					break;
 				}
 			}
 
 			if(toDelete != null)
 			{
 				toDelete.getParent().getChildren().remove(toDelete);
-
-				getCurrentTreeView().refresh();
-				//treeViewBuilding1.refresh();
+				treeViewBuilding1.refresh();
 
 				System.out.println("3 strikes and ur out");
 			}
 
-			//((Destination)node).getInfo().setName(""); //realllylllylyly hacky
+			((Destination)node).getInfo().setName(""); //realllylllylyly hacky
 		}
 	}
 
@@ -816,43 +658,11 @@ public class MapEditorController extends AbstractController {
 		}
 	}
 
-	/*public void removeHandlers(){
+	public void removeHandlers(){
 		for(MapNode n : model.getCurrentFloor().getFloorNodes()){
 			n.getNodeToDisplay().removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
 			n.getNodeToDisplay().removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane);
 			n.getNodeToDisplay().removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRoot);
 		}
-	}*/
-
-	/**Handles saving out all of the map info
-	 * @TODO Save directory changes
-	 * @throws IOException
-	 */
-
-	@FXML
-	public void saveInfoAndExit() throws IOException{
-		//removeHandlers();
-		updateEdgeWeights();
-
-		refreshNodePositions();
-
-		int i = 0;
-		for(NodeEdge e: model.getCurrentFloor().getFloorEdges()){
-			System.out.println(Integer.toString(i) + ": Node " + e.getSource().getNodeID() + " Finalized to: " + e.getTarget().getNodeID());
-			i++;
-		}
-
-		if(model.getCurrentFloor().getKioskNode() == null && model.getCurrentFloor().getFloorNodes().size() > 0){
-			System.out.println("ERROR; NO KIOSK NODE SET; SETTING ONE RANDOMLY");
-			model.getCurrentFloor().setKioskLocation(model.getCurrentFloor().getFloorNodes().get(0));
-		}
-
-		if(DragDropMain.mvm != null) {
-			DragDropMain.mvm.setCurrentFloor(this.model.getCurrentFloor());
-		}
-		else if(Main.mvm != null) {
-			Main.mvm.setCurrentFloor(this.model.getCurrentFloor());
-		}
-		SceneSwitcher.switchToModifyLocationsView(this.getStage());
 	}
 }
