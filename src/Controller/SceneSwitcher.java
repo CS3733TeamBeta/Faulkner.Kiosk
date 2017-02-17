@@ -30,7 +30,7 @@ public class SceneSwitcher
     protected static final String UserMapViewPath = UserPackage + "/UserMapView.fxml";
     protected static final String UserSearchViewPath = UserPackage + "/UserSearchView.fxml";
     protected static final String EditProfileViewPath = AdminPackage + "/EditProfileView.fxml";
-    protected static final String UserMapViewALTPath = UserPackage + "/UserMapViewALT.fxml";
+    protected static final String UserMapViewALTPath = UserPackage + "/UserMapView.fxml";
 
     public static AbstractController switchToScene(Stage primaryStage, String pathToView) throws IOException
     {
