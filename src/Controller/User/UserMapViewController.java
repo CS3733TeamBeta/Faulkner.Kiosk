@@ -12,6 +12,8 @@ import Domain.ViewElements.DragIconType;
 import Exceptions.PathFindingException;
 import Model.MapEditorModel;
 import Model.MapModel;
+import com.jfoenix.controls.JFXButton;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableView;
@@ -38,6 +40,7 @@ import java.util.HashSet;
  *
  */
 public class UserMapViewController extends AbstractController {
+    public JFXButton emailButton;
     Boolean downArrow = true; // By default, the navigation arrow is to minimize the welcome page
     ColorAdjust colorAdjust = new ColorAdjust();
     int numClickDr = 0;
@@ -47,6 +50,8 @@ public class UserMapViewController extends AbstractController {
 
     double xNodeScale = 1200/941;
     double yNodeScale = 700/546;
+    boolean sendingEmail = false;
+    Guidance newRoute;
 
     @FXML
     AnchorPane mainPane;
@@ -173,6 +178,8 @@ public class UserMapViewController extends AbstractController {
     {
         model = new MapModel();
         renderInitialMap();
+
+        emailButton.setVisible(false);
     }
 
     private void setupImportedNode(MapNode droppedNode){
@@ -203,7 +210,7 @@ public class UserMapViewController extends AbstractController {
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException {
         System.out.println("In path finding");
-        Guidance newRoute;
+
         MapNode startPoint = model.getCurrentFloor().getKioskNode();
         if (endPoint == startPoint) {
             System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
@@ -227,8 +234,9 @@ public class UserMapViewController extends AbstractController {
         }
 
         newRoute.printTextDirections();
-        newRoute.sendEmailGuidance("iancj97@gmail.com", mainPane);
-
+        emailButton.setVisible(true);
+        searchBar.setPromptText("Your Email");
+        sendingEmail = true;
     }
     public void setStage(Stage s)
     {
@@ -257,37 +265,45 @@ public class UserMapViewController extends AbstractController {
     }
 
     public void searchMenuUp() {
-        Timeline menuSlideDown = new Timeline();
-        KeyFrame keyFrame;
-        menuSlideDown.setCycleCount(1);
-        menuSlideDown.setAutoReverse(true);
+        if(!sendingEmail)
+        {
 
-        if (downArrow) { // Navigate down icon -> welcome page down (left with search bar)
-            KeyValue welcomeDown = new KeyValue(searchMenu.translateYProperty(), 180);
-            keyFrame = new KeyFrame(Duration.millis(600), welcomeDown);
-            welcomeGreeting.setVisible(false);
-            downArrow = false; // Changes to up icon
-            searchMenu.setStyle("-fx-background-color: transparent;");
-        } else { // Navigate up icon -> show welcome page
-            KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
-            keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
 
-            // Reset to default
-            defaultProperty();
+            Timeline menuSlideDown = new Timeline();
+            KeyFrame keyFrame;
+            menuSlideDown.setCycleCount(1);
+            menuSlideDown.setAutoReverse(true);
 
-            downArrow = true;
-            numClickDr = 0;
-            numClickFood = 0;
-            numClickBath = 0;
-            numClickHelp = 0;
+            if (downArrow)
+            { // Navigate down icon -> welcome page down (left with search bar)
+                KeyValue welcomeDown = new KeyValue(searchMenu.translateYProperty(), 180);
+                keyFrame = new KeyFrame(Duration.millis(600), welcomeDown);
+                welcomeGreeting.setVisible(false);
+                downArrow = false; // Changes to up icon
+                searchMenu.setStyle("-fx-background-color: transparent;");
+            }
+            else
+            { // Navigate up icon -> show welcome page
+                KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
+                keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
 
-            searchBar.clear();
+                // Reset to default
+                defaultProperty();
+
+                downArrow = true;
+                numClickDr = 0;
+                numClickFood = 0;
+                numClickBath = 0;
+                numClickHelp = 0;
+
+                searchBar.clear();
+            }
+
+            navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
+
+            menuSlideDown.getKeyFrames().add(keyFrame);
+            menuSlideDown.play();
         }
-
-        navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
-
-        menuSlideDown.getKeyFrames().add(keyFrame);
-        menuSlideDown.play();
     }
 
     public void loadMenu() {
@@ -305,17 +321,21 @@ public class UserMapViewController extends AbstractController {
         menuSlideUp.play();
     }
 
-    public void doctorSelected() {
+    public void doctorSelected()
+    {
         loadMenu();
         numClickDr = numClickDr + 1;
         numClickHelp = 0;
         numClickBath = 0;
         numClickFood = 0;
 
-        if (numClickDr == 2) {
+        if (numClickDr == 2)
+        {
             defaultProperty();
             numClickDr = 0;
-        } else {
+        }
+        else
+        {
             defaultProperty();
 
             ColorAdjust clicked = new ColorAdjust();
@@ -328,6 +348,7 @@ public class UserMapViewController extends AbstractController {
             deptTable.setVisible(false);
             doctorTable.setVisible(true);
         }
+
     }
 
     public void bathroomSelected() {
@@ -404,5 +425,19 @@ public class UserMapViewController extends AbstractController {
 
     public void adminLogin() throws IOException {
         SceneSwitcher.switchToLoginView(primaryStage);
+    }
+
+    public void onEmailDirections(ActionEvent actionEvent)
+    {
+        emailButton.setVisible(false);
+        searchBar.setText("Search Hospital");
+
+        System.out.println(searchBar.getText());
+
+        newRoute.sendEmailGuidance(searchBar.getText(), mainPane);
+
+        defaultProperty();
+
+        sendingEmail = false;
     }
 }
