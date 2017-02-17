@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Objects;
+import java.util.Map;
 
 import Controller.AbstractController;
 import Controller.DragDropMain;
@@ -15,8 +15,9 @@ import Domain.Map.*;
 import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
+import Model.DataSourceClasses.MapTreeItem;
+import Model.DataSourceClasses.TreeViewWithItems;
 import Model.MapEditorModel;
-import Model.MapModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -43,8 +44,6 @@ public class MapEditorController extends AbstractController {
 	@FXML HBox bottom_bar;
 	@FXML AnchorPane root_pane;
 	@FXML ImageView mapImage;
-	@FXML Tab tabBuilding1;
-	@FXML TreeView treeViewBuilding1;
 
 	@FXML
 	Button newBuildingButton;
@@ -54,8 +53,6 @@ public class MapEditorController extends AbstractController {
 
 	@FXML
 	private TabPane BuildingTabPane;
-
-	TreeItem<String> treeFloor3;
 
 	private DragIcon mDragOverIcon = null;
 
@@ -116,9 +113,9 @@ public class MapEditorController extends AbstractController {
 			}
 		});
 
-		TreeView<String> tV = new TreeView<String>();
+		TreeViewWithItems<MapTreeItem> tV = new TreeViewWithItems<MapTreeItem>();
 
-		tV.setRoot(new TreeItem<String>());
+		tV.setRoot(new TreeItem<MapTreeItem>(null));
 		tV.setShowRoot(false);
 
 		tab.setContent(tV);
@@ -143,13 +140,39 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	void onNewFloor(ActionEvent event)
 	{
-		TreeView<Object> treeView = (TreeView<Object>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
+		TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
 
 		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
 
 		Floor f = b.newFloor(); //makes new floor
 
-		treeView.getRoot().getChildren().add(new TreeItem<Object>(f));
+		treeView.getRoot().getChildren().add(makeTreeItem(f));
+	}
+
+	public TreeItem<MapTreeItem> makeTreeItem(Object o)
+	{
+		//TreeItem<Object> treeItem = new TreeItem<Object>(o);
+
+		MapTreeItem treeObj = new MapTreeItem(o);
+
+		//treeItem.setValue(o);
+
+		TreeItem<MapTreeItem> treeItem = new TreeItem<>(treeObj);
+
+		treeItem.setExpanded(true);
+
+		return treeItem;
+	}
+
+	public void changeFloorSelection(Floor f)
+	{
+		model.setCurrentFloor(f);
+
+		//change image
+		//clear nodes
+		//load nodes
+
+
 	}
 
 	public void refreshNodePositions()
@@ -354,15 +377,30 @@ public class MapEditorController extends AbstractController {
 		for(Building b : model.getHospital().getBuildings())
 		{
 			Tab t = addBuilding(b);
-			TreeView<String> treeView = (TreeView<String>)t.getContent();
+
+			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>)t.getContent();
+
+			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldvalue, newvalue) -> {
+				if(newvalue.getValue().getValue() instanceof Floor)
+				{
+					changeFloorSelection((Floor)newvalue.getValue().getValue());
+				}
+				else
+				{
+					changeFloorSelection((Floor)(newvalue.getParent().getValue().getValue()));
+				}
+			});
 
 			for(Floor f: b.getFloors())
 			{
-				treeView.getRoot().getChildren().add(new TreeItem<String>(f.toString()));
+				treeView.getRoot().getChildren().add(makeTreeItem(f));
 			}
 
 			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
 		}
+
+
+		getCurrentTreeView().getSelectionModel().select(0);
 	}
 
 	/**
@@ -556,8 +594,37 @@ public class MapEditorController extends AbstractController {
 
 		if(mapNode instanceof Destination && !((Destination)mapNode).getInfo().getName().isEmpty())
 		{
-			treeFloor3.getChildren().add(new TreeItem<String>(((Destination) mapNode).getInfo().getName()));
+			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
+
+			TreeItem<MapTreeItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
+
+			MapTreeItem selectedObject = selectedTreeItem.getValue();
+
+			if(selectedObject!=null)
+			{
+				TreeItem<MapTreeItem> floorTreeItem;
+
+				//selectedObject.
+				if(selectedObject.getValue() instanceof Floor)
+				{
+					floorTreeItem = selectedTreeItem;
+				}
+				else
+				{
+					floorTreeItem = selectedTreeItem.getParent();
+				}
+
+				((Floor)floorTreeItem.getValue().getValue()).addNode(mapNode);
+				floorTreeItem.getChildren().add(makeTreeItem(mapNode));
+			}
+
+			treeView.refresh();
 		}
+	}
+
+	public TreeViewWithItems<MapTreeItem> getCurrentTreeView()
+	{
+		return (TreeViewWithItems<MapTreeItem>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
 	}
 	/**
 	 * Adds all of the event handlers to handle dragging, edge creation, deletion etc.
@@ -584,7 +651,7 @@ public class MapEditorController extends AbstractController {
 				popOver.setOnHiding(event -> {
 					if(mapNode instanceof Destination && !((Destination)mapNode).getInfo().getName().isEmpty())
 					{
-						treeFloor3.getChildren().add(new TreeItem<String>(((Destination) mapNode).getInfo().getName()));
+						getCurrentTreeView().refresh();
 					}
 				});
 
@@ -697,28 +764,33 @@ public class MapEditorController extends AbstractController {
 
 		/*********REALLY SHITTY CODEEEE, should specifically use iterator for removal**************/
 
-		TreeItem<String> toDelete = null;
+		TreeItem<MapTreeItem> toDelete = null;
 
 		if(node instanceof Destination)
 		{
-			for (TreeItem<String> nodeItem : treeFloor3.getChildren())
+			for (TreeItem<MapTreeItem> floorItem : getCurrentTreeView().getRoot().getChildren())
 			{
-				if (nodeItem.getValue().equals(((Destination)node).getInfo().getName()))
+				for(TreeItem<MapTreeItem>  nodeItem : floorItem.getChildren())
 				{
-					toDelete = nodeItem;
-					break;
+					if (nodeItem.getValue().getValue().equals((node)))
+					{
+						toDelete = nodeItem;
+						break;
+					}
 				}
 			}
 
 			if(toDelete != null)
 			{
 				toDelete.getParent().getChildren().remove(toDelete);
-				treeViewBuilding1.refresh();
+
+				getCurrentTreeView().refresh();
+				//treeViewBuilding1.refresh();
 
 				System.out.println("3 strikes and ur out");
 			}
 
-			((Destination)node).getInfo().setName(""); //realllylllylyly hacky
+			//((Destination)node).getInfo().setName(""); //realllylllylyly hacky
 		}
 	}
 

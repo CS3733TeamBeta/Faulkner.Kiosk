@@ -56,10 +56,6 @@ public class Floor implements Comparable{
     public void removeNode(MapNode n)
     {
         floorNodes.remove(n);
-        if(n.equals(kioskNode)){
-            System.out.println("DANGER: KIOSK DELETED");
-            this.kioskNode = null;
-        }
     }
 
     public void removeEdge(NodeEdge edge)

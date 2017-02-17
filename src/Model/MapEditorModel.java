@@ -4,6 +4,7 @@ import Domain.Map.*;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TreeItem;
 
 import java.util.*;
 
@@ -20,11 +21,15 @@ public class MapEditorModel
 
     HashMap<Tab, Building> buildingTabMap;
 
+    HashMap<TreeItem<Object>, Floor> floorTreeMap; //sets relation between tree objects and floors
+
     Hospital hospital;
     Floor currentFloor;
 
     public MapEditorModel()
     {
+        floorTreeMap = new HashMap<>();
+
         edgeCompleteHandlers = new LinkedList<EdgeCompleteEventHandler>(); //instantiate empty linked list for handlers;
 
         sideBarIcons = new ArrayList<DragIcon>();
@@ -69,7 +74,11 @@ public class MapEditorModel
     public void makeNewBuilding(String name, Tab tab)
     {
         hospital.addBuilding(new Building());
+    }
 
+    public void addFloorTreeItem(TreeItem<Object> item, Floor floor)
+    {
+        floorTreeMap.put(item, floor);
     }
 
     /*/**

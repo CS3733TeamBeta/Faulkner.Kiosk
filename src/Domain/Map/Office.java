@@ -18,13 +18,16 @@ public class Office extends Destination
     private final String popOverEditFXML = "/Admin/Popup/OfficeEditPopup.fxml";
 
     public Office(int id, HashSet<Doctor> doctors) {
+        super();
+
         this.id = id;
         this.occupants = doctors;
     }
 
     public Office()
     {
-
+        super();
+        this.myInfo.setName("Office");
     }
 
     @Override
