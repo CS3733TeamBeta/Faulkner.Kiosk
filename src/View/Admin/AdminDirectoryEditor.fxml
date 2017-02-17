@@ -74,7 +74,7 @@
                   <Font name="System Bold" size="15.0" />
                </font>
             </Label>
-            <JFXTextField fx:id="hoursStartTimeTextField" prefHeight="28.0" prefWidth="75.0" promptText="Start Time">
+            <JFXTextField fx:id="hoursStartTimeTextField" minHeight="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="75.0" promptText="Start Time">
                <font>
                   <Font size="14.0" />
                </font>
@@ -82,7 +82,7 @@
                   <Insets right="150.0" />
                </VBox.margin>
             </JFXTextField>
-            <JFXTextField fx:id="hoursEndTimeTextField" prefHeight="28.0" prefWidth="75.0" promptText="End Time">
+            <JFXTextField fx:id="hoursEndTimeTextField" minHeight="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="75.0" promptText="End Time">
                <font>
                   <Font size="14.0" />
                </font>
@@ -90,7 +90,7 @@
                   <Insets right="150.0" />
                </VBox.margin>
             </JFXTextField>
-            <JFXTextField fx:id="officeNumberTextField" prefHeight="26.0" prefWidth="186.0" promptText="Office Number" VBox.vgrow="NEVER">
+            <JFXTextField fx:id="officeNumberTextField" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="75.0" promptText="Office Number" VBox.vgrow="NEVER">
                <font>
                   <Font size="14.0" />
                </font>
@@ -106,7 +106,7 @@
                   <Insets />
                </VBox.margin>
             </Label>
-            <JFXListView fx:id="departmentsList" prefHeight="285.0" prefWidth="309.0" />
+            <JFXListView fx:id="departmentsList" minHeight="-Infinity" minWidth="-Infinity" prefHeight="124.0" prefWidth="309.0" />
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
                   <JFXButton fx:id="saveButton" maxHeight="60.0" onAction="#saveProfile" prefHeight="27.0" prefWidth="310.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE">
@@ -121,7 +121,7 @@
                   </JFXButton>
                </children>
             </HBox>
-            <JFXButton fx:id="newButton1" maxHeight="60.0" onAction="#reset" prefHeight="27.0" prefWidth="310.0" style="-fx-background-color: #3F51B5;" text="Map Builder" textFill="WHITE" />
+            <JFXButton fx:id="newButton1" maxHeight="60.0" onAction="#onMapBuilderSwitch" prefHeight="27.0" prefWidth="310.0" style="-fx-background-color: #3F51B5;" text="Map Builder" textFill="WHITE" />
          </children>
       </VBox>
       <Label layoutX="372.0" layoutY="27.0" prefHeight="29.0" prefWidth="215.0" text="Hospital Directory" textAlignment="CENTER" AnchorPane.leftAnchor="400.0" AnchorPane.topAnchor="40.0">

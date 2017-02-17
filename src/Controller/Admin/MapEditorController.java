@@ -15,6 +15,7 @@ import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.MapModel;
 //import apple.laf.JRSUIUtils;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
@@ -663,6 +664,17 @@ public class MapEditorController extends AbstractController {
 			n.getNodeToDisplay().removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
 			n.getNodeToDisplay().removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane);
 			n.getNodeToDisplay().removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRoot);
+		}
+	}
+
+	public void onDirectoryEditorSwitch(ActionEvent actionEvent)
+	{
+		try
+		{
+			SceneSwitcher.switchToModifyDirectoryView(this.getStage());
+		} catch (IOException e)
+		{
+			e.printStackTrace();
 		}
 	}
 }

@@ -19,13 +19,13 @@ public class SceneSwitcher
     protected static final String AdminLoginViewPath = AdminPackage + "/AdminLoginView.fxml";
     protected static final String AdminWelcomeViewPath = AdminPackage + "/AdminWelcomeView.fxml";
     protected static final String AddNewProfileViewPath = AdminPackage + "/AddNewProfileView.fxml";
-    protected static final String ModifyDirectoryViewPath = AdminPackage + "/ModifyDirectoryView.fxml";
+    protected static final String ModifyDirectoryViewPath = AdminPackage + "/AdminDirectoryEditor.fxml";
     protected static final String ChooseProfileToModifyViewPath = AdminPackage + "/ChooseProfileToModifyView.fxml";
     //protected static final String EditDepartmentViewPath = AdminPackage + "/EditDepartmentView.fxml";
     protected static final String EditDoctorViewPath = AdminPackage + "/EditDoctorView.fxml";
     //protected static final String EditRoomAttributesViewPath = AdminPackage + "/EditRoomAttributesView.fxml";
     protected static final String ModifyLocationsViewPath = AdminPackage + "/ModifyLocationsView.fxml";
-    protected static final String EditNodeGraphViewPath = AdminPackage + "/EditNodeGraphView.fxml";
+    protected static final String MapEditorViewPath = AdminPackage + "/MapBuilder/MapEditorView.fxml";
     protected static final String HomeViewPath = UserPackage + "/HomeView.fxml";
     protected static final String UserMapViewPath = UserPackage + "/UserMapView.fxml";
     protected static final String UserSearchViewPath = UserPackage + "/UserSearchView.fxml";
@@ -83,8 +83,8 @@ public class SceneSwitcher
         AddNewProfileController controller = (AddNewProfileController) switchToScene(primaryStage, AddNewProfileViewPath);
     }
 
-    public static void switchToEditNodeGraphView(Stage primaryStage) throws IOException {
-        EditNodeGraphController controller = (EditNodeGraphController) switchToScene(primaryStage, EditNodeGraphViewPath);
+    public static void switchToMapEditorView(Stage primaryStage) throws IOException {
+        EditNodeGraphController controller = (EditNodeGraphController) switchToScene(primaryStage, MapEditorViewPath);
     }
 
     public static void switchToEditDoctorView(Stage primaryStage) throws IOException {

@@ -1,25 +1,21 @@
 package Controller.Admin;
 
 import Controller.AbstractController;
+import Controller.SceneSwitcher;
 import Domain.Map.Office;
 import com.jfoenix.controls.*;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import Domain.Map.Doctor;
-import Domain.Map.Office;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
-import javax.print.Doc;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.io.IOException;
 
 public class AdminDirectoryEditorController  extends AbstractController {
 
@@ -258,5 +254,16 @@ public class AdminDirectoryEditorController  extends AbstractController {
             hoursEndTimeTextField.setText(hours[1]);
         }
 
+    }
+
+    public void onMapBuilderSwitch(ActionEvent actionEvent)
+    {
+        try
+        {
+            SceneSwitcher.switchToMapEditorView(this.getStage());
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

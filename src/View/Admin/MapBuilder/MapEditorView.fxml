@@ -6,22 +6,21 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TreeView?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="737.0" prefWidth="1295.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.MapEditorController">
+<AnchorPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="737.0" prefWidth="1295.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.MapEditorController">
    <children>
-      <TabPane layoutX="839.0" layoutY="48.0" opacity="0.82" prefHeight="456.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="145.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0">
+      <TabPane layoutX="839.0" layoutY="48.0" opacity="0.82" prefHeight="551.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="136.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0">
         <tabs>
           <Tab fx:id="tabBuilding1" text="Building 1">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="200.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="514.0" prefWidth="300.0">
                      <children>
-                        <TreeView fx:id="treeViewBuilding1" prefHeight="450.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TreeView fx:id="treeViewBuilding1" prefHeight="518.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
             </content>
@@ -37,28 +36,27 @@
           </Tab>
         </tabs>
       </TabPane>
-      <AnchorPane layoutX="964.0" layoutY="611.0" prefWidth="300.0" AnchorPane.bottomAnchor="41.0" AnchorPane.rightAnchor="31.0">
+      <AnchorPane layoutX="961.0" layoutY="620.0" prefHeight="83.0" prefWidth="309.0" AnchorPane.bottomAnchor="34.0" AnchorPane.rightAnchor="25.0">
          <children>
-            <JFXButton layoutX="5.0" layoutY="55.0" onAction="#saveInfoAndExit" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <effect>
-                  <DropShadow color="#000000cf" height="11.5" offsetX="2.0" offsetY="2.0" radius="5.625" spread="0.03" width="13.0" />
-               </effect>
-            </JFXButton>
-            <JFXButton layoutX="1.0" layoutY="1.0" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="New Building" textFill="WHITE" AnchorPane.leftAnchor="5.0">
+            <JFXButton layoutX="5.0" layoutY="55.0" onAction="#saveInfoAndExit" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #3F51B5;" text="Exit" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="162.0" AnchorPane.rightAnchor="5.0">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton contentDisplay="TOP" layoutX="164.0" layoutY="1.0" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="New Floor" textFill="WHITE" AnchorPane.rightAnchor="5.0">
+            <JFXButton layoutX="1.0" layoutY="1.0" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="New Building" textFill="WHITE" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="162.0">
                <font>
                   <Font size="14.0" />
                </font>
-               <effect>
-                  <DropShadow color="#00000099" height="19.04" offsetX="1.5" offsetY="1.5" radius="7.5" width="12.96" />
-               </effect>
+            </JFXButton>
+            <JFXButton contentDisplay="TOP" layoutX="164.0" layoutY="1.0" prefHeight="30.0" prefWidth="130.0" style="-fx-background-color: #3F51B5;" text="New Floor" textFill="WHITE" AnchorPane.leftAnchor="162.0" AnchorPane.rightAnchor="5.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </JFXButton>
+            <JFXButton contentDisplay="TOP" layoutX="5.0" layoutY="55.0" onAction="#onDirectoryEditorSwitch" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="Directory Editor" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="162.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
             </JFXButton>
          </children>
       </AnchorPane>
