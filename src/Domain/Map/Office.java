@@ -12,30 +12,22 @@ import java.util.HashSet;
 public class Office extends Destination
 {
     int id;
-    String name;
-    Suite suite;
 
     HashSet<Doctor> occupants;
     protected String department;
     private final String popOverEditFXML = "/Admin/Popup/OfficeEditPopup.fxml";
 
-    public Office(int id, String name, Suite suite) {
+    public Office(int id, HashSet<Doctor> doctors) {
+        super();
+
         this.id = id;
-        this.name = name;
-        this.suite = suite;
+        this.occupants = doctors;
     }
 
     public Office()
     {
-
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public Suite getSuite() {
-        return this.suite;
+        super();
+        this.myInfo.setName("Office");
     }
 
     @Override
