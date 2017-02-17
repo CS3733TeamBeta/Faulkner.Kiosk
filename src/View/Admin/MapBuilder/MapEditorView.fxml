@@ -20,12 +20,12 @@
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton layoutX="1.0" layoutY="1.0" prefHeight="30.0" prefWidth="140.0" style="-fx-background-color: #3F51B5;" text="New Building" textFill="WHITE" AnchorPane.leftAnchor="5.0">
+            <JFXButton layoutX="1.0" layoutY="1.0" onAction="#onNewBuilding" prefHeight="30.0" prefWidth="140.0" style="-fx-background-color: #3F51B5;" text="New Building" textFill="WHITE" AnchorPane.leftAnchor="5.0">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton contentDisplay="TOP" layoutX="164.0" layoutY="1.0" prefHeight="30.0" prefWidth="141.0" style="-fx-background-color: #3F51B5;" text="New Floor" textFill="WHITE" AnchorPane.rightAnchor="5.0">
+            <JFXButton contentDisplay="TOP" layoutX="164.0" layoutY="1.0" onAction="#onNewFloor" prefHeight="30.0" prefWidth="141.0" style="-fx-background-color: #3F51B5;" text="New Floor" textFill="WHITE" AnchorPane.rightAnchor="5.0">
                <font>
                   <Font size="14.0" />
                </font>

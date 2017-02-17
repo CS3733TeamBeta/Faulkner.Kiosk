@@ -18,8 +18,6 @@ import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.DataSourceClasses.MapTreeItem;
 import Model.DataSourceClasses.TreeViewWithItems;
 import Model.MapEditorModel;
-import Model.MapModel;
-//import apple.laf.JRSUIUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -69,7 +67,7 @@ public class MapEditorController extends AbstractController {
 	{
 		if(b==null)
 		{
-			b = new Building("Building " + model.getBuildingCount());
+			b = new Building("Building " + model.getBuildingCount()+1); //@TODO Hacky fix -BEN
 		}
 
 		final Label label = new Label(b.getName());
@@ -859,15 +857,8 @@ public class MapEditorController extends AbstractController {
 		SceneSwitcher.switchToModifyLocationsView(this.getStage());
 	}
 
-public void onDirectoryEditorSwitch(ActionEvent actionEvent)
+	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
 	{
-		try
-		{
-			SceneSwitcher.switchToModifyDirectoryView(this.getStage());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		SceneSwitcher.switchToModifyDirectoryView(this.getStage());
 	}
 }
-

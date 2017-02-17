@@ -19,7 +19,7 @@ public class SceneSwitcher
     protected static final String AdminLoginViewPath = AdminPackage + "/AdminLoginView.fxml";
     protected static final String AdminWelcomeViewPath = AdminPackage + "/AdminWelcomeView.fxml";
     protected static final String AddNewProfileViewPath = AdminPackage + "/AddNewProfileView.fxml";
-    protected static final String ModifyDirectoryViewPath = AdminPackage + "/ModifyDirectoryView.fxml";
+    protected static final String ModifyDirectoryViewPath = AdminPackage + "/AdminDirectoryEditor.fxml";
     protected static final String ChooseProfileToModifyViewPath = AdminPackage + "/ChooseProfileToModifyView.fxml";
     //protected static final String EditDepartmentViewPath = AdminPackage + "/EditDepartmentView.fxml";
     protected static final String EditDoctorViewPath = AdminPackage + "/EditDoctorView.fxml";
@@ -67,7 +67,7 @@ public class SceneSwitcher
     }
 
     public static void switchToModifyDirectoryView(Stage primaryStage) throws IOException {
-        ModifyDirectoryController controller = (ModifyDirectoryController) switchToScene(primaryStage, ModifyDirectoryViewPath);
+        AdminDirectoryEditorController controller = (AdminDirectoryEditorController) switchToScene(primaryStage, ModifyDirectoryViewPath);
     }
 
     public static void switchToModifyLocationsView(Stage primaryStage) throws IOException {
