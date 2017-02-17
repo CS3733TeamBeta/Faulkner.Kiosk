@@ -44,6 +44,8 @@ public class ChooseProfileToModifyController extends AbstractController {
     @FXML
     TableColumn descriptionCol;
 
+
+
     Stage primaryStage;
 
     public void setStage(Stage s)
