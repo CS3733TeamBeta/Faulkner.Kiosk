@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table;
-
 public class AdminDirectoryEditorController  extends AbstractController {
 
     private ObservableList<Doctor> doctors = FXCollections.observableArrayList();
