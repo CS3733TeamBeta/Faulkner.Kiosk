@@ -1,16 +1,8 @@
 package Model.Database;
 
 import Domain.Map.*;
-import org.apache.derby.database.Database;
 
-import javax.xml.crypto.Data;
-import javax.xml.transform.Result;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,7 +14,7 @@ import java.util.Properties;
 public class DatabaseManager {
 
     private final String framework = "embedded";
-    private final String protocol = "jdbc:derby:/Users/benhylak/";
+    private final String protocol = "jdbc:derby:/Users/Paris/";
     private Connection conn = null;
     private ArrayList<Statement> statements = new ArrayList<Statement>(); // list of Statements, PreparedStatements
     private PreparedStatement psInsert;
@@ -45,45 +37,45 @@ public class DatabaseManager {
     public static final String[] createTables = {
             "CREATE TABLE USER1.BUILDING (BUILDING_ID INT PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(100))",
-            "CREATE TABLE USER1.FLOOR (FLOOR_ID VARCHAR(5) PRIMARY KEY NOT NULL, " +
+            "CREATE TABLE USER1.FLOOR (FLOOR_ID VARCHAR(25) PRIMARY KEY NOT NULL, " +
                     "BUILDING_ID INT," +
                     "NUMBER INT, " +
                     "CONSTRAINT FLOOR_BUILDING_BUILDING_ID_FK FOREIGN KEY (BUILDING_ID) REFERENCES BUILDING (BUILDING_ID))",
-            "CREATE TABLE USER1.NODE (NODE_ID INT PRIMARY KEY NOT NULL, " +
+            "CREATE TABLE USER1.NODE (NODE_ID VARCHAR(36) PRIMARY KEY NOT NULL, " +
                     "POSX DOUBLE, " +
                     "POSY DOUBLE, " +
-                    "FLOOR_ID VARCHAR(5), " +
+                    "FLOOR_ID VARCHAR(25), " +
                     "TYPE INT, " +
                     "CONSTRAINT NODE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
-            "CREATE TABLE USER1.SUITE (SUITE_ID INT PRIMARY KEY NOT NULL, " +
+            "CREATE TABLE USER1.SUITE (SUITE_ID VARCHAR(36) PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(200), " +
-                    "NODE_ID INT, " +
+                    "NODE_ID VARCHAR(36), " +
                     "CONSTRAINT SUITE_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID))",
-            "CREATE TABLE USER1.SERVICES (SERVICE_ID INT PRIMARY KEY, " +
+            "CREATE TABLE USER1.SERVICES (SERVICE_ID VARCHAR(36) PRIMARY KEY, " +
                     "NAME VARCHAR(200), " +
-                    "NODE_ID INT, " +
+                    "NODE_ID VARCHAR(36), " +
                     "TYPE VARCHAR(200), " +
                     "FLOOR INT, " +
                     "CONSTRAINT SERVICES_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID))",
-            "CREATE TABLE USER1.DOCTOR (DOC_ID INT PRIMARY KEY NOT NULL, " +
+            "CREATE TABLE USER1.DOCTOR (DOC_ID VARCHAR(36) PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(50), " +
                     "DESCRIPTION VARCHAR(20), " +
                     "NUMBER VARCHAR(20), " +
                     "HOURS VARCHAR(20))",
-            "CREATE TABLE USER1.OFFICES (OFFICE_ID INT PRIMARY KEY NOT NULL, " +
+            "CREATE TABLE USER1.OFFICES (OFFICE_ID VARCHAR(36) PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(200), " +
-                    "SUITE_ID INT, " +
+                    "SUITE_ID VARCHAR(36), " +
                     "CONSTRAINT OFFICES_SUITE_SUITE_ID_fk FOREIGN KEY (SUITE_ID) REFERENCES SUITE (SUITE_ID))",
             "CREATE TABLE USER1.EDGE (EDGE_ID INT PRIMARY KEY NOT NULL," +
-                    "NODEA INT," +
-                    "NODEB INT," +
+                    "NODEA VARCHAR(36)," +
+                    "NODEB VARCHAR(36)," +
                     "COST DOUBLE," +
-                    "FLOOR_ID VARCHAR(5)," +
+                    "FLOOR_ID VARCHAR(25)," +
                     "CONSTRAINT EDGE_NODE_NODE_ID_FKA FOREIGN KEY (NODEA) REFERENCES NODE (NODE_ID)," +
                     "CONSTRAINT EDGE_NODE_NODE_ID_FKB FOREIGN KEY (NODEB) REFERENCES NODE (NODE_ID)," +
                     "CONSTRAINT EDGE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
-            "CREATE TABLE USER1.SUITE_DOC (SUITE_ID INT," +
-                    "DOC_ID INT," +
+            "CREATE TABLE USER1.SUITE_DOC (SUITE_ID VARCHAR(36)," +
+                    "DOC_ID VARCHAR(36)," +
                     "CONSTRAINT SUITE_DOC_SUITE_SUITE_ID_FK1 FOREIGN KEY (SUITE_ID) REFERENCES SUITE (SUITE_ID)," +
                     "CONSTRAINT SUITE_DOC_DOCTOR_DOCTOR_ID_FK2 FOREIGN KEY (DOC_ID) REFERENCES DOCTOR (DOC_ID))"};
 
