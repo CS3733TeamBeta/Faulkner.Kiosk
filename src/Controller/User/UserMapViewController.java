@@ -425,16 +425,20 @@ public class UserMapViewController extends AbstractController {
         SceneSwitcher.switchToLoginView(primaryStage);
     }
 
-    public void onEmailDirections(ActionEvent actionEvent)
-    {
+    public void onEmailDirections(ActionEvent actionEvent) {
+        System.out.println("onEmailDirections called");
         emailButton.setVisible(false);
+        searchBar.setText("Search Hospital");
+
         System.out.println(searchBar.getText());
+        System.out.println("end");
 
         newRoute.sendEmailGuidance(searchBar.getText(), mainPane);
 
         defaultProperty();
 
+        searchBar.setText("Search Hospital");
+
         sendingEmail = false;
-        searchBar.setText("Search Hospital"); 
     }
 }
