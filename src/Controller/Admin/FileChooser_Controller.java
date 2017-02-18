@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+
 import java.io.*;
 import java.nio.channels.FileChannel;
 
@@ -19,6 +20,10 @@ public class FileChooser_Controller extends AbstractController
 
     @FXML
     ImageView imgFileShow;
+    @FXML
+    Button backButton;
+    @FXML
+    Button saveButton;
     @FXML
     Button btnChooseFile;
     @FXML
@@ -29,6 +34,10 @@ public class FileChooser_Controller extends AbstractController
     FileChooser newFileChooser = new FileChooser();
     String strFilePath = new String();
     Alert alert = new Alert(Alert.AlertType.WARNING);
+    long size;
+    FileChannel outChannelTwo;
+    FileChannel outChannel;
+    FileChannel source;
 
     @FXML
     private void clickGoBack(){
@@ -71,23 +80,36 @@ public class FileChooser_Controller extends AbstractController
             DialogPane message = new DialogPane();
             alert.showAndWait();
         }
+        File userFile = new File(strFilePath);
+        String filename = userFile.getName();
+        String fullName = "src/View/Admin/MapBuilder/" + filename;
+        String fullNameTwo = "src/View/User/MapViewer/" + filename;
         FileChannel source = new FileInputStream(strFilePath).getChannel();
-        InputStream destination = this.getClass().getClassLoader()
-                .getResourceAsStream("SomeTextFile." + strExtension);
-        long count = 0;
-        long size = 0;
+
+        size = 0;
         try {
             size = source.size();
         }
         catch (Exception e){
 
         }
-        FileChannel outChannel = new FileOutputStream("SomeTextFile." + strExtension).getChannel();
+        outChannel = new FileOutputStream(fullName).getChannel();
+        outChannelTwo = new FileOutputStream(fullNameTwo).getChannel();
+
+        System.out.println(fullName);
+
         try
         {
             source.transferTo(0, size, outChannel);
         }
         catch(Exception e){}
+        try
+        {
+            source.transferTo(0, size, outChannelTwo);
+        }
+        catch(Exception e){}
+
+
     }
 
     // gets the extension of the selected file for comparison with valid types in clickChooseFile

@@ -11,7 +11,7 @@
       <ImageView fx:id="imgFileShow" fitHeight="150.0" fitWidth="200.0" layoutX="200.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="50.0" />
       <Button fx:id="btnChooseFile" onMouseClicked="#clickChooseFile" layoutX="255.0" layoutY="173.0" mnemonicParsing="false"  text="Choose File" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="255.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="173.0" />
       <TextArea fx:id="txtText" layoutX="11.0" layoutY="200.0" prefHeight="150.0" prefWidth="578.0" />
-      <Button fx:id="btnChooseFile1" onMouseClicked="#clickGoBack" layoutX="14.0" layoutY="355.0" mnemonicParsing="false"  text="Go back" />
-      <Button fx:id="btnChooseFile2" onMouseClicked="#clickSaveFile" layoutX="445.0" layoutY="355.0" mnemonicParsing="false"  text="Use chosen image" />
+      <Button fx:id="backButton" onMouseClicked="#clickGoBack" layoutX="14.0" layoutY="355.0" mnemonicParsing="false"  text="Go back" />
+      <Button fx:id="saveButton" onMouseClicked="#clickSaveFile" layoutX="445.0" layoutY="355.0" mnemonicParsing="false"  text="Use chosen image" />
    </children>
 </AnchorPane>
