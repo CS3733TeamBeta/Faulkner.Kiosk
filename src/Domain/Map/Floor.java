@@ -33,14 +33,6 @@ public class Floor implements Comparable{
         n.setFloor(this);
     }
 
-    public void setKioskLocation(MapNode kioskNode){
-        for(MapNode n : this.floorNodes){
-            if(kioskNode.equals(n)){
-                this.kioskNode = kioskNode;
-            }
-        }
-    }
-
     public MapNode getKioskNode(){
         return kioskNode;
     }

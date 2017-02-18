@@ -432,4 +432,8 @@ public class MapNode implements DrawableMapEntity {
         this.parent = null;
     }
 
+    public int getType()
+    {
+        return icon.getType().ordinal();
+    }
 }
