@@ -80,13 +80,16 @@ public class AdminDirectoryEditorController  extends AbstractController {
         phoneNumberColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("phoneNum"));
         departmentColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("depts"));
 
-        officeNumberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Doctor, String>, ObservableValue<String>>() {
+        /*officeNumberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Doctor, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Doctor, String> p) {
-                return new ReadOnlyObjectWrapper(p.getValue().getOffice().getOfficeNum());
+               // return new ReadOnlyObjectWrapper(p.getValue().getOffice().getOfficeNum());
             }
-        });
+        });*/
 
         hoursColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("hours"));
+
+        /**
+         *
 
         Office tmpoffice = new Office("N/A");
 
@@ -104,6 +107,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
         departmentsList.setItems(departments);
         departmentsList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+         */
     }
 
     /*
@@ -152,7 +156,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
                 }
             }
 
-            Office office = new Office(officeNumberTextField.getText());
+            //Office office = new Office(officeNumberTextField.getText());
             String hours = hoursStartTimeTextField.getText() + "-" + hoursEndTimeTextField.getText();
             String description = "N/A";
 
@@ -162,7 +166,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
                 doctors.remove(toEdit);
             }
 
-            doctors.add(new Doctor(deptSelected, phoneNum, office, name, description, hours));
+            //doctors.add(new Doctor(deptSelected, phoneNum, office, name, description, hours));
 
             directoryTable.setItems(doctors);
             reset();
@@ -227,14 +231,14 @@ public class AdminDirectoryEditorController  extends AbstractController {
             phoneNumberThreeTextField.setText(phoneNumber[2]);
         }
 
-        if (!(selectedDoc.getOffice().getOfficeNum().equals("N/A"))) {
-            officeNumberTextField.setText(selectedDoc.getOffice().getOfficeNum());
-        }
+       // if (!(selectedDoc.getOffice().getOfficeNum().equals("N/A"))) {
+       ///     officeNumberTextField.setText(selectedDoc.getOffice().getOfficeNum());
+       // }
 
-        String dept = selectedDoc.getDepts();
-        String[] depts = dept.split(", ");
+      //  String dept = selectedDoc.getDepts();
+       // String[] depts = dept.split(", ");
 
-        for (String d: depts) {
+       /* for (String d: depts) {
             int i = 0;
             for (String dpt: departments) {
                 if (dpt.equals(d)) {
@@ -252,7 +256,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
             hoursStartTimeTextField.setText(hours[0]);
             hoursEndTimeTextField.setText(hours[1]);
-        }
+        }*/
 
     }
 

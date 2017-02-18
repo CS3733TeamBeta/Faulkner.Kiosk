@@ -322,6 +322,10 @@ public class MapEditorController extends AbstractController {
 			model.setCurrentFloor(DragDropMain.mvm.getCurrentFloor());
 		}
 		else if(Main.mvm != null) {
+			System.out.println("Leading from main");
+			for(MapNode n : Main.mvm.getCurrentFloor().getFloorNodes()){
+				System.out.println(n.getPosX());
+			}
 			model.setCurrentFloor(Main.mvm.getCurrentFloor());
 		}
 
@@ -331,7 +335,7 @@ public class MapEditorController extends AbstractController {
 
 			for(MapNode n : model.getCurrentFloor().getFloorNodes())
 			{
-				//System.out.println("Adding node");
+				System.out.println("Adding node");
 				addToAdminMap(n);
 
 				for(NodeEdge edge: n.getEdges())
