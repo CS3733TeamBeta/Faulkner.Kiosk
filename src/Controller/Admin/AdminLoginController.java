@@ -70,7 +70,7 @@ public class AdminLoginController extends AbstractController
     }
 
     @FXML
-    protected void initialize() {
+    protected void initialize()   {
 
     }
 }
