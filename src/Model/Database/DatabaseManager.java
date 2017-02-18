@@ -123,7 +123,7 @@ public class DatabaseManager {
         HashMap<Integer, MapNode> mapNodes = new HashMap<>();
         HashMap<Integer, NodeEdge> nodeEdges = new HashMap<>();
 
-        ResultSet rs = s.executeQuery("select * from BUILDING");
+        ResultSet rs = s.executeQuery("select * from BUILDING ORDER BY NAME DESC");
 
         while (rs.next()) {
             HashMap<String, Floor> flr = new HashMap();
@@ -172,6 +172,7 @@ public class DatabaseManager {
                 }
 
             }
+            System.out.println(flr);
             buildings.put(rs.getInt(1),
                     new Building(rs.getString(2)));
             for (Floor f : flr.values()) {
@@ -322,13 +323,12 @@ public class DatabaseManager {
         }
         // saves Doctors
         for (Doctor doc : doctors.values()) {
-            String locations = "";
             System.out.println("Here");
             insertDoctors.setInt(1, doc.getDocID());
             insertDoctors.setString(2, doc.getName());
             insertDoctors.setString(3, doc.getDescription());
-            insertDoctors.setString(4, doc.getHours());
-            insertDoctors.setString(5, locations);
+            insertDoctors.setString(4, "");
+            insertDoctors.setString(5, doc.getHours());
             insertDoctors.executeUpdate();
             conn.commit();
             // saves Suite and Doctor Relationships
