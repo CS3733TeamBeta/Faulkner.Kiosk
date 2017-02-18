@@ -441,7 +441,6 @@ public class DatabaseManager {
            }
            catch (SQLException se) {
                System.out.println(se.getMessage());
-               System.out.println("Sluts Sluts Sluts");
            }
 
         if (conn != null) {
@@ -536,40 +535,6 @@ public class DatabaseManager {
 
             /*
             psInsert.setInt(1, 1910);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             psInsert.setString(2, "Union St.");
             psInsert.executeUpdate();
             System.out.println("Inserted 1910 Union");*/
