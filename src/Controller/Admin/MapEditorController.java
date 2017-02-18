@@ -21,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -60,6 +61,8 @@ public class MapEditorController extends AbstractController {
 
 	NodeEdge drawingEdge;
 
+	Boolean firstClick = false;
+
 	public MapEditorController() {
 
 		model = new MapEditorModel();
@@ -96,6 +99,7 @@ public class MapEditorController extends AbstractController {
 			mapImage.toBack();
 
 		});
+
 	}
 
 	/**
@@ -143,14 +147,28 @@ public class MapEditorController extends AbstractController {
 		getCurrentTreeView().getSelectionModel().select(0); //selects first floor
 
 		renderInitialMap();
+
+		mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
+			if(drawingEdge!=null)
+			{
+				if (firstClick == false)
+				{
+					firstClick = true;
+				}
+				else
+				{
+					System.out.println("Clicked while drawing");
+				}
+			}
+		});
+
 	}
 
 	/**
 	 * Takes a collection of buildings and creates tabs for them
 	 * @param buildings
 	 */
-	public void loadBuildingsToTabPane(Collection<Building> buildings)
-	{
+	public void loadBuildingsToTabPane(Collection<Building> buildings) {
 		for(Building b : buildings)
 		{
 			Tab t = addBuilding(b);
@@ -183,8 +201,7 @@ public class MapEditorController extends AbstractController {
 	 * @param b Building
 	 * @return
 	 */
-	public Tab addBuilding(Building b)
-	{
+	public Tab addBuilding(Building b) {
 		if(b==null)
 		{
 			b = new Building("Building " + model.getBuildingCount()+1); //@TODO Hacky fix -BEN
@@ -414,6 +431,7 @@ public class MapEditorController extends AbstractController {
 
 	public void onEdgeComplete() {
 		System.out.println("Edge complete");
+		firstClick = false;
 		for(EdgeCompleteEventHandler handler : model.getEdgeCompleteHandlers())
 		{
 			if(!model.getCurrentFloor().getFloorEdges().contains(drawingEdge)){
@@ -431,8 +449,7 @@ public class MapEditorController extends AbstractController {
 	 * @param n node to keep in sync
 	 * @return event handler for mouse event that updates positions of lines when triggered
 	 */
-	private static void makeMapNodeDraggable (MapNode n)
-	{
+	private static void makeMapNodeDraggable (MapNode n) {
 		MouseControlUtil.makeDraggable(n.getNodeToDisplay(), //could be used to track node and update line
 				event ->
 				{
@@ -483,8 +500,7 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	private void buildDragHandlers()
-	{
+	private void buildDragHandlers() {
 
 		//drag over transition to move widget form left pane to right pane
 		onIconDragOverRoot = new EventHandler<DragEvent>()
@@ -592,8 +608,7 @@ public class MapEditorController extends AbstractController {
 	 * Adds a fresh node to the admin map, handles event handler creation, layering etc.
 	 * @param mapNode
 	 */
-	public void addToAdminMap(MapNode mapNode)
-	{
+	public void addToAdminMap(MapNode mapNode) {
 		addEventHandlersToNode(mapNode);
 
 		mapPane.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
@@ -648,10 +663,10 @@ public class MapEditorController extends AbstractController {
 	 * @return Returns the treeview of the currently selected building
 	 * @author Benjamin Hylak
 	 */
-	public TreeViewWithItems<MapTreeItem> getCurrentTreeView()
-	{
+	public TreeViewWithItems<MapTreeItem> getCurrentTreeView() {
 		return (TreeViewWithItems<MapTreeItem>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
 	}
+
 	/**
 	 * Adds all of the event handlers to handle dragging, edge creation, deletion etc.
 	 * Needs to be called on newly constructed nodes to interact properly with map
@@ -659,8 +674,7 @@ public class MapEditorController extends AbstractController {
 	 * @param mapNode
 	 * @author Benjamin Hylak
 	 */
-	public void addEventHandlersToNode(MapNode mapNode)
-	{
+	public void addEventHandlersToNode(MapNode mapNode) {
 		makeMapNodeDraggable(mapNode); //make it draggable
 
 		/***Handles deletion from a popup menu**/
