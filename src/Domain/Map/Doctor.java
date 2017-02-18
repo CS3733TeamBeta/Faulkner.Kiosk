@@ -13,13 +13,21 @@ public class Doctor extends Info
     HashSet<Suite> suites;
     HashSet<String> myOffice;
     String phoneNum = "N/A";
+    HashSet<String> lstNames;
+    HashSet<HashSet<Suite>> lstSuites;
+    HashSet<String> lstDescriptions;
+
+
 
     public Doctor(int id, String name, String description, String hours, HashSet<Suite> suites) {
         super(name, description, hours);
         this.docID = id;
         this.suites = suites;
-
         this.myOffice = new HashSet<>();
+        lstNames.add(name);
+        lstDescriptions.add(description);
+        lstSuites.add(suites);
+
     }
 
 //    public Doctor(String dept, String phoneNum, Office docOff, String name, String description, String hours)
@@ -77,4 +85,7 @@ public class Doctor extends Info
     public HashSet<Suite> getSuites() {
         return this.suites;
     }
+
+
+
 }

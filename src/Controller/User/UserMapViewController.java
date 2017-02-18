@@ -13,9 +13,12 @@ import Exceptions.PathFindingException;
 import Model.MapEditorModel;
 import Model.MapModel;
 import com.jfoenix.controls.JFXButton;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -25,6 +28,7 @@ import javafx.animation.Timeline;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
@@ -85,6 +89,15 @@ public class UserMapViewController extends AbstractController {
 
     @FXML
     TreeTableView doctorTable;
+
+    @FXML
+    TreeTableColumn docName;
+
+    @FXML
+            TreeTableColumn jobTitle;
+
+    @FXML
+            TreeTableColumn docDepts;
 
     Stage primaryStage;
 
@@ -318,7 +331,16 @@ public class UserMapViewController extends AbstractController {
         numClickHelp = 0;
         numClickBath = 0;
         numClickFood = 0;
-
+/*
+        docName.setCellValueFactory(new Callback<CellDataFeatures<String, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(CellDataFeatures<Person, String> p) {
+                // p.getValue() returns the TreeItem<Person> instance for a particular TreeTableView row,
+                // p.getValue().getValue() returns the Person instance inside the TreeItem<Person>
+                return p.getValue().getValue().firstNameProperty();
+            }
+        });
+    }
+*/
         if (numClickDr == 2)
         {
             defaultProperty();
@@ -338,6 +360,7 @@ public class UserMapViewController extends AbstractController {
             deptTable.setVisible(false);
             doctorTable.setVisible(true);
         }
+
 
     }
 
