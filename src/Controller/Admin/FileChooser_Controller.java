@@ -2,6 +2,7 @@ package Controller.Admin;
 
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
+import Domain.Map.Floor;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -41,6 +42,8 @@ public class FileChooser_Controller extends AbstractController
     FileChannel source;
     String fullName;
     String fullNameTwo;
+
+    Floor newFloor;
 
     @FXML
     private void clickGoBack()throws IOException{

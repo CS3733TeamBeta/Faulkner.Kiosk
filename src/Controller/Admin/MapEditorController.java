@@ -31,6 +31,7 @@ import javafx.scene.paint.Color;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
 import org.controlsfx.control.PopOver;
+import javafx.scene.image.Image;
 
 public class MapEditorController extends AbstractController {
 
@@ -42,9 +43,6 @@ public class MapEditorController extends AbstractController {
 	@FXML Tab tabBuilding1;
 	@FXML
 	TreeView treeViewBuilding1;
-
-	@FXML
-    String currentImageBackground;
 
 
 
@@ -60,7 +58,21 @@ public class MapEditorController extends AbstractController {
 
 	NodeEdge drawingEdge;
 
+	String currentImageBackground;
+
 	public static Floor newFloor = null;
+
+	public void changeFloorImage(int floor_number) {
+
+		this.mapImage.setImage(new Image("@floor" + floor_number + ".png"));
+
+	}
+
+	public void changeFloorToSaved(String location) {
+
+		this.mapImage.setImage(new Image(location));
+
+	}
 
 
 	@FXML
