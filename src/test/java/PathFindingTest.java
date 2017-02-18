@@ -215,7 +215,8 @@ public class PathFindingTest extends TestCase{
     public void testSendEmail() {
         try {
             Guidance g1 = new Guidance(nodeA, nodeL, false);
-            g1.sendEmailGuidance("iancj97@gmail.com");
+            //Please don't uncomment this line unless you replace the email with your own. I'm getting a lot of spam -Ian
+            //g1.sendEmailGuidance("iancj97@gmail.com");
         } catch (Exception e) {
             fail("Threw exception");
         }
