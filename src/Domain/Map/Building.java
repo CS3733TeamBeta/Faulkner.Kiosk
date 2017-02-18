@@ -91,4 +91,12 @@ public class Building {
         return name;
     }
 
+    /**
+     * @param name Set name of building
+     */
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
 }
