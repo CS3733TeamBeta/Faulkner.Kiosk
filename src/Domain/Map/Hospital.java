@@ -11,54 +11,21 @@ import java.util.HashMap;
 public class Hospital {
     HashSet<Building> buildings;
 
-    private HashMap<Integer, MapNode> mapNodes;
-    private HashMap<Integer, NodeEdge> edges;
     private HashMap<String, Doctor> doctors;
-    private HashMap<Integer, Floor> floors;
     private HashMap<String, Suite> suites;
+    private HashMap<String, Office> offices;
 
     public Hospital() {
         buildings = new HashSet<Building>();
 
-        mapNodes = new HashMap<>();
-        edges = new HashMap<>();
         doctors = new HashMap<>();
-        floors = new HashMap<>();
         suites = new HashMap<>();
+        offices = new HashMap<>();
     }
 
     public void addBuilding(Building b) {
         buildings.add(b);
     }
-
-    //Alter MapNode HashMap: mapNodes
-    public HashMap<Integer, MapNode> getMapNodes(){
-        return mapNodes;
-    }
-    public void addMapNodes(Integer k, MapNode node) {
-        mapNodes.put(k, node);
-    }
-    public void setMapNodes(HashMap<Integer, MapNode> mapNodes) {
-        this.mapNodes = mapNodes;
-    }
-    public void removeMapNodes(Integer k){
-        mapNodes.remove(k);
-    }
-
-    //Alter NodeEdge HashMap: edges
-    public HashMap<Integer, NodeEdge> getEdges() {
-        return edges;
-    }
-    public void addEdges(Integer k, NodeEdge edge) {
-        edges.put(k, edge);
-    }
-    public void setEdges(HashMap<Integer, NodeEdge> edges) {
-        this.edges = edges;
-    }
-    public void removeNodeEdge(Integer k){
-        edges.remove(k);
-    }
-
 
     //Alter Doctor HashMap: doctors
     public HashMap<String, Doctor> getDoctors() {
@@ -74,20 +41,6 @@ public class Hospital {
         doctors.remove(s);
     }
 
-
-    //Alter Floor HashMap: floors
-    public HashMap<Integer, Floor> getFloors() {
-        return floors;
-    }
-    public void addFloors(Integer k, Floor floor){
-        floors.put(k, floor);
-    }
-    public void setFloors(HashMap<Integer, Floor> floors) {
-        this.floors = floors;
-    }
-    public void removeFloors(Integer k){
-        floors.remove(k);
-    }
 
     //Alter Suite HashMap: suites
     public HashMap<String, Suite> getSuites() {
@@ -105,6 +58,14 @@ public class Hospital {
     public boolean containsBuilding(Building b)
     {
         return buildings.contains(b);
+    }
+
+    //Alter Office HashMap: offices
+    public void addOffices(String s, Office off) {
+        offices.put(s, off);
+    }
+    public HashMap<String, Office> getOffices() {
+        return this.offices;
     }
 
     public int buildingCount()

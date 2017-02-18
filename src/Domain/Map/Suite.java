@@ -10,17 +10,11 @@ public class Suite {
     int suiteID;
     String name;
     MapNode location;
-    HashSet<String> doctors;
 
-    public Suite(int id, String name, MapNode location, HashSet<String> doctors) {
+    public Suite(int id, String name, MapNode location) {
         this.suiteID = id;
         this.name = name;
         this.location = location;
-        this.doctors = doctors;
-    }
-
-    public void addDoctor(String name) {
-        doctors.add(name);
     }
 
     public int getSuiteID() {
@@ -35,7 +29,4 @@ public class Suite {
         return this.location;
     }
 
-    public HashSet<String> getDoctors() {
-        return this.doctors;
-    }
 }

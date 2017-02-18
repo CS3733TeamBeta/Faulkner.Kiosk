@@ -2,6 +2,7 @@ package Model.Database;
 
 import Domain.Map.*;
 
+import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -97,16 +98,13 @@ public class DatabaseManager {
     public void loadData() throws SQLException {
         s = conn.createStatement();
         loadHospital(Faulkner);
-        loadDoctorsSuites();
         conn.commit();
     }
 
     public void saveData() throws SQLException {
         System.out.println("Here");
         s = conn.createStatement();
-        System.out.println("Here");
         saveHospital(Faulkner);
-        saveDoctorsSuites();
         s.close();
         conn.close();
         System.out.println("Data Saved Correctly");
@@ -123,7 +121,30 @@ public class DatabaseManager {
         HashMap<Integer, MapNode> mapNodes = new HashMap<>();
         HashMap<Integer, NodeEdge> nodeEdges = new HashMap<>();
 
+        int maxNode = 0;
+        ResultSet nodeID = s.executeQuery("select max(NODE_ID) FROM NODE");
+        if (nodeID.next()) {
+            maxNode = nodeID.getInt(1);
+        }
+        System.out.println(maxNode);
+
+        int maxDoc = 0;
+        ResultSet docID = s.executeQuery("select max(DOC_ID) FROM DOCTOR");
+        if (docID.next()) {
+            maxDoc = docID.getInt(1);
+        }
+        System.out.println(maxDoc);
+
+        int maxSuite = 0;
+        ResultSet suiteID = s.executeQuery("select max(SUITE_ID) FROM SUITE");
+        if (suiteID.next()) {
+            maxSuite = suiteID.getInt(1);
+        }
+        System.out.println(maxSuite);
+
         ResultSet rs = s.executeQuery("select * from BUILDING ORDER BY NAME DESC");
+
+
 
         while (rs.next()) {
             HashMap<String, Floor> flr = new HashMap();
@@ -193,6 +214,74 @@ public class DatabaseManager {
         System.out.println(mapNodes);
         System.out.println(h.getBuildings());
 
+        // loading doctors, suites, and offices to hospital
+        HashMap<String, Suite> suites = new HashMap<>();
+        HashMap<Integer, Suite> suitesID = new HashMap<>();
+        HashMap<String, Doctor> doctors = new HashMap<>();
+        HashMap<String, Office> offices = new HashMap<>();
+        PreparedStatement suiteDoc = conn.prepareStatement("select suite_id from USER1.SUITE_DOC where doc_id = ?");
+
+
+        rs = s.executeQuery("select * from USER1.SUITE");
+        while (rs.next()) {
+            suites.put(rs.getString(2),
+                    new Suite(rs.getInt(1),
+                            rs.getString(2),
+                            mapNodes.get(rs.getInt(3))));
+
+            suitesID.put(rs.getInt(1),
+                    new Suite(rs.getInt(1),
+                            rs.getString(2),
+                            mapNodes.get(rs.getInt(3))));
+            h.addSuites(rs.getString(2),
+                    new Suite(rs.getInt(1),
+                            rs.getString(2),
+                            mapNodes.get(rs.getInt(3))));
+        }
+        this.suites = suites;
+        System.out.println(suites.keySet());
+
+        rs = s.executeQuery("select * from USER1.DOCTOR order by NAME");
+
+        while(rs.next()) {
+            HashSet<Suite> locations = new HashSet<>();
+            suiteDoc.setInt(1, rs.getInt(1));
+            ResultSet results = suiteDoc.executeQuery();
+            while(results.next()) {
+                locations.add(suitesID.get(results.getInt(1)));
+            }
+
+            doctors.put(rs.getString(2),
+                    new Doctor(rs.getInt(1),
+                            rs.getString(2),
+                            rs.getString(3),
+                            rs.getString(5),
+                            locations));
+            h.addDoctors(rs.getString(2),
+                    new Doctor(rs.getInt(1),
+                            rs.getString(2),
+                            rs.getString(3),
+                            rs.getString(5),
+                            locations));
+        }
+        this.doctors = doctors;
+        System.out.println(doctors.keySet());
+
+        rs = s.executeQuery("select * from OFFICES");
+        while(rs.next()) {
+            offices.put(rs.getString(2),
+                    new Office(rs.getInt(1),
+                            rs.getString(2),
+                            suitesID.get(rs.getInt(3))));
+            h.addOffices(rs.getString(2),
+                    new Office(rs.getInt(1),
+                            rs.getString(2),
+                            suitesID.get(rs.getInt(3))));
+        }
+        this.offices = offices;
+        System.out.println(offices);
+        rs.close();
+
     }
 
     private void saveHospital(Hospital h) throws SQLException {
@@ -200,6 +289,10 @@ public class DatabaseManager {
         PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO FLOOR (FLOOR_ID, BUILDING_ID, NUMBER) VALUES (?, ?, ?)");
         PreparedStatement insertNodes = conn.prepareStatement("INSERT INTO NODE (NODE_ID, POSX, POSY, FLOOR_ID, TYPE) VALUES (?, ?, ?, ?, ?)");
         PreparedStatement insertEdges = conn.prepareStatement("INSERT INTO EDGE (EDGE_ID, NODEA, NODEB, COST) VALUES (?, ?, ?, ?)");
+        PreparedStatement insertDoctors = conn.prepareStatement("INSERT INTO USER1.DOCTOR (DOC_ID, NAME, DESCRIPTION, NUMBER, HOURS) VALUES (?, ?, ?, ?, ?)");
+        PreparedStatement insertSuites = conn.prepareStatement("INSERT INTO USER1.SUITE (SUITE_ID, NAME, NODE_ID) VALUES (?, ?, ?)");
+        PreparedStatement insertAssoc = conn.prepareStatement("INSERT INTO USER1.SUITE_DOC (SUITE_ID, DOC_ID) VALUES (?, ?)");
+        PreparedStatement insertOffices = conn.prepareStatement("INSERT INTO USER1.OFFICES (OFFICE_ID, NAME, SUITE_ID) VALUES (?, ?, ?)");
 
         int counter = 1;
 
@@ -244,85 +337,17 @@ public class DatabaseManager {
             counter = counter + 1;
         }
 
-    }
-
-
-    private void loadDoctorsSuites() throws SQLException{
-        HashMap<String, Suite> suites = new HashMap<>();
-        HashMap<Integer, Suite> suitesID = new HashMap<>();
-        HashMap<String, Doctor> doctors = new HashMap<>();
-        HashMap<String, Office> offices = new HashMap<>();
-        PreparedStatement suiteDoc = conn.prepareStatement("select suite_id from USER1.SUITE_DOC where doc_id = ?");
-
-
-        ResultSet rs = s.executeQuery("select * from USER1.SUITE");
-        while (rs.next()) {
-            suites.put(rs.getString(2),
-                    new Suite(rs.getInt(1),
-                            rs.getString(2),
-                            mapNodes.get(rs.getInt(3)),
-                            new HashSet<String>()));
-
-            suitesID.put(rs.getInt(1),
-                    new Suite(rs.getInt(1),
-                            rs.getString(2),
-                            mapNodes.get(rs.getInt(3)),
-                            new HashSet<String>()));
-        }
-        this.suites = suites;
-        System.out.println(suites.keySet());
-
-        rs = s.executeQuery("select * from USER1.DOCTOR order by NAME");
-
-        while(rs.next()) {
-            HashSet<Suite> locations = new HashSet<>();
-            suiteDoc.setInt(1, rs.getInt(1));
-            ResultSet results = suiteDoc.executeQuery();
-            while(results.next()) {
-                locations.add(suitesID.get(results.getInt(1)));
-                //suites.get(results.getInt(1)).addDoctor(rs.getString(2));
-            }
-
-            doctors.put(rs.getString(2),
-                    new Doctor(rs.getInt(1),
-                            rs.getString(2),
-                            rs.getString(3),
-                            rs.getString(4),
-                            locations));
-        }
-        this.doctors = doctors;
-        System.out.println(doctors.keySet());
-
-        rs = s.executeQuery("select * from OFFICES");
-        while(rs.next()) {
-            offices.put(rs.getString(2),
-                    new Office(rs.getInt(1),
-                            rs.getString(2),
-                            suitesID.get(rs.getInt(3))));
-        }
-        this.offices = offices;
-        System.out.println(offices);
-        rs.close();
-    }
-
-
-    private void saveDoctorsSuites() throws SQLException {
-        PreparedStatement insertDoctors = conn.prepareStatement("INSERT INTO USER1.DOCTOR (DOC_ID, NAME, DESCRIPTION, NUMBER, HOURS) VALUES (?, ?, ?, ?, ?)");
-        PreparedStatement insertSuites = conn.prepareStatement("INSERT INTO USER1.SUITE (SUITE_ID, NAME, NODE_ID) VALUES (?, ?, ?)");
-        PreparedStatement insertAssoc = conn.prepareStatement("INSERT INTO USER1.SUITE_DOC (SUITE_ID, DOC_ID) VALUES (?, ?)");
-        PreparedStatement insertOffices = conn.prepareStatement("INSERT INTO USER1.OFFICES (OFFICE_ID, NAME, SUITE_ID) VALUES (?, ?, ?)");
-
         System.out.println("Here");
         // saves Suites
-        for (Suite suite : suites.values()) {
+        for (Suite suite : h.getSuites().values()) {
             insertSuites.setInt(1, suite.getSuiteID());
             insertSuites.setString(2, suite.getName());
-            insertSuites.setInt(3, 0);
+            insertSuites.setInt(3, suite.getLocation().getNodeID());
             insertSuites.executeUpdate();
             conn.commit();
         }
         // saves Doctors
-        for (Doctor doc : doctors.values()) {
+        for (Doctor doc : h.getDoctors().values()) {
             System.out.println("Here");
             insertDoctors.setInt(1, doc.getDocID());
             insertDoctors.setString(2, doc.getName());
@@ -342,13 +367,14 @@ public class DatabaseManager {
             }
         }
         // saves Offices
-        for (Office office : offices.values()) {
+        for (Office office : h.getOffices().values()) {
             insertOffices.setInt(1, office.getId());
             insertOffices.setString(2, office.getName());
             insertOffices.setInt(3, office.getSuite().getSuiteID());
             insertOffices.executeUpdate();
             conn.commit();
         }
+
     }
 
     public void executeStatements(String[] states) throws SQLException {
@@ -440,72 +466,6 @@ public class DatabaseManager {
         statements.add(s);
 
 
-    }
-
-    //Add a row to the specified table
-    public void addRow(String table, String rowName, int floor) throws SQLException{
-
-
-        psInsert = conn.prepareStatement("insert into " + uname + "." + table + " values (?, ?)");
-        statements.add(psInsert);
-
-        psInsert.setString(1, rowName);
-        psInsert.setInt(2, floor);
-        //psInsert.setString(3, room);
-
-        psInsert.executeUpdate();
-
-        conn.commit();
-
-        System.out.println("Row Added");
-
-    }
-
-    //Finds a row in a column according to the given name in the row in the given table
-    //should have a return statement
-    public void findRow(String table, String column, String keyword) throws SQLException{
-
-        psInsert = conn.prepareStatement("SELECT * FROM " + uname + "." + table + " WHERE " + column + " LIKE " + keyword + "'%'");
-        statements.add(psInsert);
-
-        psInsert.executeUpdate();
-
-        conn.commit();
-
-        System.out.println("Something Found");
-
-
-    }
-
-    //should have a return statement
-    public void showInfo(String table, String column) throws SQLException{
-
-        psInsert = conn.prepareStatement("SELECT " + column + " FROM " + uname + "." + table);
-        statements.add(psInsert);
-
-        psInsert.executeUpdate();
-
-        conn.commit();
-
-        System.out.println("Column shown");
-    }
-
-    //alphabetize the given table
-    //public void alpha(String table){}
-
-
-    //Remove a a row in the given table
-    public void deleteRow(String table, String column, int keyword) throws SQLException{
-
-        psInsert = conn.prepareStatement("DELETE FROM " + uname + "." + table + " WHERE " + column + "=" + keyword);
-        statements.add(psInsert);
-
-
-        psInsert.executeUpdate();
-
-        conn.commit();
-
-        System.out.println("Row Deleted");
     }
 
     public void shutdown() {
