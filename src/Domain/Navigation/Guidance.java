@@ -447,8 +447,6 @@ public class Guidance extends Path {
     public void overlayOnMap() {
 
         try {
-            LinkedList<BufferedImage> listOfOverlays = new LinkedList<>();
-
 // load source images
             BufferedImage image = ImageIO.read(new File("emptyImage.png"));
             BufferedImage overlay = ImageIO.read(new File("directionPath.png"));
@@ -461,10 +459,6 @@ public class Guidance extends Path {
 // paint both images, preserving the alpha channels
             Graphics g = combined.getGraphics();
             g.drawImage(image, 0, 0, null);
-            /*
-            for (int i = 0; i < aFloor.getFloorNodes().size(); i++) {
-                g.drawImage(listOfOverlays.get(i), 50 * (int) Math.round(aFloor.getFloorNodes().get(i).getPosX()), 50 * (int) Math.round(aFloor.getFloorNodes().get(i).getPosY()), null);
-            } */
             g.drawImage(overlay, 0, 0, null);
 
 // Save as new image
@@ -474,12 +468,41 @@ public class Guidance extends Path {
         }
     }
 
-    private java.awt.Image transformWhiteToTransparency(BufferedImage image)
+    private java.awt.Image transformColorToTransparency(BufferedImage image, Color c1, Color c2)
     {
+        // Primitive test, just an example
+        final int r1 = c1.getRed();
+        final int g1 = c1.getGreen();
+        final int b1 = c1.getBlue();
+        final int r2 = c2.getRed();
+        final int g2 = c2.getGreen();
+        final int b2 = c2.getBlue();
         ImageFilter filter = new RGBImageFilter()
         {
             public final int filterRGB(int x, int y, int rgb)
             {
+                int r = (rgb & 0xFF0000) >> 16;
+                int g = (rgb & 0xFF00) >> 8;
+                int b = rgb & 0xFF;
+                if (r >= r1 && r <= r2 &&
+                        g >= g1 && g <= g2 &&
+                        b >= b1 && b <= b2)
+                {
+                    // Set fully transparent but keep color
+                    return rgb & 0xFFFFFF;
+                }
+                return rgb;
+            }
+        };
+
+        ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
+        return Toolkit.getDefaultToolkit().createImage(ip);
+    }
+
+    private java.awt.Image transformWhiteToTransparency(BufferedImage image)
+    {
+        ImageFilter filter = new RGBImageFilter() {
+            public final int filterRGB(int x, int y, int rgb) {
                 return (rgb << 8) & 0xFF000000;
             }
         };
@@ -492,13 +515,41 @@ public class Guidance extends Path {
         WritableImage image = aNode.snapshot(new SnapshotParameters(), null);
 
         // TODO: probably use a file chooser here
-        File file = new File("directionPath.png");
+        File file;
 
         try {
-            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File("directionPath1.png"));
         } catch (IOException e) {
             // TODO: handle exception here
             System.out.println("EGADS!  We have an exception!");
+        }
+
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File("directionPath1.png"));
+        } catch (IOException e) {
+            System.out.println("Something bad");
+        }
+
+        //java.awt.Image transImage = transformWhiteToTransparency(img);
+        java.awt.Image transImage = transformColorToTransparency(img, Color.lightGray, Color.white);
+
+
+        int w = transImage.getWidth(null);
+        int h = transImage.getHeight(null);
+        int type = BufferedImage.TYPE_INT_ARGB;  // other options
+        BufferedImage transImageBuff = new BufferedImage(w, h, type);
+        Graphics2D g2 = transImageBuff.createGraphics();
+        g2.drawImage(transImage, 0, 0, null);
+        g2.dispose();
+
+
+        file = new File("directionPath.png");
+        try {
+            ImageIO.write(transImageBuff, "png", file);  // ignore returned boolean
+        } catch(IOException e) {
+            System.out.println("Write error for " + file.getPath() +
+                    ": " + e.getMessage());
         }
 
     }
