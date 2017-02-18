@@ -11,5 +11,5 @@ derby.log
 #Don't ignore these
 !.gitignore
 !.travis.yml
-!directions.png
+!*.png
 !faulknerLogo.jpg
