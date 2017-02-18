@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashSet;
 
 public class Main extends Application {
@@ -46,7 +47,14 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         mvm = new MapModel();
-        mvm.setCurrentFloor(new Floor(3));
+        mvm.setCurrentFloor(new Floor(1));
+
+        Collection<MapNode> nodes = DatabaseManager.mapNodes.values();
+        for(MapNode n : nodes){
+            System.out.println(n.getPosX());
+            mvm.addMapNode(n);
+            mvm.getCurrentFloor().addNode(n);
+        }
 
         SceneSwitcher.switchToLoginView(primaryStage);
 
@@ -58,11 +66,11 @@ public class Main extends Application {
             DatabaseManager test = new DatabaseManager();
             try {
                 test.loadData();
-                //test.executeStatements(DatabaseManager.dropTables);
+                test.executeStatements(DatabaseManager.dropTables);
                 System.out.println("Dropped Tables");
-                //test.executeStatements(DatabaseManager.createTables);
+                test.executeStatements(DatabaseManager.createTables);
                 System.out.println("Created Tables");
-                //test.saveData();
+                test.saveData();
                 test.shutdown();
             }
             catch (SQLException e) {
@@ -73,6 +81,7 @@ public class Main extends Application {
         catch (NullPointerException e){
             System.out.println(e.getMessage());
         }
+
         launch(args);
     }
 }

@@ -11,12 +11,10 @@ public class Suite {
     String name;
     MapNode location;
     HashSet<String> doctors;
-    Floor myFloor;
 
-    public Suite(int id, String name, Floor floor, MapNode location, HashSet<String> doctors) {
+    public Suite(int id, String name, MapNode location, HashSet<String> doctors) {
         this.suiteID = id;
         this.name = name;
-        this.myFloor = floor;
         this.location = location;
         this.doctors = doctors;
     }
@@ -31,10 +29,6 @@ public class Suite {
 
     public String getName() {
         return this.name;
-    }
-
-    public Floor getMyFloor() {
-        return this.myFloor;
     }
 
     public MapNode getLocation() {

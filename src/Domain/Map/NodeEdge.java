@@ -9,6 +9,8 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
+import java.rmi.server.UID;
+
 /**
  * An edge that connects two nodes and has a cost (edge length)
  */

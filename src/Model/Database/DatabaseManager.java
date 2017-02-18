@@ -29,12 +29,12 @@ public class DatabaseManager {
     private String username = "user1";
     private String uname = username.toUpperCase();
 
-    public HashMap<Integer, MapNode> mapNodes = new HashMap<>();
-    public HashMap<Integer, NodeEdge> edges = new HashMap<>();
-    public HashMap<String, Doctor> doctors = new HashMap<>();
-    public HashMap<String, Floor> floors = new HashMap<>();
-    public HashMap<String, Suite> suites = new HashMap<>();
-    public HashMap<String, Office> offices = new HashMap<>();
+    public static HashMap<Integer, MapNode> mapNodes = new HashMap<>();
+    public static HashMap<Integer, NodeEdge> edges = new HashMap<>();
+    public static HashMap<String, Doctor> doctors = new HashMap<>();
+    public static HashMap<String, Floor> floors = new HashMap<>();
+    public static HashMap<String, Suite> suites = new HashMap<>();
+    public static HashMap<String, Office> offices = new HashMap<>();
 
     public Hospital Faulkner = new Hospital();
 
@@ -54,9 +54,7 @@ public class DatabaseManager {
             "CREATE TABLE USER1.SUITE (SUITE_ID INT PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(200), " +
                     "NODE_ID INT, " +
-                    "FLOOR_ID VARCHAR(5), " +
-                    "CONSTRAINT SUITE_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID), " +
-                    "CONSTRAINT SUITE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
+                    "CONSTRAINT SUITE_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID))",
             "CREATE TABLE USER1.SERVICES (SERVICE_ID INT PRIMARY KEY, " +
                     "NAME VARCHAR(200), " +
                     "NODE_ID INT, " +
@@ -107,8 +105,9 @@ public class DatabaseManager {
         System.out.println("Here");
         s = conn.createStatement();
         System.out.println("Here");
-        //saveDoctorsSuites();
-        saveMap();
+        saveHospital(Faulkner);
+        saveDoctorsSuites();
+        //saveMap();
         s.close();
         conn.close();
         System.out.println("Data Saved Correctly");
@@ -197,6 +196,56 @@ public class DatabaseManager {
 
     }
 
+    private void saveHospital(Hospital h) throws SQLException {
+        PreparedStatement insertBuildings = conn.prepareStatement("INSERT INTO BUILDING (BUILDING_ID, NAME) VALUES (?, ?)");
+        PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO FLOOR (FLOOR_ID, BUILDING_ID, NUMBER) VALUES (?, ?, ?)");
+        PreparedStatement insertNodes = conn.prepareStatement("INSERT INTO NODE (NODE_ID, POSX, POSY, FLOOR_ID, TYPE) VALUES (?, ?, ?, ?, ?)");
+        PreparedStatement insertEdges = conn.prepareStatement("INSERT INTO EDGE (EDGE_ID, NODEA, NODEB, COST) VALUES (?, ?, ?, ?)");
+
+        int counter = 1;
+
+        // insert buildings into database
+        for (Building b : h.getBuildings()) {
+            insertBuildings.setInt(1, counter);
+            insertBuildings.setString(2, b.getName());
+            insertBuildings.executeUpdate();
+            conn.commit();
+
+            // insert floors into database
+            for (Floor f : b.getFloors()) {
+                String floorID = "" + b.getName().charAt(0) + Integer.toString(f.getFloorNumber()) + "";
+                insertFloors.setString(1, floorID);
+                insertFloors.setInt(2, counter);
+                insertFloors.setInt(3, f.getFloorNumber());
+                insertFloors.executeUpdate();
+                conn.commit();
+
+                // insert nodes into database
+                for (MapNode n : f.getFloorNodes()) {
+                    insertNodes.setInt(1, n.getNodeID());
+                    insertNodes.setDouble(2, n.getPosX());
+                    insertNodes.setDouble(3, n.getPosY());
+                    insertNodes.setString(4, floorID);
+                    insertNodes.setInt(5, n.getType());
+                    insertNodes.executeUpdate();
+                    conn.commit();
+                }
+            }
+            counter = counter + 1;
+        }
+
+        int edgesCount = 1;
+        for (NodeEdge edge : edges.values()) {
+            insertEdges.setInt(1, edgesCount);
+            insertEdges.setInt(2, edge.getSource().getNodeID());
+            insertEdges.setInt(3, edge.getOtherNode(edge.getSource()).getNodeID());
+            insertEdges.setDouble(4, edge.getCost());
+            insertEdges.executeUpdate();
+            conn.commit();
+            edgesCount = edgesCount + 1;
+        }
+    }
+
 
     private void loadDoctorsSuites() throws SQLException{
         HashMap<String, Suite> suites = new HashMap<>();
@@ -211,14 +260,12 @@ public class DatabaseManager {
             suites.put(rs.getString(2),
                     new Suite(rs.getInt(1),
                             rs.getString(2),
-                            floors.get(rs.getString(4)),
                             mapNodes.get(rs.getInt(3)),
                             new HashSet<String>()));
 
             suitesID.put(rs.getInt(1),
                     new Suite(rs.getInt(1),
                             rs.getString(2),
-                            floors.get(rs.getString(4)),
                             mapNodes.get(rs.getInt(3)),
                             new HashSet<String>()));
         }
@@ -293,62 +340,51 @@ public class DatabaseManager {
 //    }
 
 
-//    public void saveDoctorsSuites() throws SQLException {
-//        PreparedStatement insertDoctors = conn.prepareStatement("INSERT INTO USER1.DOCTOR (DOC_ID, NAME, DESCRIPTION, HOURS, SUITES) VALUES (?, ?, ?, ?, ?)");
-//        PreparedStatement insertSuites = conn.prepareStatement("INSERT INTO USER1.SUITE (SUITE_ID, NAME, NODE_ID, FLOOR_ID) VALUES (?, ?, ?, ?)");
-//        PreparedStatement insertAssoc = conn.prepareStatement("INSERT INTO USER1.SUITE_DOC (SUITE_ID, DOC_ID) VALUES (?, ?)");
-//        PreparedStatement insertOffices = conn.prepareStatement("INSERT INTO USER1.OFFICES (OFFICE_ID, NAME, SUITE_ID) VALUES (?, ?, ?)");
-//        PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO USER1.FLOOR (FLOOR_ID, BUILD_ID, NUMBER) VALUES (?, ?, ?)");
-//
-//        System.out.println("Here");
-//        // saves Floors
-//        for (Floor floor : floors.values()) {
-//            insertFloors.setString(1, floor.getFloorName());
-//            insertFloors.setInt(2,floor.getBuilding());
-//            insertFloors.setInt(3, floor.getFloorNumber());
-//            insertFloors.executeUpdate();
-//            conn.commit();
-//            System.out.println("Saved Floor");
-//        }
-//        conn.commit();
-//        // saves Suites
-//        for (Domain.Map.Suite suite : suites.values()) {
-//            insertSuites.setInt(1, suite.getSuiteID());
-//            insertSuites.setString(2, suite.getName());
-//            insertSuites.setInt(3, 0);
-//            insertSuites.setString(4, suite.getMyFloor().getFloorName());
-//            insertSuites.executeUpdate();
-//            conn.commit();
-//        }
-//        // saves Doctors
-//        for (Doctor doc : doctors.values()) {
-//            String locations = "";
-//            System.out.println("Here");
-//            insertDoctors.setInt(1, doc.getDocID());
-//            insertDoctors.setString(2, doc.getName());
-//            insertDoctors.setString(3, doc.getDescription());
-//            insertDoctors.setString(4, doc.getHours());
-//            insertDoctors.setString(5, locations);
-//            insertDoctors.executeUpdate();
-//            // saves Suite and Doctor Relationships
-//            for (Domain.Map.Suite ste : doc.getSuites()) {
-//                insertAssoc.setInt(1, ste.getSuiteID());
-//                insertAssoc.setInt(2, doc.getDocID());
-//                System.out.println("Here");
-//                insertAssoc.executeUpdate();
-//                conn.commit();
-//                System.out.println("Added Suites");
-//            }
-//        }
-//        // saves Offices
-//        for (Office office : offices.values()) {
-//            insertOffices.setInt(1, office.getId());
-//            insertOffices.setString(2, office.getName());
-//            insertOffices.setInt(3, office.getSuite().getSuiteID());
-//            insertOffices.executeUpdate();
-//            conn.commit();
-//        }
-//    }
+    private void saveDoctorsSuites() throws SQLException {
+        PreparedStatement insertDoctors = conn.prepareStatement("INSERT INTO USER1.DOCTOR (DOC_ID, NAME, DESCRIPTION, NUMBER, HOURS) VALUES (?, ?, ?, ?, ?)");
+        PreparedStatement insertSuites = conn.prepareStatement("INSERT INTO USER1.SUITE (SUITE_ID, NAME, NODE_ID) VALUES (?, ?, ?)");
+        PreparedStatement insertAssoc = conn.prepareStatement("INSERT INTO USER1.SUITE_DOC (SUITE_ID, DOC_ID) VALUES (?, ?)");
+        PreparedStatement insertOffices = conn.prepareStatement("INSERT INTO USER1.OFFICES (OFFICE_ID, NAME, SUITE_ID) VALUES (?, ?, ?)");
+
+        System.out.println("Here");
+        // saves Suites
+        for (Suite suite : suites.values()) {
+            insertSuites.setInt(1, suite.getSuiteID());
+            insertSuites.setString(2, suite.getName());
+            insertSuites.setInt(3, 0);
+            insertSuites.executeUpdate();
+            conn.commit();
+        }
+        // saves Doctors
+        for (Doctor doc : doctors.values()) {
+            String locations = "";
+            System.out.println("Here");
+            insertDoctors.setInt(1, doc.getDocID());
+            insertDoctors.setString(2, doc.getName());
+            insertDoctors.setString(3, doc.getDescription());
+            insertDoctors.setString(4, doc.getHours());
+            insertDoctors.setString(5, locations);
+            insertDoctors.executeUpdate();
+            conn.commit();
+            // saves Suite and Doctor Relationships
+            for (Suite ste : doc.getSuites()) {
+                insertAssoc.setInt(1, ste.getSuiteID());
+                insertAssoc.setInt(2, doc.getDocID());
+                System.out.println("Here");
+                insertAssoc.executeUpdate();
+                conn.commit();
+                System.out.println("Added Suites");
+            }
+        }
+        // saves Offices
+        for (Office office : offices.values()) {
+            insertOffices.setInt(1, office.getId());
+            insertOffices.setString(2, office.getName());
+            insertOffices.setInt(3, office.getSuite().getSuiteID());
+            insertOffices.executeUpdate();
+            conn.commit();
+        }
+    }
 
     public void saveMap() throws SQLException {
         PreparedStatement insertNodes = conn.prepareStatement("INSERT INTO USER1.NODE (NODE_ID, POSX, POSY, TYPE) VALUES (?, ?, ?, ?)");
