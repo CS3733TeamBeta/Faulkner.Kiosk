@@ -1,16 +1,19 @@
 package Domain.Navigation;
 
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
 import Domain.Map.*;
 import Exceptions.*;
+import Model.MapModel;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 
 import javax.imageio.ImageIO;
@@ -421,8 +424,49 @@ public class Guidance extends Path {
         return textDirections;
     }
 
+
     public boolean sendEmailGuidance(String address, Node aNode) {
         saveMapImage(aNode);
+
+        String subjectLine;
+        String directionLine = "<H2>You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + ".</H2>" + "<H3>";
+        subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
+
+        for (DirectionStep step: textDirections) {
+            for(String s: step.getDirections()) {
+
+                System.out.println(s);
+                directionLine += s;
+                directionLine += "<br>";
+            }
+        }
+
+        directionLine += "</H3>";
+        try {
+            SendEmail e = new SendEmail(address, subjectLine, directionLine, true);
+            return true;
+        } catch(Exception e) {
+            System.out.println("Threw an exception: " + e);
+            return false;
+        }
+    }
+
+    public void saveMapImage(MapModel model) {
+        File file;
+        Image backgroundImage = new Image("/floor3.png", true);
+        /*
+        BufferedImage bImage = SwingFXUtils.fromFXImage(backgroundImage, null);
+        file = new File("tempTest.png");
+        try {
+            ImageIO.write(bImage, "png", file);
+        } catch (Exception e) {
+            System.out.println("Another exception thrown");
+        } */
+    }
+
+    public boolean sendEmailGuidance(String address, MapModel model) {
+        saveMapImage(model);
+
         String subjectLine;
         String directionLine = "<H2>You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + ".</H2>" + "<H3>";
         subjectLine = "Your Directions are Enclosed - Faulkner Hospital";

@@ -8,6 +8,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.imageio.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Date;
 import java.util.Properties;
 
@@ -32,6 +35,7 @@ public class SendEmail {
         this.includeImage = includeImage;
         sendEmail();
     }
+
 
     public void sendEmail() {
         final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
@@ -64,13 +68,14 @@ public class SendEmail {
             BodyPart messageBodyPart = new MimeBodyPart();
             String htmlText;
             if (includeImage) {
-                htmlText = "<img src=\"cid:imageLogo\">" + this.message + "<img src=\"cid:imageDirections\">";
+                htmlText = /*"<img src=\"cid:imageLogo\">" + */this.message + "<img src=\"cid:imageDirections\">";
             } else {
                 htmlText = "<img src=\"cid:imageLogo\">" + this.message;
             }
             messageBodyPart.setContent(htmlText, "text/html");
             multipart.addBodyPart(messageBodyPart);
 
+            /*
             messageBodyPart = new MimeBodyPart();
             fds = new FileDataSource(
                     "faulknerLogo.jpg");
@@ -79,8 +84,10 @@ public class SendEmail {
             messageBodyPart.setHeader("Content-ID", "<imageLogo>");
 
             multipart.addBodyPart(messageBodyPart);
-
+            */
             if (includeImage) {
+
+
                 messageBodyPart = new MimeBodyPart();
                 fds = new FileDataSource(
                         "directions.png");
