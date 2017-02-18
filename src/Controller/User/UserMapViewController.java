@@ -426,19 +426,24 @@ public class UserMapViewController extends AbstractController {
     }
 
     public void onEmailDirections(ActionEvent actionEvent) {
-        System.out.println("onEmailDirections called");
-        emailButton.setVisible(false);
-        searchBar.setText("Search Hospital");
+        String givenEmail = searchBar.getText().toLowerCase();
+        if (givenEmail.contains("@") && (givenEmail.contains(".com") || givenEmail.contains(".org") || givenEmail.contains(".edu") || givenEmail.contains(".gov"))) {
+            System.out.println("onEmailDirections called");
+            emailButton.setVisible(false);
 
-        System.out.println(searchBar.getText());
-        System.out.println("end");
+            System.out.println(searchBar.getText());
+            System.out.println("end");
 
-        newRoute.sendEmailGuidance(searchBar.getText(), mainPane);
+            newRoute.sendEmailGuidance(searchBar.getText(), mainPane);
 
-        defaultProperty();
+            defaultProperty();
 
-        searchBar.setText("Search Hospital");
+            searchBar.setText("Search Hospital");
 
-        sendingEmail = false;
+            sendingEmail = false;
+        } else {
+            System.out.println("Not a valid address!");
+            //@TODO Show in ui email was invalid
+        }
     }
 }
