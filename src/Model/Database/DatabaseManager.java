@@ -60,7 +60,8 @@ public class DatabaseManager {
                     "NAME VARCHAR(200), " +
                     "NODE_ID INT, " +
                     "TYPE VARCHAR(200), " +
-                    "FLOOR INT)",
+                    "FLOOR INT)" +
+                    "CONSTRAINT SERVICES_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID))",
             "CREATE TABLE USER1.DOCTOR (DOC_ID INT PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(50), " +
                     "DESCRIPTION VARCHAR(20), " +

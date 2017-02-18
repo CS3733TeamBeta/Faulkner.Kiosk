@@ -66,7 +66,6 @@ public class Main extends Application {
             DatabaseManager test = new DatabaseManager();
             try {
                 test.loadData();
-
                 launch(args);
                 test.executeStatements(DatabaseManager.dropTables);
                 System.out.println("Dropped Tables");
