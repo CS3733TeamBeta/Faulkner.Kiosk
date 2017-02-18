@@ -21,15 +21,11 @@ public class Floor implements Comparable{
     }
 
     int floorNumber;
-    String floorName;
-    int building;
 
-    public Floor(String floorID, int buildID, int floorNumber) {
+    public Floor(int floorNumber) {
         floorNodes = new LinkedList<MapNode>();
         floorEdges = new LinkedList<NodeEdge>();
-        this.floorName = floorID;
         this.floorNumber = floorNumber;
-        this.building = buildID;
     }
 
     public void addNode(MapNode n) {
@@ -43,14 +39,6 @@ public class Floor implements Comparable{
                 this.kioskNode = kioskNode;
             }
         }
-    }
-
-    public String getFloorName() {
-        return this.floorName;
-    }
-
-    public int getBuilding() {
-        return this.building;
     }
 
     public MapNode getKioskNode(){
