@@ -1,6 +1,7 @@
 package Controller.Admin;
 
 import Controller.AbstractController;
+import Controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -38,14 +39,31 @@ public class FileChooser_Controller extends AbstractController
     FileChannel outChannelTwo;
     FileChannel outChannel;
     FileChannel source;
+    String fullName;
+    String fullNameTwo;
 
     @FXML
-    private void clickGoBack(){
-
+    private void clickGoBack()throws IOException{
+        SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
     }
 
     @FXML
-    private void clickSaveFile(){
+    private void clickSaveFile() throws IOException{
+        try
+        {
+            source.transferTo(0, size, outChannel);
+        }
+        catch(Exception e){}
+        try
+        {
+            source.transferTo(0, size, outChannelTwo);
+        }
+        catch(Exception e){}
+
+        System.out.println("Loading image to: " + fullName);
+        System.out.println("Loading image to: " + fullNameTwo);
+
+        SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
 
     }
 
@@ -82,9 +100,9 @@ public class FileChooser_Controller extends AbstractController
         }
         File userFile = new File(strFilePath);
         String filename = userFile.getName();
-        String fullName = "src/View/Admin/MapBuilder/" + filename;
-        String fullNameTwo = "src/View/User/MapViewer/" + filename;
-        FileChannel source = new FileInputStream(strFilePath).getChannel();
+        fullName = "src/View/Admin/MapBuilder/" + filename;
+        fullNameTwo = "src/View/User/MapViewer/" + filename;
+        source = new FileInputStream(strFilePath).getChannel();
 
         size = 0;
         try {
@@ -95,20 +113,6 @@ public class FileChooser_Controller extends AbstractController
         }
         outChannel = new FileOutputStream(fullName).getChannel();
         outChannelTwo = new FileOutputStream(fullNameTwo).getChannel();
-
-        System.out.println(fullName);
-
-        try
-        {
-            source.transferTo(0, size, outChannel);
-        }
-        catch(Exception e){}
-        try
-        {
-            source.transferTo(0, size, outChannelTwo);
-        }
-        catch(Exception e){}
-
 
     }
 
