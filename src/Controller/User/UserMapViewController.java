@@ -425,6 +425,83 @@ public class UserMapViewController extends AbstractController {
         SceneSwitcher.switchToLoginView(primaryStage);
     }
 
+    public AnchorPane createDirectionPane() {
+        AnchorPane directionPane = new AnchorPane();
+
+        //and then set all the existing nodes up
+        HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+
+        for(MapNode n : model.getCurrentFloor().getFloorNodes())
+        {
+            for(NodeEdge edge: n.getEdges())
+            {
+                if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+            }
+
+            if(!directionPane.getChildren().contains(n.getNodeToDisplay()))
+            {
+                directionPane.getChildren().add(n.getNodeToDisplay());
+            }
+
+
+            System.out.println("Adding node at X:" + n.getPosX() + "Y: " + n.getPosY());
+
+            n.getNodeToDisplay().relocate(n.getPosX()*xNodeScale*1.27, 1.27*n.getPosY()*yNodeScale);
+            n.getNodeToDisplay().setOnMouseClicked(null);
+            n.getNodeToDisplay().setOnMouseEntered(null);
+            n.getNodeToDisplay().setOnMouseDragged(null);
+
+            //setupImportedNode(n);
+        }
+
+
+        for(NodeEdge edge : collectedEdges)
+        {
+
+            if(!directionPane.getChildren().contains(edge.getEdgeLine()))
+            {
+                directionPane.getChildren().add(edge.getEdgeLine());
+            }
+
+            MapNode source = edge.getSource();
+            MapNode target = edge.getTarget();
+
+            //@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
+
+            if(!directionPane.getChildren().contains(source.getNodeToDisplay()))
+            {
+
+                directionPane.getChildren().add(source.getNodeToDisplay());
+
+                source.getNodeToDisplay().relocate(source.getPosX() * 2*xNodeScale, source.getPosY() * 2* yNodeScale);
+            }
+
+            if(!directionPane.getChildren().contains(target.getNodeToDisplay()))
+            {
+                directionPane.getChildren().add(target.getNodeToDisplay());
+                target.getNodeToDisplay().relocate(target.getPosX() * 2*xNodeScale, target.getPosY() * 2*yNodeScale);
+            }
+
+            edge.updatePosViaNode(source);
+            edge.updatePosViaNode(target);
+
+            edge.setSource(source);
+            edge.setTarget(target);
+
+            source.toFront();
+            target.toFront();
+
+            edge.getEdgeLine().setOnMouseEntered(null);
+            edge.getEdgeLine().setOnMouseClicked(null);
+
+            //directionPane.toBack();
+        }
+
+
+        //searchMenu.toFront();
+        return directionPane;
+    }
+
     public void onEmailDirections(ActionEvent actionEvent) {
         String givenEmail = searchBar.getText().toLowerCase();
         if (givenEmail.contains("@") && (givenEmail.contains(".com") || givenEmail.contains(".org") || givenEmail.contains(".edu") || givenEmail.contains(".gov"))) {
@@ -434,13 +511,14 @@ public class UserMapViewController extends AbstractController {
             System.out.println(searchBar.getText());
             System.out.println("end");
 
-            newRoute.sendEmailGuidance(searchBar.getText(), mainPane);
+            newRoute.sendEmailGuidance(searchBar.getText(), this.createDirectionPane());
 
             defaultProperty();
 
             searchBar.setText("Search Hospital");
 
             sendingEmail = false;
+            renderInitialMap();
         } else {
             System.out.println("Not a valid address!");
             //@TODO Show in ui email was invalid

@@ -5,8 +5,13 @@ import Domain.Navigation.Guidance;
 import Domain.Navigation.Path;
 import Domain.Navigation.*;
 import Exceptions.PathFindingNoPathException;
+import Model.MapModel;
 import junit.framework.TestCase;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.rmi.server.UID;
 import java.util.LinkedList;
 
@@ -219,6 +224,15 @@ public class PathFindingTest extends TestCase{
             //g1.sendEmailGuidance("iancj97@gmail.com");
         } catch (Exception e) {
             fail("Threw exception");
+        }
+    }
+
+    public void testCreateImageFromModel() {
+        try {
+            g1 = new Guidance(nodeA, nodeD);
+            g1.createImageFromScratch(floor1);
+        } catch (Exception e) {
+            fail("Threw unexpected exception");
         }
     }
 }

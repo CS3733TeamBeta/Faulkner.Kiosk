@@ -1,7 +1,8 @@
 package Domain.Navigation;
 
 
-import java.awt.image.BufferedImage;
+import java.awt.*;
+import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -11,7 +12,6 @@ import Exceptions.*;
 import Model.MapModel;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
@@ -209,19 +209,6 @@ public class Guidance extends Path {
         }
     }
 
-    public void saveMapImage(Node aNode) {
-        WritableImage image = aNode.snapshot(new SnapshotParameters(), null);
-
-        // TODO: probably use a file chooser here
-        File file = new File("directions.png");
-
-        try {
-            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-        } catch (IOException e) {
-            // TODO: handle exception here
-            System.out.println("EGADS!  We have an exception!");
-        }
-    }
 
     public static int nodesToDirection(MapNode fromNode, MapNode toNode) {
         return Guidance.nodesToDirection(fromNode, toNode, false);
@@ -424,9 +411,102 @@ public class Guidance extends Path {
         return textDirections;
     }
 
+    public void createImageFromScratch(Floor aFloor) {
+
+        try {
+            LinkedList<BufferedImage> listOfOverlays = new LinkedList<>();
+
+// load source images
+            BufferedImage image = ImageIO.read(new File("emptyImage.png"));
+            BufferedImage overlay = ImageIO.read(new File("lildude.png"));
+
+            for (int i = 0; i < 25; i++) {
+                listOfOverlays.add(ImageIO.read(new File("lildude.png")));
+            }
+
+// create the new image, canvas size is the max. of both image sizes
+            int w = image.getWidth();
+            int h = image.getHeight();
+            BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+
+// paint both images, preserving the alpha channels
+            Graphics g = combined.getGraphics();
+            g.drawImage(image, 0, 0, null);
+            for (int i = 0; i < aFloor.getFloorNodes().size(); i++) {
+
+                g.drawImage(listOfOverlays.get(i), 50 * (int) Math.round(aFloor.getFloorNodes().get(i).getPosX()), 50 * (int) Math.round(aFloor.getFloorNodes().get(i).getPosY()), null);
+            }
+
+// Save as new image
+            ImageIO.write(combined, "PNG", new File("combined.png"));
+        } catch (Exception e) {
+            System.out.println("Threw another exception over here.");
+        }
+    }
+
+    public void overlayOnMap() {
+
+        try {
+            LinkedList<BufferedImage> listOfOverlays = new LinkedList<>();
+
+// load source images
+            BufferedImage image = ImageIO.read(new File("emptyImage.png"));
+            BufferedImage overlay = ImageIO.read(new File("directionPath.png"));
+
+// create the new image, canvas size is the max. of both image sizes
+            int w = Math.max(image.getWidth(), overlay.getWidth());
+            int h = Math.max(image.getHeight(), overlay.getHeight());
+            BufferedImage combined = new BufferedImage(1244, 700, BufferedImage.TYPE_INT_ARGB);
+
+// paint both images, preserving the alpha channels
+            Graphics g = combined.getGraphics();
+            g.drawImage(image, 0, 0, null);
+            /*
+            for (int i = 0; i < aFloor.getFloorNodes().size(); i++) {
+                g.drawImage(listOfOverlays.get(i), 50 * (int) Math.round(aFloor.getFloorNodes().get(i).getPosX()), 50 * (int) Math.round(aFloor.getFloorNodes().get(i).getPosY()), null);
+            } */
+            g.drawImage(overlay, 0, 0, null);
+
+// Save as new image
+            ImageIO.write(combined, "PNG", new File("combined.png"));
+        } catch (Exception e) {
+            System.out.println("Threw another exception over here.");
+        }
+    }
+
+    private java.awt.Image transformWhiteToTransparency(BufferedImage image)
+    {
+        ImageFilter filter = new RGBImageFilter()
+        {
+            public final int filterRGB(int x, int y, int rgb)
+            {
+                return (rgb << 8) & 0xFF000000;
+            }
+        };
+
+        ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
+        return Toolkit.getDefaultToolkit().createImage(ip);
+    }
+
+    public void savePathImage(Node aNode) {
+        WritableImage image = aNode.snapshot(new SnapshotParameters(), null);
+
+        // TODO: probably use a file chooser here
+        File file = new File("directionPath.png");
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+        } catch (IOException e) {
+            // TODO: handle exception here
+            System.out.println("EGADS!  We have an exception!");
+        }
+
+    }
 
     public boolean sendEmailGuidance(String address, Node aNode) {
-        saveMapImage(aNode);
+        savePathImage(aNode);
+
+        overlayOnMap();
 
         String subjectLine;
         String directionLine = "<H2>You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + ".</H2>" + "<H3>";

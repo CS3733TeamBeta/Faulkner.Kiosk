@@ -90,7 +90,7 @@ public class SendEmail {
 
                 messageBodyPart = new MimeBodyPart();
                 fds = new FileDataSource(
-                        "directions.png");
+                        "combined.png");
 
                 messageBodyPart.setDataHandler(new DataHandler(fds));
                 messageBodyPart.setHeader("Content-ID", "<imageDirections>");
