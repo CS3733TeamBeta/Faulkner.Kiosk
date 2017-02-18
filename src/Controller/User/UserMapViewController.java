@@ -267,8 +267,6 @@ public class UserMapViewController extends AbstractController {
     public void searchMenuUp() {
         if(!sendingEmail)
         {
-
-
             Timeline menuSlideDown = new Timeline();
             KeyFrame keyFrame;
             menuSlideDown.setCycleCount(1);
@@ -430,8 +428,6 @@ public class UserMapViewController extends AbstractController {
     public void onEmailDirections(ActionEvent actionEvent)
     {
         emailButton.setVisible(false);
-        searchBar.setText("Search Hospital");
-
         System.out.println(searchBar.getText());
 
         newRoute.sendEmailGuidance(searchBar.getText(), mainPane);
@@ -439,5 +435,6 @@ public class UserMapViewController extends AbstractController {
         defaultProperty();
 
         sendingEmail = false;
+        searchBar.setText("Search Hospital"); 
     }
 }
