@@ -11,7 +11,7 @@ public class Floor {
     LinkedList<MapNode> floorNodes;
     LinkedList<NodeEdge> floorEdges;
     MapNode kioskNode = null;
-    String imageName;
+    String imageLocation;
 
     public LinkedList<MapNode> getFloorNodes() {
         return floorNodes;
@@ -35,11 +35,11 @@ public class Floor {
     }
 
     public void setImageName(String fileName){
-        this.imageName = fileName;
+        this.imageLocation = fileName;
     }
 
     public String getImageName(){
-        return this.imageName;
+        return this.imageLocation;
     }
 
     public void setKioskLocation(MapNode kioskNode){

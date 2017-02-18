@@ -2,6 +2,7 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -68,9 +69,9 @@ public class MapEditorController extends AbstractController {
 
 	}
 
-	public void changeFloorToSaved(String location) {
-
-		this.mapImage.setImage(new Image(location));
+	public void changeFloorToSaved(String location) throws MalformedURLException{
+		System.out.println(new URL("file:///" + System.getProperty("user.dir") + location).toString());
+		this.mapImage.setImage(new Image(new URL("file:///" + System.getProperty("user.dir") + location).toString(), true));
 
 	}
 
@@ -160,7 +161,7 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	protected void renderInitialMap()
+	protected void renderInitialMap() throws MalformedURLException
 	{
 		if(DragDropMain.mvm != null) {
 			System.out.println("Begin render...");
@@ -173,6 +174,8 @@ public class MapEditorController extends AbstractController {
 		}
 
 		currentImageBackground = model.getCurrentFloor().getImageName();
+
+		changeFloorToSaved("/src/View/Admin/MapBuilder/the.png");
 
 		treeFloor3 = new TreeItem<String> ("Floor 3");
 		treeFloor3.setExpanded(true);
@@ -275,7 +278,7 @@ public class MapEditorController extends AbstractController {
 	}
 
 	@FXML
-	private void initialize() {
+	private void initialize() throws MalformedURLException{
 
 		renderInitialMap();
 

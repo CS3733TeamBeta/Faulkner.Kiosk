@@ -4,10 +4,7 @@ import Controller.AbstractController;
 import Controller.SceneSwitcher;
 import Domain.Map.Floor;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -30,6 +27,8 @@ public class FileChooser_Controller extends AbstractController
     Button btnChooseFile;
     @FXML
     TextArea txtText;
+    @FXML
+    TextField inputFloorNumber;
 
 
     Stage newStage = new Stage();
@@ -40,8 +39,8 @@ public class FileChooser_Controller extends AbstractController
     FileChannel outChannelTwo;
     FileChannel outChannel;
     FileChannel source;
-    String fullName;
-    String fullNameTwo;
+    String fullName = null;
+    String fullNameTwo = null;
 
     Floor newFloor;
 
@@ -66,7 +65,22 @@ public class FileChooser_Controller extends AbstractController
         System.out.println("Loading image to: " + fullName);
         System.out.println("Loading image to: " + fullNameTwo);
 
-        SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
+        int floorNum;
+
+        try{
+            floorNum = Integer.parseInt(inputFloorNumber.getText());
+            newFloor = new Floor(floorNum);
+            if(fullName != null) {
+                newFloor.setImageName(fullName);
+                SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
+            }
+            else{
+                System.out.println("ERROR: No image selected");
+            }
+        }catch(NumberFormatException e){
+            System.out.println("ERROR: Input non-int value");
+
+        }
 
     }
 

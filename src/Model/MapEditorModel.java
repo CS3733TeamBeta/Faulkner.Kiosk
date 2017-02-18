@@ -54,19 +54,6 @@ public class MapEditorModel
         return hospital;
     }
 
-    public void setCurrentFloor(Floor floor){
-        this.currentFloor = floor;
-        mapNodes.clear();
-        for(MapNode n : floor.getFloorNodes()) {
-            mapNodes.add(n);
-        }
-
-        mapEdges.clear();
-        for(NodeEdge m : floor.getFloorEdges()) {
-            mapEdges.add(m);
-        }
-    }
-
     public Floor getCurrentFloor()
     {
         return currentFloor;
