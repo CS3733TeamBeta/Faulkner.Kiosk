@@ -69,12 +69,14 @@ public class DatabaseManager {
                     "NAME VARCHAR(200), " +
                     "SUITE_ID INT, " +
                     "CONSTRAINT OFFICES_SUITE_SUITE_ID_fk FOREIGN KEY (SUITE_ID) REFERENCES SUITE (SUITE_ID))",
-            "CREATE TABLE USER1.EDGE ( EDGE_ID INT PRIMARY KEY NOT NULL," +
+            "CREATE TABLE USER1.EDGE (EDGE_ID INT PRIMARY KEY NOT NULL," +
                     "NODEA INT," +
                     "NODEB INT," +
                     "COST DOUBLE," +
+                    "FLOOR_ID VARCHAR(5)," +
                     "CONSTRAINT EDGE_NODE_NODE_ID_FKA FOREIGN KEY (NODEA) REFERENCES NODE (NODE_ID)," +
-                    "CONSTRAINT EDGE_NODE_NODE_ID_FKB FOREIGN KEY (NODEB) REFERENCES NODE (NODE_ID))",
+                    "CONSTRAINT EDGE_NODE_NODE_ID_FKB FOREIGN KEY (NODEB) REFERENCES NODE (NODE_ID)," +
+                    "CONSTRAINT EDGE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
             "CREATE TABLE USER1.SUITE_DOC (SUITE_ID INT," +
                     "DOC_ID INT," +
                     "CONSTRAINT SUITE_DOC_SUITE_SUITE_ID_FK1 FOREIGN KEY (SUITE_ID) REFERENCES SUITE (SUITE_ID)," +
@@ -95,8 +97,6 @@ public class DatabaseManager {
     public void loadData() throws SQLException {
         s = conn.createStatement();
         loadHospital(Faulkner);
-        //loadFloors();
-        //loadMap();
         loadDoctorsSuites();
         conn.commit();
     }
@@ -107,35 +107,21 @@ public class DatabaseManager {
         System.out.println("Here");
         saveHospital(Faulkner);
         saveDoctorsSuites();
-        //saveMap();
         s.close();
         conn.close();
         System.out.println("Data Saved Correctly");
     }
 
-//    private void loadOffices() throws SQLException {
-//        HashMap<String, Office> offices = new HashMap<>();
-//
-//        ResultSet rs = s.executeQuery("select * from OFFICES");
-//        while(rs.next()) {
-//            offices.put(rs.getString(2),
-//                    new Office(rs.getInt(1),
-//                            rs.getString(2),
-//                            suites.get(rs.getInt(3))));
-//        }
-//        this.offices = offices;
-//        System.out.println(offices);
-//        rs.close();
-//    }
 
     private void loadHospital(Hospital h) throws SQLException {
         PreparedStatement floorsPS = conn.prepareStatement("SELECT * from FLOOR where BUILDING_ID = ?");
         PreparedStatement nodesPS = conn.prepareStatement("SELECT * from NODE where FLOOR_ID = ?");
+        PreparedStatement edgesPS = conn.prepareStatement("SELECT * from EDGE where FLOOR_ID = ?");
         s = conn.createStatement();
 
         HashMap<Integer, Building> buildings = new HashMap<>();
         HashMap<Integer, MapNode> mapNodes = new HashMap<>();
-        HashMap<Integer, NodeEdge> edges = new HashMap<>();
+        HashMap<Integer, NodeEdge> nodeEdges = new HashMap<>();
 
         ResultSet rs = s.executeQuery("select * from BUILDING");
 
@@ -159,13 +145,32 @@ public class DatabaseManager {
                                     nodeRS.getInt(3),
                                     nodeRS.getInt(5)));
                 }
+                HashMap<Integer, NodeEdge> edges = new HashMap<>();
+                edgesPS.setString(1, floorRS.getString(1));
+                ResultSet edgeRS = edgesPS.executeQuery();
+                while(edgeRS.next()) {
+                    edges.put(rs.getInt(1),
+                            new NodeEdge(mapNodes.get(rs.getInt(2)),
+                                    mapNodes.get(rs.getInt(3)),
+                                    rs.getInt(4)));
+                    nodeEdges.put(rs.getInt(1),
+                            new NodeEdge(mapNodes.get(rs.getInt(2)),
+                                    mapNodes.get(rs.getInt(3)),
+                                    rs.getInt(4)));
+                }
 
+                // add floor to list of floors for current building
                 flr.put(floorRS.getString(1),
                         new Floor(floorRS.getInt(3)));
+                // add correct mapNodes to their respective floor
                 for (MapNode n : nodes.values()) {
                     flr.get(floorRS.getString(1)).addNode(n);
-
                 }
+                // add correct nodeEdges to their respective floor
+                for (NodeEdge e : edges.values()) {
+                    flr.get(floorRS.getString(1)).addEdge(e);
+                }
+
             }
             buildings.put(rs.getInt(1),
                     new Building(rs.getString(2)));
@@ -182,14 +187,7 @@ public class DatabaseManager {
         }
         this.mapNodes = mapNodes;
 
-        rs = s.executeQuery("select * from USER1.EDGE");
-        while(rs.next()) {
-            edges.put(rs.getInt(1),
-                    new NodeEdge(mapNodes.get(rs.getInt(2)),
-                            mapNodes.get(rs.getInt(3)),
-                            rs.getInt(4)));
-        }
-        this.edges = edges;
+        this.edges = nodeEdges;
 
         System.out.println(mapNodes);
         System.out.println(h.getBuildings());
@@ -211,6 +209,7 @@ public class DatabaseManager {
             insertBuildings.executeUpdate();
             conn.commit();
 
+            int edgesCount = 1;
             // insert floors into database
             for (Floor f : b.getFloors()) {
                 String floorID = "" + b.getName().charAt(0) + Integer.toString(f.getFloorNumber()) + "";
@@ -230,20 +229,20 @@ public class DatabaseManager {
                     insertNodes.executeUpdate();
                     conn.commit();
                 }
+                // insert edges into database
+                for (NodeEdge edge : f.getFloorEdges()) {
+                    insertEdges.setInt(1, edgesCount);
+                    insertEdges.setInt(2, edge.getSource().getNodeID());
+                    insertEdges.setInt(3, edge.getOtherNode(edge.getSource()).getNodeID());
+                    insertEdges.setDouble(4, edge.getCost());
+                    insertEdges.executeUpdate();
+                    conn.commit();
+                    edgesCount = edgesCount + 1;
+                }
             }
             counter = counter + 1;
         }
 
-        int edgesCount = 1;
-        for (NodeEdge edge : edges.values()) {
-            insertEdges.setInt(1, edgesCount);
-            insertEdges.setInt(2, edge.getSource().getNodeID());
-            insertEdges.setInt(3, edge.getOtherNode(edge.getSource()).getNodeID());
-            insertEdges.setDouble(4, edge.getCost());
-            insertEdges.executeUpdate();
-            conn.commit();
-            edgesCount = edgesCount + 1;
-        }
     }
 
 
@@ -305,40 +304,6 @@ public class DatabaseManager {
         rs.close();
     }
 
-//    public void loadMap() throws SQLException{
-//        HashMap<Integer, MapNode> mapNodes = new HashMap<>();
-//        HashMap<Integer, NodeEdge> edges = new HashMap<>();
-//        ResultSet rs = s.executeQuery("select * from USER1.NODE ORDER BY NODE_ID");
-//        while(rs.next()) {
-//            mapNodes.put(rs.getInt(1),
-//                    new MapNode(rs.getInt(1),
-//                            rs.getInt(2),
-//                            rs.getInt(3)));
-//        }
-//        rs = s.executeQuery("select * from USER1.EDGE order by EDGE_ID");
-//        while(rs.next()) {
-//            edges.put(rs.getInt(1),
-//                    new NodeEdge(mapNodes.get(rs.getInt(2)),
-//                            mapNodes.get(rs.getInt(3)),
-//                            rs.getInt(4)));
-//        }
-//        this.mapNodes = mapNodes;
-//        this.edges = edges;
-//    }
-
-//    public void loadFloors() throws SQLException {
-//        HashMap<String,Floor> floors = new HashMap<>();
-//        ResultSet rs = s.executeQuery("select * from USER1.FLOOR");
-//        while (rs.next()) {
-//            floors.put(rs.getString(1),
-//                    new Floor(rs.getString(1),
-//                            rs.getInt(2),
-//                            rs.getInt(3)));
-//        }
-//        this.floors = floors;
-//        System.out.println(floors.size());
-//    }
-
 
     private void saveDoctorsSuites() throws SQLException {
         PreparedStatement insertDoctors = conn.prepareStatement("INSERT INTO USER1.DOCTOR (DOC_ID, NAME, DESCRIPTION, NUMBER, HOURS) VALUES (?, ?, ?, ?, ?)");
@@ -384,28 +349,6 @@ public class DatabaseManager {
             insertOffices.executeUpdate();
             conn.commit();
         }
-    }
-
-    public void saveMap() throws SQLException {
-        PreparedStatement insertNodes = conn.prepareStatement("INSERT INTO USER1.NODE (NODE_ID, POSX, POSY, TYPE) VALUES (?, ?, ?, ?)");
-        PreparedStatement insertEdges = conn.prepareStatement("INSERT INTO USER1.EDGE (EDGE_ID, NODEA, NODEB, COST) VALUES (?, ?, ?, ?)");
-        for (MapNode node : mapNodes.values()) {
-            insertNodes.setInt(1, node.getNodeID());
-            insertNodes.setDouble(2, node.getPosX());
-            insertNodes.setDouble(3, node.getPosY());
-            insertNodes.setInt(4, node.getType());
-            insertNodes.executeUpdate();
-            conn.commit();
-        }
-        conn.commit();
-        for (NodeEdge edge : edges.values()) {
-            insertEdges.setInt(2, edge.getSource().getNodeID());
-            insertEdges.setInt(3, edge.getOtherNode(edge.getSource()).getNodeID());
-            insertEdges.setDouble(4, edge.getCost());
-            insertEdges.executeUpdate();
-            conn.commit();
-        }
-        conn.commit();
     }
 
     public void executeStatements(String[] states) throws SQLException {
