@@ -20,6 +20,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -60,8 +61,6 @@ public class MapEditorController extends AbstractController {
 	private MapEditorModel model;
 
 	NodeEdge drawingEdge;
-
-	Boolean firstClick = false;
 
 	public MapEditorController() {
 
@@ -149,16 +148,23 @@ public class MapEditorController extends AbstractController {
 		renderInitialMap();
 
 		mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
-			if(drawingEdge!=null)
+			if(drawingEdge != null)
 			{
-				if (firstClick == false)
-				{
-					firstClick = true;
-				}
-				else
-				{
-					System.out.println("Clicked while drawing");
-				}
+
+				Node sourceNode = drawingEdge.getSource().getNodeToDisplay();
+				Bounds sourceNodeBounds = sourceNode.getBoundsInParent();
+
+				/* @TODO: Figure out these offsets */
+				double clickX = clickEvent.getSceneX() - 32;
+				double clickY = clickEvent.getSceneY() - 50;
+
+				Point2D mousePoint = new Point2D(clickX, clickY);
+
+				// The following statement is used to replace the .contains method on bounds, which is not functioning as documented.
+
+				Boolean clickInside = ((mousePoint.getX() > sourceNodeBounds.getMinX() && mousePoint.getX() < sourceNodeBounds.getMaxX()) && (mousePoint.getY() > sourceNodeBounds.getMinY() && mousePoint.getY() < sourceNodeBounds.getMaxY()));
+
+				if(!clickInside) { System.out.println("Clicked while drawing"); }
 			}
 		});
 
@@ -431,7 +437,6 @@ public class MapEditorController extends AbstractController {
 
 	public void onEdgeComplete() {
 		System.out.println("Edge complete");
-		firstClick = false;
 		for(EdgeCompleteEventHandler handler : model.getEdgeCompleteHandlers())
 		{
 			if(!model.getCurrentFloor().getFloorEdges().contains(drawingEdge)){
