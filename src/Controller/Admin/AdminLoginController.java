@@ -59,19 +59,18 @@ public class AdminLoginController extends AbstractController
         System.out.println("Login clicked");
 
         if(infoForLoggingIn.admins.checkValidity(txtUsername.getText(), txtPassword.getText())) {
-            SceneSwitcher.switchToAdminWelcomeView(primaryStage, new AdminProfile("Admin", "Admin"));
+            SceneSwitcher.switchToMapEditorView(primaryStage);
         }
     }
 
     @FXML
     private void clickedBack() throws IOException
     {
-        System.out.println("test");
-        SceneSwitcher.goToUserHome(primaryStage);
+        SceneSwitcher.switchToUserMapView(primaryStage);
     }
 
     @FXML
-    protected void initialize() {
+    protected void initialize()   {
 
     }
 }
