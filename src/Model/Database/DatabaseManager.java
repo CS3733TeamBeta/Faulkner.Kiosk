@@ -49,7 +49,7 @@ public class DatabaseManager {
             "CREATE TABLE USER1.NODE (NODE_ID INT PRIMARY KEY NOT NULL, " +
                     "POSX DOUBLE, " +
                     "POSY DOUBLE, " +
-                    "FLOOR_ID VARCHAR(5), "+
+                    "FLOOR_ID VARCHAR(5), " +
                     "TYPE INT, " +
                     "CONSTRAINT NODE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
             "CREATE TABLE USER1.SUITE (SUITE_ID INT PRIMARY KEY NOT NULL, " +
@@ -167,18 +167,19 @@ public class DatabaseManager {
                                     nodeRS.getInt(3),
                                     nodeRS.getInt(5)));
                 }
+                System.out.println("Where are you");
                 HashMap<Integer, NodeEdge> edges = new HashMap<>();
                 edgesPS.setString(1, floorRS.getString(1));
                 ResultSet edgeRS = edgesPS.executeQuery();
                 while(edgeRS.next()) {
-                    edges.put(rs.getInt(1),
-                            new NodeEdge(mapNodes.get(rs.getInt(2)),
-                                    mapNodes.get(rs.getInt(3)),
-                                    rs.getInt(4)));
-                    nodeEdges.put(rs.getInt(1),
-                            new NodeEdge(mapNodes.get(rs.getInt(2)),
-                                    mapNodes.get(rs.getInt(3)),
-                                    rs.getInt(4)));
+                    edges.put(edgeRS.getInt(1),
+                            new NodeEdge(mapNodes.get(edgeRS.getInt(2)),
+                                    mapNodes.get(edgeRS.getInt(3)),
+                                    edgeRS.getInt(4)));
+                    nodeEdges.put(edgeRS.getInt(1),
+                            new NodeEdge(mapNodes.get(edgeRS.getInt(2)),
+                                    mapNodes.get(edgeRS.getInt(3)),
+                                    edgeRS.getInt(4)));
                 }
 
                 // add floor to list of floors for current building
@@ -289,7 +290,7 @@ public class DatabaseManager {
         PreparedStatement insertBuildings = conn.prepareStatement("INSERT INTO BUILDING (BUILDING_ID, NAME) VALUES (?, ?)");
         PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO FLOOR (FLOOR_ID, BUILDING_ID, NUMBER) VALUES (?, ?, ?)");
         PreparedStatement insertNodes = conn.prepareStatement("INSERT INTO NODE (NODE_ID, POSX, POSY, FLOOR_ID, TYPE) VALUES (?, ?, ?, ?, ?)");
-        PreparedStatement insertEdges = conn.prepareStatement("INSERT INTO EDGE (EDGE_ID, NODEA, NODEB, COST) VALUES (?, ?, ?, ?)");
+        PreparedStatement insertEdges = conn.prepareStatement("INSERT INTO EDGE (EDGE_ID, NODEA, NODEB, COST, FLOOR_ID) VALUES (?, ?, ?, ?, ?)");
         PreparedStatement insertDoctors = conn.prepareStatement("INSERT INTO USER1.DOCTOR (DOC_ID, NAME, DESCRIPTION, NUMBER, HOURS) VALUES (?, ?, ?, ?, ?)");
         PreparedStatement insertSuites = conn.prepareStatement("INSERT INTO USER1.SUITE (SUITE_ID, NAME, NODE_ID) VALUES (?, ?, ?)");
         PreparedStatement insertAssoc = conn.prepareStatement("INSERT INTO USER1.SUITE_DOC (SUITE_ID, DOC_ID) VALUES (?, ?)");
@@ -330,6 +331,7 @@ public class DatabaseManager {
                     insertEdges.setInt(2, edge.getSource().getNodeID());
                     insertEdges.setInt(3, edge.getOtherNode(edge.getSource()).getNodeID());
                     insertEdges.setDouble(4, edge.getCost());
+                    insertEdges.setString(5, floorID);
                     insertEdges.executeUpdate();
                     conn.commit();
                     edgesCount = edgesCount + 1;
