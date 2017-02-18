@@ -8,7 +8,7 @@ import javax.swing.*;
  * Parent class for all controllers
  */
 public class AbstractController extends JFrame {
-    Stage primaryScene;
+    protected Stage primaryScene;
 
     public void setStage(Stage s)
     {

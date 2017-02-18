@@ -2,7 +2,6 @@ package Domain.Map;
 
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DrawableMapEntity;
-import Domain.ViewElements.GraphicalMapNode;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;

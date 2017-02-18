@@ -28,7 +28,6 @@ import java.util.Map;
  */
 public class TreeViewWithItems<T extends HierarchyData<T>> extends TreeView<T>
 {
- 
     /**
      * Keep hard references for each listener, so that they don't get garbage collected too soon.
      */
