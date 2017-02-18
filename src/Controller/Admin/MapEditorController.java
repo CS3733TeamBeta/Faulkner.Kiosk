@@ -150,7 +150,6 @@ public class MapEditorController extends AbstractController {
 		mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
 			if(drawingEdge != null)
 			{
-
 				Node sourceNode = drawingEdge.getSource().getNodeToDisplay();
 				Bounds sourceNodeBounds = sourceNode.getBoundsInParent();
 
@@ -164,7 +163,10 @@ public class MapEditorController extends AbstractController {
 
 				Boolean clickInside = ((mousePoint.getX() > sourceNodeBounds.getMinX() && mousePoint.getX() < sourceNodeBounds.getMaxX()) && (mousePoint.getY() > sourceNodeBounds.getMinY() && mousePoint.getY() < sourceNodeBounds.getMaxY()));
 
-				if(!clickInside) { System.out.println("Clicked while drawing"); }
+				if(!clickInside)
+				{
+					System.out.println("Clicked while drawing");
+				}
 			}
 		});
 
