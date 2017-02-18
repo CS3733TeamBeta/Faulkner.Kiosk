@@ -1,7 +1,9 @@
 package Model.Database;
 
 import Domain.Map.*;
+import org.apache.derby.database.Database;
 
+import javax.xml.crypto.Data;
 import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,7 +22,7 @@ import java.util.Properties;
 public class DatabaseManager {
 
     private final String framework = "embedded";
-    private final String protocol = "jdbc:derby:/";
+    private final String protocol = "jdbc:derby:/Users/benhylak/";
     private Connection conn = null;
     private ArrayList<Statement> statements = new ArrayList<Statement>(); // list of Statements, PreparedStatements
     private PreparedStatement psInsert;
@@ -37,7 +39,8 @@ public class DatabaseManager {
     public static HashMap<String, Suite> suites = new HashMap<>();
     public static HashMap<String, Office> offices = new HashMap<>();
 
-    public Hospital Faulkner = new Hospital();
+    public static DatabaseManager instance = null;
+    public Hospital Faulkner;
 
     public static final String[] createTables = {
             "CREATE TABLE USER1.BUILDING (BUILDING_ID INT PRIMARY KEY NOT NULL, " +
@@ -98,6 +101,12 @@ public class DatabaseManager {
 
     public void loadData() throws SQLException {
         s = conn.createStatement();
+
+        if(Faulkner==null) //if not initialized
+        {
+            Faulkner = new Hospital();
+        }
+
         loadHospital(Faulkner);
         conn.commit();
     }
@@ -105,12 +114,13 @@ public class DatabaseManager {
     public void saveData() throws SQLException {
         System.out.println("Here");
         s = conn.createStatement();
+        executeStatements(dropTables);
+        executeStatements(createTables);
         saveHospital(Faulkner);
         s.close();
         conn.close();
         System.out.println("Data Saved Correctly");
     }
-
 
     private void loadHospital(Hospital h) throws SQLException {
         PreparedStatement floorsPS = conn.prepareStatement("SELECT * from FLOOR where BUILDING_ID = ?");
@@ -167,7 +177,6 @@ public class DatabaseManager {
                                     nodeRS.getInt(3),
                                     nodeRS.getInt(5)));
                 }
-                System.out.println("Where are you");
                 HashMap<Integer, NodeEdge> edges = new HashMap<>();
                 edgesPS.setString(1, floorRS.getString(1));
                 ResultSet edgeRS = edgesPS.executeQuery();
@@ -209,6 +218,7 @@ public class DatabaseManager {
         for (Building b : buildings.values()) {
             h.addBuilding(b);
         }
+
         this.mapNodes = mapNodes;
 
         this.edges = nodeEdges;
@@ -389,7 +399,8 @@ public class DatabaseManager {
         state.close();
     }
 
-    public DatabaseManager(){
+    protected DatabaseManager() throws SQLException
+    {
 
         String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 
@@ -467,8 +478,21 @@ public class DatabaseManager {
 
            }
         statements.add(s);
+        loadData();
+    }
 
+    public static DatabaseManager getInstance() {
+        if(instance == null) {
+            try
+            {
+                instance = new DatabaseManager();
+            } catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
 
+        return instance;
     }
 
     public void shutdown() {

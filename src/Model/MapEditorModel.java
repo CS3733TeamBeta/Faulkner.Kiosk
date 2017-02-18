@@ -3,6 +3,7 @@ package Model;
 import Domain.Map.*;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
+import Model.Database.DatabaseManager;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TreeItem;
 
@@ -36,37 +37,25 @@ public class MapEditorModel
         mapNodes = new HashSet<MapNode>();
         mapEdges = new HashSet<NodeEdge>();
 
-        hospital = new Hospital();
+        hospital = DatabaseManager.getInstance().Faulkner;
 
-        Building b1  = new Building("Building 1");
+        /**@TODO HACKY **/
 
-        Building b2 = new Building("Building 2");
+        Floor arbitraryFloor;
 
-        Floor f1a = new Floor(1);
-        Floor f2a = new Floor(2);
-
-        Floor f1b = new Floor(1);
-        Floor f2b = new Floor(2);
-        Floor f3b = new Floor(3);
-
-        try //attempts to add floor 1
+        for(Building b : hospital.getBuildings())
         {
-            b1.addFloor(f1a);
-            b1.addFloor(f2a);
-
-            b2.addFloor(f1b);
-            b2.addFloor(f2b);
-            b2.addFloor(f3b);
-
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+            try
+            {
+                arbitraryFloor = b.getFloor(1);
+                setCurrentFloor(arbitraryFloor);
+                break;
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
-
-        hospital.addBuilding(b1);
-        hospital.addBuilding(b2);
-
-        currentFloor = f1a;
 
         buildingTabMap = new HashMap<>();
     }
@@ -241,4 +230,5 @@ public class MapEditorModel
     {
         mapEdges.remove(e);
     }
+
 }
