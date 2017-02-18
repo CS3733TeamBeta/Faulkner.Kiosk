@@ -119,7 +119,6 @@ public class PathFindingTest extends TestCase{
     //Tests that UIDs are working properly
     public void testUID() {
         UID id = nodeA.getNodeUID();
-        //System.out.println(id.toString())
         assertEquals(nodeA, nodeA);
         assertEquals(nodeB, nodeB);
         assertNotSame(nodeA, nodeB);
@@ -174,18 +173,52 @@ public class PathFindingTest extends TestCase{
             assertFalse(p3.equals(p5));
             assertFalse(p5.equals(p3));
         } catch(Exception e) {
-            fail("Threw unexpected exception");
+            fail("Threw unexpected exception in testEquals");
         }
     }
 
     public void testGuidance() {
         try {
-            g1 = new Guidance(nodeT, nodeH, true);
-            g2 = new Guidance(nodeO, nodeI, false);
+            g1 = new Guidance(nodeT, nodeH, false);
+            g2 = new Guidance(nodeA, nodeL, false);
+            g2.printTextDirections();
             assertTrue(true);
-        } catch(Exception e) {
-            fail("Threw unexpected exception");
+       } catch(Exception e) {
+            fail("Threw unexpected exception in testGuidance");
         }
     }
 
+    public void testBreadth() {
+       try {
+            p1 = new Path(nodeA, nodeL, true, "breadthfirst");
+        } catch (Exception e) {
+            fail("Threw unexpected exception in testBreadth");
+        }
+    }
+
+    public void testDepth() {
+        try {
+            p1 = new Path(nodeA, nodeL, true, "depthfirst");
+        } catch (Exception e) {
+            fail("Threw unexpected exception in testDepth");
+        }
+    }
+
+    public void testRandom() {
+        try {
+            p1 = new Path(nodeA, nodeL, true, "random");
+        } catch (Exception e) {
+            fail("Threw unexpected exception in testRandom");
+        }
+    }
+
+    public void testSendEmail() {
+        try {
+            Guidance g1 = new Guidance(nodeA, nodeL, false);
+            //Please don't uncomment this line unless you replace the email with your own. I'm getting a lot of spam -Ian
+            //g1.sendEmailGuidance("iancj97@gmail.com");
+        } catch (Exception e) {
+            fail("Threw exception");
+        }
+    }
 }
