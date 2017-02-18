@@ -77,7 +77,7 @@ public class DatabaseManager {
            }
            catch (SQLException se) {
                System.out.println(se.getMessage());
-               System.out.println("Sluts Sluts Sluts");
+               System.out.println("Ho Ho Ho");
            }
 
         if (conn != null) {
