@@ -48,6 +48,7 @@ public class DatabaseManager {
             "CREATE TABLE USER1.FLOOR (FLOOR_ID VARCHAR(5) PRIMARY KEY NOT NULL, " +
                     "BUILDING_ID INT," +
                     "NUMBER INT, " +
+                    "IMAGE VARCHAR(75), " +
                     "CONSTRAINT FLOOR_BUILDING_BUILDING_ID_FK FOREIGN KEY (BUILDING_ID) REFERENCES BUILDING (BUILDING_ID))",
             "CREATE TABLE USER1.NODE (NODE_ID INT PRIMARY KEY NOT NULL, " +
                     "POSX DOUBLE, " +
@@ -189,10 +190,11 @@ public class DatabaseManager {
                                     mapNodes.get(edgeRS.getInt(3)),
                                     edgeRS.getInt(4)));
                 }
-
+                Floor tempFloor = new Floor(floorRS.getInt(3));
+                tempFloor.setImageLocation(floorRS.getString(4));
                 // add floor to list of floors for current building
                 flr.put(floorRS.getString(1),
-                        new Floor(floorRS.getInt(3)));
+                        tempFloor);
                 // add correct mapNodes to their respective floor
                 for (MapNode n : nodes.values()) {
                     flr.get(floorRS.getString(1)).addNode(n);
@@ -297,7 +299,7 @@ public class DatabaseManager {
 
     private void saveHospital(Hospital h) throws SQLException {
         PreparedStatement insertBuildings = conn.prepareStatement("INSERT INTO BUILDING (BUILDING_ID, NAME) VALUES (?, ?)");
-        PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO FLOOR (FLOOR_ID, BUILDING_ID, NUMBER) VALUES (?, ?, ?)");
+        PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO FLOOR (FLOOR_ID, BUILDING_ID, NUMBER, IMAGE) VALUES (?, ?, ?, ?)");
         PreparedStatement insertNodes = conn.prepareStatement("INSERT INTO NODE (NODE_ID, POSX, POSY, FLOOR_ID, TYPE) VALUES (?, ?, ?, ?, ?)");
         PreparedStatement insertEdges = conn.prepareStatement("INSERT INTO EDGE (EDGE_ID, NODEA, NODEB, COST, FLOOR_ID) VALUES (?, ?, ?, ?, ?)");
         PreparedStatement insertDoctors = conn.prepareStatement("INSERT INTO USER1.DOCTOR (DOC_ID, NAME, DESCRIPTION, NUMBER, HOURS) VALUES (?, ?, ?, ?, ?)");
@@ -321,6 +323,7 @@ public class DatabaseManager {
                 insertFloors.setString(1, floorID);
                 insertFloors.setInt(2, counter);
                 insertFloors.setInt(3, f.getFloorNumber());
+                insertFloors.setString(4, f.getImageLocation());
                 insertFloors.executeUpdate();
                 conn.commit();
 

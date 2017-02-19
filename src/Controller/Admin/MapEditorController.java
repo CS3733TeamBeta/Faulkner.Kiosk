@@ -205,7 +205,16 @@ public class MapEditorController extends AbstractController {
 			}
 
 			if(newFloor != null){
-				treeView.getRoot().getChildren().add(makeTreeItem(newFloor));
+				boolean duplicate = false;
+				for(Floor f2 : b.getFloors()) {
+					if(f2.getFloorNumber() == newFloor.getFloorNumber()) {
+						f2.setImageLocation(newFloor.getImageLocation());
+						duplicate = true;
+					}
+				}
+				if(!duplicate) {
+					treeView.getRoot().getChildren().add(makeTreeItem(newFloor));
+				}
 			}
 
 			model.addBuilding(b, t); //adds to building tab map
@@ -328,7 +337,7 @@ public class MapEditorController extends AbstractController {
 
 	public void changeFloorSelection(Floor f)
 	{
-		while(f.getImageLocation() == null){
+		if(f.getImageLocation() == null){
 			try {
 				switchToAddFloor(this.getStage());
 			}
@@ -374,7 +383,7 @@ public class MapEditorController extends AbstractController {
 
 		for(MapNode n : model.getCurrentFloor().getFloorNodes())
 		{
-			System.out.println("Adding node");
+			//System.out.println("Adding node");
 			addToAdminMap(n);
 
 			for(NodeEdge edge: n.getEdges())
