@@ -17,7 +17,7 @@
       <Button fx:id="saveButton" layoutX="445.0" layoutY="355.0" mnemonicParsing="false" onMouseClicked="#clickSaveFile" text="Use chosen image" />
       <TextField fx:id="inputFloorNumber" layoutX="329.0" layoutY="317.0" promptText="Floor number..." />
       <Label layoutX="329.0" layoutY="296.0" text="Please input a floor number:" />
-      <ChoiceBox fx:id="dropDown" onAction="#populateChoices" layoutX="89.0" layoutY="317.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="dropDown" layoutX="89.0" layoutY="317.0" prefWidth="150.0" />
       <Label layoutX="87.0" layoutY="296.0" text="Please select a building" />
    </children>
 </AnchorPane>

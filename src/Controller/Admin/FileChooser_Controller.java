@@ -80,12 +80,9 @@ public class FileChooser_Controller extends AbstractController
 
         try{
             floorNum = Integer.parseInt(inputFloorNumber.getText());
-            //newFloor =
             building = dropDown.getValue();
             if(fullName != null) {
                 addFloorInfo(fullName, floorNum, building);
-                //newFloor.setImageLocation(fullName);
-                //MapEditorController.newFloor = newFloor;
                 SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
             }
             else{
@@ -98,18 +95,14 @@ public class FileChooser_Controller extends AbstractController
 
     }
 
-    @FXML
-    private void populateChoices(){
-
-
-        //dropDown.getItems().add("Test");
-    }
 
     @FXML
     private void initialize(){
         for( Building b : theHospital.getBuildings()) {
             dropDown.getItems().add(b.getName());
+            dropDown.setValue(b.getName());
         }
+
     }
 
     private void addFloorInfo(String name, int floorNum, String building){
