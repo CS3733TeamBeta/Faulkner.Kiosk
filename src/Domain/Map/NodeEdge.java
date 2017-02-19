@@ -2,12 +2,13 @@ package Domain.Map;
 
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DrawableMapEntity;
-import Domain.ViewElements.GraphicalMapNode;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+
+import java.rmi.server.UID;
 
 /**
  * An edge that connects two nodes and has a cost (edge length)
@@ -21,11 +22,20 @@ public class NodeEdge implements DrawableMapEntity
 
     Line edgeLine;
 
+    /**
+     * Creates a new nodeEdge with a line having a default strokewidth of 5.
+     */
     public NodeEdge() {
         edgeLine = new Line();
         edgeLine.setStrokeWidth(5);
     }
 
+    /**
+     * Creates a new nodeEdge with a line having a default strokewidth of 5, the given source MapNode and target MapNode, and adds this
+     * new edge to the source and target
+     * @param source
+     * @param target
+     */
     public NodeEdge(MapNode source, MapNode target) {
         this();
 
@@ -36,6 +46,13 @@ public class NodeEdge implements DrawableMapEntity
         target.addEdge(this);
     }
 
+    /**
+     * Creates a new nodeEdge with a line having a default strokewidth of 5, the given source MapNode and target MapNode, and adds this
+     * new edge to the source and target. Has a cost of traveling this equal to the given cost.
+     * @param source
+     * @param nodeB
+     * @param cost
+     */
     public NodeEdge(MapNode source, MapNode nodeB, double cost) {
         this(source, nodeB);
         this.cost = cost;
@@ -45,8 +62,7 @@ public class NodeEdge implements DrawableMapEntity
      * Set source node and update start/end point
      * @param source
      */
-    public void setSource(MapNode source)
-    {
+    public void setSource(MapNode source) {
         this.source = source;
 
         DragIcon drawableNode = (DragIcon)source.getNodeToDisplay();
@@ -61,8 +77,7 @@ public class NodeEdge implements DrawableMapEntity
      * Set target node and update start point
      * @param target
      */
-    public void setTarget(MapNode target)
-    {
+    public void setTarget(MapNode target) {
         this.target = target;
 
         DragIcon drawableNode = (DragIcon) target.getNodeToDisplay();
@@ -73,77 +88,121 @@ public class NodeEdge implements DrawableMapEntity
     }
 
     /**
-     * Set start point
+     * Sets the end point of this nodeEdge to the given Point2D point.
      * @param startPoint
      */
     public void setStartPoint(Point2D startPoint) {
-
         edgeLine.setStartX(startPoint.getX());
         edgeLine.setStartY(startPoint.getY());
     }
 
-    //Set end point
+    /**
+     * Sets the end point of this nodeEdge to the given Point2D point.
+     * @param endPoint
+     */
     public void setEndPoint(Point2D endPoint) {
-
         edgeLine.setEndX(endPoint.getX());
         edgeLine.setEndY(endPoint.getY());
     }
 
-    public Line getEdgeLine()
-    {
+    /**
+     * Returns the line in this nodeEdge
+     * @return this nodeEdge's line
+     */
+    public Line getEdgeLine() {
         return edgeLine;
     }
 
-    public void updatePosViaNode(MapNode node)
-    {
+    /**
+     * Updates the position of this NodeEdge. This is called if the MapNode that this NodeEdge connects to is moved
+     * or deleted.
+     * @param node
+     */
+    public void updatePosViaNode(MapNode node) {
         Node drawableNode = node.getNodeToDisplay();
 
-        Point2D newPoint = new Point2D(drawableNode.getLayoutX() + drawableNode.getBoundsInLocal().getWidth() / 2,
-                drawableNode.getLayoutY() + drawableNode.getBoundsInLocal().getHeight() / 2);
+        Point2D newPoint = new Point2D (drawableNode.getLayoutX() + drawableNode.getBoundsInLocal().getWidth() / 2,
+                                        drawableNode.getLayoutY() + drawableNode.getBoundsInLocal().getHeight() / 2);
 
         if (node == target) {
             setEndPoint(newPoint);
-        }
-        else
-        {
+        } else {
             setStartPoint(newPoint);
         }
     }
 
+    /**
+     * Returns the line within this NodeEdge.
+     * @return this NodeEdge's line
+     */
     @Override
-    public Node getNodeToDisplay()
-    {
+    public Node getNodeToDisplay() {
         return edgeLine;
     }
 
-    public void toBack()
-    {
+    /**
+     * Moves this NodeEdge's line to the back of the pane, behind other  objects.
+     */
+    public void toBack() {
         edgeLine.toBack();
     }
 
+
+    /**
+     * Moves this NodeEdge's line to the front of the pane, in front of other objects
+     */
+    public void toFront() {
+        edgeLine.toFront();
+    }
+
+    /**
+     * Returns the cost of this NodeEdge
+     * @return this NodeEdge's cost, as a double.
+     */
     public double getCost() {
         return cost;
     }
 
+    /**
+     * Retreives this NodeEdge's source
+     * @return this NodeEdge's source as a MapNode
+     */
     public MapNode getSource() {
         return source;
     }
+
+    /**
+     * Retrieves this NodeEdge's target
+     * @return this NodeEdge's source as a MapNode
+     */
     public MapNode getTarget() {
         return target;
     }
 
-    //Returns the node connected to this edge that isn't passed in
+    /**
+     * Retrieves the MapNode connected to this NodeEdge that isn't the MapNode passed in
+     * @param n the MapNode not desired
+     * @return the MapNode at the other side of this NodeEdge
+     */
     public MapNode getOtherNode(MapNode n)
     {
-        if(source.equals(n))
-        {
+        if(source.equals(n)) {
             return target;
+        } else if (target.equals(n)) {
+            return source;
+        } else {
+            System.out.println("Something's gone wrong. You've called getOtherNode on a NodeEdge with a node that it doesn't connect to.");
+            //@TODO Throw an exception here.
+            return source;
         }
-        else return source;
     }
 
-    public Point2D getNodeCenterPoint(DragIcon dragIcon)
-    {
+    /**
+     * Calculates and returns the center point of a given DragIcon
+     * @param dragIcon
+     * @return the center point of the DragIcon as a Point2D
+     */
+    public Point2D getNodeCenterPoint(DragIcon dragIcon) {
         Bounds boundsInScene = dragIcon.getBoundsInLocal();
 
         Point2D centerPoint = new Point2D(
@@ -154,18 +213,30 @@ public class NodeEdge implements DrawableMapEntity
         return centerPoint;
     }
 
-    public void changeColor(Color c)
-    {
+    /**
+     * Changes the color of this NodeEdge's line to the given color
+     * @param c The desired color
+     */
+    public void changeColor(Color c) {
         edgeLine.setStroke(c);
     }
 
-    public void changeOpacity(Double opacity)
-    {
+    /**
+     * Changes the opacity of this NodeEdge's line to the given opacity. Opacity must be between 0 and 1
+     * @param opacity
+     */
+    public void changeOpacity(Double opacity) {
         if(opacity <= 1 && opacity >= 0) {
             edgeLine.setOpacity(opacity);
+        } else {
+            System.out.println("Opacity not between 0 and 1!");
+            //@TODO Throw an exception here.
         }
     }
 
+    /**
+     * Updates the cost of this NodeEdge to be calculated using the distance between the two MapNodes in this NodeEdge
+     */
     public void updateCost() {
         this.cost = Math.pow(source.getPosX() - target.getPosX(), 2) + Math.pow(source.getPosY() - target.getPosY(), 2);
     }

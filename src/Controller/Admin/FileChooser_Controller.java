@@ -71,7 +71,7 @@ public class FileChooser_Controller extends AbstractController
             floorNum = Integer.parseInt(inputFloorNumber.getText());
             newFloor = new Floor(floorNum);
             if(fullName != null) {
-                newFloor.setImageName(fullName);
+                newFloor.setImageLocation(fullName);
                 SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
             }
             else{
