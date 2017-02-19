@@ -24,10 +24,8 @@ public class Floor implements Comparable{
 
     public void setImageLocation(String imageLocation) {
         this.imageLocation = imageLocation;
-    }
-
-    public void loadImage(){
         imageInfo = new ProxyImage(imageLocation);
+
     }
 
     public ProxyImage getImageInfo(){

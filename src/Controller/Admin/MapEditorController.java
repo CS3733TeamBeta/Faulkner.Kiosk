@@ -350,7 +350,6 @@ public class MapEditorController extends AbstractController {
 			}
 		}
 		try{
-			f.loadImage();
 			changeFloorToSaved(f.getImageLocation(), f);
 		}catch(MalformedURLException e){
 			System.out.println("ERROR IN LOADING FLOORPLAN");
