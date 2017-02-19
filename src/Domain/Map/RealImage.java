@@ -5,6 +5,7 @@ package Domain.Map;
  */
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import javafx.embed.swing.SwingFXUtils;
 
@@ -41,7 +42,7 @@ public class RealImage implements Image {
             System.out.println("Loading " + fileName); // Let us know we're loading
             try {
                 System.out.println(fileName);
-                img = ImageIO.read(getClass().getResource(fileName).openStream());
+                img = ImageIO.read(new File(fileName));
             } catch (IOException e) {
                 System.out.println(fileName);
                 e.printStackTrace();

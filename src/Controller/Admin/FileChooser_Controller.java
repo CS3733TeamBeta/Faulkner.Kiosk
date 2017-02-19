@@ -80,6 +80,8 @@ public class FileChooser_Controller extends AbstractController
             floorNum = Integer.parseInt(inputFloorNumber.getText());
             building = dropDown.getValue();
             if(fullName != null) {
+                outChannel.close();
+                source.close();
                 addFloorInfo(fullName, floorNum, building);
                 SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
             }
@@ -159,8 +161,7 @@ public class FileChooser_Controller extends AbstractController
         }
         File userFile = new File(strFilePath);
         String filename = userFile.getName();
-        fullName = "/resources/" + filename;
-        String tempLocation = "src/View/resources/" + filename;
+        fullName = "src/View/resources/" + filename;
         source = new FileInputStream(strFilePath).getChannel();
 
         size = 0;
@@ -170,7 +171,7 @@ public class FileChooser_Controller extends AbstractController
         catch (Exception e){
 
         }
-        outChannel = new FileOutputStream(tempLocation).getChannel();
+        outChannel = new FileOutputStream(fullName).getChannel();
     }
 
     // gets the extension of the selected file for comparison with valid types in clickChooseFile
