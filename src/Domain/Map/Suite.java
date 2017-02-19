@@ -1,23 +1,29 @@
 package Domain.Map;
 
-import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * Created by Brandon on 2/13/2017.
  */
 public class Suite {
 
-    int suiteID;
+    UUID suiteID;
     String name;
     MapNode location;
 
-    public Suite(int id, String name, MapNode location) {
-        this.suiteID = id;
+    public Suite(String name, MapNode location) {
+        this.suiteID = UUID.randomUUID();
         this.name = name;
         this.location = location;
     }
 
-    public int getSuiteID() {
+    public Suite(UUID suiteID, String name, MapNode location) {
+        this.suiteID = suiteID;
+        this.name = name;
+        this.location = location;
+    }
+
+    public UUID getSuiteID() {
         return this.suiteID;
     }
 

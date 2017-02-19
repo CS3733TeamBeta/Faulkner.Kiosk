@@ -4,6 +4,7 @@ import Controller.Admin.PopUp.OfficeEditController;
 import org.controlsfx.control.PopOver;
 
 import java.util.HashSet;
+import java.util.UUID;
 
 /**
  *  Office is a particular type of destination that is a doctor's office
@@ -11,7 +12,7 @@ import java.util.HashSet;
 
 public class Office extends Destination
 {
-    int id;
+    UUID id;
     String name;
     Suite suite;
 
@@ -19,7 +20,12 @@ public class Office extends Destination
     protected String department;
     private final String popOverEditFXML = "/Admin/Popup/OfficeEditPopup.fxml";
 
-    public Office(int id, String name, Suite suite) {
+    public Office(String name, Suite suite) {
+        this.name = name;
+        this.suite = suite;
+    }
+
+    public Office(UUID id, String name, Suite suite) {
         this.id = id;
         this.name = name;
         this.suite = suite;
@@ -46,12 +52,8 @@ public class Office extends Destination
 
         return getPopOver(controller, popOverEditFXML);
     }
-    public int getId() {
+    public UUID getId() {
         return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public HashSet<Doctor> getOccupants() {
