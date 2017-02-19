@@ -567,6 +567,17 @@ public class MapEditorController extends AbstractController {
 	private void buildDragHandlers()
 	{
 
+		class DragData {
+
+			double startX;
+			double startY;
+			double startLayoutX;
+			double startLayoutY;
+			Node dragTarget;
+		}
+
+		DragData dragData = new DragData();
+
 		//drag over transition to move widget form left pane to right pane
 		onIconDragOverRoot = new EventHandler<DragEvent>()
 		{
@@ -574,15 +585,16 @@ public class MapEditorController extends AbstractController {
 			@Override
 			public void handle(DragEvent event)
 			{
-
-				Point2D p = mapPane.sceneToLocal(event.getSceneX(), event.getSceneY());
+				Point2D p = stackPane.sceneToLocal(event.getSceneX(), event.getSceneY());
 
 				//turn on transfer mode and track in the right-pane's context 
 				//if (and only if) the mouse cursor falls within the right pane's bounds.
-				if (!mapPane.boundsInLocalProperty().get().contains(p))
+				if (!stackPane.boundsInLocalProperty().get().contains(p))
 				{
+
 					event.acceptTransferModes(TransferMode.ANY);
 					mDragOverIcon.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
+
 					return;
 				}
 
@@ -618,7 +630,7 @@ public class MapEditorController extends AbstractController {
 
 				DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.AddNode);
 
-				container.addData("scene_coords", new Point2D(event.getSceneX(), event.getSceneY()));
+				container.addData("scene_coords", new Point2D(event.getX(), event.getY()));
 
 				ClipboardContent content = new ClipboardContent();
 				content.put(DragContainer.AddNode, container);
@@ -631,13 +643,11 @@ public class MapEditorController extends AbstractController {
 
 		root_pane.setOnDragDone(new EventHandler<DragEvent>()
 		{
-
 			@Override
 			public void handle(DragEvent event)
 			{
-				System.out.println("test");
-				mapPane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane); //remove the event handlers created on drag start
-				mapPane.removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
+				stackPane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane); //remove the event handlers created on drag start
+				stackPane.removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
 				base_pane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRoot);
 
 				mDragOverIcon.setVisible(false);
@@ -654,12 +664,22 @@ public class MapEditorController extends AbstractController {
 						droppedNode = DragIcon.constructMapNodeFromType((DragIconType.valueOf(container.getValue("type"))));
 						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
 
+						mapItems.getChildren().add(droppedNode.getNodeToDisplay());
+
 						Point2D cursorPoint = container.getValue("scene_coords"); //cursor point
 
-						droppedNode.setPosX(cursorPoint.getX()-12.5); //offset because mouse drag and pictures should start from upper corner
-						droppedNode.setPosY(cursorPoint.getY()-12.5);
+						//scroll_pane.s
+						Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
+						Point2D mouseCoords = scroll_pane.screenToLocal(p.x, p.y);
+
+						//@TODO drop in the right place
+						droppedNode.setPosX(mouseCoords.getX()+20*Math.pow(mapItems.getScaleX(), 3));          // because mouse drag and pictures should start from upper corner
+						droppedNode.setPosY(mouseCoords.getY()+20*Math.pow(mapItems.getScaleY(), 3));
+
+						System.out.println("Scale X: " + scroll_pane.getScaleX());
 
 						addToAdminMap(droppedNode);
+
 					}
 					event.consume();
 				}
@@ -677,7 +697,11 @@ public class MapEditorController extends AbstractController {
 	{
 		addEventHandlersToNode(mapNode);
 
-		mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
+		if(!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
+		{
+			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
+		}
+
 		model.addMapNode(mapNode); //add node to model
 
 		mapNode.toFront(); //send the node to the front
@@ -839,11 +863,11 @@ public class MapEditorController extends AbstractController {
 			}
 		});
 
-		mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
+		stackPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
 
 			if (drawingEdge != null)
 			{
-				//System.out.println("Moving Mouse");
+				System.out.println("Moving Mouse");
 				Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
 				Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 				drawingEdge.setEndPoint(mouseCoords); //set the end point
