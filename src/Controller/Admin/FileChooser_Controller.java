@@ -161,7 +161,7 @@ public class FileChooser_Controller extends AbstractController
         }
         File userFile = new File(strFilePath);
         String filename = userFile.getName();
-        fullName = "src/View/resources/" + filename;
+        fullName = "resources/FloorMaps/" + filename;
         source = new FileInputStream(strFilePath).getChannel();
 
         size = 0;

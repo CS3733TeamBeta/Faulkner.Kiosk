@@ -1,9 +1,5 @@
 package Domain.Map;
 
-import javafx.scene.Node;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.LinkedList;
 
 /**
@@ -13,7 +9,7 @@ public class Floor implements Comparable{
     LinkedList<MapNode> floorNodes;
     LinkedList<NodeEdge> floorEdges;
     MapNode kioskNode = null;
-    String imageLocation = "/resources/floor3.png";
+    String imageLocation = "/resources/FloorMaps/floor3.png";
 
     ProxyImage imageInfo;
 
