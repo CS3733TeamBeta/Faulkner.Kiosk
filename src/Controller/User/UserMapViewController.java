@@ -4,6 +4,8 @@ import Controller.AbstractController;
 import Controller.DragDropMain;
 import Controller.Main;
 import Controller.SceneSwitcher;
+import Domain.Map.Doctor;
+import Domain.Map.Hospital;
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import Domain.Navigation.Guidance;
@@ -13,13 +15,18 @@ import Exceptions.PathFindingException;
 import Model.MapEditorModel;
 import Model.MapModel;
 import com.jfoenix.controls.JFXButton;
+
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.animation.KeyFrame;
@@ -36,7 +43,12 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.function.Predicate;
+
+import static Model.Database.DatabaseManager.Faulkner;
+import static Model.Database.DatabaseManager.suites;
 
 
 /**
@@ -94,10 +106,10 @@ public class UserMapViewController extends AbstractController {
     TreeTableColumn docName;
 
     @FXML
-            TreeTableColumn jobTitle;
+    TreeTableColumn jobTitle;
 
     @FXML
-            TreeTableColumn docDepts;
+    TreeTableColumn docDepts;
 
     Stage primaryStage;
 
@@ -327,20 +339,86 @@ public class UserMapViewController extends AbstractController {
     public void doctorSelected()
     {
         loadMenu();
+        initialize();
         numClickDr = numClickDr + 1;
         numClickHelp = 0;
         numClickBath = 0;
         numClickFood = 0;
+
+               //public void initialize() {
+
+        // Setting up the columns of the TableView
+
+        docName.setCellValueFactory(
+
+                new PropertyValueFactory<Doctor, String>("name"));
+
+        jobTitle.setCellValueFactory(
+
+                new PropertyValueFactory<Doctor, String>("description"));
+        docDepts.setCellValueFactory(
+
+                new PropertyValueFactory<Doctor, String>("suites"));
+        Collection<Doctor> doctrine = Faulkner.getDoctors().values();
+        final ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
+
+
+
+        doctorTable.setTreeColumn(docName);
+
 /*
-        docName.setCellValueFactory(new Callback<CellDataFeatures<String, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(CellDataFeatures<Person, String> p) {
-                // p.getValue() returns the TreeItem<Person> instance for a particular TreeTableView row,
-                // p.getValue().getValue() returns the Person instance inside the TreeItem<Person>
-                return p.getValue().getValue().firstNameProperty();
-            }
+        // Creating list of data to be filtered
+
+        FilteredList<Doctor> filtered = new FilteredList<>(Main.FaulknerHospitalDirectory);
+
+        // Adding a listener to the search bar, filtering through the data as the user types
+
+        searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
+
+            filtered.setPredicate((Predicate<? super Doctor>) profile -> {
+
+                // By default, the entire directory is displayed
+
+                if (newValue == null || newValue.isEmpty()) {
+
+                    return true;
+
+                }
+
+                // Compare the name of the doctor with filter text
+
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                // Checks if filter matches
+
+                if (profile.getName().toLowerCase().contains(lowerCaseFilter)) {
+
+                    return true;
+
+                }
+
+                // Filter does not match
+
+                return false;
+
+            });
+
         });
-    }
+
+        // Create a sorted list for the filtered data list
+
+        SortedList<Doctor> sorted = new SortedList<>(filtered);
+
+        // Bind the sorted list to table
+
+        sorted.comparatorProperty().bind(doctorTable.comparatorProperty());
+
+        // Set table data
+
+        doctorTable.setItems(sorted);
 */
+        //}
+
         if (numClickDr == 2)
         {
             defaultProperty();

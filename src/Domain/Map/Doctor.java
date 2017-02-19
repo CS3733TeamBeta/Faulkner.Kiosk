@@ -9,14 +9,18 @@ import java.util.HashSet;
 public class Doctor extends Info
 {
 
+
+
     int docID;
     HashSet<Suite> suites;
     HashSet<String> myOffice;
     String phoneNum = "N/A";
+
+    /*
     HashSet<String> lstNames;
     HashSet<HashSet<Suite>> lstSuites;
     HashSet<String> lstDescriptions;
-
+*/
 
 
     public Doctor(int id, String name, String description, String hours, HashSet<Suite> suites) {
@@ -24,9 +28,9 @@ public class Doctor extends Info
         this.docID = id;
         this.suites = suites;
         this.myOffice = new HashSet<>();
-        lstNames.add(name);
-        lstDescriptions.add(description);
-        lstSuites.add(suites);
+        this.name = name;
+        this.description = description;
+
 
     }
 
@@ -85,6 +89,7 @@ public class Doctor extends Info
     public HashSet<Suite> getSuites() {
         return this.suites;
     }
+
 
 
 
