@@ -11,7 +11,7 @@ public class EdgeCompleteEvent
 
     public EdgeCompleteEvent(NodeEdge edge)
     {
-        this.edge =edge;
+        this.edge = edge;
     }
 
     public NodeEdge getNodeEdge()

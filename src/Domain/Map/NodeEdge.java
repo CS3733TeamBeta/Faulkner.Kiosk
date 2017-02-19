@@ -203,6 +203,7 @@ public class NodeEdge implements DrawableMapEntity
      * @return the center point of the DragIcon as a Point2D
      */
     public Point2D getNodeCenterPoint(DragIcon dragIcon) {
+        System.out.println("Center Get");
         Bounds boundsInScene = dragIcon.getBoundsInLocal();
 
         Point2D centerPoint = new Point2D(

@@ -150,22 +150,34 @@ public class MapEditorController extends AbstractController {
 		mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
 			if(drawingEdge != null)
 			{
+				// devondevon
+
 				Node sourceNode = drawingEdge.getSource().getNodeToDisplay();
+
 				Bounds sourceNodeBounds = sourceNode.getBoundsInParent();
 
-				/* @TODO: Figure out these offsets */
-				double clickX = clickEvent.getSceneX() - 32;
-				double clickY = clickEvent.getSceneY() - 50;
+				Point2D clickPoint = new Point2D(clickEvent.getX(), clickEvent.getY());
 
-				Point2D mousePoint = new Point2D(clickX, clickY);
-
-				// The following statement is used to replace the .contains method on bounds, which is not functioning as documented.
-
-				Boolean clickInside = ((mousePoint.getX() > sourceNodeBounds.getMinX() && mousePoint.getX() < sourceNodeBounds.getMaxX()) && (mousePoint.getY() > sourceNodeBounds.getMinY() && mousePoint.getY() < sourceNodeBounds.getMaxY()));
-
-				if(!clickInside)
+				if(!sourceNodeBounds.contains(clickPoint))
 				{
-					System.out.println("Clicked while drawing");
+
+					MapNode chainLinkNode = DragIcon.constructMapNodeFromType(DragIconType.connector);
+					chainLinkNode.setType(DragIconType.connector); //set the type
+
+					// clickPoint = mapPane.localToScreen(clickPoint);
+					clickPoint = mapPane.localToScene(clickPoint);
+
+					clickPoint = new Point2D(clickPoint.getX()-12.5, clickPoint.getY()-12.5);
+
+					chainLinkNode.setPosX(clickPoint.getX());
+					chainLinkNode.setPosY(clickPoint.getY());
+
+					addToAdminMap(chainLinkNode);
+
+					drawingEdge.setTarget(chainLinkNode);
+
+					onEdgeComplete();
+
 				}
 			}
 		});
@@ -438,7 +450,6 @@ public class MapEditorController extends AbstractController {
 	}
 
 	public void onEdgeComplete() {
-		System.out.println("Edge complete");
 		for(EdgeCompleteEventHandler handler : model.getEdgeCompleteHandlers())
 		{
 			if(!model.getCurrentFloor().getFloorEdges().contains(drawingEdge)){
@@ -647,7 +658,6 @@ public class MapEditorController extends AbstractController {
 			{
 				TreeItem<MapTreeItem> floorTreeItem;
 
-				//selectedObject.
 				if(selectedObject.getValue() instanceof Floor)
 				{
 					floorTreeItem = selectedTreeItem;
@@ -783,13 +793,13 @@ public class MapEditorController extends AbstractController {
 
 			if (drawingEdge != null)
 			{
-				//System.out.println("Moving Mouse");
 				Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
 				Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 				drawingEdge.setEndPoint(mouseCoords); //set the end point
 			}
 		});
 	}
+
 	/*
 	 removes the node from the model
 	 removes the node.getNodeToDisplay() from the map pane
