@@ -14,7 +14,8 @@ import java.util.Properties;
 public class DatabaseManager {
 
     private final String framework = "embedded";
-    private final String protocol = "jdbc:derby:/Users/Paris/";
+
+    private final String protocol = "jdbc:derby:";
     private Connection conn = null;
     private ArrayList<Statement> statements = new ArrayList<Statement>(); // list of Statements, PreparedStatements
     private PreparedStatement psInsert;
@@ -203,13 +204,12 @@ public class DatabaseManager {
     }
 
     public void saveData() throws SQLException {
-        System.out.println("Here");
         s = conn.createStatement();
         executeStatements(dropTables);
         executeStatements(createTables);
         saveHospital(Faulkner);
         s.close();
-        conn.close();
+        
         System.out.println("Data Saved Correctly");
     }
 
@@ -250,10 +250,11 @@ public class DatabaseManager {
                                     mapNodes.get(edgeRS.getInt(3)),
                                     edgeRS.getInt(4)));
                 }
-
+                Floor tempFloor = new Floor(floorRS.getInt(3));
+                tempFloor.setImageLocation(floorRS.getString(4));
                 // add floor to list of floors for current building
                 flr.put(floorRS.getString(1),
-                        new Floor(floorRS.getInt(3)));
+                        tempFloor);
                 // add correct mapNodes to their respective floor
                 for (MapNode n : nodes.values()) {
                     flr.get(floorRS.getString(1)).addNode(n);
@@ -340,7 +341,7 @@ public class DatabaseManager {
 
     private void saveHospital(Hospital h) throws SQLException {
         PreparedStatement insertBuildings = conn.prepareStatement("INSERT INTO BUILDING (BUILDING_ID, NAME) VALUES (?, ?)");
-        PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO FLOOR (FLOOR_ID, BUILDING_ID, NUMBER) VALUES (?, ?, ?)");
+        PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO FLOOR (FLOOR_ID, BUILDING_ID, NUMBER, IMAGE) VALUES (?, ?, ?, ?)");
         PreparedStatement insertNodes = conn.prepareStatement("INSERT INTO NODE (NODE_ID, POSX, POSY, FLOOR_ID, TYPE) VALUES (?, ?, ?, ?, ?)");
         PreparedStatement insertEdges = conn.prepareStatement("INSERT INTO EDGE (EDGE_ID, NODEA, NODEB, COST, FLOOR_ID) VALUES (?, ?, ?, ?, ?)");
         PreparedStatement insertDoctors = conn.prepareStatement("INSERT INTO USER1.DOCTOR (DOC_ID, NAME, DESCRIPTION, NUMBER, HOURS) VALUES (?, ?, ?, ?, ?)");
@@ -364,6 +365,7 @@ public class DatabaseManager {
                 insertFloors.setString(1, floorID);
                 insertFloors.setInt(2, counter);
                 insertFloors.setInt(3, f.getFloorNumber());
+                insertFloors.setString(4, f.getImageLocation());
                 insertFloors.executeUpdate();
                 conn.commit();
 
