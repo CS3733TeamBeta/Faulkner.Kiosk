@@ -4,10 +4,7 @@ import Controller.AbstractController;
 import Controller.DragDropMain;
 import Controller.Main;
 import Controller.SceneSwitcher;
-import Domain.Map.Doctor;
-import Domain.Map.Hospital;
-import Domain.Map.MapNode;
-import Domain.Map.NodeEdge;
+import Domain.Map.*;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
@@ -347,9 +344,13 @@ public class UserMapViewController extends AbstractController {
         // Setting up the columns of the TableView
         docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
-        docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
+        docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, HashSet<Suite>>("suites"));
+
+
+
         Collection<Doctor> doctrine = Faulkner.getDoctors().values();
         ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
+        doctorTable.setItems(doctors);
 
         // Enabling a search function for the text field.
         FilteredList<Doctor> filtered = new FilteredList<>(Main.FaulknerHospitalDirectory);
@@ -374,7 +375,13 @@ public class UserMapViewController extends AbstractController {
             });
 
         });
-        doctorTable.setItems(doctors);
+//        SortedList<Doctor> sorted = new SortedList<>(filtered);
+//        // Bind the sorted list to table
+//        sorted.comparatorProperty().bind(filteredProfiles.comparatorProperty());
+//        // Set table data
+//        filteredProfiles.setItems(sorted);
+
+
 
         
 
