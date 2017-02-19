@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import Domain.Map.*;
@@ -15,6 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.AnchorPane;
 
 import javax.imageio.ImageIO;
 
@@ -25,6 +27,9 @@ public class Guidance extends Path {
 
     //This is the direction that the user of the kiosk starts off facing.
     private int kioskDirection = 3;
+
+    double xNodeScale = 1200/941;
+    double yNodeScale = 700/546;
 
     LinkedList<DirectionStep> textDirections;
 
@@ -511,6 +516,79 @@ public class Guidance extends Path {
         return Toolkit.getDefaultToolkit().createImage(ip);
     }
 
+    public AnchorPane createDirectionPane() {
+        AnchorPane directionPane = new AnchorPane();
+
+        //and then set all the existing nodes up
+        HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+
+        for(MapNode n : pathNodes)
+        {
+            for(NodeEdge edge: n.getEdges())
+            {
+                if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+            }
+
+            if(!directionPane.getChildren().contains(n.getNodeToDisplay()))
+            {
+                directionPane.getChildren().add(n.getNodeToDisplay());
+            }
+
+
+            System.out.println("Adding node at X:" + n.getPosX() + "Y: " + n.getPosY());
+
+            n.getNodeToDisplay().relocate(n.getPosX()*xNodeScale*1.27, 1.27*n.getPosY()*yNodeScale);
+            n.getNodeToDisplay().setOnMouseClicked(null);
+            n.getNodeToDisplay().setOnMouseEntered(null);
+            n.getNodeToDisplay().setOnMouseDragged(null);
+
+        }
+
+        for(NodeEdge edge : collectedEdges)
+        {
+
+            if(!directionPane.getChildren().contains(edge.getEdgeLine()))
+            {
+                directionPane.getChildren().add(edge.getEdgeLine());
+            }
+
+            MapNode source = edge.getSource();
+            MapNode target = edge.getTarget();
+
+            //@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
+
+            if(!directionPane.getChildren().contains(source.getNodeToDisplay()))
+            {
+
+                directionPane.getChildren().add(source.getNodeToDisplay());
+
+                source.getNodeToDisplay().relocate(source.getPosX() * 2*xNodeScale, source.getPosY() * 2* yNodeScale);
+            }
+
+            if(!directionPane.getChildren().contains(target.getNodeToDisplay()))
+            {
+                directionPane.getChildren().add(target.getNodeToDisplay());
+                target.getNodeToDisplay().relocate(target.getPosX() * 2*xNodeScale, target.getPosY() * 2*yNodeScale);
+            }
+
+            edge.updatePosViaNode(source);
+            edge.updatePosViaNode(target);
+
+            edge.setSource(source);
+            edge.setTarget(target);
+
+            source.toFront();
+            target.toFront();
+
+            edge.getEdgeLine().setOnMouseEntered(null);
+            edge.getEdgeLine().setOnMouseClicked(null);
+
+        }
+
+
+        return directionPane;
+    }
+
     public void savePathImage(Node aNode) {
         WritableImage image = aNode.snapshot(new SnapshotParameters(), null);
 
@@ -554,8 +632,11 @@ public class Guidance extends Path {
 
     }
 
-    public boolean sendEmailGuidance(String address, Node aNode) {
-        savePathImage(aNode);
+    public boolean sendEmailGuidance(String address) {
+
+        AnchorPane newDirectionPane = this.createDirectionPane();
+
+        savePathImage(newDirectionPane);
 
         overlayOnMap();
 
@@ -614,30 +695,6 @@ public class Guidance extends Path {
         directionLine += "</H3>";
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine, true);
-            return true;
-        } catch(Exception e) {
-            System.out.println("Threw an exception: " + e);
-            return false;
-        }
-    }
-
-    public boolean sendEmailGuidance(String address) {
-        String subjectLine;
-        String directionLine = "<H2><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H2>" + "<H3>";
-        subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
-
-        int stepNumber = 1;
-        for (DirectionStep step: textDirections) {
-            for(String s: step.getDirections()) {
-                directionLine += "<b>" + stepNumber + ":</b> ";
-                directionLine += s;
-                directionLine += "<br>";
-                stepNumber++;
-            }
-        }
-        directionLine += "</H3>";
-        try {
-            SendEmail e = new SendEmail(address, subjectLine, directionLine, false);
             return true;
         } catch(Exception e) {
             System.out.println("Threw an exception: " + e);
