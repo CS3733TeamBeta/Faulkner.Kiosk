@@ -416,39 +416,6 @@ public class Guidance extends Path {
         return textDirections;
     }
 
-    public void createImageFromScratch(Floor aFloor) {
-
-        try {
-            LinkedList<BufferedImage> listOfOverlays = new LinkedList<>();
-
-// load source images
-            BufferedImage image = ImageIO.read(new File("emptyImage.png"));
-            BufferedImage overlay = ImageIO.read(new File("lildude.png"));
-
-            for (int i = 0; i < 25; i++) {
-                listOfOverlays.add(ImageIO.read(new File("lildude.png")));
-            }
-
-// create the new image, canvas size is the max. of both image sizes
-            int w = image.getWidth();
-            int h = image.getHeight();
-            BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-
-// paint both images, preserving the alpha channels
-            Graphics g = combined.getGraphics();
-            g.drawImage(image, 0, 0, null);
-            for (int i = 0; i < aFloor.getFloorNodes().size(); i++) {
-
-                g.drawImage(listOfOverlays.get(i), 50 * (int) Math.round(aFloor.getFloorNodes().get(i).getPosX()), 50 * (int) Math.round(aFloor.getFloorNodes().get(i).getPosY()), null);
-            }
-
-// Save as new image
-            ImageIO.write(combined, "PNG", new File("combined.png"));
-        } catch (Exception e) {
-            System.out.println("Threw another exception over here.");
-        }
-    }
-
     public void overlayOnMap() {
 
         try {
@@ -459,7 +426,7 @@ public class Guidance extends Path {
 // create the new image, canvas size is the max. of both image sizes
             int w = Math.max(image.getWidth(), overlay.getWidth());
             int h = Math.max(image.getHeight(), overlay.getHeight());
-            BufferedImage combined = new BufferedImage(1244, 700, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 
 // paint both images, preserving the alpha channels
             Graphics g = combined.getGraphics();
@@ -473,8 +440,7 @@ public class Guidance extends Path {
         }
     }
 
-    private java.awt.Image transformColorToTransparency(BufferedImage image, Color c1, Color c2)
-    {
+    private java.awt.Image transformColorToTransparency(BufferedImage image, Color c1, Color c2) {
         // Primitive test, just an example
         final int r1 = c1.getRed();
         final int g1 = c1.getGreen();
@@ -497,18 +463,6 @@ public class Guidance extends Path {
                     return rgb & 0xFFFFFF;
                 }
                 return rgb;
-            }
-        };
-
-        ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
-        return Toolkit.getDefaultToolkit().createImage(ip);
-    }
-
-    private java.awt.Image transformWhiteToTransparency(BufferedImage image)
-    {
-        ImageFilter filter = new RGBImageFilter() {
-            public final int filterRGB(int x, int y, int rgb) {
-                return (rgb << 8) & 0xFF000000;
             }
         };
 
@@ -609,8 +563,7 @@ public class Guidance extends Path {
             System.out.println("Something bad");
         }
 
-        //java.awt.Image transImage = transformWhiteToTransparency(img);
-        java.awt.Image transImage = transformColorToTransparency(img, Color.lightGray, Color.white);
+        java.awt.Image transImage = transformColorToTransparency(img, new Color(253, 253, 253), Color.white);
 
 
         int w = transImage.getWidth(null);
@@ -674,31 +627,5 @@ public class Guidance extends Path {
         } catch (Exception e) {
             System.out.println("Another exception thrown");
         } */
-    }
-
-    public boolean sendEmailGuidance(String address, MapModel model) {
-        saveMapImage(model);
-
-        String subjectLine;
-        String directionLine = "<H2>You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + ".</H2>" + "<H3>";
-        subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
-
-        for (DirectionStep step: textDirections) {
-            for(String s: step.getDirections()) {
-
-                System.out.println(s);
-                directionLine += s;
-                directionLine += "<br>";
-            }
-        }
-
-        directionLine += "</H3>";
-        try {
-            SendEmail e = new SendEmail(address, subjectLine, directionLine, true);
-            return true;
-        } catch(Exception e) {
-            System.out.println("Threw an exception: " + e);
-            return false;
-        }
     }
 }

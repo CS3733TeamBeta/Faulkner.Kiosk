@@ -226,13 +226,5 @@ public class PathFindingTest extends TestCase{
             fail("Threw exception");
         }
     }
-
-    public void testCreateImageFromModel() {
-        try {
-            g1 = new Guidance(nodeA, nodeD);
-            g1.createImageFromScratch(floor1);
-        } catch (Exception e) {
-            fail("Threw unexpected exception");
-        }
-    }
+    
 }
