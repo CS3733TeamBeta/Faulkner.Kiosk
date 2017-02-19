@@ -110,9 +110,8 @@ public class MapEditorController extends AbstractController {
 			drawingEdge = null;
 
 			sourceNode.toFront();
-			sourceNode.toFront();
-			mapImage.toBack();
 
+			mapImage.toBack();
 		});
 	}
 
