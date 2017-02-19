@@ -2,7 +2,11 @@ package Controller.Admin;
 
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
+import Domain.Map.Building;
 import Domain.Map.Floor;
+import Domain.Map.Hospital;
+import Model.Database.DatabaseManager;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -30,6 +34,9 @@ public class FileChooser_Controller extends AbstractController
     @FXML
     TextField inputFloorNumber;
 
+    @FXML private ChoiceBox<String> dropDown;
+
+
 
     Stage newStage = new Stage();
     FileChooser newFileChooser = new FileChooser();
@@ -42,7 +49,11 @@ public class FileChooser_Controller extends AbstractController
     String fullName = null;
     String fullNameTwo = null;
 
+    String building;
+
     Floor newFloor;
+
+    Hospital theHospital = DatabaseManager.getInstance().Faulkner;
 
     @FXML
     private void clickGoBack()throws IOException{
@@ -69,10 +80,12 @@ public class FileChooser_Controller extends AbstractController
 
         try{
             floorNum = Integer.parseInt(inputFloorNumber.getText());
-            newFloor = new Floor(floorNum);
+            //newFloor =
+            building = dropDown.getValue();
             if(fullName != null) {
-                newFloor.setImageLocation(fullName);
-                MapEditorController.newFloor = newFloor;
+                addFloorInfo(fullName, floorNum, building);
+                //newFloor.setImageLocation(fullName);
+                //MapEditorController.newFloor = newFloor;
                 SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
             }
             else{
@@ -85,6 +98,43 @@ public class FileChooser_Controller extends AbstractController
 
     }
 
+    @FXML
+    private void populateChoices(){
+
+
+        //dropDown.getItems().add("Test");
+    }
+
+    @FXML
+    private void initialize(){
+        for( Building b : theHospital.getBuildings()) {
+            dropDown.getItems().add(b.getName());
+        }
+    }
+
+    private void addFloorInfo(String name, int floorNum, String building){
+        boolean isDuplicate = false;
+        for(Building b : theHospital.getBuildings()){
+            if(b.getName().equals(building)){
+                for(Floor f : b.getFloors()){
+                    if(f.getFloorNumber() == floorNum){
+                        f.setImageLocation(name);
+                        isDuplicate = true;
+                    }
+                }
+                if(!isDuplicate){
+                    Floor newFloor = new Floor(floorNum);
+                    newFloor.setImageLocation(name);
+                    try {
+                        b.addFloor(newFloor);
+                    }
+                    catch(Exception e){
+                        System.out.println("ERROR IN ADDING FLOOR");
+                    }
+                }
+            }
+        }
+    }
 
     @FXML
     private void clickChooseFile() throws FileNotFoundException

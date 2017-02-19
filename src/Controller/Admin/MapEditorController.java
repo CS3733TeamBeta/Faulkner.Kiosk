@@ -19,6 +19,7 @@ import Model.Database.DatabaseManager;
 import Model.MapEditorModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -54,6 +55,7 @@ public class MapEditorController extends AbstractController {
 
 	@FXML
 	Button newFloorButton;
+
 
 	@FXML
 	private TabPane BuildingTabPane;
@@ -315,6 +317,7 @@ public class MapEditorController extends AbstractController {
 
 		Floor f = b.newFloor(); //makes new floor
 		try {
+
 			switchToAddFloor(this.getStage());
 		} catch (IOException e) {
 
