@@ -70,10 +70,11 @@ public class MapEditorController extends AbstractController {
 
 	NodeEdge drawingEdge;
 
-	public void changeFloorToSaved(String location) throws MalformedURLException {
-		System.out.println(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString());
-		this.mapImage.setImage(new Image(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString(), true));
+	public void changeFloorToSaved(String location, Floor floor) throws MalformedURLException {
+		//System.out.println(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString());
+		//this.mapImage.setImage(new Image(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString(), true));
 
+		this.mapImage.setImage(floor.getImageInfo().getFXImage());
 	}
 
 	public MapEditorController() {
@@ -349,7 +350,7 @@ public class MapEditorController extends AbstractController {
 			}
 		}
 		try{
-			changeFloorToSaved(f.getImageLocation());
+			changeFloorToSaved(f.getImageLocation(), f);
 		}catch(MalformedURLException e){
 			System.out.println("ERROR IN LOADING FLOORPLAN");
 		}

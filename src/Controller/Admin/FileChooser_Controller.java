@@ -43,11 +43,9 @@ public class FileChooser_Controller extends AbstractController
     String strFilePath = new String();
     Alert alert = new Alert(Alert.AlertType.WARNING);
     long size;
-    FileChannel outChannelTwo;
     FileChannel outChannel;
     FileChannel source;
     String fullName = null;
-    String fullNameTwo = null;
 
     String building;
 
@@ -67,14 +65,13 @@ public class FileChooser_Controller extends AbstractController
             source.transferTo(0, size, outChannel);
         }
         catch(Exception e){}
-        try
-        {
-            source.transferTo(0, size, outChannelTwo);
-        }
-        catch(Exception e){}
+
+        outChannel.force(true);
+        source.force(true);
+        outChannel.close();
+        source.close();
 
         System.out.println("Loading image to: " + fullName);
-        System.out.println("Loading image to: " + fullNameTwo);
 
         int floorNum;
 
@@ -161,8 +158,8 @@ public class FileChooser_Controller extends AbstractController
         }
         File userFile = new File(strFilePath);
         String filename = userFile.getName();
-        fullName = "src/View/Admin/MapBuilder/" + filename;
-        fullNameTwo = "src/View/User/MapViewer/" + filename;
+        fullName = "/resources/" + filename;
+        String tempLocation = "src/View/resources/" + filename;
         source = new FileInputStream(strFilePath).getChannel();
 
         size = 0;
@@ -172,9 +169,7 @@ public class FileChooser_Controller extends AbstractController
         catch (Exception e){
 
         }
-        outChannel = new FileOutputStream(fullName).getChannel();
-        outChannelTwo = new FileOutputStream(fullNameTwo).getChannel();
-
+        outChannel = new FileOutputStream(tempLocation).getChannel();
     }
 
     // gets the extension of the selected file for comparison with valid types in clickChooseFile
