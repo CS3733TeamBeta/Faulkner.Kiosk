@@ -12,9 +12,12 @@ public class Doctor extends Info
 
 
     int docID;
-    HashSet<Suite> suites;
+    //HashSet<Suite> suites;
     HashSet<String> myOffice;
     String phoneNum = "N/A";
+    private String name;
+    private String description;
+    private HashSet<Suite> suites;
 
     /*
     HashSet<String> lstNames;
@@ -75,7 +78,7 @@ public class Doctor extends Info
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public String getDescription() {

@@ -23,9 +23,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -39,7 +37,6 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
-import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -97,19 +94,19 @@ public class UserMapViewController extends AbstractController {
     Text welcomeGreeting;
 
     @FXML
-    TreeTableView deptTable;
+    TableView deptTable;
 
     @FXML
-    TreeTableView doctorTable;
+    TableView doctorTable;
 
     @FXML
-    TreeTableColumn docName;
+    TableColumn docName;
 
     @FXML
-    TreeTableColumn jobTitle;
+    TableColumn jobTitle;
 
     @FXML
-    TreeTableColumn docDepts;
+    TableColumn docDepts;
 
     Stage primaryStage;
 
@@ -349,22 +346,15 @@ public class UserMapViewController extends AbstractController {
 
         // Setting up the columns of the TableView
 
-        docName.setCellValueFactory(
-
-                new PropertyValueFactory<Doctor, String>("name"));
-
-        jobTitle.setCellValueFactory(
-
-                new PropertyValueFactory<Doctor, String>("description"));
-        docDepts.setCellValueFactory(
-
-                new PropertyValueFactory<Doctor, String>("suites"));
+        docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
+        jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
+        docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
         Collection<Doctor> doctrine = Faulkner.getDoctors().values();
-        final ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
+        ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
 
 
 
-        doctorTable.setTreeColumn(docName);
+        doctorTable.setItems(doctors);
 
 /*
         // Creating list of data to be filtered
