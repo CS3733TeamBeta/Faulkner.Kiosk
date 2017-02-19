@@ -25,7 +25,7 @@ public class DatabaseManager {
     public static HashMap<Integer, NodeEdge> edges = new HashMap<>();
     public static HashMap<String, Doctor> doctors = new HashMap<>();
     public static HashMap<String, Floor> floors = new HashMap<>();
-    public static HashMap<String, Suite> suites = new HashMap<>();
+    public static HashMap<UUID, Suite> suites = new HashMap<>();
     public static HashMap<String, Office> offices = new HashMap<>();
 
     public static DatabaseManager instance = null;
@@ -201,7 +201,6 @@ public class DatabaseManager {
         System.out.println(h.getBuildings());
 
         // loading doctors, suites, and offices to hospital
-        HashMap<String, Suite> suites = new HashMap<>();
         HashMap<UUID, Suite> suitesID = new HashMap<>();
         HashMap<String, Doctor> doctors = new HashMap<>();
         HashMap<String, Office> offices = new HashMap<>();
@@ -210,19 +209,16 @@ public class DatabaseManager {
 
         rs = s.executeQuery("select * from USER1.SUITE");
         while (rs.next()) {
-            suites.put(rs.getString(2),
-                    new Suite(UUID.fromString(rs.getString(1)),
-                            rs.getString(2)));
 
             suitesID.put(UUID.fromString(rs.getString(1)),
                     new Suite(UUID.fromString(rs.getString(1)),
                             rs.getString(2)));
 
-            h.addSuites(rs.getString(2),
+            h.addSuites(UUID.fromString(rs.getString(1)),
                     new Suite(UUID.fromString(rs.getString(1)),
                             rs.getString(2)));
         }
-        this.suites = suites;
+        this.suites = suitesID;
         System.out.println(suites.keySet());
 
         rs = s.executeQuery("select * from USER1.DOCTOR order by NAME");
@@ -325,7 +321,7 @@ public class DatabaseManager {
         System.out.println("Here");
         // saves Suites
         for (Suite suite : h.getSuites().values()) {
-            insertSuites.setString(1, "" + suite.getSuiteID());
+            insertSuites.setString(1, suite.getSuiteID().toString());
             insertSuites.setString(2, suite.getName());
             insertSuites.setString(3, suite.getLocation().getNodeID().toString());
             insertSuites.executeUpdate();

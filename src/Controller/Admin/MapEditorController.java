@@ -1,14 +1,11 @@
 package Controller.Admin;
 
-import java.awt.*;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.*;
-
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
-import Domain.ViewElements.*;
+import Domain.ViewElements.DragContainer;
+import Domain.ViewElements.DragIcon;
+import Domain.ViewElements.DragIconType;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.DataSourceClasses.MapTreeItem;
@@ -24,7 +21,6 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -37,16 +33,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import jfxtras.labs.util.event.MouseControlUtil;
-import javafx.scene.input.KeyCode;
 import org.controlsfx.control.PopOver;
 
 import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 public class MapEditorController extends AbstractController {
 
