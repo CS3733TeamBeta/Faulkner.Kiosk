@@ -3,19 +3,19 @@ version '1.0-ADMIN'
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'application'
 
 sourceCompatibility = 1.8
+mainClassName = "Controller.Main"
 
 sourceSets {
     main {
         java {
-            srcDirs = ["src"]
+            srcDirs = ['src']
             exclude 'test/**'
-
-
         }
         resources {
-            srcDirs "src/View"
+            srcDirs = ['src/View', 'resources']
             includes = ["**/*.fxml", "**/*.png", "**/*.properties", "**/*.json", "**/*.css"]
         }
     }
@@ -45,6 +45,7 @@ dependencies {
     compile 'com.jfoenix:jfoenix:1.0.0'
     compile group: 'org.controlsfx', name: 'controlsfx', version: '8.0.5'
     compile group: 'org.controlsfx', name: 'controlsfx-samples', version: '8.20.7'
+    compile 'javax.mail:mail:1.4.7'
 
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
