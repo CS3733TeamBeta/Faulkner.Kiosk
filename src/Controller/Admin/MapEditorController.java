@@ -20,7 +20,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -146,6 +148,20 @@ public class MapEditorController extends AbstractController {
 		getCurrentTreeView().getSelectionModel().select(0); //selects first floor
 
 		renderInitialMap();
+
+		mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
+			if(drawingEdge != null)
+			{
+				Node sourceNode = drawingEdge.getSource().getNodeToDisplay();
+				Bounds sourceNodeBounds = sourceNode.getBoundsInParent();
+
+				if(!sourceNodeBounds.contains(clickEvent.getX(), clickEvent.getY()))
+				{
+					System.out.println("Clicked Outside");
+				}
+			}
+		});
+
 	}
 
 	/**
@@ -403,9 +419,6 @@ public class MapEditorController extends AbstractController {
 			if(!model.getCurrentFloor().getFloorEdges().contains(drawingEdge)){
 				model.getCurrentFloor().getFloorEdges().add(drawingEdge);
 			}
-
-			System.out.println("Handler called");
-
 			handler.handle(new EdgeCompleteEvent(drawingEdge));
 		}
 	}
