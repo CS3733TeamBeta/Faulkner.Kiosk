@@ -64,20 +64,13 @@ public class MapEditorController extends AbstractController {
 	private EventHandler<DragEvent> onIconDragDropped = null;
 	private EventHandler<DragEvent> onIconDragOverRightPane = null;
 	private MapEditorModel model;
+	public static Floor newFloor = null;
 
 	NodeEdge drawingEdge;
 
-
-
-	public void changeFloorImage(int floor_number) {
-
-		this.mapImage.setImage(new Image("@floor" + floor_number + ".png"));
-
-	}
-
 	public void changeFloorToSaved(String location) throws MalformedURLException {
-		System.out.println(new URL("file:///" + System.getProperty("user.dir") + location).toString());
-		this.mapImage.setImage(new Image(new URL("file:///" + System.getProperty("user.dir") + location).toString(), true));
+		System.out.println(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString());
+		this.mapImage.setImage(new Image(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString(), true));
 
 	}
 
@@ -211,6 +204,10 @@ public class MapEditorController extends AbstractController {
 				treeView.getRoot().getChildren().add(makeTreeItem(f));
 			}
 
+			if(newFloor != null){
+				treeView.getRoot().getChildren().add(makeTreeItem(newFloor));
+			}
+
 			model.addBuilding(b, t); //adds to building tab map
 
 			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
@@ -308,14 +305,11 @@ public class MapEditorController extends AbstractController {
 		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
 
 		Floor f = b.newFloor(); //makes new floor
-		while(f.getImageLocation() == null) {
-			try {
-				switchToAddFloor(this.getStage());
-			} catch (IOException e) {
+		try {
+			switchToAddFloor(this.getStage());
+		} catch (IOException e) {
 
-			}
 		}
-
 
 		treeView.getRoot().getChildren().add(makeTreeItem(f));
 	}

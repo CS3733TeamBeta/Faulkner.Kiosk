@@ -11,7 +11,7 @@ public class Floor implements Comparable{
     LinkedList<MapNode> floorNodes;
     LinkedList<NodeEdge> floorEdges;
     MapNode kioskNode = null;
-    String imageLocation = null;
+    String imageLocation = "src/View/Admin/MapBuilder/floor3.png";
 
 
     public String getImageLocation() {
