@@ -41,7 +41,6 @@ public class RealImage implements Image {
             System.out.println("Loading " + fileName); // Let us know we're loading
             try {
                 System.out.println(fileName);
-
                 img = ImageIO.read(getClass().getResource(fileName).openStream());
             } catch (IOException e) {
                 System.out.println(fileName);
