@@ -24,7 +24,7 @@ public class Path implements Iterable {
     private static final double FLOOR_HEIGHT_CONSTANT = 1.812;
 
     public Path() {
-        System.out.println("Path constuctor must be called with fields");
+        System.out.println("Path constructor must be called with fields");
     }
 
     /**
