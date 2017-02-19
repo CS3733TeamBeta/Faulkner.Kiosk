@@ -80,10 +80,6 @@ public class FileChooser_Controller extends AbstractController
             floorNum = Integer.parseInt(inputFloorNumber.getText());
             building = dropDown.getValue();
             if(fullName != null) {
-                outChannel.force(true);
-                source.force(true);
-                outChannel.close();
-                source.close();
                 addFloorInfo(fullName, floorNum, building);
                 SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
             }
