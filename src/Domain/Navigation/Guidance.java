@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import Domain.Map.*;
 import Exceptions.*;
 import Model.MapModel;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -489,14 +490,15 @@ public class Guidance extends Path {
         return Toolkit.getDefaultToolkit().createImage(ip);
     }
 
-    public LinkedList<AnchorPane> createDirectionPane() {
+    public LinkedList<AnchorPane> createDirectionPanes() {
+        Platform.setImplicitExit(false);
         LinkedList<AnchorPane> directionPanes = new LinkedList<>();
         AnchorPane directionPane = new AnchorPane();
 
         for(DirectionStep step: this.textDirections) {
             directionPane = new AnchorPane();
             //and then set all the existing nodes up
-            HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+            HashSet<NodeEdge> collectedEdges = new HashSet<>();
 
             if (step.nodesInStep != null) {
                 for (MapNode n : step.nodesInStep) {
@@ -564,6 +566,11 @@ public class Guidance extends Path {
     }
 
     public void savePathImage(Node aNode, int floorNum) {
+
+        System.out.println("Calling savePathImage with floornum " + floorNum);
+
+        Platform.setImplicitExit(false);
+
         WritableImage image = aNode.snapshot(new SnapshotParameters(), null);
 
         // TODO: probably use a file chooser here
@@ -606,12 +613,20 @@ public class Guidance extends Path {
     }
 
     public boolean sendEmailGuidance(String address) {
+        return sendEmailGuidance(address, false);
+    }
 
-        LinkedList<AnchorPane> newDirectionPanes = this.createDirectionPane();
+    public boolean sendEmailGuidance(String address, boolean isTest) {
+        Platform.setImplicitExit(false);
 
-        for (int i = 0; i < newDirectionPanes.size(); i++) {
-            savePathImage(newDirectionPanes.get(i), textDirections.get(i).floorOfTheseDirections.getFloorNumber());
-            overlayOnMap(textDirections.get(i).floorOfTheseDirections);
+        //If run in a testing enviorment, panes cannot be created. Use pre-created ones.
+        if (!isTest) {
+            LinkedList<AnchorPane> newDirectionPanes = this.createDirectionPanes();
+
+            for (int i = 0; i < newDirectionPanes.size(); i++) {
+                savePathImage(newDirectionPanes.get(i), textDirections.get(i).floorOfTheseDirections.getFloorNumber());
+                overlayOnMap(textDirections.get(i).floorOfTheseDirections);
+            }
         }
 
         String subjectLine;
@@ -629,7 +644,7 @@ public class Guidance extends Path {
 
         directionLine += "</H3>";
         try {
-            SendEmail e = new SendEmail(address, subjectLine, directionLine, true);
+            SendEmail e = new SendEmail(address, subjectLine, directionLine, this.textDirections.size());
             return true;
         } catch(Exception e) {
             System.out.println("Threw an exception: " + e);

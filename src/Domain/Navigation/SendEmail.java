@@ -26,9 +26,9 @@ public class SendEmail {
     String subject;
     String message;
 
-    boolean includeImage;
+    int includeImage;
 
-    public SendEmail(String recipient, String subject, String message, boolean includeImage){
+    public SendEmail(String recipient, String subject, String message, int includeImage){
         this.recipient = recipient;
         this.subject = subject;
         this.message = message;
@@ -66,9 +66,11 @@ public class SendEmail {
             MimeMultipart multipart = new MimeMultipart("related");
 
             BodyPart messageBodyPart = new MimeBodyPart();
-            String htmlText;
-            if (includeImage) {
-                htmlText = /*"<img src=\"cid:imageLogo\">" + */this.message + "<img src=\"cid:imageDirections\">";
+            String htmlText = "";
+            if (includeImage > 0) {
+                for (int i = 1; i <= includeImage; i++) {
+                    htmlText = /*"<img src=\"cid:imageLogo\">" + */this.message + "<img src=\"cid:imageDirections" + i + "\">";
+                }
             } else {
                 htmlText = "<img src=\"cid:imageLogo\">" + this.message;
             }
@@ -85,17 +87,18 @@ public class SendEmail {
 
             multipart.addBodyPart(messageBodyPart);
             */
-            if (includeImage) {
+            if (includeImage > 0) {
 
+                for (int i = 1; i <= includeImage; i++) {
+                    messageBodyPart = new MimeBodyPart();
+                    fds = new FileDataSource(
+                            "combined" + i + ".png");
 
-                messageBodyPart = new MimeBodyPart();
-                fds = new FileDataSource(
-                        "combined.png");
+                    messageBodyPart.setDataHandler(new DataHandler(fds));
+                    messageBodyPart.setHeader("Content-ID", "<imageDirections" + i + ">");
 
-                messageBodyPart.setDataHandler(new DataHandler(fds));
-                messageBodyPart.setHeader("Content-ID", "<imageDirections>");
-
-                multipart.addBodyPart(messageBodyPart);
+                    multipart.addBodyPart(messageBodyPart);
+                }
             }
 
 

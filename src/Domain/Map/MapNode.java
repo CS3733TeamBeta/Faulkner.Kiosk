@@ -8,6 +8,7 @@ import Domain.ViewElements.DragIconType;
 import Domain.ViewElements.DrawableMapEntity;
 import Domain.ViewElements.Events.DeleteRequestedEvent;
 import Domain.ViewElements.Events.DeleteRequestedHandler;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -291,6 +292,7 @@ public class MapNode implements DrawableMapEntity {
 
     @Override
     public Node getNodeToDisplay() {
+        Platform.setImplicitExit(false);
         return icon;
     }
 

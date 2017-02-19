@@ -6,6 +6,7 @@ import Domain.Navigation.Path;
 import Domain.Navigation.*;
 import Exceptions.PathFindingNoPathException;
 import Model.MapModel;
+import javafx.application.Platform;
 import junit.framework.TestCase;
 
 import javax.imageio.ImageIO;
@@ -221,8 +222,9 @@ public class PathFindingTest extends TestCase{
         try {
             Guidance g1 = new Guidance(nodeA, nodeL, false);
             //Please don't uncomment this line unless you replace the email with your own. I'm getting a lot of spam -Ian
-            //g1.sendEmailGuidance("iancj97@gmail.com");
+            g1.sendEmailGuidance("iancj97@gmail.com", true);
         } catch (Exception e) {
+            e.printStackTrace();
             fail("Threw exception");
         }
     }
