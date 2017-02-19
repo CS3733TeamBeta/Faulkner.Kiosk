@@ -101,13 +101,12 @@ public class DatabaseManager {
     }
 
     public void saveData() throws SQLException {
-        System.out.println("Here");
         s = conn.createStatement();
         executeStatements(dropTables);
         executeStatements(createTables);
         saveHospital(Faulkner);
         s.close();
-        conn.close();
+        
         System.out.println("Data Saved Correctly");
     }
 

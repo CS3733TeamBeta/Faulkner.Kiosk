@@ -20,7 +20,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -146,6 +148,20 @@ public class MapEditorController extends AbstractController {
 		getCurrentTreeView().getSelectionModel().select(0); //selects first floor
 
 		renderInitialMap();
+
+		mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
+			if(drawingEdge != null)
+			{
+				Node sourceNode = drawingEdge.getSource().getNodeToDisplay();
+				Bounds sourceNodeBounds = sourceNode.getBoundsInParent();
+
+				if(!sourceNodeBounds.contains(clickEvent.getX(), clickEvent.getY()))
+				{
+					System.out.println("Clicked Outside");
+				}
+			}
+		});
+
 	}
 
 	/**
@@ -176,6 +192,8 @@ public class MapEditorController extends AbstractController {
 				treeView.getRoot().getChildren().add(makeTreeItem(f));
 			}
 
+			model.addBuilding(b, t); //adds to building tab map
+
 			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
 		}
 	}
@@ -200,6 +218,7 @@ public class MapEditorController extends AbstractController {
 				if (event.getClickCount()==2)
 				{
 					textField.setText(label.getText());
+
 					tab.setGraphic(textField);
 					textField.selectAll();
 					textField.requestFocus();
@@ -216,6 +235,7 @@ public class MapEditorController extends AbstractController {
 			public void handle(ActionEvent event) {
 				label.setText(textField.getText());
 				tab.setGraphic(label);
+				b.setName(label.getText());
 			}
 		});
 
@@ -251,10 +271,9 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	void onNewBuilding(ActionEvent event)
 	{
-		Building b = new Building("Building " + model.getBuildingCount()+1); //@TODO Hacky fix -BEN
+		Building b = new Building("Building " + (model.getBuildingCount()+1)); //@TODO Hacky fix -BEN
 
 		model.addBuilding(b, makeBuildingTab(b));
-
 	}
 
 	/**
@@ -329,7 +348,6 @@ public class MapEditorController extends AbstractController {
 			}
 		}
 
-
 		for(NodeEdge edge : collectedEdges)
 		{
 			addHandlersToEdge(edge);
@@ -401,9 +419,6 @@ public class MapEditorController extends AbstractController {
 			if(!model.getCurrentFloor().getFloorEdges().contains(drawingEdge)){
 				model.getCurrentFloor().getFloorEdges().add(drawingEdge);
 			}
-
-			System.out.println("Handler called");
-
 			handler.handle(new EdgeCompleteEvent(drawingEdge));
 		}
 	}
