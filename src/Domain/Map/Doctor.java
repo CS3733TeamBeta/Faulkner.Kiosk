@@ -77,4 +77,26 @@ public class Doctor extends Info
     public HashSet<Suite> getSuites() {
         return this.suites;
     }
+
+    public void setSuites(HashSet<Suite> suites) {
+        this.suites = suites;
+    }
+
+    public String[] splitName() {
+        String[] name = this.name.split(", ");
+
+        return name;
+    }
+
+    public String[] splitPhoneNum() {
+        String[] phoneNum = this.phoneNum.split("-");
+
+        return phoneNum;
+    }
+
+    public String[] splitHours() {
+        String[] hours = this.hours.split(" - ");
+
+        return hours;
+    }
 }
