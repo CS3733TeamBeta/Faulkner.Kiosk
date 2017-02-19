@@ -3,10 +3,7 @@ package Model.Database;
 import Domain.Map.*;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by Brandon on 2/4/2017.
@@ -15,7 +12,7 @@ public class DatabaseManager {
 
     private final String framework = "embedded";
 
-    private final String protocol = "jdbc:derby:/";
+    private final String protocol = CustomFilePath.myFilePath;
     private Connection conn = null;
     private ArrayList<Statement> statements = new ArrayList<Statement>(); // list of Statements, PreparedStatements
     private PreparedStatement psInsert;
