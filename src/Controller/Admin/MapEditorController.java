@@ -346,7 +346,8 @@ public class MapEditorController extends AbstractController {
 				switchToAddFloor(this.getStage());
 			}
 			catch(IOException e){
-
+				System.out.println("Threw an exception in MapEditorController: changeFloorSelection");
+				e.printStackTrace();
 			}
 		}
 		try{
