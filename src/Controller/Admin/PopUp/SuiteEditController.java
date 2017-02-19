@@ -1,6 +1,6 @@
 package Controller.Admin.PopUp;
 
-import Domain.Map.Office;
+import Domain.Map.Suite;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import org.controlsfx.control.PopOver;
@@ -8,7 +8,7 @@ import org.controlsfx.control.PopOver;
 /**
  * Controlled for popup that edits an office map node
  */
-public class OfficeEditController extends AbstractPopupController
+public class SuiteEditController extends AbstractPopupController
 {
     @FXML
     private JFXTextField nameBox;
@@ -21,28 +21,26 @@ public class OfficeEditController extends AbstractPopupController
 
     protected PopOver popOver;
 
-    protected Office officeUnderEdit;
+    protected Suite suiteUnderEdit;
 
-    public OfficeEditController(Office office)
+    public SuiteEditController(Suite suite)
     {
-        super(office);
+        super(suite);
 
-        this.officeUnderEdit = office;
+        this.suiteUnderEdit = suite;
     }
 
     @Override
     public void saveEdits()
     {
-        officeUnderEdit.setDepartment(deptBox.getText());
-        officeUnderEdit.getInfo().setName(nameBox.getText());
-        officeUnderEdit.getInfo().setPhoneNumber(phoneBox.getText());
+        suiteUnderEdit.setName(nameBox.getText());
+        //suiteUnderEdit.getInfo().setPhoneNumber(phoneBox.getText());
     }
 
     @Override
     public void fillFields()
     {
-        nameBox.setText(officeUnderEdit.getInfo().getName());
-        deptBox.setText(officeUnderEdit.getDepartment());
-        phoneBox.setText(officeUnderEdit.getInfo().getPhoneNumber());
+        nameBox.setText(suiteUnderEdit.getName());
+        //phoneBox.setText(suiteUnderEdit.getInfo().getPhoneNumber());
     }
 }

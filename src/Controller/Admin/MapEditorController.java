@@ -1,14 +1,11 @@
 package Controller.Admin;
 
-import java.awt.*;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.*;
-
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
-import Domain.ViewElements.*;
+import Domain.ViewElements.DragContainer;
+import Domain.ViewElements.DragIcon;
+import Domain.ViewElements.DragIconType;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.DataSourceClasses.MapTreeItem;
@@ -23,9 +20,9 @@ import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -33,8 +30,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import jfxtras.labs.util.event.MouseControlUtil;
-import javafx.scene.input.KeyCode;
 import org.controlsfx.control.PopOver;
+
+import java.awt.*;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
 
 public class MapEditorController extends AbstractController {
 
@@ -307,6 +311,7 @@ public class MapEditorController extends AbstractController {
 	public void changeFloorSelection(Floor f)
 	{
 		model.setCurrentFloor(f);
+		System.out.println("Changed floor to " + f);
 
 		//change image
 		//clear nodes
@@ -598,7 +603,7 @@ public class MapEditorController extends AbstractController {
 
 		mapPane.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
 
-		model.addMapNode(mapNode); //add node to model
+		//model.addMapNode(mapNode); //add node to model
 
 		mapNode.toFront(); //send the node to the front
 

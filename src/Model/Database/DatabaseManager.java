@@ -29,7 +29,7 @@ public class DatabaseManager {
     public static HashMap<String, Office> offices = new HashMap<>();
 
     public static DatabaseManager instance = null;
-    public Hospital Faulkner;
+    public static Hospital Faulkner;
 
     public static final String[] createTables = {
             "CREATE TABLE USER1.BUILDING (BUILDING_ID INT PRIMARY KEY NOT NULL, " +
@@ -120,27 +120,6 @@ public class DatabaseManager {
         HashMap<UUID, MapNode> mapNodes = new HashMap<>();
         HashMap<Integer, NodeEdge> nodeEdges = new HashMap<>();
 
-//        int maxNode = 0;
-//        ResultSet nodeID = s.executeQuery("select max(NODE_ID) FROM NODE");
-//        if (nodeID.next()) {
-//            maxNode = nodeID.getInt(1);
-//        }
-//        System.out.println(maxNode);
-//
-//        int maxDoc = 0;
-//        ResultSet docID = s.executeQuery("select max(DOC_ID) FROM DOCTOR");
-//        if (docID.next()) {
-//            maxDoc = docID.getInt(1);
-//        }
-//        System.out.println(maxDoc);
-//
-//        int maxSuite = 0;
-//        ResultSet suiteID = s.executeQuery("select max(SUITE_ID) FROM SUITE");
-//        if (suiteID.next()) {
-//            maxSuite = suiteID.getInt(1);
-//        }
-//        System.out.println(maxSuite);
-
         ResultSet rs = s.executeQuery("select * from BUILDING ORDER BY NAME DESC");
 
         while (rs.next()) {
@@ -165,10 +144,13 @@ public class DatabaseManager {
                                     nodeRS.getDouble(3),
                                     nodeRS.getInt(5)));
                 }
+
                 HashMap<Integer, NodeEdge> edges = new HashMap<>();
+                // select all edges that have floorID of current floor we are loading
                 edgesPS.setString(1, floorRS.getString(1));
                 ResultSet edgeRS = edgesPS.executeQuery();
                 while(edgeRS.next()) {
+                    System.out.println("Added Edge to" + floorRS.getString(1));
                     // stores nodeEdges per floor
                     edges.put(edgeRS.getInt(1),
                             new NodeEdge(mapNodes.get(UUID.fromString(edgeRS.getString(2))),
@@ -180,17 +162,19 @@ public class DatabaseManager {
                                     mapNodes.get(UUID.fromString(edgeRS.getString(3))),
                                     edgeRS.getInt(4)));
                 }
+                System.out.println(edges);
+                System.out.println(nodeEdges);
 
+                Floor tempFloor = new Floor(floorRS.getInt(3));
                 // add floor to list of floors for current building
-                flr.put(floorRS.getString(1),
-                        new Floor(floorRS.getInt(3)));
+                flr.put(floorRS.getString(1), tempFloor);
                 // add correct mapNodes to their respective floor
                 for (MapNode n : nodes.values()) {
-                    flr.get(floorRS.getString(1)).addNode(n);
+                    tempFloor.addNode(n);
                 }
                 // add correct nodeEdges to their respective floor
                 for (NodeEdge e : edges.values()) {
-                    flr.get(floorRS.getString(1)).addEdge(e);
+                    tempFloor.addEdge(e);
                 }
 
             }
@@ -228,18 +212,15 @@ public class DatabaseManager {
         while (rs.next()) {
             suites.put(rs.getString(2),
                     new Suite(UUID.fromString(rs.getString(1)),
-                            rs.getString(2),
-                            mapNodes.get(rs.getInt(3))));
+                            rs.getString(2)));
 
             suitesID.put(UUID.fromString(rs.getString(1)),
                     new Suite(UUID.fromString(rs.getString(1)),
-                            rs.getString(2),
-                            mapNodes.get(rs.getInt(3))));
+                            rs.getString(2)));
 
             h.addSuites(rs.getString(2),
                     new Suite(UUID.fromString(rs.getString(1)),
-                            rs.getString(2),
-                            mapNodes.get(rs.getInt(3))));
+                            rs.getString(2)));
         }
         this.suites = suites;
         System.out.println(suites.keySet());
