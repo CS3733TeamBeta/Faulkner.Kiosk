@@ -345,69 +345,38 @@ public class UserMapViewController extends AbstractController {
                //public void initialize() {
 
         // Setting up the columns of the TableView
-
         docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
         docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
         Collection<Doctor> doctrine = Faulkner.getDoctors().values();
         ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
 
-
-
-        doctorTable.setItems(doctors);
-
-/*
-        // Creating list of data to be filtered
-
+        // Enabling a search function for the text field.
         FilteredList<Doctor> filtered = new FilteredList<>(Main.FaulknerHospitalDirectory);
-
-        // Adding a listener to the search bar, filtering through the data as the user types
-
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
-
             filtered.setPredicate((Predicate<? super Doctor>) profile -> {
 
                 // By default, the entire directory is displayed
-
                 if (newValue == null || newValue.isEmpty()) {
-
                     return true;
-
                 }
 
                 // Compare the name of the doctor with filter text
-
                 String lowerCaseFilter = newValue.toLowerCase();
 
                 // Checks if filter matches
-
                 if (profile.getName().toLowerCase().contains(lowerCaseFilter)) {
-
                     return true;
-
                 }
 
                 // Filter does not match
-
                 return false;
-
             });
 
         });
+        doctorTable.setItems(doctors);
 
-        // Create a sorted list for the filtered data list
-
-        SortedList<Doctor> sorted = new SortedList<>(filtered);
-
-        // Bind the sorted list to table
-
-        sorted.comparatorProperty().bind(doctorTable.comparatorProperty());
-
-        // Set table data
-
-        doctorTable.setItems(sorted);
-*/
-        //}
+        
 
         if (numClickDr == 2)
         {
