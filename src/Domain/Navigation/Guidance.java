@@ -72,10 +72,18 @@ public class Guidance extends Path {
         MapNode fromNode = new MapNode();
         MapNode toNode = new MapNode();
 
+        LinkedList<MapNode> listNodes = new LinkedList<>();
+        LinkedList<NodeEdge> listEdges = new LinkedList<>();
+
+
+
         int intersectionsPassed = 0;
 
         //Add the first node to the textual directions
         tempTextDirections.add("Start at the Kiosk. (Node " + pathNodes.get(0).getNodeID() + ")");
+
+        //Add first node to first step
+        listNodes.add(pathNodes.get(0));
 
         for (int i = 0; i < this.pathNodes.size() - 1; i++) {
 
@@ -121,6 +129,8 @@ public class Guidance extends Path {
                     System.out.println("fromNode has size of edges: " + fromNode.getEdges().size());
                     intersectionsPassed++;
                 }
+                listNodes.add(toNode);
+                listEdges.add(pathEdges.get(i));
                 intersectionsPassed++;
             } else if (!directionChangeString.equals("Straight") && (!directionChangeString.equals("up")) && (!directionChangeString.equals("down"))) {
                 if(intersectionsPassed  == 0) {
@@ -146,7 +156,8 @@ public class Guidance extends Path {
 
                     }
                 }
-
+                listNodes.add(toNode);
+                listEdges.add(pathEdges.get(i));
                 intersectionsPassed = 0;
             } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
                 if(intersectionsPassed == 0){
@@ -172,8 +183,13 @@ public class Guidance extends Path {
 
                     }
                 }
+
                 this.textDirections.addLast(new DirectionStep(fromNode.getMyFloor()));
                 this.textDirections.getLast().setDirections(tempTextDirections);
+                this.textDirections.getLast().setEdgesInStep(listEdges);
+                this.textDirections.getLast().setNodesInStep(listNodes);
+                listEdges.clear();
+                listNodes.clear();
                 tempTextDirections.clear();
                 intersectionsPassed = 0;
             }
@@ -208,9 +224,11 @@ public class Guidance extends Path {
         System.out.println("Printing Textual Directions");
         System.out.println("");
         for (DirectionStep step: textDirections) {
+            System.out.println("Printing a step");
             for(String s : step.getDirections()) {
                 System.out.println(s);
             }
+            System.out.println("Done printing a step!");
         }
     }
 
@@ -416,12 +434,12 @@ public class Guidance extends Path {
         return textDirections;
     }
 
-    public void overlayOnMap() {
+    public void overlayOnMap(Floor f) {
 
         try {
 // load source images
             BufferedImage image = ImageIO.read(new File("emptyImage.png"));
-            BufferedImage overlay = ImageIO.read(new File("directionPath.png"));
+            BufferedImage overlay = ImageIO.read(new File("directionPath" + f.getFloorNumber() + ".png"));
 
 // create the new image, canvas size is the max. of both image sizes
             int w = Math.max(image.getWidth(), overlay.getWidth());
@@ -434,9 +452,10 @@ public class Guidance extends Path {
             g.drawImage(overlay, 0, 0, null);
 
 // Save as new image
-            ImageIO.write(combined, "PNG", new File("combined.png"));
+            ImageIO.write(combined, "PNG", new File("combined" + f.getFloorNumber() + ".png"));
         } catch (Exception e) {
             System.out.println("Threw another exception over here.");
+            e.printStackTrace();
         }
     }
 
@@ -470,87 +489,88 @@ public class Guidance extends Path {
         return Toolkit.getDefaultToolkit().createImage(ip);
     }
 
-    public AnchorPane createDirectionPane() {
+    public LinkedList<AnchorPane> createDirectionPane() {
+        LinkedList<AnchorPane> directionPanes = new LinkedList<>();
         AnchorPane directionPane = new AnchorPane();
 
-        //and then set all the existing nodes up
-        HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+        for(DirectionStep step: this.textDirections) {
+            directionPane = new AnchorPane();
+            //and then set all the existing nodes up
+            HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
 
-        for(MapNode n : pathNodes)
-        {
-            for(NodeEdge edge: n.getEdges())
-            {
-                if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+            if (step.nodesInStep != null) {
+                for (MapNode n : step.nodesInStep) {
+                    for (NodeEdge edge : n.getEdges()) {
+                        if (!collectedEdges.contains(edge)) collectedEdges.add(edge);
+                    }
+
+                    if (!directionPane.getChildren().contains(n.getNodeToDisplay())) {
+                        directionPane.getChildren().add(n.getNodeToDisplay());
+                    }
+
+
+                    System.out.println("Adding node at X:" + n.getPosX() + "Y: " + n.getPosY());
+
+                    n.getNodeToDisplay().relocate(n.getPosX() * xNodeScale * 1.27, 1.27 * n.getPosY() * yNodeScale);
+                    n.getNodeToDisplay().setOnMouseClicked(null);
+                    n.getNodeToDisplay().setOnMouseEntered(null);
+                    n.getNodeToDisplay().setOnMouseDragged(null);
+
+                }
             }
 
-            if(!directionPane.getChildren().contains(n.getNodeToDisplay()))
-            {
-                directionPane.getChildren().add(n.getNodeToDisplay());
+            for (NodeEdge edge : collectedEdges) {
+
+                if (!directionPane.getChildren().contains(edge.getEdgeLine())) {
+                    directionPane.getChildren().add(edge.getEdgeLine());
+                }
+
+                MapNode source = edge.getSource();
+                MapNode target = edge.getTarget();
+
+                //@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
+
+                if (!directionPane.getChildren().contains(source.getNodeToDisplay())) {
+
+                    directionPane.getChildren().add(source.getNodeToDisplay());
+
+                    source.getNodeToDisplay().relocate(source.getPosX() * 2 * xNodeScale, source.getPosY() * 2 * yNodeScale);
+                }
+
+                if (!directionPane.getChildren().contains(target.getNodeToDisplay())) {
+                    directionPane.getChildren().add(target.getNodeToDisplay());
+                    target.getNodeToDisplay().relocate(target.getPosX() * 2 * xNodeScale, target.getPosY() * 2 * yNodeScale);
+                }
+
+                edge.updatePosViaNode(source);
+                edge.updatePosViaNode(target);
+
+                edge.setSource(source);
+                edge.setTarget(target);
+
+                source.toFront();
+                target.toFront();
+
+                edge.getEdgeLine().setOnMouseEntered(null);
+                edge.getEdgeLine().setOnMouseClicked(null);
+
             }
-
-
-            System.out.println("Adding node at X:" + n.getPosX() + "Y: " + n.getPosY());
-
-            n.getNodeToDisplay().relocate(n.getPosX()*xNodeScale*1.27, 1.27*n.getPosY()*yNodeScale);
-            n.getNodeToDisplay().setOnMouseClicked(null);
-            n.getNodeToDisplay().setOnMouseEntered(null);
-            n.getNodeToDisplay().setOnMouseDragged(null);
-
+            directionPanes.add(directionPane);
         }
 
-        for(NodeEdge edge : collectedEdges)
-        {
-
-            if(!directionPane.getChildren().contains(edge.getEdgeLine()))
-            {
-                directionPane.getChildren().add(edge.getEdgeLine());
-            }
-
-            MapNode source = edge.getSource();
-            MapNode target = edge.getTarget();
-
-            //@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
-
-            if(!directionPane.getChildren().contains(source.getNodeToDisplay()))
-            {
-
-                directionPane.getChildren().add(source.getNodeToDisplay());
-
-                source.getNodeToDisplay().relocate(source.getPosX() * 2*xNodeScale, source.getPosY() * 2* yNodeScale);
-            }
-
-            if(!directionPane.getChildren().contains(target.getNodeToDisplay()))
-            {
-                directionPane.getChildren().add(target.getNodeToDisplay());
-                target.getNodeToDisplay().relocate(target.getPosX() * 2*xNodeScale, target.getPosY() * 2*yNodeScale);
-            }
-
-            edge.updatePosViaNode(source);
-            edge.updatePosViaNode(target);
-
-            edge.setSource(source);
-            edge.setTarget(target);
-
-            source.toFront();
-            target.toFront();
-
-            edge.getEdgeLine().setOnMouseEntered(null);
-            edge.getEdgeLine().setOnMouseClicked(null);
-
-        }
 
 
-        return directionPane;
+        return directionPanes;
     }
 
-    public void savePathImage(Node aNode) {
+    public void savePathImage(Node aNode, int floorNum) {
         WritableImage image = aNode.snapshot(new SnapshotParameters(), null);
 
         // TODO: probably use a file chooser here
         File file;
 
         try {
-            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File("directionPath1.png"));
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File("directionPathOpaque" + floorNum + ".png"));
         } catch (IOException e) {
             // TODO: handle exception here
             System.out.println("EGADS!  We have an exception!");
@@ -558,7 +578,7 @@ public class Guidance extends Path {
 
         BufferedImage img = null;
         try {
-            img = ImageIO.read(new File("directionPath1.png"));
+            img = ImageIO.read(new File("directionPathOpaque" + floorNum + ".png"));
         } catch (IOException e) {
             System.out.println("Something bad");
         }
@@ -575,7 +595,7 @@ public class Guidance extends Path {
         g2.dispose();
 
 
-        file = new File("directionPath.png");
+        file = new File("directionPath" + floorNum + ".png");
         try {
             ImageIO.write(transImageBuff, "png", file);  // ignore returned boolean
         } catch(IOException e) {
@@ -587,11 +607,12 @@ public class Guidance extends Path {
 
     public boolean sendEmailGuidance(String address) {
 
-        AnchorPane newDirectionPane = this.createDirectionPane();
+        LinkedList<AnchorPane> newDirectionPanes = this.createDirectionPane();
 
-        savePathImage(newDirectionPane);
-
-        overlayOnMap();
+        for (int i = 0; i < newDirectionPanes.size(); i++) {
+            savePathImage(newDirectionPanes.get(i), textDirections.get(i).floorOfTheseDirections.getFloorNumber());
+            overlayOnMap(textDirections.get(i).floorOfTheseDirections);
+        }
 
         String subjectLine;
         String directionLine = "<H2>You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + ".</H2>" + "<H3>";
@@ -614,18 +635,5 @@ public class Guidance extends Path {
             System.out.println("Threw an exception: " + e);
             return false;
         }
-    }
-
-    public void saveMapImage(MapModel model) {
-        File file;
-        Image backgroundImage = new Image("/floor3.png", true);
-        /*
-        BufferedImage bImage = SwingFXUtils.fromFXImage(backgroundImage, null);
-        file = new File("tempTest.png");
-        try {
-            ImageIO.write(bImage, "png", file);
-        } catch (Exception e) {
-            System.out.println("Another exception thrown");
-        } */
     }
 }

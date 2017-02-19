@@ -226,5 +226,5 @@ public class PathFindingTest extends TestCase{
             fail("Threw exception");
         }
     }
-    
+
 }
