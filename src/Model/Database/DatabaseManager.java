@@ -199,6 +199,9 @@ public class DatabaseManager {
             Faulkner = new Hospital();
         }
 
+        //executeStatements(dropTables);
+        //executeStatements(createTables);
+
         loadHospital(Faulkner);
         conn.commit();
     }
