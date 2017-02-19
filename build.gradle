@@ -11,13 +11,11 @@ mainClassName = "Controller.Main"
 sourceSets {
     main {
         java {
-            srcDirs = ["src"]
+            srcDirs = ['src']
             exclude 'test/**'
-
-
         }
         resources {
-            srcDirs "src/View"
+            srcDirs = ['src/View', 'resources']
             includes = ["**/*.fxml", "**/*.png", "**/*.properties", "**/*.json", "**/*.css"]
         }
     }

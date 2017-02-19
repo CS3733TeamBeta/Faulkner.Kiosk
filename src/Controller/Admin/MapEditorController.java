@@ -2,11 +2,12 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 
 import Controller.AbstractController;
-import Controller.DragDropMain;
-import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
 import Domain.ViewElements.*;
@@ -14,13 +15,17 @@ import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.DataSourceClasses.MapTreeItem;
 import Model.DataSourceClasses.TreeViewWithItems;
+import Model.Database.DatabaseManager;
 import Model.MapEditorModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -33,6 +38,9 @@ import javafx.scene.paint.Color;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
 import org.controlsfx.control.PopOver;
+import javafx.scene.image.Image;
+
+import static Controller.SceneSwitcher.switchToAddFloor;
 
 public class MapEditorController extends AbstractController {
 
@@ -48,6 +56,7 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	Button newFloorButton;
 
+
 	@FXML
 	private TabPane BuildingTabPane;
 
@@ -57,8 +66,16 @@ public class MapEditorController extends AbstractController {
 	private EventHandler<DragEvent> onIconDragDropped = null;
 	private EventHandler<DragEvent> onIconDragOverRightPane = null;
 	private MapEditorModel model;
+	public static Floor newFloor = null;
 
 	NodeEdge drawingEdge;
+
+	public void changeFloorToSaved(String location, Floor floor) throws MalformedURLException {
+		//System.out.println(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString());
+		//this.mapImage.setImage(new Image(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString(), true));
+		System.out.println("Here");
+		this.mapImage.setImage(floor.getImageInfo().getFXImage());
+	}
 
 	public MapEditorController() {
 
@@ -68,6 +85,9 @@ public class MapEditorController extends AbstractController {
 		//connects the two, sends sources, positions them etc.
 		model.addEdgeCompleteHandler(event->
 		{
+
+			System.out.println("Edge Complete Handler Invoked");
+
 			NodeEdge completedEdge = drawingEdge;
 
 			addHandlersToEdge(completedEdge);
@@ -104,7 +124,7 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	private void initialize() {
 
-		//BuildingTabPane.getTabs().add(createEditableTab("Building 3"));
+		BuildingTabPane.getTabs().clear();
 
 		//Add one icon that will be used for the drag-drop process
 		//This is added as a child to the root anchorpane so it can be visible
@@ -143,6 +163,20 @@ public class MapEditorController extends AbstractController {
 		getCurrentTreeView().getSelectionModel().select(0); //selects first floor
 
 		renderInitialMap();
+
+		mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
+			if(drawingEdge != null)
+			{
+				Node sourceNode = drawingEdge.getSource().getNodeToDisplay();
+				Bounds sourceNodeBounds = sourceNode.getBoundsInParent();
+
+				if(!sourceNodeBounds.contains(clickEvent.getX(), clickEvent.getY()))
+				{
+					System.out.println("Clicked Outside");
+				}
+			}
+		});
+
 	}
 
 	/**
@@ -153,7 +187,7 @@ public class MapEditorController extends AbstractController {
 	{
 		for(Building b : buildings)
 		{
-			Tab t = addBuilding(b);
+			Tab t = makeBuildingTab(b);
 
 			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>)t.getContent();
 
@@ -173,6 +207,21 @@ public class MapEditorController extends AbstractController {
 				treeView.getRoot().getChildren().add(makeTreeItem(f));
 			}
 
+			if(newFloor != null){
+				boolean duplicate = false;
+				for(Floor f2 : b.getFloors()) {
+					if(f2.getFloorNumber() == newFloor.getFloorNumber()) {
+						f2.setImageLocation(newFloor.getImageLocation());
+						duplicate = true;
+					}
+				}
+				if(!duplicate) {
+					treeView.getRoot().getChildren().add(makeTreeItem(newFloor));
+				}
+			}
+
+			model.addBuilding(b, t); //adds to building tab map
+
 			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
 		}
 	}
@@ -183,13 +232,8 @@ public class MapEditorController extends AbstractController {
 	 * @param b Building
 	 * @return
 	 */
-	public Tab addBuilding(Building b)
+	public Tab makeBuildingTab(Building b)
 	{
-		if(b==null)
-		{
-			b = new Building("Building " + model.getBuildingCount()+1); //@TODO Hacky fix -BEN
-		}
-
 		final Label label = new Label(b.getName());
 		final Tab tab = new Tab();
 		tab.setGraphic(label);
@@ -202,6 +246,7 @@ public class MapEditorController extends AbstractController {
 				if (event.getClickCount()==2)
 				{
 					textField.setText(label.getText());
+
 					tab.setGraphic(textField);
 					textField.selectAll();
 					textField.requestFocus();
@@ -218,6 +263,7 @@ public class MapEditorController extends AbstractController {
 			public void handle(ActionEvent event) {
 				label.setText(textField.getText());
 				tab.setGraphic(label);
+				b.setName(label.getText());
 			}
 		});
 
@@ -240,7 +286,6 @@ public class MapEditorController extends AbstractController {
 
 		tab.setContent(tV);
 
-		model.addBuilding(b, tab);
 		BuildingTabPane.getTabs().add(tab);
 
 		return tab;
@@ -254,7 +299,9 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	void onNewBuilding(ActionEvent event)
 	{
-		addBuilding(null);
+		Building b = new Building("Building " + (model.getBuildingCount()+1)); //@TODO Hacky fix -BEN
+
+		model.addBuilding(b, makeBuildingTab(b));
 	}
 
 	/**
@@ -270,6 +317,12 @@ public class MapEditorController extends AbstractController {
 		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
 
 		Floor f = b.newFloor(); //makes new floor
+		try {
+
+			switchToAddFloor(this.getStage());
+		} catch (IOException e) {
+
+		}
 
 		treeView.getRoot().getChildren().add(makeTreeItem(f));
 	}
@@ -285,8 +338,23 @@ public class MapEditorController extends AbstractController {
 		return treeItem;
 	}
 
+
 	public void changeFloorSelection(Floor f)
 	{
+		if(f.getImageLocation() == null){
+			try {
+				switchToAddFloor(this.getStage());
+			}
+			catch(IOException e){
+				System.out.println("Threw an exception in MapEditorController: changeFloorSelection");
+				e.printStackTrace();
+			}
+		}
+		try{
+			changeFloorToSaved(f.getImageLocation(), f);
+		}catch(MalformedURLException e){
+			System.out.println("ERROR IN LOADING FLOORPLAN");
+		}
 		model.setCurrentFloor(f);
 
 		//change image
@@ -315,70 +383,49 @@ public class MapEditorController extends AbstractController {
 
 	protected void renderInitialMap()
 	{
-		if(DragDropMain.mvm != null) {
-			System.out.println("Begin render...");
-			//System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
-			//import a model if one exists
-			model.setCurrentFloor(DragDropMain.mvm.getCurrentFloor());
-		}
-		else if(Main.mvm != null) {
-			System.out.println("Leading from main");
-			for(MapNode n : Main.mvm.getCurrentFloor().getFloorNodes()){
-				System.out.println(n.getPosX());
-			}
-			model.setCurrentFloor(Main.mvm.getCurrentFloor());
-		}
+		//and then set all the existing nodes up
+		HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
 
-		if(DragDropMain.mvm != null || Main.mvm != null){
-			//and then set all the existing nodes up
-			HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+		for(MapNode n : model.getCurrentFloor().getFloorNodes())
+		{
+			//System.out.println("Adding node");
+			addToAdminMap(n);
 
-			for(MapNode n : model.getCurrentFloor().getFloorNodes())
+			for(NodeEdge edge: n.getEdges())
 			{
-				System.out.println("Adding node");
-				addToAdminMap(n);
-
-				for(NodeEdge edge: n.getEdges())
-				{
-					if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
-				}
+				if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
 			}
+		}
 
+		for(NodeEdge edge : collectedEdges)
+		{
+			addHandlersToEdge(edge);
+			mapPane.getChildren().add(edge.getNodeToDisplay());
 
-			for(NodeEdge edge : collectedEdges)
+			MapNode source = edge.getSource();
+			MapNode target = edge.getTarget();
+
+			//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
+
+			if(!mapPane.getChildren().contains(source.getNodeToDisplay()))
 			{
-				addHandlersToEdge(edge);
-				mapPane.getChildren().add(edge.getNodeToDisplay());
-
-				MapNode source = edge.getSource();
-				MapNode target = edge.getTarget();
-
-				//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
-
-				if(!mapPane.getChildren().contains(source.getNodeToDisplay()))
-				{
-					addToAdminMap(source);
-				}
-
-				if(!mapPane.getChildren().contains(target.getNodeToDisplay()))
-				{
-					addToAdminMap(target);
-				}
-
-				edge.updatePosViaNode(source);
-				edge.updatePosViaNode(target);
-
-				edge.toBack();
-				source.toFront();
-				target.toFront();
-
-				mapImage.toBack();
+				addToAdminMap(source);
 			}
-		}
-		else{
-			model = new MapEditorModel();
-		}
 
+			if(!mapPane.getChildren().contains(target.getNodeToDisplay()))
+			{
+				addToAdminMap(target);
+			}
+
+			edge.updatePosViaNode(source);
+			edge.updatePosViaNode(target);
+
+			edge.toBack();
+			source.toFront();
+			target.toFront();
+
+			mapImage.toBack();
+		}
 	}
 
 	/**Adds handlers to handle edge deletion mostly
@@ -412,8 +459,10 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	public void onEdgeComplete() {
+	public void onEdgeComplete()
+	{
 		System.out.println("Edge complete");
+
 		for(EdgeCompleteEventHandler handler : model.getEdgeCompleteHandlers())
 		{
 			if(!model.getCurrentFloor().getFloorEdges().contains(drawingEdge)){
@@ -834,7 +883,8 @@ public class MapEditorController extends AbstractController {
 	 */
 
 	@FXML
-	public void saveInfoAndExit() throws IOException{
+	public void saveInfoAndExit() throws IOException, SQLException
+	{
 		//removeHandlers();
 		updateEdgeWeights();
 
@@ -851,9 +901,7 @@ public class MapEditorController extends AbstractController {
 			model.getCurrentFloor().setKioskLocation(model.getCurrentFloor().getFloorNodes().get(0));
 		}
 
-		if(Main.mvm != null) {
-			Main.mvm.setCurrentFloor(this.model.getCurrentFloor());
-		}
+		DatabaseManager.getInstance().saveData();
 
 		SceneSwitcher.switchToUserMapView(this.getStage());
 	}

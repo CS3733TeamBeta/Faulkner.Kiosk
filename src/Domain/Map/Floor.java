@@ -1,7 +1,5 @@
 package Domain.Map;
 
-import javafx.scene.Node;
-
 import java.util.LinkedList;
 
 /**
@@ -11,6 +9,24 @@ public class Floor implements Comparable{
     LinkedList<MapNode> floorNodes;
     LinkedList<NodeEdge> floorEdges;
     MapNode kioskNode = null;
+    String imageLocation = "/resources/FloorMaps/floor3.png";
+
+    ProxyImage imageInfo;
+
+
+    public String getImageLocation() {
+        return imageLocation;
+    }
+
+    public void setImageLocation(String imageLocation) {
+        this.imageLocation = imageLocation;
+        imageInfo = new ProxyImage(imageLocation);
+
+    }
+
+    public ProxyImage getImageInfo(){
+        return imageInfo;
+    }
 
     public LinkedList<MapNode> getFloorNodes() {
         return floorNodes;
@@ -21,6 +37,8 @@ public class Floor implements Comparable{
     }
 
     int floorNumber;
+
+
 
     public Floor(int floorNumber) {
         floorNodes = new LinkedList<MapNode>();
