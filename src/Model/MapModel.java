@@ -3,7 +3,6 @@ package Model;
 import Domain.Map.*;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
-import Model.Database.DatabaseManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,25 +29,22 @@ public class MapModel {
         mapNodes = new HashSet<MapNode>();
         mapEdges = new HashSet<NodeEdge>();
 
-        hospital = DatabaseManager.getInstance().Faulkner;
+        hospital = new Hospital();
 
-        /**@TODO HACKY **/
+        Building b  = new Building();
+        Floor f1 = new Floor(1);
 
-        Floor arbitraryFloor;
-
-        for(Building b : hospital.getBuildings())
+        try //attempts to add floor 1
         {
-            try
-            {
-                arbitraryFloor = b.getFloor(1);
-                setCurrentFloor(arbitraryFloor);
-                break;
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            b.addFloor(f1);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
         }
+
+        hospital.addBuilding(b);
+
+        currentFloor = f1;
     }
 
     public void setCurrentFloor(Floor floor){

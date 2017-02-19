@@ -1,32 +1,16 @@
 package Domain.Map;
 
+import javafx.scene.Node;
+
 import java.util.LinkedList;
 
 /**
  * Represents a floor in a building. A floor will have nodes, node edges, destinations, more
  */
-public class Floor implements Comparable{
+public class Floor {
     LinkedList<MapNode> floorNodes;
     LinkedList<NodeEdge> floorEdges;
     MapNode kioskNode = null;
-    String imageLocation = "/resources/FloorMaps/floor3.png";
-
-    ProxyImage imageInfo;
-
-
-    public String getImageLocation() {
-        return imageLocation;
-    }
-
-    public void setImageLocation(String imageLocation) {
-        this.imageLocation = imageLocation;
-        imageInfo = new ProxyImage(imageLocation);
-
-    }
-
-    public ProxyImage getImageInfo(){
-        return imageInfo;
-    }
 
     public LinkedList<MapNode> getFloorNodes() {
         return floorNodes;
@@ -37,8 +21,6 @@ public class Floor implements Comparable{
     }
 
     int floorNumber;
-
-
 
     public Floor(int floorNumber) {
         floorNodes = new LinkedList<MapNode>();
@@ -51,40 +33,6 @@ public class Floor implements Comparable{
         n.setFloor(this);
     }
 
-    public MapNode getKioskNode(){
-        return kioskNode;
-    }
-
-    /**
-     * Retrieves the floor number of the given floor
-     * @return the floor number of this floor as an int
-     */
-    public int getFloorNumber() {
-        return floorNumber;
-    }
-
-    public void addEdge(NodeEdge e) {
-        floorEdges.add(e);
-    }
-
-    /**
-     * Removes the given node from this floor's list of nodes. If the given node is the kiosknode, set the kiosknode to null and print a warning
-     * @param n the MapNode to be removed.
-     */
-    public void removeNode(MapNode n) {
-        floorNodes.remove(n);
-    }
-
-    public void removeEdge(NodeEdge edge)
-    {
-        floorEdges.remove(edge);
-    }
-
-
-    /**
-     * Sets this floor's KioskNode, which is the node that navigation begins from, to the given MapNode
-     * @param kioskNode
-     */
     public void setKioskLocation(MapNode kioskNode){
         for(MapNode n : this.floorNodes){
             if(kioskNode.equals(n)){
@@ -93,16 +41,29 @@ public class Floor implements Comparable{
         }
     }
 
-
-    @Override
-    public String toString()
-    {
-        return "Floor " + floorNumber;
+    public MapNode getKioskNode(){
+        return kioskNode;
     }
 
-    @Override
-    public int compareTo(Object o)
+    public int getFloorNumber() {
+        return floorNumber;
+    }
+
+    public void addEdge(NodeEdge e) {
+        floorEdges.add(e);
+    }
+
+    public void removeNode(MapNode n)
     {
-        return Integer.compare(this.floorNumber, ((Floor)o).getFloorNumber());
+        floorNodes.remove(n);
+        if(n.equals(kioskNode)){
+            System.out.println("DANGER: KIOSK DELETED");
+            this.kioskNode = null;
+        }
+    }
+
+    public void removeEdge(NodeEdge edge)
+    {
+        floorEdges.remove(edge);
     }
 }

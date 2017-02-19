@@ -6,10 +6,7 @@ build/
 .DS_Store
 .*
 out/
-derby.log
 
 #Don't ignore these
 !.gitignore
 !.travis.yml
-!directions.png
-!faulknerLogo.jpg
