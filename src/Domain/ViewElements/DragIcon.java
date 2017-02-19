@@ -152,6 +152,4 @@ public class DragIcon extends AnchorPane{
 
 		return newNode;
 	}
-
-
 }
