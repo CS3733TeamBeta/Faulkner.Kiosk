@@ -46,6 +46,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
     private ObservableList<String> departments = FXCollections.observableArrayList();
     Boolean deptDirectoryUp = false;
     ObservableList<String> locations = FXCollections.observableArrayList();
+    ObservableList<Office> offices = FXCollections.observableArrayList(Faulkner.getOffices().values());
     ObservableList<String> existingSuites = FXCollections.observableArrayList(Faulkner.getSuites().keySet());
 
     @FXML
@@ -113,18 +114,6 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
 
     public AdminDirectoryEditorController() {
-    }
-
-    public void updateDoctorTable() {
-        ObservableList<Doctor> doctors = FXCollections.observableArrayList(Faulkner.getDoctors().values());
-
-        dataTable.setItems(doctors);
-    }
-
-    public void updateDeptTable() {
-        ObservableList<Office> offices = FXCollections.observableArrayList(Faulkner.getOffices().values());
-
-        deptDataTable.setItems(offices);
     }
 
     @FXML
@@ -376,16 +365,15 @@ public class AdminDirectoryEditorController  extends AbstractController {
     public void initializeDeptDirectory() {
         searchDeptBar.clear();
         searchDeptBar.setStyle("-fx-text-inner-color: white;");
-        //Tooltip.install(addDeptIcon, (new Tooltip("Add a department")));
 
         deptNameCol.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
+
         deptLocCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Office, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Office, String> p) {
                 return new ReadOnlyObjectWrapper(p.getValue().getSuite().getName());
             }
         });
 
-        ObservableList<Office> offices = FXCollections.observableArrayList(Faulkner.getOffices().values());
         deptDataTable.setItems(offices);
 
         // Creating list of data to be filtered
@@ -425,7 +413,6 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
     @FXML
     private void changeDirectory() {
-        initializeDeptDirectory();
         Timeline directorySlide = new Timeline();
         KeyFrame keyFrame;
         directorySlide.setCycleCount(1);
@@ -446,10 +433,13 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
         directorySlide.getKeyFrames().add(keyFrame);
         directorySlide.play();
+        initializeDeptDirectory();
     }
 
     @FXML
     private void showEditor() {
+        deptNameField.clear();
+        assignedLocField.clear();
         editorButton.setText("Add");
         editDeptFields.setVisible(true);
         FadeTransition ft = new FadeTransition(Duration.millis(1500), editDeptFields);
@@ -468,10 +458,10 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
 
         edit.setOnAction((ActionEvent e) -> {
-            Office o = deptDataTable.getSelectionModel().getSelectedItem();
-
-            editorButton.setText("Save");
             showEditor();
+            editorButton.setText("Save");
+
+            Office o = deptDataTable.getSelectionModel().getSelectedItem();
 
             deptNameField.setText(o.getName());
             assignedLocField.setText(o.getSuite().getName());
@@ -480,7 +470,6 @@ public class AdminDirectoryEditorController  extends AbstractController {
         delete.setOnAction((ActionEvent e) -> {
             Office o = deptDataTable.getSelectionModel().getSelectedItem();
 
-            System.out.println(o.getName());
             Faulkner.getOffices().remove(o.getName());
             initializeDeptDirectory();
         });
@@ -495,26 +484,18 @@ public class AdminDirectoryEditorController  extends AbstractController {
         if (editorProcessable()) {
             int id;
             String deptName = deptNameField.getText();
-            Suite assignedSuite = new Suite();
-
-            for (String s: Faulkner.getSuites().keySet()) {
-                if (s.equals(assignedLocField.getText())) {
-                    assignedSuite = Faulkner.getSuites().get(s);
-                    break;
-                }
-            }
+            Suite assignedSuite = Faulkner.getSuites().get(assignedLocField.getText());
 
             switch (editorButton.getText()) {
-                case "add":
-                    id = 0; // There must be a way to randomly generate an ID!!!
+                case "Add":
+                    id = -3000; // There must be a way to randomly generate an ID!!!
                     Office newOffice = new Office(id, deptName, assignedSuite);
                     Faulkner.getOffices().put(deptName, newOffice);
+
                     break;
 
-                case "save":
+                case "Save":
                     Office o = deptDataTable.getSelectionModel().getSelectedItem();
-
-                    id = o.getId();
 
                     if (!(o.getName().equals(deptName))) {
                         o.setName(deptName);
@@ -530,9 +511,8 @@ public class AdminDirectoryEditorController  extends AbstractController {
                 default:
                     break;
             }
+            initializeDeptDirectory();
         }
-
-        initializeDeptDirectory();
     }
 
     private boolean editorProcessable() {
