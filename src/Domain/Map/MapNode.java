@@ -224,14 +224,15 @@ public class MapNode implements DrawableMapEntity {
      * @param obj
      * @return true if objects are equal
      */
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj instanceof MapNode) {
-//            return this.equals((MapNode) obj);
-//        } else {
-//            return false;
-//        }
-//    }
+    @Override
+     public boolean equals(Object obj)
+    {
+        if (obj instanceof MapNode) {
+           return this.equals((MapNode) obj);
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Returns true if aNode the same NodeUID as this.
