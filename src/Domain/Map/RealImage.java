@@ -25,13 +25,22 @@ public class RealImage implements Image {
         return img;
     }
 
-    javafx.scene.image.Image getFXImage(){
+    javafx.scene.image.Image getFXImage()
+    {
+        if(img==null)
+        {
+            loadFromDisk(fileName);
+        }
+
         return SwingFXUtils.toFXImage(img, null);
     }
 
     @Override
     public void display() {
-        loadFromDisk(fileName);
+        if(img==null) {
+            loadFromDisk(fileName);
+        }
+
         System.out.println("Displaying " + fileName);
     }
 
