@@ -53,10 +53,10 @@ public class UserMapViewController extends AbstractController {
     public JFXButton emailButton;
     Boolean downArrow = true; // By default, the navigation arrow is to minimize the welcome page
     ColorAdjust colorAdjust = new ColorAdjust();
-    int numClickDr = 0;
-    int numClickFood = 0;
-    int numClickBath = 0;
-    int numClickHelp = 0;
+    int numClickDr = -1;
+    int numClickFood = -1;
+    int numClickBath = -1;
+    int numClickHelp = -1;
 
     double xNodeScale = 1200/941;
     double yNodeScale = 700/546;
@@ -117,6 +117,8 @@ public class UserMapViewController extends AbstractController {
     Stage primaryStage;
 
     MapModel model;
+
+
 
     protected void renderInitialMap()
     {
@@ -203,7 +205,13 @@ public class UserMapViewController extends AbstractController {
 
         emailButton.setVisible(false);
 
+        numClickDr = -1;
+        numClickFood = -1;
+        numClickBath = -1;
+        numClickHelp = -1;
+
         LoadTableData();
+
 
 
 
@@ -314,13 +322,13 @@ public class UserMapViewController extends AbstractController {
                 keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
 
                 // Reset to default
-                defaultProperty();
+                //defaultProperty();
 
                 downArrow = true;
-                numClickDr = 0;
-                numClickFood = 0;
-                numClickBath = 0;
-                numClickHelp = 0;
+                numClickDr = -1;
+                numClickFood = -1;
+                numClickBath = -1;
+                numClickHelp = -1;
 
                 searchBar.clear();
 
@@ -353,110 +361,65 @@ public class UserMapViewController extends AbstractController {
     public void doctorSelected()
     {
         loadMenu();
-        numClickDr = numClickDr + 1;
-        numClickHelp = 0;
-        numClickBath = 0;
-        numClickFood = 0;
+        numClickDr = numClickDr*(-1);
+        numClickHelp = -1;
+        numClickBath = -1;
+        numClickFood = -1;
 
-               //public void initialize() {
-
-        // Setting up the columns of the TableView
-
-
-        if (numClickDr == 2)
-        {
-            defaultProperty();
-            numClickDr = 0;
-        }
-        else
-        {
-            defaultProperty();
-
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-
-            doctorIcon.setEffect(clicked);
-
-            searchBar.setPromptText("Search for doctors");
-
-            deptTable.setVisible(false);
-            doctorTable.setVisible(true);
-        }
-
-
+        DisplayCorrectTable();
     }
 
     public void bathroomSelected() {
         loadMenu();
-        numClickBath = numClickBath + 1;
-        numClickHelp = 0;
-        numClickDr = 0;
-        numClickFood = 0;
+        numClickBath = numClickBath*(-1);
+        numClickHelp = -1;
+        numClickDr = -1;
+        numClickFood = -1;
 
-        if (numClickBath == 2) {
-            defaultProperty();
-            numClickBath = 0;
-        } else {
-            defaultProperty();
-
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-
-            ColorAdjust original = new ColorAdjust();
-            original.setContrast(0);
-
-            bathroomIcon.setEffect(clicked);
-
-            searchBar.setPromptText("Search for bathrooms");
-        }
+        DisplayCorrectTable();
     }
 
     public void foodSelected() {
         loadMenu();
-        numClickFood = numClickFood + 1;
-        numClickHelp = 0;
-        numClickBath = 0;
-        numClickDr = 0;
+        numClickFood = numClickFood*(-1);
+        numClickHelp = -1;
+        numClickBath = -1;
+        numClickDr = -1;
 
-        if (numClickFood == 2) {
-            defaultProperty();
-            numClickFood = 0;
-        } else {
-            defaultProperty();
-
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-
-            ColorAdjust original = new ColorAdjust();
-            original.setContrast(0);
-            foodIcon.setEffect(clicked);
-
-            searchBar.setPromptText("Search for food");
-        }
+        DisplayCorrectTable();
     }
 
     public void helpSelected() {
         loadMenu();
-        numClickHelp = numClickHelp + 1;
-        numClickDr = 0;
-        numClickBath = 0;
-        numClickFood = 0;
+        numClickHelp = numClickHelp*(-1);
+        numClickDr = -1;
+        numClickBath = -1;
+        numClickFood = -1;
 
-        if (numClickHelp == 2) {
-            defaultProperty();
-            numClickHelp = 0;
-        } else {
-            defaultProperty();
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-
-            ColorAdjust original = new ColorAdjust();
-            original.setContrast(0);
-            helpIcon.setEffect(clicked);
-
-            searchBar.setPromptText("Search for help");
-        }
+        DisplayCorrectTable();
     }
+/*
+    public void deptChoose()
+    {
+        Object deptItem = deptTable.getSelectionModel().getSelectedItem();
+
+
+
+    }
+/*
+    public void doctorChoose()
+    {
+        Object docItem = doctorTable.getSelectionModel().getSelectedItem();
+        if (docItem.getClass() == Doctor.class)
+        {
+            docItem == Doc
+        }
+
+    }
+
+*/
+
+
 
     public void adminLogin() throws IOException {
         SceneSwitcher.switchToLoginView(primaryStage);
@@ -507,21 +470,15 @@ public class UserMapViewController extends AbstractController {
             });
         });
 
-        doctorTable.setItems(doctors);
-
         SortedList<Doctor> sortedDoctor = new SortedList<Doctor>(filteredDoctor);
         sortedDoctor.comparatorProperty().bind(deptTable.comparatorProperty());
-
         doctorTable.setItems(sortedDoctor);
-
-
 
         deptName.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
         deptPhoneNum.setCellValueFactory(new PropertyValueFactory<Office, String>("phoneNum"));
         deptLocation.setCellValueFactory(new PropertyValueFactory<Office, String>("location"));
         Collection<Suite> suiteVal = Faulkner.getSuites().values();
         ObservableList<Suite> suites = FXCollections.observableArrayList(suiteVal);
-
         // Enabling a search function for the text field.
         FilteredList<Suite> filteredSuite = new FilteredList<>(suites);
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -537,11 +494,60 @@ public class UserMapViewController extends AbstractController {
             });
         });
 
-
         SortedList<Suite> sortedSuite = new SortedList<Suite>(filteredSuite);
         sortedSuite.comparatorProperty().bind(deptTable.comparatorProperty());
         deptTable.setItems(sortedSuite);
-
-
     }
+
+    public void DisplayCorrectTable()
+    {
+        if (numClickDr == 1)
+        {
+            ColorAdjust clicked = new ColorAdjust();
+            clicked.setContrast(-10);
+
+            doctorIcon.setEffect(clicked);
+
+            searchBar.setPromptText("Search for doctors");
+
+            deptTable.setVisible(false);
+            doctorTable.setVisible(true);
+        }
+
+        if (numClickBath == 1)
+        {
+            ColorAdjust clicked = new ColorAdjust();
+            clicked.setContrast(-10);
+
+            bathroomIcon.setEffect(clicked);
+
+            searchBar.setPromptText("Search for bathrooms");
+        }
+
+        if (numClickFood == 1)
+        {
+            ColorAdjust clicked = new ColorAdjust();
+            clicked.setContrast(-10);
+
+            foodIcon.setEffect(clicked);
+
+            searchBar.setPromptText("Search for food");
+        }
+
+        if (numClickHelp == 1)
+        {
+            ColorAdjust clicked = new ColorAdjust();
+            clicked.setContrast(-10);
+
+            helpIcon.setEffect(clicked);
+
+            searchBar.setPromptText("Search for help");
+        }
+
+        if((numClickDr == -1)&&(numClickBath == -1)&&(numClickFood == -1)&&(numClickHelp == -1))
+        {
+            defaultProperty();
+        }
+    }
+
 }
