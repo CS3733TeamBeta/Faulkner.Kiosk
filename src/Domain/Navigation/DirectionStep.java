@@ -48,6 +48,11 @@ public class DirectionStep {
         }
     }
 
+    public void printNodes() {
+        for (MapNode n: nodesForThisFloor) {
+            System.out.println("ID is: " + n.getNodeID());
+        }
+    }
     public Floor getFloor()
     {
         return floorOfTheseDirections;

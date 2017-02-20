@@ -182,8 +182,11 @@ public class PathFindingTest extends TestCase{
     public void testGuidance() {
         try {
             g1 = new Guidance(nodeT, nodeH, false);
-            g2 = new Guidance(nodeA, nodeL, false);
+            g2 = new Guidance(nodeA, nodeL, true);
             g2.printTextDirections();
+            System.out.println("line break");
+            System.out.println("Nodes in first step are: ");
+            g2.getTextDirections().getFirst();
             assertTrue(true);
        } catch(Exception e) {
             fail("Threw unexpected exception in testGuidance");
@@ -213,5 +216,5 @@ public class PathFindingTest extends TestCase{
             fail("Threw unexpected exception in testRandom");
         }
     }
-    
+
 }

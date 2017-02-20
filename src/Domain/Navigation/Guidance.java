@@ -205,6 +205,7 @@ public class Guidance extends Path {
         System.out.println("Printing Textual Directions");
         System.out.println("");
         for (DirectionStep step: textDirections) {
+            System.out.println("Printing a step: ");
             for(String s : step.getDirections()) {
                 System.out.println(s);
             }
