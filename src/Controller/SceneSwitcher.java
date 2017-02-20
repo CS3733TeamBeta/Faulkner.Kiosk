@@ -63,5 +63,9 @@ public class SceneSwitcher
     {
         UserMapViewController controller = (UserMapViewController)switchToScene(primaryStage, UserMapViewerPath);
     }
+
+    public static void switchToAddFloor(Stage primaryStage) throws IOException{
+        FileChooser_Controller controller = (FileChooser_Controller)switchToScene(primaryStage, "../Admin/MapBuilder/FileChooser_View.fxml");
+    }
 }
 

@@ -1,20 +1,13 @@
 //Testing
 package Controller;
 
-import Domain.Map.*;
-import Domain.ViewElements.DragIconType;
-import Model.Database.DatabaseManager;
 import Controller.Admin.AdminList;
-import Model.DoctorProfile;
-import Model.MapModel;
+import Domain.Map.Doctor;
+import Model.Database.DatabaseManager;
 import javafx.application.Application;
-import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashSet;
+import javafx.stage.Stage;
 
 public class Main extends Application {
 
