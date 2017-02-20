@@ -197,9 +197,6 @@ public class UserMapViewController extends AbstractController {
             hideDirections();
             loadMenu();
         });
-
-
-        hideDirections();
     }
 
     private void hideDirections()
