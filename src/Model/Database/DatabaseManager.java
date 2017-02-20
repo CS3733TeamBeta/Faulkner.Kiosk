@@ -1,7 +1,7 @@
 package Model.Database;
 
 import Domain.Map.*;
-import Model.Database.CustomPackage.CustomFilePath;
+import Model.Database.CustomFilePath;
 
 
 import java.sql.*;
