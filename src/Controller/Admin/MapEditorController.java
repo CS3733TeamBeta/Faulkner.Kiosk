@@ -248,23 +248,27 @@ public class MapEditorController extends AbstractController {
 
 		renderInitialMap();
 
-		mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
+		stackPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
 			if(drawingEdge != null)
 			{
 				Node sourceNode = drawingEdge.getSource().getNodeToDisplay();
 
 				Bounds sourceNodeBounds = sourceNode.getBoundsInParent();
 
-				Point2D clickPoint = new Point2D(clickEvent.getX(), clickEvent.getY());
+				Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
+				Point2D mouseCoords =  sourceNode.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
+
+				//drawingEdge.setEndPoint(mouseCoords); //set the end point
+
+				Point2D clickPoint = mouseCoords;
 
 				if(!sourceNodeBounds.contains(clickPoint))
-				{
-
+	 			{
 					MapNode chainLinkNode = DragIcon.constructMapNodeFromType(DragIconType.connector);
 					chainLinkNode.setType(DragIconType.connector); //set the type
 
 					// clickPoint = mapPane.localToScreen(clickPoint);
-					clickPoint = mapPane.localToScene(clickPoint);
+					clickPoint = sourceNode.localToScene(clickPoint);
 
 					clickPoint = new Point2D(clickPoint.getX()-12.5, clickPoint.getY()-12.5);
 
