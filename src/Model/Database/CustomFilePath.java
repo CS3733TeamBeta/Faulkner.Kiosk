@@ -6,5 +6,5 @@ package Model.Database;
 
 public class CustomFilePath
 {
-    public final static String myFilePath = "/Users/benhylak/";
+    public final static String myFilePath = "/Users/jw97/";
 }
