@@ -151,18 +151,38 @@ public class MapEditorController extends AbstractController {
 
 		renderFloorMap();
 
-		mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
+		/*mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
 			if(drawingEdge != null)
 			{
+				// devondevon
+
 				Node sourceNode = drawingEdge.getSource().getNodeToDisplay();
+
 				Bounds sourceNodeBounds = sourceNode.getBoundsInParent();
 
-				if(!sourceNodeBounds.contains(clickEvent.getX(), clickEvent.getY()))
+				Point2D clickPoint = new Point2D(clickEvent.getX(), clickEvent.getY());
+
+				if(!sourceNodeBounds.contains(clickPoint))
 				{
-					System.out.println("Clicked Outside");
+
+					MapNode chainLinkNode = DragIcon.constructMapNodeFromType(DragIconType.connector);
+					chainLinkNode.setType(DragIconType.connector); //set the type
+
+					clickPoint = mapPane.localToScene(clickPoint);
+
+					clickPoint = new Point2D(clickPoint.getX() - 12.5, clickPoint.getY() - 12.5);
+
+					chainLinkNode.setPosX(clickPoint.getX());
+					chainLinkNode.setPosY(clickPoint.getY());
+
+					addToAdminMap(chainLinkNode);
+
+					drawingEdge.setTarget(chainLinkNode);
+
+					onEdgeComplete();
 				}
 			}
-		});
+		});*/
 
 	}
 
