@@ -183,7 +183,6 @@ public class MapEditorController extends AbstractController {
 				}
 			}
 		});*/
-
 	}
 
 	/**
@@ -393,7 +392,11 @@ public class MapEditorController extends AbstractController {
 		for(NodeEdge edge : collectedEdges)
 		{
 			addHandlersToEdge(edge);
-			mapPane.getChildren().add(edge.getNodeToDisplay());
+
+			if(!mapPane.getChildren().contains(edge.getNodeToDisplay()))
+			{
+				mapPane.getChildren().add(edge.getNodeToDisplay());
+			}
 
 			MapNode source = edge.getSource();
 			MapNode target = edge.getTarget();
