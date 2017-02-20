@@ -358,14 +358,12 @@ public class UserMapViewController extends AbstractController {
         menuSlideUp.play();
     }
 
-    public void doctorSelected()
-    {
+    public void doctorSelected() {
         loadMenu();
         numClickDr = numClickDr*(-1);
         numClickHelp = -1;
         numClickBath = -1;
         numClickFood = -1;
-
         DisplayCorrectTable();
     }
 
@@ -375,7 +373,6 @@ public class UserMapViewController extends AbstractController {
         numClickHelp = -1;
         numClickDr = -1;
         numClickFood = -1;
-
         DisplayCorrectTable();
     }
 
@@ -385,7 +382,6 @@ public class UserMapViewController extends AbstractController {
         numClickHelp = -1;
         numClickBath = -1;
         numClickDr = -1;
-
         DisplayCorrectTable();
     }
 
@@ -395,7 +391,6 @@ public class UserMapViewController extends AbstractController {
         numClickDr = -1;
         numClickBath = -1;
         numClickFood = -1;
-
         DisplayCorrectTable();
     }
 /*
@@ -501,51 +496,37 @@ public class UserMapViewController extends AbstractController {
 
     public void DisplayCorrectTable()
     {
-        if (numClickDr == 1)
-        {
+        if (numClickDr == 1) {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
-
             doctorIcon.setEffect(clicked);
-
             searchBar.setPromptText("Search for doctors");
-
             deptTable.setVisible(false);
             doctorTable.setVisible(true);
         }
 
-        if (numClickBath == 1)
-        {
+        if (numClickBath == 1) {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
-
             bathroomIcon.setEffect(clicked);
-
             searchBar.setPromptText("Search for bathrooms");
         }
 
-        if (numClickFood == 1)
-        {
+        if (numClickFood == 1) {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
-
             foodIcon.setEffect(clicked);
-
             searchBar.setPromptText("Search for food");
         }
 
-        if (numClickHelp == 1)
-        {
+        if (numClickHelp == 1) {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
-
             helpIcon.setEffect(clicked);
-
             searchBar.setPromptText("Search for help");
         }
 
-        if((numClickDr == -1)&&(numClickBath == -1)&&(numClickFood == -1)&&(numClickHelp == -1))
-        {
+        if((numClickDr == -1)&&(numClickBath == -1)&&(numClickFood == -1)&&(numClickHelp == -1)) {
             defaultProperty();
         }
     }
