@@ -1,21 +1,13 @@
 package Controller.User;
 
 import Controller.AbstractController;
-import Controller.DragDropMain;
-import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import Domain.Navigation.Guidance;
-import Domain.ViewElements.DragIcon;
-import Domain.ViewElements.DragIconType;
 import Exceptions.PathFindingException;
-import Model.MapEditorModel;
 import Model.MapModel;
-import com.jfoenix.controls.JFXButton;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -31,7 +23,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.HashSet;
 
 
@@ -40,7 +31,7 @@ import java.util.HashSet;
  *
  */
 public class UserMapViewController extends AbstractController {
-    public JFXButton emailButton;
+
     Boolean downArrow = true; // By default, the navigation arrow is to minimize the welcome page
     ColorAdjust colorAdjust = new ColorAdjust();
     int numClickDr = 0;
@@ -50,7 +41,7 @@ public class UserMapViewController extends AbstractController {
 
     double xNodeScale = 1200/941;
     double yNodeScale = 700/546;
-    boolean sendingEmail = false;
+
     Guidance newRoute;
 
     @FXML
@@ -90,9 +81,11 @@ public class UserMapViewController extends AbstractController {
 
     MapModel model;
 
+
+    UserDirectionsPanel panel = new UserDirectionsPanel();
+
     protected void renderInitialMap()
     {
-
         //and then set all the existing nodes up
         HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
 
@@ -171,13 +164,50 @@ public class UserMapViewController extends AbstractController {
         model = new MapModel();
         renderInitialMap();
 
-        emailButton.setVisible(false);
+        panel.mainPane.setPrefHeight(mainPane.getPrefHeight());
+
+        mainPane.getChildren().add(panel);
+        panel.toFront();
+        panel.relocate(mainPane.getPrefWidth()-panel.getPrefWidth(),0);
+
+        panel.setCloseHandler(event->
+        {
+            hideDirections();
+        });
     }
+
+    private void hideDirections()
+    {
+        Timeline slideHideDirections = new Timeline();
+        KeyFrame keyFrame;
+        slideHideDirections.setCycleCount(1);
+        slideHideDirections.setAutoReverse(true);
+
+        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), panel.getPrefWidth());
+        keyFrame = new KeyFrame(Duration.millis(600), hideDirections);
+
+        slideHideDirections.getKeyFrames().add(keyFrame);
+        slideHideDirections.play();
+    }
+
+    private void showDirections()
+    {
+        Timeline slideHideDirections = new Timeline();
+        KeyFrame keyFrame;
+        slideHideDirections.setCycleCount(1);
+        slideHideDirections.setAutoReverse(true);
+
+        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), panel.getPrefWidth());
+        keyFrame = new KeyFrame(Duration.millis(600), hideDirections);
+
+        slideHideDirections.getKeyFrames().add(keyFrame);
+        slideHideDirections.play();
+    }
+
 
     private void setupImportedNode(MapNode droppedNode){
 
         //droppedNode.setType(droppedNode.getIconType()); //set the type
-
 
         droppedNode.getNodeToDisplay().setOnMouseClicked(ev -> {
             if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
@@ -226,9 +256,6 @@ public class UserMapViewController extends AbstractController {
         }
 
         newRoute.printTextDirections();
-        emailButton.setVisible(true);
-        searchBar.setPromptText("Your Email");
-        sendingEmail = true;
     }
     public void setStage(Stage s)
     {
@@ -257,8 +284,6 @@ public class UserMapViewController extends AbstractController {
     }
 
     public void searchMenuUp() {
-        if(!sendingEmail)
-        {
             Timeline menuSlideDown = new Timeline();
             KeyFrame keyFrame;
             menuSlideDown.setCycleCount(1);
@@ -293,7 +318,6 @@ public class UserMapViewController extends AbstractController {
 
             menuSlideDown.getKeyFrames().add(keyFrame);
             menuSlideDown.play();
-        }
     }
 
     public void loadMenu() {
@@ -415,27 +439,5 @@ public class UserMapViewController extends AbstractController {
 
     public void adminLogin() throws IOException {
         SceneSwitcher.switchToLoginView(primaryStage);
-    }
-
-    public void onEmailDirections(ActionEvent actionEvent) {
-        String givenEmail = searchBar.getText().toLowerCase();
-        if (givenEmail.contains("@") && (givenEmail.contains(".com") || givenEmail.contains(".org") || givenEmail.contains(".edu") || givenEmail.contains(".gov"))) {
-            System.out.println("onEmailDirections called");
-            emailButton.setVisible(false);
-
-            System.out.println(searchBar.getText());
-            System.out.println("end");
-
-            newRoute.sendEmailGuidance(searchBar.getText(), mainPane);
-
-            defaultProperty();
-
-            searchBar.setText("Search Hospital");
-
-            sendingEmail = false;
-        } else {
-            System.out.println("Not a valid address!");
-            //@TODO Show in ui email was invalid
-        }
     }
 }
