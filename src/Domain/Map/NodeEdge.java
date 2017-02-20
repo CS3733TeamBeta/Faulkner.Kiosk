@@ -8,8 +8,6 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
-import java.rmi.server.UID;
-
 /**
  * An edge that connects two nodes and has a cost (edge length)
  */
@@ -70,7 +68,11 @@ public class NodeEdge implements DrawableMapEntity
         Point2D startPoint = getNodeCenterPoint(drawableNode);
 
         setStartPoint(drawableNode.localToParent(startPoint));
-        setEndPoint(drawableNode.localToParent(startPoint));
+
+        if(getEdgeLine().getEndX() == 0 && getEdgeLine().getEndY()==0) //if currently, end point is empty
+        {
+            setEndPoint(drawableNode.localToParent(startPoint));
+        }
     }
 
     /**
