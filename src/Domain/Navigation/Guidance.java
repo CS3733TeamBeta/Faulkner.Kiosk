@@ -66,7 +66,6 @@ public class Guidance extends Path {
     public void createTextDirections(boolean vFlag) {
         LinkedList<String> tempTextDirections = new LinkedList<String>();
         LinkedList<MapNode> tempMapNodes = new LinkedList<>();
-        LinkedList<NodeEdge> tempNodeEdges = new LinkedList<>();
         int prevDirection = kioskDirection;
         MapNode fromNode = new MapNode();
         MapNode toNode = new MapNode();
@@ -75,8 +74,6 @@ public class Guidance extends Path {
 
         //Add the first node to the textual directions
         tempTextDirections.add("Start at the Kiosk. (Node " + pathNodes.get(0).getNodeID() + ")");
-        tempMapNodes.add(pathNodes.get(0));
-
 
         for (int i = 0; i < this.pathNodes.size() - 1; i++) {
 
@@ -122,29 +119,35 @@ public class Guidance extends Path {
                     System.out.println("fromNode has size of edges: " + fromNode.getEdges().size());
                     intersectionsPassed++;
                 }
+                tempMapNodes.add(fromNode);
                 intersectionsPassed++;
             } else if (!directionChangeString.equals("Straight") && (!directionChangeString.equals("up")) && (!directionChangeString.equals("down"))) {
                 if(intersectionsPassed  == 0) {
                     if (vFlag) {
                         tempTextDirections.add("Turn " + directionChangeString + " at the next intersection; ID: " + fromNode.getNodeID());
-                        //tempMapNodes.add();
+                        tempMapNodes.add(fromNode);
                     } else {
                         tempTextDirections.add("Turn " + directionChangeString + " at the next intersection.");
+                        tempMapNodes.add(fromNode);
 
                     }
                 }
                 else if(intersectionsPassed == 1){
                     if (vFlag) {
                         tempTextDirections.add("After passing 1 intersection, turn " + directionChangeString + " at " + fromNode.getNodeID());
+                        tempMapNodes.add(fromNode);
                     } else {
                         tempTextDirections.add("After passing 1 intersection, turn " + directionChangeString + ".");
+                        tempMapNodes.add(fromNode);
                     }
                 }
                 else{
                     if (vFlag) {
                         tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + " at " + fromNode.getNodeID());
+                        tempMapNodes.add(fromNode);
                     } else {
                         tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + ".");
+                        tempMapNodes.add(fromNode);
 
                     }
                 }
@@ -154,29 +157,36 @@ public class Guidance extends Path {
                 if(intersectionsPassed == 0){
                     if (vFlag) {
                         tempTextDirections.add("Take an elevator at the next intersection from " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                        tempMapNodes.add(fromNode);
                     } else {
                         tempTextDirections.add("Take an elevator at the next intersection from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                        tempMapNodes.add(fromNode);
                     }
                 }
                 else if(intersectionsPassed == 1){
                     if (vFlag) {
                         tempTextDirections.add("After passing 1 intersection, take an elevator at " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                        tempMapNodes.add(fromNode);
                     } else {
                         tempTextDirections.add("After passing 1 intersection, take an elevator from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-
+                        tempMapNodes.add(fromNode);
                     }
                 }
                 else {
                     if (vFlag) {
                         tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator" + " at " + fromNode.getNodeID() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                        tempMapNodes.add(fromNode);
                     } else {
                         tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-
+                        tempMapNodes.add(fromNode);
                     }
                 }
-                this.textDirections.addLast(new DirectionStep(fromNode.getMyFloor()));
-                this.textDirections.getLast().setDirections(tempTextDirections);
-                tempTextDirections.clear();
+                System.out.println("Adding a direction step at 185");
+                this.textDirections.addLast(new DirectionStep(fromNode.getMyFloor(), tempTextDirections, tempMapNodes));
+                //this.textDirections.getLast().setDirections(tempTextDirections);
+                //this.textDirections.getLast().setNodesForThisFloor(tempMapNodes);
+                tempTextDirections = new LinkedList<>();
+                tempMapNodes = new LinkedList<>();
                 intersectionsPassed = 0;
             }
         }
@@ -201,8 +211,14 @@ public class Guidance extends Path {
                 tempTextDirections.add("Arrive at your destination.");
             }
         }
-        this.textDirections.add(new DirectionStep(toNode.getMyFloor()));
-        this.textDirections.getLast().setDirections(tempTextDirections);
+        tempMapNodes.add(toNode);
+        System.out.println("Adding step to textdirections");
+        this.textDirections.addLast(new DirectionStep(fromNode.getMyFloor(), tempTextDirections, tempMapNodes));
+        //this.textDirections.getLast().setDirections(tempTextDirections);
+        //this.textDirections.getLast().setNodesForThisFloor(tempMapNodes);
+        //tempTextDirections.clear();
+        //tempMapNodes.clear();
+
     }
 
     public void printTextDirections() {

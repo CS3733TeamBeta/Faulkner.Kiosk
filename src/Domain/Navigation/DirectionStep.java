@@ -6,6 +6,7 @@ import Domain.Map.NodeEdge;
 
 import javax.xml.soap.Node;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Created by Pattop on 2/16/2017.
@@ -14,7 +15,12 @@ public class DirectionStep {
     Floor floorOfTheseDirections;
     LinkedList<String> directionsForThisFloor;
     LinkedList<MapNode> nodesForThisFloor;
-    LinkedList<NodeEdge> edgesForThisFloor;
+
+    public DirectionStep(Floor floor, LinkedList<String> directionsForThisFloor, LinkedList<MapNode> nodesForThisFloor) {
+        this.floorOfTheseDirections = floor;
+        this.directionsForThisFloor = directionsForThisFloor;
+        this.nodesForThisFloor = nodesForThisFloor;
+    }
 
     public DirectionStep(Floor floor){
         floorOfTheseDirections = floor;
@@ -25,17 +31,10 @@ public class DirectionStep {
         this.nodesForThisFloor = listOfNodes;
     }
 
-    public void setEdgesForThisFloor(LinkedList<NodeEdge> listOfEdges) {
-        this.edgesForThisFloor = listOfEdges;
-    }
-
     public void addNode(MapNode n) {
         this.nodesForThisFloor.add(n);
     }
 
-    public void addEdge(NodeEdge e) {
-        this.edgesForThisFloor.add(e);
-    }
 
     public void addDirections(String newDirection){
         this.directionsForThisFloor.add(newDirection);
@@ -49,8 +48,13 @@ public class DirectionStep {
     }
 
     public void printNodes() {
-        for (MapNode n: nodesForThisFloor) {
-            System.out.println("ID is: " + n.getNodeID());
+        if (nodesForThisFloor != null) {
+            System.out.println("Printing Nodes:");
+            for (MapNode n : nodesForThisFloor) {
+                System.out.println("ID is: " + n.getNodeID());
+            }
+        } else {
+            System.out.println("Nodes were null");
         }
     }
     public Floor getFloor()

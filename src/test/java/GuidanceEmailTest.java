@@ -1,6 +1,7 @@
 package test.java;
 
 import Domain.Map.*;
+import Domain.Navigation.DirectionStep;
 import Domain.Navigation.Guidance;
 import Domain.Navigation.Path;
 import Exceptions.PathFindingNoPathException;
@@ -117,11 +118,19 @@ public class GuidanceEmailTest extends TestCase{
 
     public void testSendEmail() {
         try {
-            Guidance g1 = new Guidance(nodeA, nodeL, false);
+            Guidance g1 = new Guidance(nodeA, nodeO, false);
             //Please don't uncomment this line unless you replace the email with your own. I'm getting a lot of spam -Ian
             //g1.sendEmailGuidance("iancj97@gmail.com");
+            System.out.println("There are " + g1.getTextDirections().size() + " directionSteps");
+            System.out.println("Printing all nodes in the guidance");
+            g1.printPathNodes();
+            System.out.println("First step");
+            g1.getTextDirections().get(0).printNodes();
+            System.out.println("Second step");
+            g1.getTextDirections().get(1).printNodes();
             assertTrue(true);
         } catch (Exception e) {
+            e.printStackTrace();
             fail("Threw exception");
         }
     }
