@@ -104,6 +104,8 @@ public class UserMapViewController extends AbstractController {
 
     Group mapItems;
 
+    Group zoomTarget;
+
     public UserMapViewController() throws Exception
     {
 
@@ -182,6 +184,19 @@ public class UserMapViewController extends AbstractController {
                 n.getPosY()));
     }
 
+    public void zoomToExtents(Group group)
+    {
+        Bounds groupBounds = group.getLayoutBounds();
+        final Bounds viewportBounds = scrollPane.getViewportBounds();
+
+        while (groupBounds.getWidth() > viewportBounds.getWidth())
+        {
+            zoomTarget.setScaleX(.9 * zoomTarget.getScaleX());
+            zoomTarget.setScaleY(.9 * zoomTarget.getScaleY());
+            groupBounds = group.getLayoutBounds();
+        }
+    }
+
     @FXML
     private void initialize() throws Exception
     {
@@ -191,7 +206,7 @@ public class UserMapViewController extends AbstractController {
 
         mapItems.relocate(0, 0);
 
-        Group zoomTarget = mapItems;
+        zoomTarget = mapItems;
 
         Group group = new Group(zoomTarget);
 
@@ -265,10 +280,47 @@ public class UserMapViewController extends AbstractController {
         panel.toFront();
         panel.relocate(mainPane.getPrefWidth()-panel.getPrefWidth(),0);
 
+
         panel.setCloseHandler(event->
         {
             hideDirections();
             loadMenu();
+
+            zoomToExtents(group); // TESTING PROGRAMATIC ZOOMING
+
+            Bounds groupBounds = group.getLayoutBounds();
+
+            final Bounds viewportBounds = scrollPane.getViewportBounds();
+
+
+              //calculate pixel offsets from [0, 1] range
+                double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
+                double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
+
+                // convert content coordinates to zoomTarget coordinates
+               /* Point2D posInZoomTarget = zoomTarget.parentToLocal(group.parentToLocal(new Point2D(viewportBounds.getWidth()/2,
+                        viewportBounds.getHeight()/2)));*/
+
+                Point2D zoomTargetCenter = zoomTarget.parentToLocal(group.parentToLocal(content.getWidth()/2, content.getHeight()/2));
+
+                Point2D posInZoomTarget = zoomTargetCenter;
+
+                // calculate adjustment of scroll position (pixels)
+                Point2D adjustment = zoomTarget.getLocalToParentTransform().deltaTransform(posInZoomTarget.multiply(viewportBounds.getWidth()/400- 1));
+
+                // do the resizing
+                zoomTarget.setScaleX(viewportBounds.getWidth()/400 * zoomTarget.getScaleX());
+                zoomTarget.setScaleY(viewportBounds.getWidth()/400 * zoomTarget.getScaleY());
+
+                // refresh ScrollPane scroll positions & content bounds
+                scrollPane.layout();
+
+                // convert back to [0, 1] range
+                // (too large/small values are automatically corrected by ScrollPane)
+                groupBounds = group.getLayoutBounds();
+
+                scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
+                scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
         });
     }
 
