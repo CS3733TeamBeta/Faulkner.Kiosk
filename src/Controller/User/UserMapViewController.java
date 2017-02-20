@@ -344,7 +344,7 @@ public class UserMapViewController extends AbstractController {
     }
 
     public void loadMenu() {
-        defaultProperty();
+        //defaultProperty();
 
         Timeline menuSlideUp = new Timeline();
         menuSlideUp.setCycleCount(1);
@@ -369,26 +369,26 @@ public class UserMapViewController extends AbstractController {
 
     public void bathroomSelected() {
         loadMenu();
-        numClickBath = numClickBath*(-1);
-        numClickHelp = -1;
         numClickDr = -1;
+        numClickHelp = -1;
+        numClickBath = numClickBath*(-1);
         numClickFood = -1;
         DisplayCorrectTable();
     }
 
     public void foodSelected() {
         loadMenu();
-        numClickFood = numClickFood*(-1);
+        numClickDr = -1;
         numClickHelp = -1;
         numClickBath = -1;
-        numClickDr = -1;
+        numClickFood = numClickFood*(-1);
         DisplayCorrectTable();
     }
 
     public void helpSelected() {
         loadMenu();
-        numClickHelp = numClickHelp*(-1);
         numClickDr = -1;
+        numClickHelp = numClickHelp*(-1);
         numClickBath = -1;
         numClickFood = -1;
         DisplayCorrectTable();
@@ -496,6 +496,8 @@ public class UserMapViewController extends AbstractController {
 
     public void DisplayCorrectTable()
     {
+        defaultProperty();
+
         if (numClickDr == 1) {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
