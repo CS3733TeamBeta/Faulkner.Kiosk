@@ -531,6 +531,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
         return true;
     }
 
+    @FXML
     public void onMapBuilderSwitch(ActionEvent actionEvent)
     {
         try
