@@ -205,7 +205,7 @@ public class DatabaseManager {
             Faulkner = new Hospital();
         }
 
-        //executeStatements(dropTables);
+       // executeStatements(dropTables);
        // executeStatements(createTables);
 
         loadHospital(Faulkner);
