@@ -118,7 +118,6 @@ public class PathFindingTest extends TestCase{
 
     //Tests that UIDs are working properly
     public void testUID() {
-        UID id = nodeA.getNodeUID();
         assertEquals(nodeA, nodeA);
         assertEquals(nodeB, nodeB);
         assertNotSame(nodeA, nodeB);
