@@ -34,6 +34,10 @@ public class Office
         return this.name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Suite getSuite() {
         return this.suite;
     }
@@ -50,5 +54,9 @@ public class Office
     public String getDepartment()
     {
         return this.department;
+    }
+
+    public void setSuite(Suite s) {
+        this.suite = s;
     }
 }

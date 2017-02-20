@@ -126,6 +126,7 @@ public class NodeEdge implements DrawableMapEntity
         Point2D newPoint = new Point2D (drawableNode.getLayoutX() + drawableNode.getBoundsInLocal().getWidth() / 2,
                                         drawableNode.getLayoutY() + drawableNode.getBoundsInLocal().getHeight() / 2);
 
+
         if (node == target) {
             setEndPoint(newPoint);
         } else {
@@ -240,7 +241,7 @@ public class NodeEdge implements DrawableMapEntity
      * Updates the cost of this NodeEdge to be calculated using the distance between the two MapNodes in this NodeEdge
      */
     public void updateCost() {
-        this.cost = Math.pow(source.getPosX() - target.getPosX(), 2) + Math.pow(source.getPosY() - target.getPosY(), 2);
+        this.cost = Math.pow(Math.pow(source.getPosX() - target.getPosX(), 2) + Math.pow(source.getPosY() - target.getPosY(), 2), .5);
     }
 
 }

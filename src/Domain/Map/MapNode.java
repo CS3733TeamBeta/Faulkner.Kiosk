@@ -113,12 +113,25 @@ public class MapNode implements DrawableMapEntity {
         this.setType(DragIconType.values()[type]);
     }
 
+    public void setPos(double posX, double posY)
+    {
+        setPosX(posX);
+        setPosY(posY);
+
+        ((DragIcon)getNodeToDisplay()).relocateToPoint(this.getNodeToDisplay().parentToLocal(this.
+                getNodeToDisplay().getParent().localToScene(posX, posY)));
+        //changes coordinates relative to drag icon. Really cool shit
+
+    }
     /**
      * Sets the X position of this node to be the given position
      * @param posX The desired position, as a double
      */
     public void setPosX(double posX) {
+
         this.posX = posX;
+
+       // icon.parentToLocal(icon.getParent().localToScene(posX,posY)
     }
 
     /**
@@ -126,6 +139,7 @@ public class MapNode implements DrawableMapEntity {
      * @param posY The desired position, as a double
      */
     public void setPosY(double posY) {
+
         this.posY = posY;
     }
 

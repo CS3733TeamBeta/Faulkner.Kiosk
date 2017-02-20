@@ -1,14 +1,14 @@
 package Controller.Admin;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.awt.*;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
 
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
-import Domain.ViewElements.DragContainer;
-import Domain.ViewElements.DragIcon;
-import Domain.ViewElements.DragIconType;
+import Domain.ViewElements.*;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.DataSourceClasses.MapTreeItem;
@@ -17,7 +17,6 @@ import Model.Database.DatabaseManager;
 import Model.MapEditorModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -25,31 +24,21 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import jfxtras.labs.util.event.MouseControlUtil;
+import javafx.scene.input.KeyCode;
 import org.controlsfx.control.PopOver;
-import javafx.scene.image.Image;
-
 import static Controller.SceneSwitcher.switchToAddFloor;
 
-import java.awt.*;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.*;
-
 public class MapEditorController extends AbstractController {
-
-	private static final double SCALE_DELTA = 1.1;
 
 	@FXML SplitPane base_pane;
 	@FXML AnchorPane mapPane;
@@ -67,40 +56,26 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	private TabPane BuildingTabPane;
 
-	@FXML
-	ScrollPane scroll_pane;
-
 	private DragIcon mDragOverIcon = null;
 
 	private EventHandler<DragEvent> onIconDragOverRoot = null;
 	private EventHandler<DragEvent> onIconDragDropped = null;
 	private EventHandler<DragEvent> onIconDragOverRightPane = null;
 	private MapEditorModel model;
-	public static Floor newFloor = null;
 
 	NodeEdge drawingEdge;
 
-
 	Group mapItems;
-
-	StackPane stackPane;
-	public void changeFloorToSaved(String location, Floor floor) throws MalformedURLException {
-		//System.out.println(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString());
-		//this.mapImage.setImage(new Image(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString(), true));
-		System.out.println("Here");
-		this.mapImage.setImage(floor.getImageInfo().getFXImage());
-	}
 
 	public MapEditorController() {
 
-		mapItems = new Group(); 
-		
 		model = new MapEditorModel();
 
 		//Runs once the edge is drawn from one node to another
 		//connects the two, sends sources, positions them etc.
 		model.addEdgeCompleteHandler(event->
 		{
+
 			System.out.println("Edge Complete Handler Invoked");
 
 			NodeEdge completedEdge = drawingEdge;
@@ -127,8 +102,9 @@ public class MapEditorController extends AbstractController {
 			drawingEdge = null;
 
 			sourceNode.toFront();
-
+			sourceNode.toFront();
 			mapImage.toBack();
+
 		});
 	}
 
@@ -136,75 +112,15 @@ public class MapEditorController extends AbstractController {
 	 * FXML initialize function
 	 */
 	@FXML
-	private void initialize() 
-	{
-		mapPane.getChildren().remove(mapImage);
+	private void initialize() {
+
+		mapItems = new Group();
+
 		mapPane.getChildren().add(mapItems);
-		mapItems.getChildren().add(mapImage);
 
 		mapItems.relocate(0, 0);
-
-
-		Group zoomTarget = mapItems;
-
-		Group group = new Group(zoomTarget);
-
-		// stackpane for centering the content, in case the ScrollPane viewport
-		// is larget than zoomTarget
-		StackPane content = new StackPane(group);
-		stackPane = content;
-
-		group.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
-			// keep it at least as large as the content
-			content.setMinWidth(newBounds.getWidth());
-			content.setMinHeight(newBounds.getHeight());
-		});
-
-		scroll_pane.setContent(content);
-		content.relocate(0, 0);
+		mapImage.relocate(0, 0);
 		mapPane.relocate(0, 0);
-
-		scroll_pane.setPannable(true);
-
-		scroll_pane.viewportBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
-			// use viewport size, if not too small for zoomTarget
-			content.setPrefSize(newBounds.getWidth(), newBounds.getHeight());
-		});
-
-		content.setOnScroll(evt -> {
-				evt.consume();
-
-				final double zoomFactor = evt.getDeltaY() > 0 ? 1.2 : 1 / 1.2;
-
-				Bounds groupBounds = group.getLayoutBounds();
-				final Bounds viewportBounds = scroll_pane.getViewportBounds();
-
-				if(groupBounds.getWidth()>800 || evt.getDeltaY()>0) //if max and trying to scroll out
-				{
-					// calculate pixel offsets from [0, 1] range
-					double valX = scroll_pane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
-					double valY = scroll_pane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
-
-					// convert content coordinates to zoomTarget coordinates
-					Point2D posInZoomTarget = zoomTarget.parentToLocal(group.parentToLocal(new Point2D(evt.getX(), evt.getY())));
-
-					// calculate adjustment of scroll position (pixels)
-					Point2D adjustment = zoomTarget.getLocalToParentTransform().deltaTransform(posInZoomTarget.multiply(zoomFactor - 1));
-
-					// do the resizing
-					zoomTarget.setScaleX(zoomFactor * zoomTarget.getScaleX());
-					zoomTarget.setScaleY(zoomFactor * zoomTarget.getScaleY());
-
-					// refresh ScrollPane scroll positions & content bounds
-					scroll_pane.layout();
-
-					// convert back to [0, 1] range
-					// (too large/small values are automatically corrected by ScrollPane)
-					groupBounds = group.getLayoutBounds();
-					scroll_pane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
-					scroll_pane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
-				}
-		});
 
 		BuildingTabPane.getTabs().clear();
 
@@ -244,21 +160,40 @@ public class MapEditorController extends AbstractController {
 
 		getCurrentTreeView().getSelectionModel().select(0); //selects first floor
 
-		renderInitialMap();
+		renderFloorMap();
 
-		mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
+		/*mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
 			if(drawingEdge != null)
 			{
+				// devondevon
+
 				Node sourceNode = drawingEdge.getSource().getNodeToDisplay();
+
 				Bounds sourceNodeBounds = sourceNode.getBoundsInParent();
 
-				if(!sourceNodeBounds.contains(clickEvent.getX(), clickEvent.getY()))
+				Point2D clickPoint = new Point2D(clickEvent.getX(), clickEvent.getY());
+
+				if(!sourceNodeBounds.contains(clickPoint))
 				{
-					System.out.println("Clicked Outside");
+
+					MapNode chainLinkNode = DragIcon.constructMapNodeFromType(DragIconType.connector);
+					chainLinkNode.setType(DragIconType.connector); //set the type
+
+					clickPoint = mapPane.localToScene(clickPoint);
+
+					clickPoint = new Point2D(clickPoint.getX() - 12.5, clickPoint.getY() - 12.5);
+
+					chainLinkNode.setPosX(clickPoint.getX());
+					chainLinkNode.setPosY(clickPoint.getY());
+
+					addToAdminMap(chainLinkNode);
+
+					drawingEdge.setTarget(chainLinkNode);
+
+					onEdgeComplete();
 				}
 			}
-		});
-
+		});*/
 	}
 
 	/**
@@ -267,44 +202,32 @@ public class MapEditorController extends AbstractController {
 	 */
 	public void loadBuildingsToTabPane(Collection<Building> buildings)
 	{
-		for(Building b : buildings)
+		for(Building b: buildings)
 		{
 			Tab t = makeBuildingTab(b);
 
-			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>)t.getContent();
+			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) t.getContent();
 
-			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldvalue, newvalue) -> {
-				if(newvalue.getValue().getValue() instanceof Floor)
+			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldvalue, newvalue) ->
+			{
+				if (newvalue.getValue().getValue() instanceof Floor)
 				{
-					changeFloorSelection((Floor)newvalue.getValue().getValue());
+					changeFloorSelection((Floor) newvalue.getValue().getValue());
 				}
 				else
 				{
-					changeFloorSelection((Floor)(newvalue.getParent().getValue().getValue()));
+					changeFloorSelection((Floor) (newvalue.getParent().getValue().getValue()));
 				}
 			});
 
-			for(Floor f: b.getFloors())
+			for (Floor f : b.getFloors())
 			{
 				treeView.getRoot().getChildren().add(makeTreeItem(f));
 			}
 
-			if(newFloor != null){
-				boolean duplicate = false;
-				for(Floor f2 : b.getFloors()) {
-					if(f2.getFloorNumber() == newFloor.getFloorNumber()) {
-						f2.setImageLocation(newFloor.getImageLocation());
-						duplicate = true;
-					}
-				}
-				if(!duplicate) {
-					treeView.getRoot().getChildren().add(makeTreeItem(newFloor));
-				}
-			}
+			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
 
 			model.addBuilding(b, t); //adds to building tab map
-
-			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
 		}
 	}
 	/**
@@ -399,12 +322,6 @@ public class MapEditorController extends AbstractController {
 		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
 
 		Floor f = b.newFloor(); //makes new floor
-		try {
-
-			switchToAddFloor(this.getStage());
-		} catch (IOException e) {
-
-		}
 
 		treeView.getRoot().getChildren().add(makeTreeItem(f));
 	}
@@ -420,29 +337,28 @@ public class MapEditorController extends AbstractController {
 		return treeItem;
 	}
 
-
 	public void changeFloorSelection(Floor f)
 	{
-		if(f.getImageLocation() == null){
-			try {
+		model.setCurrentFloor(f);
+
+		if(f.getImageLocation() == null)
+		{
+			try
+			{
 				switchToAddFloor(this.getStage());
-			}
-			catch(IOException e){
+			} catch (IOException e)
+			{
 				System.out.println("Threw an exception in MapEditorController: changeFloorSelection");
 				e.printStackTrace();
 			}
 		}
-		try{
-			changeFloorToSaved(f.getImageLocation(), f);
-		}catch(MalformedURLException e){
-			System.out.println("ERROR IN LOADING FLOORPLAN");
-		}
-		model.setCurrentFloor(f);
-		System.out.println("Changed floor to " + f);
 
-		//change image
-		//clear nodes
-		//load nodes
+		this.mapImage.setImage(f.getImageInfo().getFXImage());
+
+		model.setCurrentFloor(f);
+		renderFloorMap();
+
+		System.out.println("Changed floor to " + f);
 	}
 
 	/**
@@ -464,18 +380,20 @@ public class MapEditorController extends AbstractController {
 		}
 	}
 
-	protected void renderInitialMap()
+	protected void renderFloorMap()
 	{
+		mapItems.getChildren().clear();
+		mapPane.getChildren().remove(mapImage);
+		mapItems.getChildren().add(mapImage);
+
 		//and then set all the existing nodes up
 		HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
 
 		for(MapNode n : model.getCurrentFloor().getFloorNodes())
 		{
-			//System.out.println("Adding node");
+			System.out.println("Adding node");
 			addToAdminMap(n);
 
-			System.out.println("New node has " + n.getEdges());
-			
 			for(NodeEdge edge: n.getEdges())
 			{
 				if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
@@ -484,10 +402,12 @@ public class MapEditorController extends AbstractController {
 
 		for(NodeEdge edge : collectedEdges)
 		{
-		    System.out.println("Loading edge...");
-
 			addHandlersToEdge(edge);
-			mapItems.getChildren().add(edge.getNodeToDisplay());
+
+			if(!mapItems.getChildren().contains(edge.getNodeToDisplay()))
+			{
+				mapItems.getChildren().add(edge.getNodeToDisplay());
+			}
 
 			MapNode source = edge.getSource();
 			MapNode target = edge.getTarget();
@@ -539,7 +459,7 @@ public class MapEditorController extends AbstractController {
 				if (deEvent.getClickCount() == 2) {
 					edge.getSource().getEdges().remove(edge);
 					edge.getTarget().getEdges().remove(edge);
-					mapItems.getChildren().remove(edge.getNodeToDisplay()); //remove from the right pane
+					mapPane.getChildren().remove(edge.getNodeToDisplay()); //remove from the right pane
 					model.removeMapEdge(edge);
 				}
 			}
@@ -595,8 +515,8 @@ public class MapEditorController extends AbstractController {
 
 				// set drag event handlers on their respective objects
 				base_pane.setOnDragOver(onIconDragOverRoot);
-				stackPane.setOnDragOver(onIconDragOverRightPane);
-				stackPane.setOnDragDropped(onIconDragDropped);
+				mapPane.setOnDragOver(onIconDragOverRightPane);
+				mapPane.setOnDragDropped(onIconDragDropped);
 				
 				// get a reference to the clicked DragIcon object
 				DragIcon icn = (DragIcon) event.getSource();
@@ -622,17 +542,6 @@ public class MapEditorController extends AbstractController {
 	private void buildDragHandlers()
 	{
 
-		class DragData {
-
-			double startX;
-			double startY;
-			double startLayoutX;
-			double startLayoutY;
-			Node dragTarget;
-		}
-
-		DragData dragData = new DragData();
-
 		//drag over transition to move widget form left pane to right pane
 		onIconDragOverRoot = new EventHandler<DragEvent>()
 		{
@@ -640,16 +549,15 @@ public class MapEditorController extends AbstractController {
 			@Override
 			public void handle(DragEvent event)
 			{
-				Point2D p = stackPane.sceneToLocal(event.getSceneX(), event.getSceneY());
+
+				Point2D p = mapPane.sceneToLocal(event.getSceneX(), event.getSceneY());
 
 				//turn on transfer mode and track in the right-pane's context 
 				//if (and only if) the mouse cursor falls within the right pane's bounds.
-				if (!stackPane.boundsInLocalProperty().get().contains(p))
+				if (!mapPane.boundsInLocalProperty().get().contains(p))
 				{
-
 					event.acceptTransferModes(TransferMode.ANY);
 					mDragOverIcon.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
-
 					return;
 				}
 
@@ -685,24 +593,25 @@ public class MapEditorController extends AbstractController {
 
 				DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.AddNode);
 
-				container.addData("scene_coords", new Point2D(event.getX(), event.getY()));
+				container.addData("scene_coords", new Point2D(event.getSceneX(), event.getSceneY()));
 
 				ClipboardContent content = new ClipboardContent();
 				content.put(DragContainer.AddNode, container);
 
 				event.getDragboard().setContent(content);
 				event.setDropCompleted(true);
-
 			}
 		};
 
 		root_pane.setOnDragDone(new EventHandler<DragEvent>()
 		{
+
 			@Override
 			public void handle(DragEvent event)
 			{
-				stackPane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane); //remove the event handlers created on drag start
-				stackPane.removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
+				System.out.println("test");
+				mapPane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRightPane); //remove the event handlers created on drag start
+				mapPane.removeEventHandler(DragEvent.DRAG_DROPPED, onIconDragDropped);
 				base_pane.removeEventHandler(DragEvent.DRAG_OVER, onIconDragOverRoot);
 
 				mDragOverIcon.setVisible(false);
@@ -716,6 +625,7 @@ public class MapEditorController extends AbstractController {
 					{
 						MapNode droppedNode;
 
+
 						droppedNode = DragIcon.constructMapNodeFromType((DragIconType.valueOf(container.getValue("type"))));
 						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
 
@@ -723,18 +633,22 @@ public class MapEditorController extends AbstractController {
 
 						Point2D cursorPoint = container.getValue("scene_coords"); //cursor point
 
-						//scroll_pane.s
-						Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
-						Point2D mouseCoords = scroll_pane.screenToLocal(p.x, p.y);
+						System.out.println("Started off with: " + cursorPoint.getX());
 
-						//@TODO drop in the right place
-						droppedNode.setPosX(mouseCoords.getX()+20*Math.pow(mapItems.getScaleX(), 3));          // because mouse drag and pictures should start from upper corner
-						droppedNode.setPosY(mouseCoords.getY()+20*Math.pow(mapItems.getScaleY(), 3));
+						cursorPoint = droppedNode.getNodeToDisplay().getParent().sceneToLocal(cursorPoint);
 
-						System.out.println("Scale X: " + scroll_pane.getScaleX());
+						System.out.println("Ended with: ");
+						System.out.println(droppedNode.getNodeToDisplay().parentToLocal(droppedNode.
+										getNodeToDisplay().getParent().localToScene(cursorPoint)).getX());
 
-						addToAdminMap(droppedNode);
+						droppedNode.setPos(cursorPoint.getX()-12.5,
+								cursorPoint.getY()-12.5); //offset because mouse drag and pictures should start from upper corn
 
+						if(droppedNode instanceof Elevator)
+						{
+							addNewElevatorToAdminMap((Elevator)droppedNode);
+						}
+						else addToAdminMap(droppedNode);
 					}
 					event.consume();
 				}
@@ -744,64 +658,129 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	/**
-	 * Adds a fresh node to the admin map, handles event handler creation, layering etc.
-	 * @param mapNode
-	 */
-	public void addToAdminMap(MapNode mapNode)
+	public void addNewElevatorToAdminMap(Elevator mapNode)
 	{
-		addEventHandlersToNode(mapNode);
+		ArrayList<Elevator> nodesToAdd = new ArrayList<Elevator>();
 
 		if(!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
 		{
 			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
 		}
 
-		model.addMapNode(mapNode); //add node to model
+		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX(),
+				mapNode.getPosY())); //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
+							/* Build up event handlers for this droppedNode */
 
-		mapNode.toFront(); //send the node to the front
-		mapImage.toBack();
+		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
+
+		Elevator last=null;
+
+		for(Floor f: b.getFloors())
+		{
+			Elevator e;
+			if(f != model.getCurrentFloor())
+			{
+				e = new Elevator();
+				e.setPosX(mapNode.getPosX());
+				e.setPosY(mapNode.getPosY());
+
+				f.addNode(e);
+
+				nodesToAdd.add(e);
+			}
+			else
+			{
+				e = mapNode;
+				nodesToAdd.add(mapNode);
+				model.getCurrentFloor().addNode(mapNode);
+			}
+
+			if(last!=null)
+			{
+				LinkEdge edge = new LinkEdge(last, e);
+				last = e;
+			}
+		}
+
+		for(Elevator n: nodesToAdd)
+		{
+			model.addMapNode(mapNode); //add node to model
+
+			mapNode.toFront(); //send the node to the front
+
+			addEventHandlersToNode(n);
+			addDestToTreeView(n);
+		}
+	}
+
+	public void addDestToTreeView(Destination d)
+	{
+		if(!(d.getInfo().getName().isEmpty()))
+		{
+			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
+
+			for (TreeItem<MapTreeItem> floorTreeItem : treeView.getRoot().getChildren())
+			{
+				if (floorTreeItem.getValue().getValue() instanceof Floor && ((Floor) floorTreeItem.getValue().getValue()).getFloorNodes().contains(d))
+				{
+					boolean treeContainsNode = false;
+
+					for (TreeItem<MapTreeItem> item : floorTreeItem.getChildren())
+					{
+						if (item.getValue().getValue().equals(d))
+						{
+							treeContainsNode = true;
+							return;
+						}
+					}
+
+					if (!treeContainsNode)
+					{
+						((Floor) floorTreeItem.getValue().getValue()).addNode(d);
+						floorTreeItem.getChildren().add(makeTreeItem(d));
+					}
+				}
+
+				treeView.refresh();
+			}
+		}
+	}
+
+	/**
+	 * Adds a fresh node to the admin map, handles event handler creation, layering etc.
+	 * @param mapNode
+	 */
+	public void addToAdminMap(MapNode mapNode)
+	{
+		ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
+
+		if(!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
+		{
+			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
+		}
+ //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
+							/* Build up event handlers for this droppedNode */
 
 		if (!model.getCurrentFloor().getFloorNodes().contains(mapNode))
 		{
 			System.out.println("Node " + mapNode.getIconType().name() + " added to: " + mapNode.getPosX() + " " + mapNode.getPosY());
 			mapNode.setFloor(model.getCurrentFloor());
 			model.getCurrentFloor().getFloorNodes().add(mapNode);
+			nodesToAdd.add(mapNode);
 		}
 
-		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX(),
-				mapNode.getPosY())); //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
-						/* Build up event handlers for this droppedNode */
+			model.addMapNode(mapNode); //add node to model
 
-		if(mapNode instanceof Destination && !((Destination)mapNode).getInfo().getName().isEmpty())
-		{
-			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
+			mapNode.toFront(); //send the node to the front
 
-			TreeItem<MapTreeItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
+			addEventHandlersToNode(mapNode);
 
-			MapTreeItem selectedObject = selectedTreeItem.getValue();
-
-			if(selectedObject!=null)
+			if(mapNode instanceof Destination)
 			{
-				TreeItem<MapTreeItem> floorTreeItem;
-
-				//selectedObject.
-				if(selectedObject.getValue() instanceof Floor)
-				{
-					floorTreeItem = selectedTreeItem;
-				}
-				else
-				{
-					floorTreeItem = selectedTreeItem.getParent();
-				}
-
-				((Floor)floorTreeItem.getValue().getValue()).addNode(mapNode);
-				floorTreeItem.getChildren().add(makeTreeItem(mapNode));
+				addDestToTreeView((Destination)mapNode);
 			}
-
-			treeView.refresh();
 		}
-	}
+
 
 	/**
 	 *
@@ -888,16 +867,16 @@ public class MapEditorController extends AbstractController {
 	{
 		if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
 		{
-			if(mapItems.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
+			if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
 			{
-				mapItems.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
+				mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
 			}
 		}
 
 		drawingEdge = new NodeEdge();
 		drawingEdge.setSource(mapNode);
 
-		mapItems.getChildren().add(drawingEdge.getNodeToDisplay());
+		mapPane.getChildren().add(drawingEdge.getNodeToDisplay());
 		drawingEdge.toBack();
 		mapImage.toBack();
 
@@ -906,9 +885,9 @@ public class MapEditorController extends AbstractController {
 
 		root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
 			if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
-				if(mapItems.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
+				if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
 				{
-					mapItems.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
+					mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
 				}
 				drawingEdge = null;
 
@@ -918,11 +897,11 @@ public class MapEditorController extends AbstractController {
 			}
 		});
 
-		stackPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
+		mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
 
 			if (drawingEdge != null)
 			{
-				System.out.println("Moving Mouse");
+				//System.out.println("Moving Mouse");
 				Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
 				Point2D mouseCoords = drawingEdge.getEdgeLine().screenToLocal(p.x, p.y); // convert coordinates to relative within the window
 				drawingEdge.setEndPoint(mouseCoords); //set the end point
@@ -939,14 +918,14 @@ public class MapEditorController extends AbstractController {
 	{
 		for (Iterator<NodeEdge> i = node.getEdges().iterator(); i.hasNext();) {
 			NodeEdge edge = (NodeEdge)i.next();
-			mapItems.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
+			mapPane.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
 
 			model.removeMapEdge(edge); //remove edge from model
 
 			i.remove();
 		}
 
-		mapItems.getChildren().remove(node.getNodeToDisplay()); //remove the node
+		mapPane.getChildren().remove(node.getNodeToDisplay()); //remove the node
 
 		if(drawingEdge!=null)
 		{
@@ -1017,6 +996,7 @@ public class MapEditorController extends AbstractController {
 		SceneSwitcher.switchToUserMapView(this.getStage());
 	}
 
+	@FXML
 	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
 	{
 		SceneSwitcher.switchToModifyDirectoryView(this.getStage());

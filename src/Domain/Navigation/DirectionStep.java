@@ -27,6 +27,11 @@ public class DirectionStep {
         }
     }
 
+    public Floor getFloor()
+    {
+        return floorOfTheseDirections;
+    }
+
     public LinkedList<String> getDirections(){
         return directionsForThisFloor;
     }

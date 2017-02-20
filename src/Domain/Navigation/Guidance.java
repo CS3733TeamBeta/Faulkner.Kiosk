@@ -54,6 +54,11 @@ public class Guidance extends Path {
 
     }
 
+    public LinkedList<DirectionStep> getSteps()
+    {
+        return textDirections;
+    }
+
     public void createTextDirections() {
         createTextDirections(false);
     }

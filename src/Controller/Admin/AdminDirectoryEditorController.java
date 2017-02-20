@@ -3,211 +3,528 @@ package Controller.Admin;
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
 import Domain.Map.Office;
+import Domain.Map.Suite;
+import Model.Database.DatabaseManager;
 import com.jfoenix.controls.*;
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import Domain.Map.Doctor;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.animation.KeyValue;
+import javafx.scene.layout.HBox;
 import javafx.util.Callback;
-
+import javafx.util.Duration;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
+import org.controlsfx.control.textfield.TextFields;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Predicate;
+import javafx.scene.control.Tooltip;
+
+import static Model.Database.DatabaseManager.Faulkner;
+
+/*
+ * Created by jw97 on 2/18/2017
+ */
 
 public class AdminDirectoryEditorController  extends AbstractController {
-
-    private ObservableList<Doctor> doctors = FXCollections.observableArrayList();
-    private ObservableList<Doctor> tableData;
     private ObservableList<String> departments = FXCollections.observableArrayList();
+    Boolean deptDirectoryUp = false;
+    ObservableList<String> locations = FXCollections.observableArrayList();
+    ObservableList<Office> offices = FXCollections.observableArrayList(Faulkner.getOffices().values());
+    ObservableList<UUID> existingSuites = FXCollections.observableArrayList(Faulkner.getSuites().keySet());
 
     @FXML
-    private TableView<Doctor> directoryTable;
+    private JFXTextField searchBar, firstName, lastName, description;
 
     @FXML
-    private JFXTextField nameTextField;
+    private JFXTextField phoneNum1, phoneNum2, phoneNum3;
 
     @FXML
-    private JFXTextField phoneNumberOneTextField;
+    private JFXTextField startTime, endTime;
 
     @FXML
-    private JFXTextField phoneNumberTwoTextField;
+    private TextField searchForLoc;
 
     @FXML
-    private JFXTextField phoneNumberThreeTextField;
+    private JFXListView<String> locAssigned;
 
     @FXML
-    private JFXListView<String> departmentsList;
+    private JFXButton save;
 
     @FXML
-    private JFXTextField officeNumberTextField;
+    private JFXButton newProfile;
 
     @FXML
-    private JFXTextField hoursStartTimeTextField;
+    private TableColumn<Doctor, String> nameCol;
 
     @FXML
-    private JFXTextField hoursEndTimeTextField;
+    private TableColumn<Doctor, String> descriptionCol;
 
     @FXML
-    private JFXButton saveButton;
+    private TableColumn<Doctor, String> phoneNumCol;
 
     @FXML
-    private JFXButton newButton;
+    private TableColumn<Doctor, String> hourCol;
 
     @FXML
-    private TableColumn<Doctor, String> nameColumn;
+    private TableView<Doctor> dataTable;
 
     @FXML
-    private TableColumn<Doctor, String> phoneNumberColumn;
+    private AnchorPane deptDirectory;
 
     @FXML
-    private TableColumn<Doctor, String> departmentColumn;
+    private ImageView addDeptIcon;
 
     @FXML
-    private TableColumn<Doctor, String> officeNumberColumn;
+    private JFXTextField searchDeptBar;
 
     @FXML
-    private TableColumn<Doctor, String> hoursColumn;
+    private TableView<Office> deptDataTable;
+
+    @FXML
+    private TableColumn<Office, String> deptNameCol;
+
+    @FXML
+    private TableColumn<Office, String> deptLocCol;
+
+    @FXML
+    private HBox editDeptFields;
+
+    @FXML
+    private TextField deptNameField, assignedLocField;
+
+    @FXML
+    private Button editorButton;
+
 
     public AdminDirectoryEditorController() {
     }
 
     @FXML
     public void initialize() {
-        nameColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
-        phoneNumberColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("phoneNum"));
-        departmentColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("depts"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
+        phoneNumCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("phoneNum"));
+        hourCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("hours"));
 
-        /*officeNumberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Doctor, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Doctor, String> p) {
-               // return new ReadOnlyObjectWrapper(p.getValue().getOffice().getOfficeNum());
+        ObservableList<Doctor> doctors = FXCollections.observableArrayList(Faulkner.getDoctors().values());
+        dataTable.setItems(doctors);
+
+        // Creating list of data to be filtered
+        FilteredList<Doctor> filtered = new FilteredList<>(doctors);
+
+        // Adding a listener to the search bar, filtering through the data as the user types
+        searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            filtered.setPredicate((Predicate<? super Doctor>) profile -> {
+                // By default, the entire directory is displayed
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                // Checks if filter matches
+                if (profile.getName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+
+                // Filter does not match
+                return false;
+            });
+        });
+
+        // Create a sorted list for the filtered data list
+        SortedList<Doctor> sorted = new SortedList<>(filtered);
+        // Bind the sorted list to table
+        sorted.comparatorProperty().bind(dataTable.comparatorProperty());
+        // Set table data
+        dataTable.setItems(sorted);
+
+        TextFields.bindAutoCompletion(searchForLoc, existingSuites);
+
+        searchForLoc.setOnKeyPressed((KeyEvent e) -> {
+            switch (e.getCode()) {
+                case ENTER:
+                    if(existingSuites.contains(searchForLoc.getText())) {
+                        addToAssignedDept(searchForLoc.getText());
+                    } else if (locations.contains(searchForLoc.getText())){
+                        System.out.println("This location is assigned to the doctor already.");
+                    } else {
+                        System.out.println("This suite does not exist.");
+                    }
+
+                    break;
+                default:
+                    break;
             }
-        });*/
+        });
 
-        hoursColumn.setCellValueFactory(new PropertyValueFactory<Doctor, String>("hours"));
+        // Would removing also removes the key from
+        // all other tables?
 
-        /**
-         *
-
-        Office tmpoffice = new Office("N/A");
-
-        Doctor drByrne = new Doctor("3A, 3C", "N/A", tmpoffice, "Jennifer Byrne", "RN, CPNP", "N/A");
-        Doctor drFrangieh = new Doctor("3B", "N/A", tmpoffice, "George Frangieh", "MD", "N/A");
-        Doctor drGreenberg = new Doctor("3C", "N/A", tmpoffice, "James Adam Greenberg", "MD", "N/A");
-        Doctor drGrossi = new Doctor("3A", "N/A", tmpoffice, "Lisa Grossi", "RN, MS, CPNP", "N/A");
-
-        doctors.addAll(drByrne, drFrangieh, drGreenberg, drGrossi);
-        directoryTable.setItems(doctors);
-
-        // All the departments on the 3rd floor
-
-        departments.addAll("3A", "3B", "3C");
-
-        departmentsList.setItems(departments);
-        departmentsList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-         */
     }
 
-    /*
-    private void addDoctor(Doctor d)
-    {
-        tableData.add(d);
-        directoryTable.setItems(tableData);
+    public void addToAssignedDept(String location) {
+        locations.add(location);
+        locAssigned.setItems(locations);
+        searchForLoc.clear();
     }
-    */
 
-    private void newProfileSetUp() {
-        nameTextField.clear();
-        phoneNumberOneTextField.clear();
-        phoneNumberTwoTextField.clear();
-        phoneNumberThreeTextField.clear();
+    @FXML
+    private void showDelOption() {
+        MenuItem delete = new MenuItem("Delete");
+        ContextMenu options = new ContextMenu();
+        options.getItems().add(delete);
+        dataTable.setContextMenu(options);
 
-        departmentsList.getSelectionModel().clearSelection();
+        delete.setOnAction((ActionEvent e) -> {
+                Doctor d = dataTable.getSelectionModel().getSelectedItem();
 
-        officeNumberTextField.clear();
-        hoursStartTimeTextField.clear();
-        hoursEndTimeTextField.clear();
+                Faulkner.getDoctors().remove(d.getName());
+
+                reset();
+                initialize();
+        });
+    }
+
+    @FXML
+    private void delAssignedLoc() {
+        MenuItem delete = new MenuItem("Delete");
+        ContextMenu options = new ContextMenu();
+        options.getItems().add(delete);
+        locAssigned.setContextMenu(options);
+
+        delete.setOnAction((ActionEvent e) -> {
+            String s = locAssigned.getSelectionModel().getSelectedItem();
+
+            locations.remove(s);
+        });
     }
 
     @FXML
     private void reset() {
-        newProfileSetUp();
-        directoryTable.getSelectionModel().clearSelection();
+        firstName.clear();
+        lastName.clear();
+
+        description.clear();
+
+        phoneNum1.clear();
+        phoneNum2.clear();
+        phoneNum3.clear();
+
+        dataTable.getSelectionModel().clearSelection();
+
+        searchBar.clear();
+
+        locAssigned.getItems().clear();
+
+        searchForLoc.clear();
+
+        startTime.clear();
+        endTime.clear();
+    }
+
+    private Boolean isProcessable() {
+        if (firstName.getText() == null || (firstName.getText().isEmpty())){
+            return false;
+        }
+
+        if (startTime.getText() == null || (startTime.getText().isEmpty())){
+            return false;
+        }
+
+        if (endTime.getText() == null || (endTime.getText().isEmpty())){
+            return false;
+        }
+
+        if (locations.isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 
 
     @FXML
+    private void displaySelectedDocInfo() {
+        showDelOption();
+        delAssignedLoc();
+        searchForLoc.clear();
+        locAssigned.getItems().clear();
+
+        Doctor selectedDoc = dataTable.getSelectionModel().getSelectedItem();
+        
+        if (selectedDoc != null) {
+            firstName.setText(selectedDoc.splitName()[1]);
+            lastName.setText(selectedDoc.splitName()[0]);
+            description.setText(selectedDoc.getDescription());
+
+            if (!(selectedDoc.splitPhoneNum()[0].equals(selectedDoc.getPhoneNum()))) {
+                phoneNum1.setText(selectedDoc.splitPhoneNum()[0]);
+                phoneNum2.setText(selectedDoc.splitPhoneNum()[1]);
+                phoneNum3.setText(selectedDoc.splitPhoneNum()[2]);
+            } else {
+                phoneNum1.clear();
+                phoneNum2.clear();
+                phoneNum3.clear();
+            }
+
+            startTime.setText(selectedDoc.splitHours()[0]);
+            endTime.setText(selectedDoc.splitHours()[1]);
+
+            HashSet<Suite> assignedSuites = selectedDoc.getSuites();
+
+            // Assigning to a suite = location
+            for (Suite s : assignedSuites) {
+                locations.add(s.getName());
+            }
+
+            locAssigned.setItems(locations);
+        }
+    }
+
+    @FXML
     private void saveProfile() {
         if (isProcessable()) {
-            String name = nameTextField.getText();
-            String phoneNum = phoneNumberOneTextField.getText() + "-" + phoneNumberTwoTextField.getText() + "-" +
-                    phoneNumberThreeTextField.getText();
+            Doctor toEdit = dataTable.getSelectionModel().getSelectedItem();
 
-            ObservableList<String> dept = departmentsList.getSelectionModel().getSelectedItems();
+            String name = lastName.getText() + ", " + firstName.getText();
+            String d = description.getText();
+            String phoneNum = phoneNum1.getText() + "-" + phoneNum2.getText() + "-" +
+                    phoneNum3.getText();
+            String hours = startTime.getText() + " - " + endTime.getText();
 
-            String deptSelected = dept.get(0);
+            HashSet<Suite> newSuites = new HashSet<>();
 
-            int i = 0;
-            for (String d : dept) {
-                if (!(deptSelected.contains(d))) {
-                    deptSelected = deptSelected + ", " + d;
+            for (String l: locAssigned.getItems()) {
+                for (Suite s: Faulkner.getSuites().values()) {
+                    if (s.getName().equals(l)) {
+                        newSuites.add(s);
+                    }
                 }
             }
 
-            //Office office = new Office(officeNumberTextField.getText());
-            String hours = hoursStartTimeTextField.getText() + "-" + hoursEndTimeTextField.getText();
-            String description = "N/A";
-
-
-            Doctor toEdit = directoryTable.getSelectionModel().getSelectedItem();
             if (toEdit != null) {
-                doctors.remove(toEdit);
+                UUID editId = toEdit.getDocID();
+
+                for (String n: Faulkner.getDoctors().keySet()) {
+                    if (n.equals(toEdit.getName())) {
+                        if (Faulkner.getDoctors().get(n).getDocID() == editId) {
+                            Faulkner.getDoctors().remove(n);
+                            break;
+                        }
+                    }
+                }
+
+                Doctor newDoc = new Doctor(editId, name, d, hours, newSuites);
+                newDoc.setPhoneNum(phoneNum);
+                Faulkner.getDoctors().put(name, newDoc);
+            } else {
+                addNewProfile(name, d, hours, newSuites, phoneNum);
             }
 
-            //doctors.add(new Doctor(deptSelected, phoneNum, office, name, description, hours));
-
-            directoryTable.setItems(doctors);
-            reset();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
             alert.setTitle("Action denied.");
             alert.setHeaderText(null);
             alert.showAndWait();
         }
+
+        try {
+            DatabaseManager.getInstance().saveData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        reset();
+        initialize();
+
     }
 
-    private Boolean isProcessable() {
-        if (nameTextField.getText() == null || (nameTextField.getText().isEmpty())){
+    private void addNewProfile(String name, String d, String hrs, HashSet<Suite> suites, String phoneNum) {
+        Doctor newDoc = new Doctor(name, d, hrs, suites);
+        newDoc.setPhoneNum(phoneNum); // If the phoneNum is valid
+        Faulkner.getDoctors().put(name, newDoc);
+    }
+
+    //---------------------------------------------------------------------- (Dept directory)
+
+    public void initializeDeptDirectory() {
+        searchDeptBar.clear();
+        searchDeptBar.setStyle("-fx-text-inner-color: white;");
+
+        deptNameCol.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
+
+        deptLocCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Office, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Office, String> p) {
+                return new ReadOnlyObjectWrapper(p.getValue().getSuite().getName());
+            }
+        });
+
+        deptDataTable.setItems(offices);
+
+        // Creating list of data to be filtered
+        FilteredList<Office> filtered = new FilteredList<>(offices);
+
+        // Adding a listener to the search bar, filtering through the data as the user types
+        searchDeptBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            filtered.setPredicate((Predicate<? super Office>) o -> {
+                // By default, the entire directory is displayed
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                // Checks if filter matches
+                if (o.getName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+
+                // Filter does not match
+                return false;
+            });
+        });
+
+        // Create a sorted list for the filtered data list
+        SortedList<Office> sorted = new SortedList<>(filtered);
+        // Bind the sorted list to table
+        sorted.comparatorProperty().bind(deptDataTable.comparatorProperty());
+        // Set table data
+        deptDataTable.setItems(sorted);
+
+        editDeptFields.setVisible(false);
+        editorButton.setText("Add");
+    }
+
+    @FXML
+    private void changeDirectory() {
+        Timeline directorySlide = new Timeline();
+        KeyFrame keyFrame;
+        directorySlide.setCycleCount(1);
+        directorySlide.setAutoReverse(true);
+
+        if (deptDirectoryUp) {
+            KeyValue keyValue = new KeyValue(deptDirectory.translateYProperty(),
+                    (deptDirectory.getHeight() - 700));
+            keyFrame = new KeyFrame(Duration.millis(600), keyValue);
+            deptDirectoryUp = false;
+        } else {
+            KeyValue keyValue = new KeyValue(deptDirectory.translateYProperty(),
+                    -(deptDirectory.getHeight() - 80));
+            keyFrame = new KeyFrame(Duration.millis(600), keyValue);
+            deptDirectoryUp = true;
+            editDeptFields.setVisible(false);
+        }
+
+        directorySlide.getKeyFrames().add(keyFrame);
+        directorySlide.play();
+        initializeDeptDirectory();
+    }
+
+    @FXML
+    private void showEditor() {
+        deptNameField.clear();
+        assignedLocField.clear();
+        editorButton.setText("Add");
+        editDeptFields.setVisible(true);
+        FadeTransition ft = new FadeTransition(Duration.millis(1500), editDeptFields);
+
+        ft.setFromValue(0);
+        ft.setToValue(1.0);
+        ft.setAutoReverse(true);
+        ft.play();
+        TextFields.bindAutoCompletion(assignedLocField, existingSuites);
+    }
+
+    @FXML
+    private void showDeptOptions() {
+        MenuItem edit = new MenuItem("Edit");
+        MenuItem delete = new MenuItem("Delete");
+
+
+        edit.setOnAction((ActionEvent e) -> {
+            showEditor();
+            editorButton.setText("Save");
+
+            Office o = deptDataTable.getSelectionModel().getSelectedItem();
+
+            deptNameField.setText(o.getName());
+            assignedLocField.setText(o.getSuite().getName());
+        });
+
+        delete.setOnAction((ActionEvent e) -> {
+            Office o = deptDataTable.getSelectionModel().getSelectedItem();
+
+            Faulkner.getOffices().remove(o.getName());
+            initializeDeptDirectory();
+        });
+
+        ContextMenu options = new ContextMenu();
+        options.getItems().addAll(edit, delete);
+        deptDataTable.setContextMenu(options);
+    }
+
+    @FXML
+    private void deptEditOperation() {
+        if (editorProcessable()) {
+            int id;
+            String deptName = deptNameField.getText();
+            Suite assignedSuite = Faulkner.getSuites().get(assignedLocField.getText());
+
+            switch (editorButton.getText()) {
+                case "Add":
+                    Office newOffice = new Office(deptName, assignedSuite);
+                    Faulkner.getOffices().put(deptName, newOffice);
+
+                    break;
+
+                case "Save":
+                    Office o = deptDataTable.getSelectionModel().getSelectedItem();
+
+                    if (!(o.getName().equals(deptName))) {
+                        o.setName(deptName);
+                    }
+
+                    if (o.getSuite() != assignedSuite) {
+                        o.setSuite(assignedSuite);
+                    }
+
+                    Faulkner.getOffices().put(o.getName(), o);
+
+                    break;
+                default:
+                    break;
+            }
+            initializeDeptDirectory();
+        }
+    }
+
+    private boolean editorProcessable() {
+        if (deptNameField.getText() == null || (deptNameCol.getText().isEmpty())){
             return false;
         }
 
-        if (departmentsList.getSelectionModel().getSelectedItems() == null) {
-            return false;
-        }
-
-        if (officeNumberTextField.getText() == null || (officeNumberTextField.getText().isEmpty())) {
-            return false;
-        }
-
-        if (phoneNumberOneTextField.getText() == null || (phoneNumberOneTextField.getText().isEmpty())) {
-            return false;
-        }
-
-        if (phoneNumberTwoTextField.getText() == null || (phoneNumberTwoTextField.getText().isEmpty())) {
-            return false;
-        }
-
-        if (phoneNumberThreeTextField.getText() == null || (phoneNumberThreeTextField.getText().isEmpty())) {
-            return false;
-        }
-
-        if (hoursStartTimeTextField.getText() == null || (hoursStartTimeTextField.getText().isEmpty())) {
-            return false;
-        }
-
-        if (hoursEndTimeTextField.getText() == null || (hoursEndTimeTextField.getText().isEmpty())) {
+        if (assignedLocField.getText() == null || (assignedLocField.getText().isEmpty())){
             return false;
         }
 
@@ -215,51 +532,6 @@ public class AdminDirectoryEditorController  extends AbstractController {
     }
 
     @FXML
-    private void displaySelectedDocInfo() {
-        newProfileSetUp();
-        Doctor selectedDoc = directoryTable.getSelectionModel().getSelectedItem();
-
-        nameTextField.setText(selectedDoc.getName());
-
-        String phoneNum = selectedDoc.getPhoneNum();
-
-        if (!phoneNum.equals("N/A")) {
-            String[] phoneNumber = phoneNum.split("-");
-
-            phoneNumberOneTextField.setText(phoneNumber[0]);
-            phoneNumberTwoTextField.setText(phoneNumber[1]);
-            phoneNumberThreeTextField.setText(phoneNumber[2]);
-        }
-
-       // if (!(selectedDoc.getOffice().getOfficeNum().equals("N/A"))) {
-       ///     officeNumberTextField.setText(selectedDoc.getOffice().getOfficeNum());
-       // }
-
-      //  String dept = selectedDoc.getDepts();
-       // String[] depts = dept.split(", ");
-
-       /* for (String d: depts) {
-            int i = 0;
-            for (String dpt: departments) {
-                if (dpt.equals(d)) {
-                    departmentsList.getSelectionModel().selectIndices(i);
-                }
-
-                i += 1;
-            }
-        }
-
-        String hour = selectedDoc.getHours();
-
-        if (!(hour.equals("N/A"))) {
-            String[] hours = hour.split("-");
-
-            hoursStartTimeTextField.setText(hours[0]);
-            hoursEndTimeTextField.setText(hours[1]);
-        }*/
-
-    }
-
     public void onMapBuilderSwitch(ActionEvent actionEvent)
     {
         try
