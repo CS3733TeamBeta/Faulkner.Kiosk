@@ -270,32 +270,34 @@ public class AdminDirectoryEditorController  extends AbstractController {
         locAssigned.getItems().clear();
 
         Doctor selectedDoc = dataTable.getSelectionModel().getSelectedItem();
+        
+        if (selectedDoc != null) {
+            firstName.setText(selectedDoc.splitName()[1]);
+            lastName.setText(selectedDoc.splitName()[0]);
+            description.setText(selectedDoc.getDescription());
 
-        firstName.setText(selectedDoc.splitName()[1]);
-        lastName.setText(selectedDoc.splitName()[0]);
-        description.setText(selectedDoc.getDescription());
+            if (!(selectedDoc.splitPhoneNum()[0].equals(selectedDoc.getPhoneNum()))) {
+                phoneNum1.setText(selectedDoc.splitPhoneNum()[0]);
+                phoneNum2.setText(selectedDoc.splitPhoneNum()[1]);
+                phoneNum3.setText(selectedDoc.splitPhoneNum()[2]);
+            } else {
+                phoneNum1.clear();
+                phoneNum2.clear();
+                phoneNum3.clear();
+            }
 
-        if (!(selectedDoc.splitPhoneNum()[0].equals(selectedDoc.getPhoneNum()))) {
-            phoneNum1.setText(selectedDoc.splitPhoneNum()[0]);
-            phoneNum2.setText(selectedDoc.splitPhoneNum()[1]);
-            phoneNum3.setText(selectedDoc.splitPhoneNum()[2]);
-        } else {
-            phoneNum1.clear();
-            phoneNum2.clear();
-            phoneNum3.clear();
-        }
+            startTime.setText(selectedDoc.splitHours()[0]);
+            endTime.setText(selectedDoc.splitHours()[1]);
 
-        startTime.setText(selectedDoc.splitHours()[0]);
-        endTime.setText(selectedDoc.splitHours()[1]);
+            HashSet<Suite> assignedSuites = selectedDoc.getSuites();
 
-        HashSet<Suite> assignedSuites = selectedDoc.getSuites();
-
-        // Assigning to a suite = location
-        for (Suite s: assignedSuites) {
+            // Assigning to a suite = location
+            for (Suite s : assignedSuites) {
                 locations.add(s.getName());
-        }
+            }
 
-        locAssigned.setItems(locations);
+            locAssigned.setItems(locations);
+        }
     }
 
     @FXML
