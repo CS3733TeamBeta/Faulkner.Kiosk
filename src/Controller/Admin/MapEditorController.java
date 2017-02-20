@@ -22,6 +22,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -63,6 +64,8 @@ public class MapEditorController extends AbstractController {
 	private MapEditorModel model;
 
 	NodeEdge drawingEdge;
+
+	Group mapItems;
 
 	public MapEditorController() {
 
@@ -110,6 +113,14 @@ public class MapEditorController extends AbstractController {
 	 */
 	@FXML
 	private void initialize() {
+
+		mapItems = new Group();
+
+		mapPane.getChildren().add(mapItems);
+
+		mapItems.relocate(0, 0);
+		mapImage.relocate(0, 0);
+		mapPane.relocate(0, 0);
 
 		BuildingTabPane.getTabs().clear();
 
@@ -330,7 +341,6 @@ public class MapEditorController extends AbstractController {
 	{
 		model.setCurrentFloor(f);
 
-
 		if(f.getImageLocation() == null)
 		{
 			try
@@ -342,9 +352,6 @@ public class MapEditorController extends AbstractController {
 				e.printStackTrace();
 			}
 		}
-
-		mapPane.getChildren().clear();
-		mapPane.getChildren().add(mapImage);
 
 		this.mapImage.setImage(f.getImageInfo().getFXImage());
 
@@ -375,6 +382,10 @@ public class MapEditorController extends AbstractController {
 
 	protected void renderFloorMap()
 	{
+		mapItems.getChildren().clear();
+		mapPane.getChildren().remove(mapImage);
+		mapItems.getChildren().add(mapImage);
+
 		//and then set all the existing nodes up
 		HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
 
@@ -393,9 +404,9 @@ public class MapEditorController extends AbstractController {
 		{
 			addHandlersToEdge(edge);
 
-			if(!mapPane.getChildren().contains(edge.getNodeToDisplay()))
+			if(!mapItems.getChildren().contains(edge.getNodeToDisplay()))
 			{
-				mapPane.getChildren().add(edge.getNodeToDisplay());
+				mapItems.getChildren().add(edge.getNodeToDisplay());
 			}
 
 			MapNode source = edge.getSource();
@@ -403,12 +414,12 @@ public class MapEditorController extends AbstractController {
 
 			//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
 
-			if(!mapPane.getChildren().contains(source.getNodeToDisplay()))
+			if(!mapItems.getChildren().contains(source.getNodeToDisplay()))
 			{
 				addToAdminMap(source);
 			}
 
-			if(!mapPane.getChildren().contains(target.getNodeToDisplay()))
+			if(!mapItems.getChildren().contains(target.getNodeToDisplay()))
 			{
 				addToAdminMap(target);
 			}
@@ -614,13 +625,24 @@ public class MapEditorController extends AbstractController {
 					{
 						MapNode droppedNode;
 
+
 						droppedNode = DragIcon.constructMapNodeFromType((DragIconType.valueOf(container.getValue("type"))));
 						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
 
+						mapItems.getChildren().add(droppedNode.getNodeToDisplay());
+
 						Point2D cursorPoint = container.getValue("scene_coords"); //cursor point
 
-						droppedNode.setPosX(cursorPoint.getX()-12.5); //offset because mouse drag and pictures should start from upper corner
-						droppedNode.setPosY(cursorPoint.getY()-12.5);
+						System.out.println("Started off with: " + cursorPoint.getX());
+
+						cursorPoint = droppedNode.getNodeToDisplay().getParent().sceneToLocal(cursorPoint);
+
+						System.out.println("Ended with: ");
+						System.out.println(droppedNode.getNodeToDisplay().parentToLocal(droppedNode.
+										getNodeToDisplay().getParent().localToScene(cursorPoint)).getX());
+
+						droppedNode.setPos(cursorPoint.getX()-12.5,
+								cursorPoint.getY()-12.5); //offset because mouse drag and pictures should start from upper corn
 
 						if(droppedNode instanceof Elevator)
 						{
@@ -640,9 +662,9 @@ public class MapEditorController extends AbstractController {
 	{
 		ArrayList<Elevator> nodesToAdd = new ArrayList<Elevator>();
 
-		if(!mapPane.getChildren().contains(mapNode.getNodeToDisplay()))
+		if(!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
 		{
-			mapPane.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
+			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
 		}
 
 		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX(),
@@ -732,13 +754,11 @@ public class MapEditorController extends AbstractController {
 	{
 		ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
 
-		if(!mapPane.getChildren().contains(mapNode.getNodeToDisplay()))
+		if(!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
 		{
-			mapPane.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
+			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
 		}
-
-		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX(),
-				mapNode.getPosY())); //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
+ //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
 							/* Build up event handlers for this droppedNode */
 
 		if (!model.getCurrentFloor().getFloorNodes().contains(mapNode))
