@@ -338,16 +338,21 @@ public class AdminDirectoryEditorController  extends AbstractController {
             } else {
                 addNewProfile(name, d, hours, newSuites, phoneNum);
             }
-
-            // Save to HashMap (ready to be saved to database after shutdown)
-            reset();
-            initialize();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
             alert.setTitle("Action denied.");
             alert.setHeaderText(null);
             alert.showAndWait();
         }
+
+        try {
+            DatabaseManager.getInstance().saveData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        reset();
+        initialize();
 
     }
 
