@@ -211,19 +211,6 @@ public class Guidance extends Path {
         }
     }
 
-    public void saveMapImage(Node aNode) {
-        WritableImage image = aNode.snapshot(new SnapshotParameters(), null);
-
-        // TODO: probably use a file chooser here
-        File file = new File("directions.png");
-
-        try {
-            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-        } catch (IOException e) {
-            // TODO: handle exception here
-            System.out.println("EGADS!  We have an exception!");
-        }
-    }
 
     public static int nodesToDirection(MapNode fromNode, MapNode toNode) {
         return Guidance.nodesToDirection(fromNode, toNode, false);
@@ -424,6 +411,20 @@ public class Guidance extends Path {
     public LinkedList<DirectionStep> getTextDirections()
     {
         return textDirections;
+    }
+
+    public void saveMapImage(Node aNode) {
+        WritableImage image = aNode.snapshot(new SnapshotParameters(), null);
+
+        // TODO: probably use a file chooser here
+        File file = new File("directions.png");
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+        } catch (IOException e) {
+            // TODO: handle exception here
+            System.out.println("EGADS!  We have an exception!");
+        }
     }
 
     public boolean sendEmailGuidance(String address, Node aNode) {
