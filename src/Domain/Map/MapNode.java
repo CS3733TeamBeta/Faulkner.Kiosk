@@ -118,7 +118,9 @@ public class MapNode implements DrawableMapEntity {
      * @param posX The desired position, as a double
      */
     public void setPosX(double posX) {
+
         this.posX = posX;
+        icon.relocate(posX, posY);
     }
 
     /**
@@ -126,7 +128,9 @@ public class MapNode implements DrawableMapEntity {
      * @param posY The desired position, as a double
      */
     public void setPosY(double posY) {
+
         this.posY = posY;
+        icon.relocate(posX, posY);
     }
 
     /**

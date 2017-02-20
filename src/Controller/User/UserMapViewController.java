@@ -102,6 +102,11 @@ public class UserMapViewController extends AbstractController {
 
     protected void renderFloorMap()
     {
+        mapPane.getChildren().clear();
+        mapPane.getChildren().add(mapImage);
+
+        mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
+
         //and then set all the existing nodes up
         HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
 
@@ -172,9 +177,14 @@ public class UserMapViewController extends AbstractController {
     private void initialize() throws Exception
     {
         model = new MapModel();
+
         renderFloorMap();
 
-        kioskFloor = DatabaseManager.Faulkner.getBuildings().iterator().next().getFloor(1);
+        panel.addOnStepChangedHandler(event -> { //when the step is changed in the side panel, update this display!
+            model.setCurrentFloor(event.getSource().getFloor());
+        });
+
+        //kioskFloor = DatabaseManager.Faulkner.getBuildings().iterator().next().getFloor(1);
 
         panel.mainPane.setPrefHeight(mainPane.getPrefHeight());
 
@@ -188,10 +198,6 @@ public class UserMapViewController extends AbstractController {
             loadMenu();
         });
 
-        if(kioskFloor!=null)
-        {
-            mapImage.setImage(kioskFloor.getImageInfo().getFXImage());
-        }
 
         hideDirections();
     }
