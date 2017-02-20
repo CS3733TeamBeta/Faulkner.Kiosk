@@ -206,7 +206,7 @@ public class DatabaseManager {
         }
 
         //executeStatements(dropTables);
-        //executeStatements(createTables);
+       // executeStatements(createTables);
 
         loadHospital(Faulkner);
         conn.commit();

@@ -55,4 +55,8 @@ public class Office
     {
         return this.department;
     }
+
+    public void setSuite(Suite s) {
+        this.suite = s;
+    }
 }

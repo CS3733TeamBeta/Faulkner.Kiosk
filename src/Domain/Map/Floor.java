@@ -9,7 +9,7 @@ public class Floor implements Comparable{
     LinkedList<MapNode> floorNodes;
     LinkedList<NodeEdge> floorEdges;
     MapNode kioskNode = null;
-    String imageLocation = "/resources/FloorMaps/floor3.png";
+    String imageLocation = "../FloorMaps/1_thefirstfloor.png"; //default floor image path
 
     ProxyImage imageInfo;
 
@@ -21,7 +21,6 @@ public class Floor implements Comparable{
     public void setImageLocation(String imageLocation) {
         this.imageLocation = imageLocation;
         imageInfo = new ProxyImage(imageLocation);
-
     }
 
     public ProxyImage getImageInfo(){
@@ -44,6 +43,8 @@ public class Floor implements Comparable{
         floorNodes = new LinkedList<MapNode>();
         floorEdges = new LinkedList<NodeEdge>();
         this.floorNumber = floorNumber;
+
+        imageInfo = new ProxyImage(imageLocation);
     }
 
     public void addNode(MapNode n) {

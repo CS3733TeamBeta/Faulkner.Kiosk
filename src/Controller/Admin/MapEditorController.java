@@ -87,8 +87,11 @@ public class MapEditorController extends AbstractController {
 	public void changeFloorToSaved(String location, Floor floor) throws MalformedURLException {
 		//System.out.println(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString());
 		//this.mapImage.setImage(new Image(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString(), true));
-		System.out.println("Here");
-		this.mapImage.setImage(floor.getImageInfo().getFXImage());
+		if(floor==null)
+		{
+			System.out.println("Floor is null..");
+		}
+		else this.mapImage.setImage(floor.getImageInfo().getFXImage());
 	}
 
 	public MapEditorController() {
