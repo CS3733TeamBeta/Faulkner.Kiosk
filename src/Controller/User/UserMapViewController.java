@@ -350,12 +350,6 @@ public class UserMapViewController extends AbstractController {
         menuSlideUp.play();
     }
 
-    public void noneSelected()
-    {
-        loadMenu();
-
-
-    }
     public void doctorSelected()
     {
         loadMenu();
