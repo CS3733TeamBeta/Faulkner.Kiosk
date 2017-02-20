@@ -227,6 +227,7 @@ public class DatabaseManager {
         PreparedStatement floorsPS = conn.prepareStatement("SELECT * from FLOOR where BUILDING_ID = ?");
         PreparedStatement nodesPS = conn.prepareStatement("SELECT * from NODE where FLOOR_ID = ?");
         PreparedStatement edgesPS = conn.prepareStatement("SELECT * from EDGE where FLOOR_ID = ?");
+        PreparedStatement destPS = conn.prepareStatement("SELECT * from SUITE "); // where FLOOR_ID = ?
         s = conn.createStatement();
 
         HashMap<Integer, Building> buildings = new HashMap<>();
@@ -259,6 +260,16 @@ public class DatabaseManager {
                                     nodeRS.getDouble(3),
 
                                     nodeRS.getInt(5)));
+                }
+                // For the switch from Suite to Destination
+                // destRS.setString(floorRS.getString(1));
+                ResultSet destRS = destPS.executeQuery();
+
+                while(destRS.next()) {
+                    MapNode changedNode = nodes.get(UUID.fromString(destRS.getString(3)));
+                    MapNode tempDest = new Destination(destRS.getString(2));
+                    tempDest.setPosX(changedNode.getPosX());
+                    tempDest.setPosY(changedNode.getPosY());
                 }
 
                 HashMap<Integer, NodeEdge> edges = new HashMap<>();
