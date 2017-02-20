@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * Created by Brandon on 2/13/2017.
  */
-public class Suite extends MapNode {
+public class Suite extends Destination {
 
     UUID suiteID;
     String name;
