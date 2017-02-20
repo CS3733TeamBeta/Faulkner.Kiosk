@@ -424,6 +424,8 @@ public class MapEditorController extends AbstractController {
 			System.out.println("Adding node");
 			addToAdminMap(n);
 
+			System.out.println("New node has " + n.getEdges());
+			
 			for(NodeEdge edge: n.getEdges())
 			{
 				if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
@@ -432,6 +434,8 @@ public class MapEditorController extends AbstractController {
 
 		for(NodeEdge edge : collectedEdges)
 		{
+		    System.out.println("Loading edge...");
+
 			addHandlersToEdge(edge);
 			mapItems.getChildren().add(edge.getNodeToDisplay());
 

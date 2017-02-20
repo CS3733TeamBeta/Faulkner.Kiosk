@@ -150,17 +150,21 @@ public class DatabaseManager {
                 edgesPS.setString(1, floorRS.getString(1));
                 ResultSet edgeRS = edgesPS.executeQuery();
                 while(edgeRS.next()) {
+                    MapNode source = nodes.get(UUID.fromString(edgeRS.getString(2)));
+                    MapNode target = nodes.get(UUID.fromString(edgeRS.getString(3)));
+                    NodeEdge tempEdge = new NodeEdge(source, target, edgeRS.getInt(4));
+
+                    tempEdge.setSource(source);
+                    tempEdge.setTarget(target);
+
+                    System.out.println(source.getEdges().contains(tempEdge));
+
                     System.out.println("Added Edge to" + floorRS.getString(1));
                     // stores nodeEdges per floor
-                    edges.put(edgeRS.getInt(1),
-                            new NodeEdge(mapNodes.get(UUID.fromString(edgeRS.getString(2))),
-                                    mapNodes.get(UUID.fromString(edgeRS.getString(3))),
-                                    edgeRS.getInt(4)));
-                    // stores all nodeEdges
-                    nodeEdges.put(edgeRS.getInt(1),
-                            new NodeEdge(mapNodes.get(UUID.fromString(edgeRS.getString(2))),
-                                    mapNodes.get(UUID.fromString(edgeRS.getString(3))),
-                                    edgeRS.getInt(4)));
+                    edges.put(edgeRS.getInt(1), tempEdge);
+                    //stores all nodeEdges
+                    nodeEdges.put(edgeRS.getInt(1), tempEdge);
+
                 }
                 System.out.println(edges);
                 System.out.println(nodeEdges);
@@ -204,19 +208,31 @@ public class DatabaseManager {
         HashMap<UUID, Suite> suitesID = new HashMap<>();
         HashMap<String, Doctor> doctors = new HashMap<>();
         HashMap<String, Office> offices = new HashMap<>();
-        PreparedStatement suiteDoc = conn.prepareStatement("select suite_id from USER1.SUITE_DOC where doc_id = ?");
-
+        PreparedStatement suiteDoc = conn.prepareStatement("select suite_id from SUITE_DOC where doc_id = ?");
+        PreparedStatement suiteOff = conn.prepareStatement("select * from OFFICES where SUITE_ID = ?");
 
         rs = s.executeQuery("select * from USER1.SUITE");
         while (rs.next()) {
+            Suite tempSuite = new Suite(UUID.fromString(rs.getString(1)),
+                    rs.getString(2));
 
-            suitesID.put(UUID.fromString(rs.getString(1)),
-                    new Suite(UUID.fromString(rs.getString(1)),
-                            rs.getString(2)));
+            // add suite to hospital suites
+            h.addSuites(UUID.fromString(rs.getString(1)), tempSuite);
 
-            h.addSuites(UUID.fromString(rs.getString(1)),
-                    new Suite(UUID.fromString(rs.getString(1)),
-                            rs.getString(2)));
+            // add offices to suite
+            suiteOff.setString(1, rs.getString(1));
+            ResultSet offRS = suiteOff.executeQuery();
+            while(offRS.next()) {
+                Office tempOff = new Office(UUID.fromString(rs.getString(1)),
+                        rs.getString(2),
+                        (h.getSuites().get(UUID.fromString(rs.getString(3)))));
+
+                // add office to hospital offices list
+                h.addOffices(rs.getString(2), tempOff);
+
+                // add office to list of offices for a suite
+                tempSuite.addOffice(tempOff);
+            }
         }
         this.suites = suitesID;
         System.out.println(suites.keySet());
@@ -225,41 +241,42 @@ public class DatabaseManager {
 
         while(rs.next()) {
             HashSet<Suite> locations = new HashSet<>();
+
             suiteDoc.setString(1, rs.getString(1));
             ResultSet results = suiteDoc.executeQuery();
             while(results.next()) {
-                locations.add(suitesID.get(results.getString(1)));
+                locations.add(h.getSuites().get(UUID.fromString(results.getString(1))));
             }
+            Doctor tempDoc = new Doctor(UUID.fromString(rs.getString(1)),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(5),
+                    locations);
 
-            doctors.put(rs.getString(2),
-                    new Doctor(UUID.fromString(rs.getString(1)),
-                            rs.getString(2),
-                            rs.getString(3),
-                            rs.getString(5),
-                            locations));
-            h.addDoctors(rs.getString(2),
-                    new Doctor(UUID.fromString(rs.getString(1)),
-                            rs.getString(2),
-                            rs.getString(3),
-                            rs.getString(5),
-                            locations));
+//            doctors.put(rs.getString(2),
+//                    new Doctor(UUID.fromString(rs.getString(1)),
+//                            rs.getString(2),
+//                            rs.getString(3),
+//                            rs.getString(5),
+//                            locations));
+            h.addDoctors(rs.getString(2), tempDoc);
         }
         this.doctors = doctors;
         System.out.println(doctors.keySet());
 
-        rs = s.executeQuery("select * from OFFICES");
-        while(rs.next()) {
-            offices.put(rs.getString(2),
-                    new Office(UUID.fromString(rs.getString(1)),
-                            rs.getString(2),
-                            suitesID.get(rs.getString(3))));
-            h.addOffices(rs.getString(2),
-                    new Office(UUID.fromString(rs.getString(1)),
-                            rs.getString(2),
-                            (suitesID.get(rs.getString(3)))));
-        }
-        this.offices = offices;
-        System.out.println(offices);
+//        rs = s.executeQuery("select * from OFFICES");
+//        while(rs.next()) {
+//            Office tempOff = new Office(UUID.fromString(rs.getString(1)),
+//                    rs.getString(2),
+//                    (suitesID.get(rs.getString(3))));
+////            offices.put(rs.getString(2),
+////                    new Office(UUID.fromString(rs.getString(1)),
+////                            rs.getString(2),
+////                            suitesID.get(rs.getString(3))));
+//            h.addOffices(rs.getString(2), tempOff);
+//        }
+//        this.offices = offices;
+//        System.out.println(offices);
         rs.close();
 
     }

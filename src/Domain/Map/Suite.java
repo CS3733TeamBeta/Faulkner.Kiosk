@@ -3,6 +3,7 @@ package Domain.Map;
 import Controller.Admin.PopUp.SuiteEditController;
 import org.controlsfx.control.PopOver;
 
+import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -13,6 +14,7 @@ public class Suite extends MapNode {
     UUID suiteID;
     String name;
     MapNode location;
+    HashSet<Office> offices;
 
     private final String popOverEditFXML = "/Admin/Popup/SuiteEditPopup.fxml";
 
@@ -26,6 +28,7 @@ public class Suite extends MapNode {
     public Suite(UUID uuid, String name) {
         this.suiteID = uuid;
         this.name = name;
+        this.offices = new HashSet<>();
     }
 
 //    public Suite(String name, MapNode location) {
@@ -62,6 +65,18 @@ public class Suite extends MapNode {
 
     public MapNode getLocation() {
         return this.location;
+    }
+
+    public void addOffice(Office o) {
+        offices.add(o);
+    }
+
+    public void removeOffice(Office o) {
+        offices.remove(o);
+    }
+
+    public HashSet<Office> getOffices() {
+        return  this.offices;
     }
 
 }
