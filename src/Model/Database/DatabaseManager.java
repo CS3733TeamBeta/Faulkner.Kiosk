@@ -22,7 +22,7 @@ import java.util.Properties;
 public class DatabaseManager {
 
     private final String framework = "embedded";
-    private final String protocol = "jdbc:derby:/Users/Sophia Gudenrath/Documents/GitHub/";
+    private final String protocol = "jdbc:derby:/Users/Lukezebrowski/Desktop/School/Software Engineering/";
     private Connection conn = null;
     private ArrayList<Statement> statements = new ArrayList<Statement>(); // list of Statements, PreparedStatements
     private PreparedStatement psInsert;
