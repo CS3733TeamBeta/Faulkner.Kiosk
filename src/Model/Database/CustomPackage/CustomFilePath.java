@@ -1,4 +1,4 @@
-package Model.Database;
+package Model.Database.CustomPackage;
 
 /**
  * Created by IanCJ on 2/19/2017.
