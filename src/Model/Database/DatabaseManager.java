@@ -1,20 +1,9 @@
 package Model.Database;
 
 import Domain.Map.*;
-import org.apache.derby.database.Database;
 
-import javax.xml.crypto.Data;
-import javax.xml.transform.Result;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Properties;
+import java.sql.*;
+import java.util.*;
 
 /**
  * Created by Brandon on 2/4/2017.
@@ -22,7 +11,7 @@ import java.util.Properties;
 public class DatabaseManager {
 
     private final String framework = "embedded";
-    private final String protocol = "jdbc:derby:/Users/benhylak/";
+    private final String protocol = "jdbc:derby:/";
     private Connection conn = null;
     private ArrayList<Statement> statements = new ArrayList<Statement>(); // list of Statements, PreparedStatements
     private PreparedStatement psInsert;
@@ -32,58 +21,58 @@ public class DatabaseManager {
     private String username = "user1";
     private String uname = username.toUpperCase();
 
-    public static HashMap<Integer, MapNode> mapNodes = new HashMap<>();
+    public static HashMap<UUID, MapNode> mapNodes = new HashMap<>();
     public static HashMap<Integer, NodeEdge> edges = new HashMap<>();
     public static HashMap<String, Doctor> doctors = new HashMap<>();
     public static HashMap<String, Floor> floors = new HashMap<>();
-    public static HashMap<String, Suite> suites = new HashMap<>();
+    public static HashMap<UUID, Suite> suites = new HashMap<>();
     public static HashMap<String, Office> offices = new HashMap<>();
 
     public static DatabaseManager instance = null;
-    public Hospital Faulkner;
+    public static Hospital Faulkner;
 
     public static final String[] createTables = {
             "CREATE TABLE USER1.BUILDING (BUILDING_ID INT PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(100))",
-            "CREATE TABLE USER1.FLOOR (FLOOR_ID VARCHAR(5) PRIMARY KEY NOT NULL, " +
+            "CREATE TABLE USER1.FLOOR (FLOOR_ID VARCHAR(25) PRIMARY KEY NOT NULL, " +
                     "BUILDING_ID INT," +
                     "NUMBER INT, " +
                     "CONSTRAINT FLOOR_BUILDING_BUILDING_ID_FK FOREIGN KEY (BUILDING_ID) REFERENCES BUILDING (BUILDING_ID))",
-            "CREATE TABLE USER1.NODE (NODE_ID INT PRIMARY KEY NOT NULL, " +
+            "CREATE TABLE USER1.NODE (NODE_ID CHAR(36) PRIMARY KEY NOT NULL, " +
                     "POSX DOUBLE, " +
                     "POSY DOUBLE, " +
-                    "FLOOR_ID VARCHAR(5), " +
+                    "FLOOR_ID VARCHAR(25), " +
                     "TYPE INT, " +
                     "CONSTRAINT NODE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
-            "CREATE TABLE USER1.SUITE (SUITE_ID INT PRIMARY KEY NOT NULL, " +
+            "CREATE TABLE USER1.SUITE (SUITE_ID CHAR(36) PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(200), " +
-                    "NODE_ID INT, " +
+                    "NODE_ID CHAR(36), " +
                     "CONSTRAINT SUITE_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID))",
-            "CREATE TABLE USER1.SERVICES (SERVICE_ID INT PRIMARY KEY, " +
+            "CREATE TABLE USER1.SERVICES (SERVICE_ID CHAR(36) PRIMARY KEY, " +
                     "NAME VARCHAR(200), " +
-                    "NODE_ID INT, " +
+                    "NODE_ID CHAR(36), " +
                     "TYPE VARCHAR(200), " +
                     "FLOOR INT, " +
                     "CONSTRAINT SERVICES_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID))",
-            "CREATE TABLE USER1.DOCTOR (DOC_ID INT PRIMARY KEY NOT NULL, " +
+            "CREATE TABLE USER1.DOCTOR (DOC_ID CHAR(36) PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(50), " +
                     "DESCRIPTION VARCHAR(20), " +
                     "NUMBER VARCHAR(20), " +
                     "HOURS VARCHAR(20))",
-            "CREATE TABLE USER1.OFFICES (OFFICE_ID INT PRIMARY KEY NOT NULL, " +
+            "CREATE TABLE USER1.OFFICES (OFFICE_ID CHAR(36) PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(200), " +
-                    "SUITE_ID INT, " +
+                    "SUITE_ID CHAR(36), " +
                     "CONSTRAINT OFFICES_SUITE_SUITE_ID_fk FOREIGN KEY (SUITE_ID) REFERENCES SUITE (SUITE_ID))",
             "CREATE TABLE USER1.EDGE (EDGE_ID INT PRIMARY KEY NOT NULL," +
-                    "NODEA INT," +
-                    "NODEB INT," +
-                    "COST DOUBLE," +
-                    "FLOOR_ID VARCHAR(5)," +
+                    "NODEA CHAR(36), " +
+                    "NODEB CHAR(36), " +
+                    "COST DOUBLE, " +
+                    "FLOOR_ID VARCHAR(25), " +
                     "CONSTRAINT EDGE_NODE_NODE_ID_FKA FOREIGN KEY (NODEA) REFERENCES NODE (NODE_ID)," +
                     "CONSTRAINT EDGE_NODE_NODE_ID_FKB FOREIGN KEY (NODEB) REFERENCES NODE (NODE_ID)," +
                     "CONSTRAINT EDGE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
-            "CREATE TABLE USER1.SUITE_DOC (SUITE_ID INT," +
-                    "DOC_ID INT," +
+            "CREATE TABLE USER1.SUITE_DOC (SUITE_ID CHAR(36), " +
+                    "DOC_ID CHAR(36), " +
                     "CONSTRAINT SUITE_DOC_SUITE_SUITE_ID_FK1 FOREIGN KEY (SUITE_ID) REFERENCES SUITE (SUITE_ID)," +
                     "CONSTRAINT SUITE_DOC_DOCTOR_DOCTOR_ID_FK2 FOREIGN KEY (DOC_ID) REFERENCES DOCTOR (DOC_ID))"};
 
@@ -128,78 +117,64 @@ public class DatabaseManager {
         s = conn.createStatement();
 
         HashMap<Integer, Building> buildings = new HashMap<>();
-        HashMap<Integer, MapNode> mapNodes = new HashMap<>();
+        HashMap<UUID, MapNode> mapNodes = new HashMap<>();
         HashMap<Integer, NodeEdge> nodeEdges = new HashMap<>();
 
-        int maxNode = 0;
-        ResultSet nodeID = s.executeQuery("select max(NODE_ID) FROM NODE");
-        if (nodeID.next()) {
-            maxNode = nodeID.getInt(1);
-        }
-        System.out.println(maxNode);
-
-        int maxDoc = 0;
-        ResultSet docID = s.executeQuery("select max(DOC_ID) FROM DOCTOR");
-        if (docID.next()) {
-            maxDoc = docID.getInt(1);
-        }
-        System.out.println(maxDoc);
-
-        int maxSuite = 0;
-        ResultSet suiteID = s.executeQuery("select max(SUITE_ID) FROM SUITE");
-        if (suiteID.next()) {
-            maxSuite = suiteID.getInt(1);
-        }
-        System.out.println(maxSuite);
-
         ResultSet rs = s.executeQuery("select * from BUILDING ORDER BY NAME DESC");
-
-
 
         while (rs.next()) {
             HashMap<String, Floor> flr = new HashMap();
             floorsPS.setInt(1,rs.getInt(1));
             ResultSet floorRS = floorsPS.executeQuery();
             while(floorRS.next()) {
-                HashMap<Integer, MapNode> nodes = new HashMap<>();
+                HashMap<UUID, MapNode> nodes = new HashMap<>();
                 nodesPS.setString(1, floorRS.getString(1));
                 ResultSet nodeRS = nodesPS.executeQuery();
                 while(nodeRS.next()) {
-                    nodes.put(nodeRS.getInt(1),
-                            new MapNode(nodeRS.getInt(1),
-                                    nodeRS.getInt(2),
-                                    nodeRS.getInt(3),
+                    System.out.println("Here I am");
+                    nodes.put(UUID.fromString(nodeRS.getString(1)),
+                            new MapNode(UUID.fromString(nodeRS.getString(1)),
+                                    nodeRS.getDouble(2),
+                                    nodeRS.getDouble(3),
                                     nodeRS.getInt(5)));
-                    mapNodes.put(nodeRS.getInt(1),
-                            new MapNode(nodeRS.getInt(1),
-                                    nodeRS.getInt(2),
-                                    nodeRS.getInt(3),
+                    System.out.println("Here I am");
+                    mapNodes.put(UUID.fromString(nodeRS.getString(1)),
+                            new MapNode(UUID.fromString(nodeRS.getString(1)),
+                                    nodeRS.getDouble(2),
+                                    nodeRS.getDouble(3),
                                     nodeRS.getInt(5)));
                 }
+
                 HashMap<Integer, NodeEdge> edges = new HashMap<>();
+                // select all edges that have floorID of current floor we are loading
                 edgesPS.setString(1, floorRS.getString(1));
                 ResultSet edgeRS = edgesPS.executeQuery();
                 while(edgeRS.next()) {
+                    System.out.println("Added Edge to" + floorRS.getString(1));
+                    // stores nodeEdges per floor
                     edges.put(edgeRS.getInt(1),
-                            new NodeEdge(mapNodes.get(edgeRS.getInt(2)),
-                                    mapNodes.get(edgeRS.getInt(3)),
+                            new NodeEdge(mapNodes.get(UUID.fromString(edgeRS.getString(2))),
+                                    mapNodes.get(UUID.fromString(edgeRS.getString(3))),
                                     edgeRS.getInt(4)));
+                    // stores all nodeEdges
                     nodeEdges.put(edgeRS.getInt(1),
-                            new NodeEdge(mapNodes.get(edgeRS.getInt(2)),
-                                    mapNodes.get(edgeRS.getInt(3)),
+                            new NodeEdge(mapNodes.get(UUID.fromString(edgeRS.getString(2))),
+                                    mapNodes.get(UUID.fromString(edgeRS.getString(3))),
                                     edgeRS.getInt(4)));
                 }
+                System.out.println(edges);
+                System.out.println(nodeEdges);
 
+                Floor tempFloor = new Floor(floorRS.getInt(3));
                 // add floor to list of floors for current building
-                flr.put(floorRS.getString(1),
-                        new Floor(floorRS.getInt(3)));
+                flr.put(floorRS.getString(1), tempFloor);
                 // add correct mapNodes to their respective floor
                 for (MapNode n : nodes.values()) {
-                    flr.get(floorRS.getString(1)).addNode(n);
+                    tempFloor.addNode(n);
                 }
                 // add correct nodeEdges to their respective floor
                 for (NodeEdge e : edges.values()) {
-                    flr.get(floorRS.getString(1)).addEdge(e);
+                    tempFloor.addEdge(e);
                 }
 
             }
@@ -226,8 +201,7 @@ public class DatabaseManager {
         System.out.println(h.getBuildings());
 
         // loading doctors, suites, and offices to hospital
-        HashMap<String, Suite> suites = new HashMap<>();
-        HashMap<Integer, Suite> suitesID = new HashMap<>();
+        HashMap<UUID, Suite> suitesID = new HashMap<>();
         HashMap<String, Doctor> doctors = new HashMap<>();
         HashMap<String, Office> offices = new HashMap<>();
         PreparedStatement suiteDoc = conn.prepareStatement("select suite_id from USER1.SUITE_DOC where doc_id = ?");
@@ -235,41 +209,36 @@ public class DatabaseManager {
 
         rs = s.executeQuery("select * from USER1.SUITE");
         while (rs.next()) {
-            suites.put(rs.getString(2),
-                    new Suite(rs.getInt(1),
-                            rs.getString(2),
-                            mapNodes.get(rs.getInt(3))));
 
-            suitesID.put(rs.getInt(1),
-                    new Suite(rs.getInt(1),
-                            rs.getString(2),
-                            mapNodes.get(rs.getInt(3))));
-            h.addSuites(rs.getString(2),
-                    new Suite(rs.getInt(1),
-                            rs.getString(2),
-                            mapNodes.get(rs.getInt(3))));
+            suitesID.put(UUID.fromString(rs.getString(1)),
+                    new Suite(UUID.fromString(rs.getString(1)),
+                            rs.getString(2)));
+
+            h.addSuites(UUID.fromString(rs.getString(1)),
+                    new Suite(UUID.fromString(rs.getString(1)),
+                            rs.getString(2)));
         }
-        this.suites = suites;
+        this.suites = suitesID;
         System.out.println(suites.keySet());
 
         rs = s.executeQuery("select * from USER1.DOCTOR order by NAME");
 
         while(rs.next()) {
             HashSet<Suite> locations = new HashSet<>();
-            suiteDoc.setInt(1, rs.getInt(1));
+            suiteDoc.setString(1, rs.getString(1));
             ResultSet results = suiteDoc.executeQuery();
             while(results.next()) {
-                locations.add(suitesID.get(results.getInt(1)));
+                locations.add(suitesID.get(results.getString(1)));
             }
 
             doctors.put(rs.getString(2),
-                    new Doctor(rs.getInt(1),
+                    new Doctor(UUID.fromString(rs.getString(1)),
                             rs.getString(2),
                             rs.getString(3),
                             rs.getString(5),
                             locations));
             h.addDoctors(rs.getString(2),
-                    new Doctor(rs.getInt(1),
+                    new Doctor(UUID.fromString(rs.getString(1)),
                             rs.getString(2),
                             rs.getString(3),
                             rs.getString(5),
@@ -281,13 +250,13 @@ public class DatabaseManager {
         rs = s.executeQuery("select * from OFFICES");
         while(rs.next()) {
             offices.put(rs.getString(2),
-                    new Office(rs.getInt(1),
+                    new Office(UUID.fromString(rs.getString(1)),
                             rs.getString(2),
-                            suitesID.get(rs.getInt(3))));
+                            suitesID.get(rs.getString(3))));
             h.addOffices(rs.getString(2),
-                    new Office(rs.getInt(1),
+                    new Office(UUID.fromString(rs.getString(1)),
                             rs.getString(2),
-                            suitesID.get(rs.getInt(3))));
+                            (suitesID.get(rs.getString(3)))));
         }
         this.offices = offices;
         System.out.println(offices);
@@ -317,7 +286,7 @@ public class DatabaseManager {
             int edgesCount = 1;
             // insert floors into database
             for (Floor f : b.getFloors()) {
-                String floorID = "" + b.getName().charAt(0) + Integer.toString(f.getFloorNumber()) + "";
+                String floorID = "" + b.getName() + Integer.toString(f.getFloorNumber()) + "";
                 insertFloors.setString(1, floorID);
                 insertFloors.setInt(2, counter);
                 insertFloors.setInt(3, f.getFloorNumber());
@@ -326,7 +295,7 @@ public class DatabaseManager {
 
                 // insert nodes into database
                 for (MapNode n : f.getFloorNodes()) {
-                    insertNodes.setInt(1, n.getNodeID());
+                    insertNodes.setString(1, n.getNodeID().toString());
                     insertNodes.setDouble(2, n.getPosX());
                     insertNodes.setDouble(3, n.getPosY());
                     insertNodes.setString(4, floorID);
@@ -337,8 +306,8 @@ public class DatabaseManager {
                 // insert edges into database
                 for (NodeEdge edge : f.getFloorEdges()) {
                     insertEdges.setInt(1, edgesCount);
-                    insertEdges.setInt(2, edge.getSource().getNodeID());
-                    insertEdges.setInt(3, edge.getOtherNode(edge.getSource()).getNodeID());
+                    insertEdges.setString(2, edge.getSource().getNodeID().toString());
+                    insertEdges.setString(3, edge.getOtherNode(edge.getSource()).getNodeID().toString());
                     insertEdges.setDouble(4, edge.getCost());
                     insertEdges.setString(5, floorID);
                     insertEdges.executeUpdate();
@@ -352,16 +321,16 @@ public class DatabaseManager {
         System.out.println("Here");
         // saves Suites
         for (Suite suite : h.getSuites().values()) {
-            insertSuites.setInt(1, suite.getSuiteID());
+            insertSuites.setString(1, suite.getSuiteID().toString());
             insertSuites.setString(2, suite.getName());
-            insertSuites.setInt(3, suite.getLocation().getNodeID());
+            insertSuites.setString(3, suite.getLocation().getNodeID().toString());
             insertSuites.executeUpdate();
             conn.commit();
         }
         // saves Doctors
         for (Doctor doc : h.getDoctors().values()) {
             System.out.println("Here");
-            insertDoctors.setInt(1, doc.getDocID());
+            insertDoctors.setString(1, doc.getDocID().toString());
             insertDoctors.setString(2, doc.getName());
             insertDoctors.setString(3, doc.getDescription());
             insertDoctors.setString(4, "");
@@ -370,8 +339,8 @@ public class DatabaseManager {
             conn.commit();
             // saves Suite and Doctor Relationships
             for (Suite ste : doc.getSuites()) {
-                insertAssoc.setInt(1, ste.getSuiteID());
-                insertAssoc.setInt(2, doc.getDocID());
+                insertAssoc.setString(1, ste.getSuiteID().toString());
+                insertAssoc.setString(2, doc.getDocID().toString());
                 System.out.println("Here");
                 insertAssoc.executeUpdate();
                 conn.commit();
@@ -380,9 +349,9 @@ public class DatabaseManager {
         }
         // saves Offices
         for (Office office : h.getOffices().values()) {
-            insertOffices.setInt(1, office.getId());
+            insertOffices.setString(1, office.getId().toString());
             insertOffices.setString(2, office.getName());
-            insertOffices.setInt(3, office.getSuite().getSuiteID());
+            insertOffices.setString(3, office.getSuite().getSuiteID().toString());
             insertOffices.executeUpdate();
             conn.commit();
         }
@@ -478,6 +447,8 @@ public class DatabaseManager {
            }
         statements.add(s);
         loadData();
+        //executeStatements(dropTables);
+        //executeStatements(createTables);
     }
 
     public static DatabaseManager getInstance() {
