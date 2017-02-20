@@ -65,6 +65,8 @@ public class Guidance extends Path {
 
     public void createTextDirections(boolean vFlag) {
         LinkedList<String> tempTextDirections = new LinkedList<String>();
+        LinkedList<MapNode> tempMapNodes = new LinkedList<>();
+        LinkedList<NodeEdge> tempNodeEdges = new LinkedList<>();
         int prevDirection = kioskDirection;
         MapNode fromNode = new MapNode();
         MapNode toNode = new MapNode();
@@ -73,6 +75,8 @@ public class Guidance extends Path {
 
         //Add the first node to the textual directions
         tempTextDirections.add("Start at the Kiosk. (Node " + pathNodes.get(0).getNodeID() + ")");
+        tempMapNodes.add(pathNodes.get(0));
+
 
         for (int i = 0; i < this.pathNodes.size() - 1; i++) {
 
@@ -123,6 +127,7 @@ public class Guidance extends Path {
                 if(intersectionsPassed  == 0) {
                     if (vFlag) {
                         tempTextDirections.add("Turn " + directionChangeString + " at the next intersection; ID: " + fromNode.getNodeID());
+                        //tempMapNodes.add();
                     } else {
                         tempTextDirections.add("Turn " + directionChangeString + " at the next intersection.");
 
