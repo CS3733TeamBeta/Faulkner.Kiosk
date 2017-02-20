@@ -8,13 +8,17 @@ import java.util.HashSet;
 public class Suite {
 
     int suiteID;
-    String name;
-    MapNode location;
+    //String name;
+    //MapNode location;
+    private String name;
+    private MapNode location;
+    private String phoneNum;
 
     public Suite(int id, String name, MapNode location) {
         this.suiteID = id;
         this.name = name;
         this.location = location;
+        this.phoneNum = "NA";
     }
 
     public int getSuiteID() {
@@ -28,5 +32,7 @@ public class Suite {
     public MapNode getLocation() {
         return this.location;
     }
+
+    public String getPhoneNum() { return this.phoneNum; }
 
 }

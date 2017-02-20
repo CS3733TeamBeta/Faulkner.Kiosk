@@ -4,10 +4,7 @@ import Controller.AbstractController;
 import Controller.DragDropMain;
 import Controller.Main;
 import Controller.SceneSwitcher;
-import Domain.Map.Doctor;
-import Domain.Map.Hospital;
-import Domain.Map.MapNode;
-import Domain.Map.NodeEdge;
+import Domain.Map.*;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
@@ -95,6 +92,15 @@ public class UserMapViewController extends AbstractController {
 
     @FXML
     TableView deptTable;
+
+    @FXML
+    TableColumn deptName;
+
+    @FXML
+    TableColumn deptPhoneNum;
+
+    @FXML
+    TableColumn deptLocation;
 
     @FXML
     TableView doctorTable;
@@ -187,6 +193,8 @@ public class UserMapViewController extends AbstractController {
         searchMenu.toFront();
     }
 
+
+
     @FXML
     private void initialize()
     {
@@ -194,6 +202,11 @@ public class UserMapViewController extends AbstractController {
         renderInitialMap();
 
         emailButton.setVisible(false);
+
+        LoadTableData();
+
+
+
     }
 
     private void setupImportedNode(MapNode droppedNode){
@@ -274,6 +287,7 @@ public class UserMapViewController extends AbstractController {
         doctorTable.setVisible(false);
         searchBar.setPromptText("Search for Departments");
 
+
         // Title shown
         welcomeGreeting.setVisible(true);
     }
@@ -309,6 +323,9 @@ public class UserMapViewController extends AbstractController {
                 numClickHelp = 0;
 
                 searchBar.clear();
+
+
+
             }
 
             navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
@@ -333,10 +350,15 @@ public class UserMapViewController extends AbstractController {
         menuSlideUp.play();
     }
 
+    public void noneSelected()
+    {
+        loadMenu();
+
+
+    }
     public void doctorSelected()
     {
         loadMenu();
-        initialize();
         numClickDr = numClickDr + 1;
         numClickHelp = 0;
         numClickBath = 0;
@@ -345,38 +367,7 @@ public class UserMapViewController extends AbstractController {
                //public void initialize() {
 
         // Setting up the columns of the TableView
-        docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
-        jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
-        docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
-        Collection<Doctor> doctrine = Faulkner.getDoctors().values();
-        ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
 
-        // Enabling a search function for the text field.
-        FilteredList<Doctor> filtered = new FilteredList<>(Main.FaulknerHospitalDirectory);
-        searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            filtered.setPredicate((Predicate<? super Doctor>) profile -> {
-
-                // By default, the entire directory is displayed
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                // Compare the name of the doctor with filter text
-                String lowerCaseFilter = newValue.toLowerCase();
-
-                // Checks if filter matches
-                if (profile.getName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-
-                // Filter does not match
-                return false;
-            });
-
-        });
-        doctorTable.setItems(doctors);
-
-        
 
         if (numClickDr == 2)
         {
@@ -497,5 +488,51 @@ public class UserMapViewController extends AbstractController {
             System.out.println("Not a valid address!");
             //@TODO Show in ui email was invalid
         }
+    }
+
+
+    private void LoadTableData()
+    {
+        docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
+        jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
+        docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
+        Collection<Doctor> doctrine = Faulkner.getDoctors().values();
+        ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
+/*
+        // Enabling a search function for the text field.
+        FilteredList<Doctor> filtered = new FilteredList<>(Main.FaulknerHospitalDirectory);
+        searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            filtered.setPredicate((Predicate<? super Doctor>) profile -> {
+
+                // By default, the entire directory is displayed
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                // Compare the name of the doctor with filter text
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                // Checks if filter matches
+                if (profile.getName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+
+                // Filter does not match
+                return false;
+            });
+
+        });*/
+        doctorTable.setItems(doctors);
+
+
+
+        deptName.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
+        deptPhoneNum.setCellValueFactory(new PropertyValueFactory<Office, String>("phoneNum"));
+        deptLocation.setCellValueFactory(new PropertyValueFactory<Office, String>("location"));
+        Collection<Suite> suiteVal = Faulkner.getSuites().values();
+        ObservableList<Suite> suites = FXCollections.observableArrayList(suiteVal);
+
+        doctorTable.setItems(suites);
+
     }
 }

@@ -38,8 +38,7 @@ public class Main extends Application {
 
 
     public static AdminList admins;    // For testing purposes
-    public static final ObservableList<String> departments =
-            FXCollections.observableArrayList();
+    public static final ObservableList<String> departments = FXCollections.observableArrayList();
 
     public static final ObservableList<Doctor> FaulknerHospitalDirectory = FXCollections.observableArrayList();
 
