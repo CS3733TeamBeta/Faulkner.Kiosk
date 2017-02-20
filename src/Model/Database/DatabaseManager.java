@@ -1,8 +1,6 @@
 package Model.Database;
 
 import Domain.Map.*;
-import Model.Database.CustomFilePath;
-
 
 import java.sql.*;
 import java.util.*;
@@ -173,6 +171,8 @@ public class DatabaseManager {
         }
         statements.add(s);
         loadData();
+        //executeStatements(dropTables);
+        //executeStatements(createTables);
     }
 
     public static DatabaseManager getInstance() {
@@ -284,6 +284,7 @@ public class DatabaseManager {
                 System.out.println(nodeEdges);
 
                 Floor tempFloor = new Floor(floorRS.getInt(3));
+                tempFloor.setImageLocation(floorRS.getString(4));
                 // add floor to list of floors for current building
                 flr.put(floorRS.getString(1), tempFloor);
 
@@ -414,6 +415,9 @@ public class DatabaseManager {
 
                 // insert nodes into database
                 for (MapNode n : f.getFloorNodes()) {
+                    if (n instanceof Suite) {
+                        h.addSuites(((Suite) n).getSuiteID(),(Suite)n);
+                    }
                     insertNodes.setString(1, n.getNodeID().toString());
                     insertNodes.setDouble(2, n.getPosX());
                     insertNodes.setDouble(3, n.getPosY());
@@ -442,7 +446,7 @@ public class DatabaseManager {
         for (Suite suite : h.getSuites().values()) {
             insertSuites.setString(1, suite.getSuiteID().toString());
             insertSuites.setString(2, suite.getName());
-            insertSuites.setString(3, suite.getLocation().getNodeID().toString());
+            insertSuites.setString(3, suite.getNodeID().toString());
             insertSuites.executeUpdate();
             conn.commit();
         }
