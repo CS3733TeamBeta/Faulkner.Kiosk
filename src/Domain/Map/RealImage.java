@@ -18,7 +18,6 @@ public class RealImage implements Image {
     public RealImage(String fileName) {
         this.fileName = fileName;
         this.img = null;
-        loadFromDisk(fileName);
     }
 
     // Getter for image in this class
@@ -32,8 +31,8 @@ public class RealImage implements Image {
 
     @Override
     public void display() {
+        loadFromDisk(fileName);
         System.out.println("Displaying " + fileName);
-        // TODO: Make display return the required format to update the map image
     }
 
     private void loadFromDisk(String fileName) {
