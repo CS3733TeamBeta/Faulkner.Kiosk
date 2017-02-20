@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeTableColumn?>
@@ -138,11 +137,6 @@
                   <Image url="@MapViewer/magnifying_glass.png" />
                </image>
             </ImageView>
-            <JFXButton fx:id="emailButton" layoutX="766.0" layoutY="90.0" onAction="#onEmailDirections" prefHeight="54.0" prefWidth="233.0" style="-fx-background-color: #3F51B5;" text="Send Directions &gt;" textFill="WHITE">
-               <font>
-                  <Font size="19.0" />
-               </font>
-            </JFXButton>
          </children>
       </AnchorPane>
       <ImageView fx:id="adminLogin" fitHeight="42.0" fitWidth="41.0" layoutX="900.0" layoutY="89.0" onMouseClicked="#adminLogin" opacity="0.21" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">
