@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -126,30 +127,41 @@
       </HBox>
       <JFXButton fx:id="mapBuilder" layoutX="750.0" layoutY="564.0" maxHeight="60.0" prefHeight="26.0" prefWidth="420.0" style="-fx-background-color: #3F51B5;" text="Go To Map Builder" textFill="WHITE" AnchorPane.bottomAnchor="110.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="564.0" />
       <TextField fx:id="searchForLoc" layoutX="897.0" layoutY="272.0" prefHeight="25.0" prefWidth="223.0" promptText="Search a location to add" AnchorPane.rightAnchor="80.0" />
-      <JFXListView fx:id="locAssigned" layoutX="730.0" layoutY="317.0" onMouseClicked="#showDelOption" prefHeight="185.0" prefWidth="420.0" AnchorPane.rightAnchor="50.0" />
-      <AnchorPane fx:id="deptDirectory" layoutX="430.0" layoutY="746.0" onMouseClicked="#changeDirectory" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #191970;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="620.0">
+      <JFXListView fx:id="locAssigned" layoutX="730.0" layoutY="317.0" onMouseClicked="#delAssignedLoc" prefHeight="185.0" prefWidth="420.0" AnchorPane.rightAnchor="50.0" />
+      <AnchorPane fx:id="deptDirectory" layoutX="430.0" layoutY="746.0" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #191970;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="620.0">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="390.0" layoutY="33.0" text="Faulkner Hospital Departments Directory" textAlignment="CENTER" textFill="WHITE" AnchorPane.leftAnchor="350.0" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="20.0">
+            <Label fx:id="deptDirectoryTab" alignment="CENTER" contentDisplay="CENTER" layoutX="390.0" layoutY="33.0" onMouseClicked="#changeDirectory" text="Faulkner Hospital Departments Directory" textAlignment="CENTER" textFill="WHITE" AnchorPane.leftAnchor="350.0" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="25.0">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <TableView fx:id="deptDataTable" onMouseClicked="#showDeptOptions" editable="true" layoutX="465.0" layoutY="215.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="150.0">
+            <TableView fx:id="deptDataTable" layoutX="465.0" layoutY="215.0" onMouseClicked="#showDeptOptions" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="160.0">
               <columns>
                 <TableColumn fx:id="deptNameCol" prefWidth="821.6666717529297" text="Department Name" />
                 <TableColumn fx:id="deptLocCol" prefWidth="177.3333282470703" text="Assigned Location" />
               </columns>
             </TableView>
-            <JFXTextField fx:id="searchDeptBar" layoutX="472.0" layoutY="79.0" prefHeight="20.0" prefWidth="200.0" promptText="Search for a Department" unFocusColor="WHITE" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="150.0">
+            <JFXTextField fx:id="searchDeptBar" layoutX="100.0" layoutY="76.0" prefHeight="20.0" prefWidth="200.0" promptText="Search for a Department" unFocusColor="WHITE" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="150.0">
                <font>
                   <Font size="18.0" />
                </font>
             </JFXTextField>
-            <ImageView fx:id="addDeptIcon" fitHeight="25.0" fitWidth="24.0" layoutX="1076.0" layoutY="100.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="111.0">
+            <ImageView fx:id="addDeptIcon" fitHeight="25.0" fitWidth="24.0" layoutX="1065.0" layoutY="97.0" onMouseClicked="#showEditor" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="111.0">
                <image>
                   <Image url="@../User/resources/plus_icon.png" />
                </image>
             </ImageView>
+            <HBox fx:id="editDeptFields" layoutX="100.0" layoutY="125.0" prefHeight="28.0" prefWidth="250.0" spacing="40.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0">
+               <children>
+                  <TextField fx:id="deptNameField" prefHeight="25.0" prefWidth="653.0" promptText="Department Name" />
+                  <TextField fx:id="assignedLocField" prefHeight="25.0" prefWidth="220.0" promptText="Assign to" />
+                  <Button fx:id="editorButton" mnemonicParsing="false" onAction="#deptEditOperation" text="Add">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
          </children>
       </AnchorPane>
    </children>

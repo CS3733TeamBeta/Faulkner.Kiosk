@@ -35,8 +35,16 @@ public class Office extends Destination
         return this.name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Suite getSuite() {
         return this.suite;
+    }
+
+    public void setSuite(Suite suite) {
+        this.suite = suite;
     }
 
     @Override

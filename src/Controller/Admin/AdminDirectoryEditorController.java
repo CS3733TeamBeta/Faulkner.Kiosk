@@ -6,6 +6,7 @@ import Domain.Map.Office;
 import Domain.Map.Suite;
 import Model.Database.DatabaseManager;
 import com.jfoenix.controls.*;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -23,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.animation.KeyValue;
+import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
@@ -44,6 +46,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
     private ObservableList<String> departments = FXCollections.observableArrayList();
     Boolean deptDirectoryUp = false;
     ObservableList<String> locations = FXCollections.observableArrayList();
+    ObservableList<String> existingSuites = FXCollections.observableArrayList(Faulkner.getSuites().keySet());
 
     @FXML
     private JFXTextField searchBar, firstName, lastName, description;
@@ -98,6 +101,15 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
     @FXML
     private TableColumn<Office, String> deptLocCol;
+
+    @FXML
+    private HBox editDeptFields;
+
+    @FXML
+    private TextField deptNameField, assignedLocField;
+
+    @FXML
+    private Button editorButton;
 
 
     public AdminDirectoryEditorController() {
@@ -156,9 +168,6 @@ public class AdminDirectoryEditorController  extends AbstractController {
         // Set table data
         dataTable.setItems(sorted);
 
-        Set s = Faulkner.getSuites().keySet();
-        ObservableList<String> existingSuites = FXCollections.observableArrayList(s);
-
         TextFields.bindAutoCompletion(searchForLoc, existingSuites);
 
         searchForLoc.setOnKeyPressed((KeyEvent e) -> {
@@ -183,116 +192,41 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
     }
 
-    public void initializeDeptDirectory() {
-        searchDeptBar.clear();
-        searchDeptBar.setStyle("-fx-text-inner-color: white;");
-        //Tooltip.install(addDeptIcon, (new Tooltip("Add a department")));
-
-        deptNameCol.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
-        deptLocCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Office, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Office, String> p) {
-               return new ReadOnlyObjectWrapper(p.getValue().getSuite().getName());
-            }
-        });
-
-        ObservableList<Office> offices = FXCollections.observableArrayList(Faulkner.getOffices().values());
-        deptDataTable.setItems(offices);
-
-        // Creating list of data to be filtered
-        FilteredList<Office> filtered = new FilteredList<>(offices);
-
-        // Adding a listener to the search bar, filtering through the data as the user types
-        searchDeptBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            filtered.setPredicate((Predicate<? super Office>) o -> {
-                // By default, the entire directory is displayed
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                // Compare first name and last name of every person with filter text.
-                String lowerCaseFilter = newValue.toLowerCase();
-
-                // Checks if filter matches
-                if (o.getName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-
-                // Filter does not match
-                return false;
-            });
-        });
-
-        // Create a sorted list for the filtered data list
-        SortedList<Office> sorted = new SortedList<>(filtered);
-        // Bind the sorted list to table
-        sorted.comparatorProperty().bind(deptDataTable.comparatorProperty());
-        // Set table data
-        deptDataTable.setItems(sorted);
-
-    }
-
     public void addToAssignedDept(String location) {
         locations.add(location);
         locAssigned.setItems(locations);
         searchForLoc.clear();
     }
 
-    public void editTable() {
-        deptLocCol.setEditable(true);
-
-    }
-
-    @FXML
-    private void showDeptOptions() {
-        MenuItem edit = new MenuItem("Edit");
-        MenuItem delete = new MenuItem("Delete");
-
-
-        edit.setOnAction((ActionEvent e) -> {
-            Office o = deptDataTable.getSelectionModel().getSelectedItem();
-
-            editTable();
-        });
-
-        delete.setOnAction((ActionEvent e) -> {
-            System.out.println("Dept Data Table selected.");
-            Office o = deptDataTable.getSelectionModel().getSelectedItem();
-
-            System.out.println(o.getName());
-            Faulkner.getOffices().remove(o.getName());
-            System.out.println("office removed.");
-            initializeDeptDirectory();
-        });
-
-        ContextMenu options = new ContextMenu();
-        options.getItems().addAll(edit, delete);
-        deptDataTable.setContextMenu(options);
-    }
-
-
     @FXML
     private void showDelOption() {
         MenuItem delete = new MenuItem("Delete");
+        ContextMenu options = new ContextMenu();
+        options.getItems().add(delete);
+        dataTable.setContextMenu(options);
 
         delete.setOnAction((ActionEvent e) -> {
-            if (e.getSource() == locAssigned) {
-                String s = locAssigned.getSelectionModel().getSelectedItem();
-
-                locations.remove(s);
-            } else {
                 Doctor d = dataTable.getSelectionModel().getSelectedItem();
 
                 Faulkner.getDoctors().remove(d.getName());
 
                 reset();
                 initialize();
-            }
         });
+    }
 
+    @FXML
+    private void delAssignedLoc() {
+        MenuItem delete = new MenuItem("Delete");
         ContextMenu options = new ContextMenu();
         options.getItems().add(delete);
-        dataTable.setContextMenu(options);
         locAssigned.setContextMenu(options);
+
+        delete.setOnAction((ActionEvent e) -> {
+            String s = locAssigned.getSelectionModel().getSelectedItem();
+
+            locations.remove(s);
+        });
     }
 
     @FXML
@@ -318,6 +252,62 @@ public class AdminDirectoryEditorController  extends AbstractController {
         endTime.clear();
     }
 
+    private Boolean isProcessable() {
+        if (firstName.getText() == null || (firstName.getText().isEmpty())){
+            return false;
+        }
+
+        if (startTime.getText() == null || (startTime.getText().isEmpty())){
+            return false;
+        }
+
+        if (endTime.getText() == null || (endTime.getText().isEmpty())){
+            return false;
+        }
+
+        if (locations.isEmpty()) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    @FXML
+    private void displaySelectedDocInfo() {
+        showDelOption();
+        delAssignedLoc();
+        searchForLoc.clear();
+        locAssigned.getItems().clear();
+
+        Doctor selectedDoc = dataTable.getSelectionModel().getSelectedItem();
+
+        firstName.setText(selectedDoc.splitName()[1]);
+        lastName.setText(selectedDoc.splitName()[0]);
+        description.setText(selectedDoc.getDescription());
+
+        if (!(selectedDoc.splitPhoneNum()[0].equals(selectedDoc.getPhoneNum()))) {
+            phoneNum1.setText(selectedDoc.splitPhoneNum()[0]);
+            phoneNum2.setText(selectedDoc.splitPhoneNum()[1]);
+            phoneNum3.setText(selectedDoc.splitPhoneNum()[2]);
+        } else {
+            phoneNum1.clear();
+            phoneNum2.clear();
+            phoneNum3.clear();
+        }
+
+        startTime.setText(selectedDoc.splitHours()[0]);
+        endTime.setText(selectedDoc.splitHours()[1]);
+
+        HashSet<Suite> assignedSuites = selectedDoc.getSuites();
+
+        // Assigning to a suite = location
+        for (Suite s: assignedSuites) {
+                locations.add(s.getName());
+        }
+
+        locAssigned.setItems(locations);
+    }
 
     @FXML
     private void saveProfile() {
@@ -381,73 +371,56 @@ public class AdminDirectoryEditorController  extends AbstractController {
         Faulkner.getDoctors().put(name, newDoc);
     }
 
-    private Boolean isProcessable() {
-        if (firstName.getText() == null || (firstName.getText().isEmpty())){
-            return false;
-        }
+    //---------------------------------------------------------------------- (Dept directory)
 
-        if (startTime.getText() == null || (startTime.getText().isEmpty())){
-            return false;
-        }
+    public void initializeDeptDirectory() {
+        searchDeptBar.clear();
+        searchDeptBar.setStyle("-fx-text-inner-color: white;");
+        //Tooltip.install(addDeptIcon, (new Tooltip("Add a department")));
 
-        if (endTime.getText() == null || (endTime.getText().isEmpty())){
-            return false;
-        }
+        deptNameCol.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
+        deptLocCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Office, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Office, String> p) {
+                return new ReadOnlyObjectWrapper(p.getValue().getSuite().getName());
+            }
+        });
 
-        if (locations.isEmpty()) {
-            return false;
-        }
+        ObservableList<Office> offices = FXCollections.observableArrayList(Faulkner.getOffices().values());
+        deptDataTable.setItems(offices);
 
-        return true;
-    }
+        // Creating list of data to be filtered
+        FilteredList<Office> filtered = new FilteredList<>(offices);
 
-
-    @FXML
-    private void displaySelectedDocInfo() {
-        showDelOption();
-        searchForLoc.clear();
-        locAssigned.getItems().clear();
-
-        Doctor selectedDoc = dataTable.getSelectionModel().getSelectedItem();
-
-        firstName.setText(selectedDoc.splitName()[1]);
-        lastName.setText(selectedDoc.splitName()[0]);
-        description.setText(selectedDoc.getDescription());
-
-        if (!(selectedDoc.splitPhoneNum()[0].equals(selectedDoc.getPhoneNum()))) {
-            phoneNum1.setText(selectedDoc.splitPhoneNum()[0]);
-            phoneNum2.setText(selectedDoc.splitPhoneNum()[1]);
-            phoneNum3.setText(selectedDoc.splitPhoneNum()[2]);
-        } else {
-            phoneNum1.clear();
-            phoneNum2.clear();
-            phoneNum3.clear();
-        }
-
-        startTime.setText(selectedDoc.splitHours()[0]);
-        endTime.setText(selectedDoc.splitHours()[1]);
-
-        HashSet<Suite> assignedSuites = selectedDoc.getSuites();
-
-        // Assigning to a suite = location
-        for (Suite s: assignedSuites) {
-                locations.add(s.getName());
-
-                // Should we have a department directory (change the location of depts?)
-                // I do not think we are provided with the departments with the doctors are in?
-                // IF we do, should we have a office_doc table? Where would that information be saved?
-
-                /*
-                // With suite, find offices = department names
-                for (Office o: Faulkner.getOffices().values()) {
-                    if (o.getSuite() == s) {
-                        departments.add(o.getName());
-                    }
+        // Adding a listener to the search bar, filtering through the data as the user types
+        searchDeptBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            filtered.setPredicate((Predicate<? super Office>) o -> {
+                // By default, the entire directory is displayed
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
                 }
-                */
-        }
 
-        locAssigned.setItems(locations);
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                // Checks if filter matches
+                if (o.getName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+
+                // Filter does not match
+                return false;
+            });
+        });
+
+        // Create a sorted list for the filtered data list
+        SortedList<Office> sorted = new SortedList<>(filtered);
+        // Bind the sorted list to table
+        sorted.comparatorProperty().bind(deptDataTable.comparatorProperty());
+        // Set table data
+        deptDataTable.setItems(sorted);
+
+        editDeptFields.setVisible(false);
+        editorButton.setText("Add");
     }
 
     @FXML
@@ -468,10 +441,110 @@ public class AdminDirectoryEditorController  extends AbstractController {
                     -(deptDirectory.getHeight() - 80));
             keyFrame = new KeyFrame(Duration.millis(600), keyValue);
             deptDirectoryUp = true;
+            editDeptFields.setVisible(false);
         }
 
         directorySlide.getKeyFrames().add(keyFrame);
         directorySlide.play();
+    }
+
+    @FXML
+    private void showEditor() {
+        editorButton.setText("Add");
+        editDeptFields.setVisible(true);
+        FadeTransition ft = new FadeTransition(Duration.millis(1500), editDeptFields);
+
+        ft.setFromValue(0);
+        ft.setToValue(1.0);
+        ft.setAutoReverse(true);
+        ft.play();
+        TextFields.bindAutoCompletion(assignedLocField, existingSuites);
+    }
+
+    @FXML
+    private void showDeptOptions() {
+        MenuItem edit = new MenuItem("Edit");
+        MenuItem delete = new MenuItem("Delete");
+
+
+        edit.setOnAction((ActionEvent e) -> {
+            Office o = deptDataTable.getSelectionModel().getSelectedItem();
+
+            editorButton.setText("Save");
+            showEditor();
+
+            deptNameField.setText(o.getName());
+            assignedLocField.setText(o.getSuite().getName());
+        });
+
+        delete.setOnAction((ActionEvent e) -> {
+            Office o = deptDataTable.getSelectionModel().getSelectedItem();
+
+            System.out.println(o.getName());
+            Faulkner.getOffices().remove(o.getName());
+            initializeDeptDirectory();
+        });
+
+        ContextMenu options = new ContextMenu();
+        options.getItems().addAll(edit, delete);
+        deptDataTable.setContextMenu(options);
+    }
+
+    @FXML
+    private void deptEditOperation() {
+        if (editorProcessable()) {
+            int id;
+            String deptName = deptNameField.getText();
+            Suite assignedSuite = new Suite();
+
+            for (String s: Faulkner.getSuites().keySet()) {
+                if (s.equals(assignedLocField.getText())) {
+                    assignedSuite = Faulkner.getSuites().get(s);
+                    break;
+                }
+            }
+
+            switch (editorButton.getText()) {
+                case "add":
+                    id = 0; // There must be a way to randomly generate an ID!!!
+                    Office newOffice = new Office(id, deptName, assignedSuite);
+                    Faulkner.getOffices().put(deptName, newOffice);
+                    break;
+
+                case "save":
+                    Office o = deptDataTable.getSelectionModel().getSelectedItem();
+
+                    id = o.getId();
+
+                    if (!(o.getName().equals(deptName))) {
+                        o.setName(deptName);
+                    }
+
+                    if (o.getSuite() != assignedSuite) {
+                        o.setSuite(assignedSuite);
+                    }
+
+                    Faulkner.getOffices().put(o.getName(), o);
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        initializeDeptDirectory();
+    }
+
+    private boolean editorProcessable() {
+        if (deptNameField.getText() == null || (deptNameCol.getText().isEmpty())){
+            return false;
+        }
+
+        if (assignedLocField.getText() == null || (assignedLocField.getText().isEmpty())){
+            return false;
+        }
+
+        return true;
     }
 
     public void onMapBuilderSwitch(ActionEvent actionEvent)

@@ -11,6 +11,8 @@ public class Suite {
     String name;
     MapNode location;
 
+    public Suite() {}
+
     public Suite(int id, String name, MapNode location) {
         this.suiteID = id;
         this.name = name;
