@@ -1,5 +1,8 @@
 package Controller.Admin;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
@@ -14,6 +17,7 @@ import Model.Database.DatabaseManager;
 import Model.MapEditorModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -34,6 +38,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import jfxtras.labs.util.event.MouseControlUtil;
 import org.controlsfx.control.PopOver;
+import javafx.scene.image.Image;
+
+import static Controller.SceneSwitcher.switchToAddFloor;
 
 import java.awt.*;
 import java.io.IOException;
@@ -56,6 +63,7 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	Button newFloorButton;
 
+
 	@FXML
 	private TabPane BuildingTabPane;
 
@@ -68,12 +76,20 @@ public class MapEditorController extends AbstractController {
 	private EventHandler<DragEvent> onIconDragDropped = null;
 	private EventHandler<DragEvent> onIconDragOverRightPane = null;
 	private MapEditorModel model;
+	public static Floor newFloor = null;
 
 	NodeEdge drawingEdge;
+
 
 	Group mapItems;
 
 	StackPane stackPane;
+	public void changeFloorToSaved(String location, Floor floor) throws MalformedURLException {
+		//System.out.println(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString());
+		//this.mapImage.setImage(new Image(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString(), true));
+		System.out.println("Here");
+		this.mapImage.setImage(floor.getImageInfo().getFXImage());
+	}
 
 	public MapEditorController() {
 
@@ -273,6 +289,19 @@ public class MapEditorController extends AbstractController {
 				treeView.getRoot().getChildren().add(makeTreeItem(f));
 			}
 
+			if(newFloor != null){
+				boolean duplicate = false;
+				for(Floor f2 : b.getFloors()) {
+					if(f2.getFloorNumber() == newFloor.getFloorNumber()) {
+						f2.setImageLocation(newFloor.getImageLocation());
+						duplicate = true;
+					}
+				}
+				if(!duplicate) {
+					treeView.getRoot().getChildren().add(makeTreeItem(newFloor));
+				}
+			}
+
 			model.addBuilding(b, t); //adds to building tab map
 
 			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
@@ -370,6 +399,12 @@ public class MapEditorController extends AbstractController {
 		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
 
 		Floor f = b.newFloor(); //makes new floor
+		try {
+
+			switchToAddFloor(this.getStage());
+		} catch (IOException e) {
+
+		}
 
 		treeView.getRoot().getChildren().add(makeTreeItem(f));
 	}
@@ -385,8 +420,23 @@ public class MapEditorController extends AbstractController {
 		return treeItem;
 	}
 
+
 	public void changeFloorSelection(Floor f)
 	{
+		if(f.getImageLocation() == null){
+			try {
+				switchToAddFloor(this.getStage());
+			}
+			catch(IOException e){
+				System.out.println("Threw an exception in MapEditorController: changeFloorSelection");
+				e.printStackTrace();
+			}
+		}
+		try{
+			changeFloorToSaved(f.getImageLocation(), f);
+		}catch(MalformedURLException e){
+			System.out.println("ERROR IN LOADING FLOORPLAN");
+		}
 		model.setCurrentFloor(f);
 		System.out.println("Changed floor to " + f);
 
@@ -421,7 +471,7 @@ public class MapEditorController extends AbstractController {
 
 		for(MapNode n : model.getCurrentFloor().getFloorNodes())
 		{
-			System.out.println("Adding node");
+			//System.out.println("Adding node");
 			addToAdminMap(n);
 
 			System.out.println("New node has " + n.getEdges());

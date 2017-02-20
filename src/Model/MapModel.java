@@ -29,6 +29,7 @@ public class MapModel {
         sideBarIcons = new ArrayList<DragIcon>();
         mapNodes = new HashSet<MapNode>();
         mapEdges = new HashSet<NodeEdge>();
+        currentFloor = new Floor(1);
 
         hospital = DatabaseManager.getInstance().Faulkner;
 
