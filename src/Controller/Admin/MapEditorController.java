@@ -644,9 +644,9 @@ public class MapEditorController extends AbstractController {
 						droppedNode.setPos(cursorPoint.getX()-12.5,
 								cursorPoint.getY()-12.5); //offset because mouse drag and pictures should start from upper corn
 
-						if(droppedNode instanceof Elevator)
+						if(droppedNode.getIsElevator())
 						{
-							addNewElevatorToAdminMap((Elevator)droppedNode);
+							addNewElevatorToAdminMap(droppedNode);
 						}
 						else addToAdminMap(droppedNode);
 					}
@@ -658,64 +658,69 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
-	public void addNewElevatorToAdminMap(Elevator mapNode)
+	public void addNewElevatorToAdminMap(MapNode mapNode)
 	{
-		ArrayList<Elevator> nodesToAdd = new ArrayList<Elevator>();
-
-		if(!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
+		if(mapNode.getIsElevator())
 		{
-			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
-		}
+			ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
 
-		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX(),
-				mapNode.getPosY())); //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
-							/* Build up event handlers for this droppedNode */
-
-		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
-
-		Elevator last=null;
-
-		for(Floor f: b.getFloors())
-		{
-			Elevator e;
-			if(f != model.getCurrentFloor())
+			if (!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
 			{
-				e = new Elevator();
-				e.setPosX(mapNode.getPosX());
-				e.setPosY(mapNode.getPosY());
-
-				f.addNode(e);
-
-				nodesToAdd.add(e);
-			}
-			else
-			{
-				e = mapNode;
-				nodesToAdd.add(mapNode);
-				model.getCurrentFloor().addNode(mapNode);
+				mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
 			}
 
-			if(last!=null)
+			((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX(),
+					mapNode.getPosY())); //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
+								/* Build up event handlers for this droppedNode */
+
+			Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
+
+			MapNode last = null;
+
+			for (Floor f : b.getFloors())
 			{
-				LinkEdge edge = new LinkEdge(last, e);
+				MapNode e;
+				if (f != model.getCurrentFloor())
+				{
+					e = new MapNode();
+					e.setPosX(mapNode.getPosX());
+					e.setPosY(mapNode.getPosY());
+					e.setIsElevator(true);
+
+					f.addNode(e);
+
+					nodesToAdd.add(e);
+				}
+				else
+				{
+					e = mapNode;
+					nodesToAdd.add(mapNode);
+					model.getCurrentFloor().addNode(mapNode);
+				}
+
+				if (last != null)
+				{
+					LinkEdge edge = new LinkEdge(last, e);
+				}
+
 				last = e;
 			}
-		}
 
-		for(Elevator n: nodesToAdd)
-		{
-			model.addMapNode(mapNode); //add node to model
+			for (MapNode n : nodesToAdd)
+			{
+				model.addMapNode(mapNode); //add node to model
 
-			mapNode.toFront(); //send the node to the front
+				mapNode.toFront(); //send the node to the front
 
-			addEventHandlersToNode(n);
-			addDestToTreeView(n);
+				addEventHandlersToNode(n);
+				addToTreeView(n);
+			}
 		}
 	}
 
-	public void addDestToTreeView(Destination d)
+	public void addToTreeView(MapNode d)
 	{
-		if(!(d.getInfo().getName().isEmpty()))
+		if(!(d.toString().isEmpty()))
 		{
 			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
 
@@ -777,7 +782,7 @@ public class MapEditorController extends AbstractController {
 
 			if(mapNode instanceof Destination)
 			{
-				addDestToTreeView((Destination)mapNode);
+				addToTreeView((Destination)mapNode);
 			}
 		}
 

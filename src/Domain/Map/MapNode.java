@@ -39,6 +39,8 @@ public class MapNode implements DrawableMapEntity {
 
     UUID nodeUID;
 
+    String label = "";
+
     /**
      * G value of this node, used for pathfinding, defaults to 0
      */
@@ -61,6 +63,7 @@ public class MapNode implements DrawableMapEntity {
 
     public HashSet<NodeEdge> edges;
 
+    boolean isElevator = false;
     /**
      * Creates a new MapNode, with no edges, a new UID, and a new Icon
      */
@@ -123,6 +126,30 @@ public class MapNode implements DrawableMapEntity {
         //changes coordinates relative to drag icon. Really cool shit
 
     }
+
+    /**
+     * Sets whether or not this map node is an elevator
+     *@param isElevator true if node is elevator, false otherwise
+     */
+    public void setIsElevator(boolean isElevator)
+    {
+        this.isElevator =isElevator;
+
+        if(isElevator)
+        {
+            label = "Elevator";
+        }
+    }
+
+    /**
+     *
+     * @return whether or not this node is an elevator
+     */
+    public boolean getIsElevator()
+    {
+        return this.isElevator;
+    }
+
     /**
      * Sets the X position of this node to be the given position
      * @param posX The desired position, as a double
@@ -437,5 +464,11 @@ public class MapNode implements DrawableMapEntity {
     public int getType()
     {
         return icon.getType().ordinal();
+    }
+
+    @Override
+    public String toString()
+    {
+        return label;
     }
 }
