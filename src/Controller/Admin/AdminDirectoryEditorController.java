@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import javafx.scene.control.Tooltip;
 
@@ -47,7 +48,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
     Boolean deptDirectoryUp = false;
     ObservableList<String> locations = FXCollections.observableArrayList();
     ObservableList<Office> offices = FXCollections.observableArrayList(Faulkner.getOffices().values());
-    ObservableList<String> existingSuites = FXCollections.observableArrayList(Faulkner.getSuites().keySet());
+    ObservableList<UUID> existingSuites = FXCollections.observableArrayList(Faulkner.getSuites().keySet());
 
     @FXML
     private JFXTextField searchBar, firstName, lastName, description;
@@ -314,15 +315,15 @@ public class AdminDirectoryEditorController  extends AbstractController {
             HashSet<Suite> newSuites = new HashSet<>();
 
             for (String l: locAssigned.getItems()) {
-                for (String s: Faulkner.getSuites().keySet()) {
-                    if (s.equals(l)) {
-                        newSuites.add(Faulkner.getSuites().get(s));
+                for (Suite s: Faulkner.getSuites().values()) {
+                    if (s.getName().equals(l)) {
+                        newSuites.add(s);
                     }
                 }
             }
 
             if (toEdit != null) {
-                int editId = toEdit.getDocID();
+                UUID editId = toEdit.getDocID();
 
                 for (String n: Faulkner.getDoctors().keySet()) {
                     if (n.equals(toEdit.getName())) {
@@ -334,12 +335,12 @@ public class AdminDirectoryEditorController  extends AbstractController {
                 }
 
                 Doctor newDoc = new Doctor(editId, name, d, hours, newSuites);
-                System.out.println(newDoc);
                 newDoc.setPhoneNum(phoneNum);
                 Faulkner.getDoctors().put(name, newDoc);
             } else {
                 addNewProfile(name, d, hours, newSuites, phoneNum);
             }
+
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
             alert.setTitle("Action denied.");
@@ -359,10 +360,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
     }
 
     private void addNewProfile(String name, String d, String hrs, HashSet<Suite> suites, String phoneNum) {
-        int newId = -5000;
-
-        // Do we have to randomly create a ID?
-        Doctor newDoc = new Doctor(newId, name, d, hrs, suites);
+        Doctor newDoc = new Doctor(name, d, hrs, suites);
         newDoc.setPhoneNum(phoneNum); // If the phoneNum is valid
         Faulkner.getDoctors().put(name, newDoc);
     }
@@ -495,8 +493,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
             switch (editorButton.getText()) {
                 case "Add":
-                    id = -3000; // There must be a way to randomly generate an ID!!!
-                    Office newOffice = new Office(id, deptName, assignedSuite);
+                    Office newOffice = new Office(deptName, assignedSuite);
                     Faulkner.getOffices().put(deptName, newOffice);
 
                     break;
