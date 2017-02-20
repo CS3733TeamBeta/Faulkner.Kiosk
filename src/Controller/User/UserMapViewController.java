@@ -498,31 +498,27 @@ public class UserMapViewController extends AbstractController {
         docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
         Collection<Doctor> doctrine = Faulkner.getDoctors().values();
         ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
-/*
-        // Enabling a search function for the text field.
-        FilteredList<Doctor> filtered = new FilteredList<>(Main.FaulknerHospitalDirectory);
+
+        FilteredList<Doctor> filteredDoctor = new FilteredList<>(doctors);
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            filtered.setPredicate((Predicate<? super Doctor>) profile -> {
-
+            filteredDoctor.setPredicate((Predicate<? super Doctor>) profile -> {
                 // By default, the entire directory is displayed
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
+                if (newValue == null || newValue.isEmpty()) { return true; }
                 // Compare the name of the doctor with filter text
                 String lowerCaseFilter = newValue.toLowerCase();
-
                 // Checks if filter matches
-                if (profile.getName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-
+                if (profile.getName().toLowerCase().contains(lowerCaseFilter)) { return true; }
                 // Filter does not match
                 return false;
             });
+        });
 
-        });*/
         doctorTable.setItems(doctors);
+
+        SortedList<Doctor> sortedDoctor = new SortedList<Doctor>(filteredDoctor);
+        sortedDoctor.comparatorProperty().bind(deptTable.comparatorProperty());
+
+        doctorTable.setItems(sortedDoctor);
 
 
 
@@ -532,7 +528,26 @@ public class UserMapViewController extends AbstractController {
         Collection<Suite> suiteVal = Faulkner.getSuites().values();
         ObservableList<Suite> suites = FXCollections.observableArrayList(suiteVal);
 
-        doctorTable.setItems(suites);
+        // Enabling a search function for the text field.
+        FilteredList<Suite> filteredSuite = new FilteredList<>(suites);
+        searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            filteredSuite.setPredicate((Predicate<? super Suite>) profile -> {
+                // By default, the entire directory is displayed
+                if (newValue == null || newValue.isEmpty()) { return true; }
+                // Compare the name of the doctor with filter text
+                String lowerCaseFilter = newValue.toLowerCase();
+                // Checks if filter matches
+                if (profile.getName().toLowerCase().contains(lowerCaseFilter)) { return true; }
+                // Filter does not match
+                return false;
+            });
+        });
+
+
+        SortedList<Suite> sortedSuite = new SortedList<Suite>(filteredSuite);
+        sortedSuite.comparatorProperty().bind(deptTable.comparatorProperty());
+        deptTable.setItems(sortedSuite);
+
 
     }
 }
