@@ -327,18 +327,6 @@ public class MapEditorController extends AbstractController {
 			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
 		}
 	}
-	/**
-	 * Adds a building to the tab pane/model
-	 *
-	 * @author Ben Hylak
-	 * @param b Building
-	 * @return
-	 */
-	public Tab addBuilding(Building b) {
-		if(b==null)
-		{
-			b = new Building("Building " + model.getBuildingCount()+1); //@TODO Hacky fix -BEN
-		}
 
 	public Tab makeBuildingTab(Building b)
 	{
