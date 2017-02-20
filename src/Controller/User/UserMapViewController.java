@@ -12,7 +12,6 @@ import Exceptions.PathFindingException;
 import Model.MapEditorModel;
 import Model.MapModel;
 import com.jfoenix.controls.JFXButton;
-
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,13 +33,11 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
-
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Predicate;
-
 import static Model.Database.DatabaseManager.Faulkner;
 import static Model.Database.DatabaseManager.suites;
 
@@ -118,110 +115,66 @@ public class UserMapViewController extends AbstractController {
 
     MapModel model;
 
-
-
-    protected void renderInitialMap()
-    {
-
+    protected void renderInitialMap() {
         //and then set all the existing nodes up
         HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
-
-        for(MapNode n : model.getCurrentFloor().getFloorNodes())
-        {
-            for(NodeEdge edge: n.getEdges())
-            {
+        for(MapNode n : model.getCurrentFloor().getFloorNodes()) {
+            for(NodeEdge edge: n.getEdges()) {
                 if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
             }
-
-            if(!mainPane.getChildren().contains(n.getNodeToDisplay()))
-            {
+            if(!mainPane.getChildren().contains(n.getNodeToDisplay())) {
                 mainPane.getChildren().add(n.getNodeToDisplay());
             }
-
-
             System.out.println("Adding node at X:" + n.getPosX() + "Y: " + n.getPosY());
-
             n.getNodeToDisplay().relocate(n.getPosX()*xNodeScale*1.27, 1.27*n.getPosY()*yNodeScale);
             n.getNodeToDisplay().setOnMouseClicked(null);
             n.getNodeToDisplay().setOnMouseEntered(null);
             n.getNodeToDisplay().setOnMouseDragged(null);
-
             setupImportedNode(n);
         }
 
-
-        for(NodeEdge edge : collectedEdges)
-        {
-
-            if(!mainPane.getChildren().contains(edge.getEdgeLine()))
-            {
+        for(NodeEdge edge : collectedEdges) {
+            if(!mainPane.getChildren().contains(edge.getEdgeLine())) {
                 mainPane.getChildren().add(edge.getEdgeLine());
             }
-
             MapNode source = edge.getSource();
             MapNode target = edge.getTarget();
-
             //@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
-
-            if(!mainPane.getChildren().contains(source.getNodeToDisplay()))
-            {
-
+            if(!mainPane.getChildren().contains(source.getNodeToDisplay())) {
                 mainPane.getChildren().add(source.getNodeToDisplay());
-
                 source.getNodeToDisplay().relocate(source.getPosX() * 2*xNodeScale, source.getPosY() * 2* yNodeScale);
             }
-
-            if(!mainPane.getChildren().contains(target.getNodeToDisplay()))
-            {
+            if(!mainPane.getChildren().contains(target.getNodeToDisplay())) {
                 mainPane.getChildren().add(target.getNodeToDisplay());
                 target.getNodeToDisplay().relocate(target.getPosX() * 2*xNodeScale, target.getPosY() * 2*yNodeScale);
             }
-
             edge.updatePosViaNode(source);
             edge.updatePosViaNode(target);
-
             edge.setSource(source);
             edge.setTarget(target);
-
             source.toFront();
             target.toFront();
-
             edge.getEdgeLine().setOnMouseEntered(null);
             edge.getEdgeLine().setOnMouseClicked(null);
-
             mainPane.toBack();
         }
 
         searchMenu.toFront();
     }
 
-
-
-    @FXML
-    private void initialize()
-    {
+    private void initialize() {
         model = new MapModel();
         renderInitialMap();
-
         emailButton.setVisible(false);
-
         numClickDr = -1;
         numClickFood = -1;
         numClickBath = -1;
         numClickHelp = -1;
-
         LoadTableData();
-
-
-
-
     }
 
     private void setupImportedNode(MapNode droppedNode){
-
         //droppedNode.setType(droppedNode.getIconType()); //set the type
-
-
         droppedNode.getNodeToDisplay().setOnMouseClicked(ev -> {
             if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
                 try{
@@ -231,21 +184,16 @@ public class UserMapViewController extends AbstractController {
                 }
             }
         });
-
-        droppedNode.getNodeToDisplay().setOnMouseEntered(ev->
-        {
+        droppedNode.getNodeToDisplay().setOnMouseEntered(ev-> {
             droppedNode.getNodeToDisplay().setOpacity(.65);
         });
-
-        droppedNode.getNodeToDisplay().setOnMouseExited(ev->
-        {
+        droppedNode.getNodeToDisplay().setOnMouseExited(ev-> {
             droppedNode.getNodeToDisplay().setOpacity(1);
         });
     }
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException {
         System.out.println("In path finding");
-
         MapNode startPoint = model.getCurrentFloor().getKioskNode();
         if (endPoint == startPoint) {
             System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
@@ -253,34 +201,30 @@ public class UserMapViewController extends AbstractController {
         }
         try {
             newRoute = new Guidance(startPoint, endPoint, false);
-        } catch (PathFindingException e) {
+        }
+        catch (PathFindingException e) {
             return;//TODO add error message throw
         }
-
         for (NodeEdge edge : model.getCurrentFloor().getFloorEdges()) {
             if(newRoute.getPathEdges().contains(edge)) {
                 edge.changeOpacity(1.0);
                 edge.changeColor(Color.RED);
-            }
-            else{
+            } else {
                 edge.changeOpacity(0.8);
                 edge.changeColor(Color.BLACK);
-            }
-        }
-
+            }}
         newRoute.printTextDirections();
         emailButton.setVisible(true);
         searchBar.setPromptText("Your Email");
         sendingEmail = true;
     }
-    public void setStage(Stage s)
-    {
+
+    public void setStage(Stage s) {
         primaryStage = s;
     }
 
     public void defaultProperty() {
         searchMenu.setStyle("-fx-background-color:  #f2f2f2;");
-
         // Sets the color of the icons to black
         ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
@@ -288,73 +232,52 @@ public class UserMapViewController extends AbstractController {
         bathroomIcon.setEffect(original);
         foodIcon.setEffect(original);
         helpIcon.setEffect(original);
-
         // By default, only the departments table is shown
         deptTable.setVisible(true);
         // Set all other tables false
         doctorTable.setVisible(false);
         searchBar.setPromptText("Search for Departments");
-
-
         // Title shown
         welcomeGreeting.setVisible(true);
     }
 
     public void searchMenuUp() {
-        if(!sendingEmail)
-        {
+        if(!sendingEmail) {
             Timeline menuSlideDown = new Timeline();
             KeyFrame keyFrame;
             menuSlideDown.setCycleCount(1);
             menuSlideDown.setAutoReverse(true);
-
-            if (downArrow)
-            { // Navigate down icon -> welcome page down (left with search bar)
+            if (downArrow) { // Navigate down icon -> welcome page down (left with search bar)
                 KeyValue welcomeDown = new KeyValue(searchMenu.translateYProperty(), 180);
                 keyFrame = new KeyFrame(Duration.millis(600), welcomeDown);
                 welcomeGreeting.setVisible(false);
                 downArrow = false; // Changes to up icon
                 searchMenu.setStyle("-fx-background-color: transparent;");
-            }
-            else
-            { // Navigate up icon -> show welcome page
+            } else { // Navigate up icon -> show welcome page
                 KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
                 keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
-
                 // Reset to default
                 //defaultProperty();
-
                 downArrow = true;
                 numClickDr = -1;
                 numClickFood = -1;
                 numClickBath = -1;
                 numClickHelp = -1;
-
                 searchBar.clear();
-
-
-
             }
-
             navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
-
             menuSlideDown.getKeyFrames().add(keyFrame);
             menuSlideDown.play();
-        }
-    }
+        }}
 
     public void loadMenu() {
         //defaultProperty();
-
         Timeline menuSlideUp = new Timeline();
         menuSlideUp.setCycleCount(1);
         menuSlideUp.setAutoReverse(true);
-
         KeyValue menuUp = new KeyValue(searchMenu.translateYProperty(), -(mainPane.getHeight() - 350));
         KeyFrame keyFrame = new KeyFrame(Duration.millis(600), menuUp);
-
         menuSlideUp.getKeyFrames().add(keyFrame);
-
         menuSlideUp.play();
     }
 
@@ -393,28 +316,6 @@ public class UserMapViewController extends AbstractController {
         numClickFood = -1;
         DisplayCorrectTable();
     }
-/*
-    public void deptChoose()
-    {
-        Object deptItem = deptTable.getSelectionModel().getSelectedItem();
-
-
-
-    }
-/*
-    public void doctorChoose()
-    {
-        Object docItem = doctorTable.getSelectionModel().getSelectedItem();
-        if (docItem.getClass() == Doctor.class)
-        {
-            docItem == Doc
-        }
-
-    }
-
-*/
-
-
 
     public void adminLogin() throws IOException {
         SceneSwitcher.switchToLoginView(primaryStage);
@@ -425,32 +326,23 @@ public class UserMapViewController extends AbstractController {
         if (givenEmail.contains("@") && (givenEmail.contains(".com") || givenEmail.contains(".org") || givenEmail.contains(".edu") || givenEmail.contains(".gov"))) {
             System.out.println("onEmailDirections called");
             emailButton.setVisible(false);
-
             System.out.println(searchBar.getText());
             System.out.println("end");
-
             newRoute.sendEmailGuidance(searchBar.getText(), mainPane);
-
             defaultProperty();
-
             searchBar.setText("Search Hospital");
-
             sendingEmail = false;
         } else {
             System.out.println("Not a valid address!");
             //@TODO Show in ui email was invalid
-        }
-    }
+        }}
 
-
-    private void LoadTableData()
-    {
+    private void LoadTableData() {
         docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
         docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
         Collection<Doctor> doctrine = Faulkner.getDoctors().values();
         ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
-
         FilteredList<Doctor> filteredDoctor = new FilteredList<>(doctors);
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
             filteredDoctor.setPredicate((Predicate<? super Doctor>) profile -> {
@@ -462,19 +354,17 @@ public class UserMapViewController extends AbstractController {
                 if (profile.getName().toLowerCase().contains(lowerCaseFilter)) { return true; }
                 // Filter does not match
                 return false;
-            });
-        });
-
+            });});
         SortedList<Doctor> sortedDoctor = new SortedList<Doctor>(filteredDoctor);
         sortedDoctor.comparatorProperty().bind(deptTable.comparatorProperty());
         doctorTable.setItems(sortedDoctor);
+
 
         deptName.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
         deptPhoneNum.setCellValueFactory(new PropertyValueFactory<Office, String>("phoneNum"));
         deptLocation.setCellValueFactory(new PropertyValueFactory<Office, String>("location"));
         Collection<Suite> suiteVal = Faulkner.getSuites().values();
         ObservableList<Suite> suites = FXCollections.observableArrayList(suiteVal);
-        // Enabling a search function for the text field.
         FilteredList<Suite> filteredSuite = new FilteredList<>(suites);
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
             filteredSuite.setPredicate((Predicate<? super Suite>) profile -> {
@@ -486,18 +376,14 @@ public class UserMapViewController extends AbstractController {
                 if (profile.getName().toLowerCase().contains(lowerCaseFilter)) { return true; }
                 // Filter does not match
                 return false;
-            });
-        });
-
+            });});
         SortedList<Suite> sortedSuite = new SortedList<Suite>(filteredSuite);
         sortedSuite.comparatorProperty().bind(deptTable.comparatorProperty());
         deptTable.setItems(sortedSuite);
     }
 
-    public void DisplayCorrectTable()
-    {
+    public void DisplayCorrectTable() {
         defaultProperty();
-
         if (numClickDr == 1) {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
@@ -506,31 +392,25 @@ public class UserMapViewController extends AbstractController {
             deptTable.setVisible(false);
             doctorTable.setVisible(true);
         }
-
         if (numClickBath == 1) {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
             bathroomIcon.setEffect(clicked);
             searchBar.setPromptText("Search for bathrooms");
         }
-
         if (numClickFood == 1) {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
             foodIcon.setEffect(clicked);
             searchBar.setPromptText("Search for food");
         }
-
         if (numClickHelp == 1) {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
             helpIcon.setEffect(clicked);
             searchBar.setPromptText("Search for help");
         }
-
         if((numClickDr == -1)&&(numClickBath == -1)&&(numClickFood == -1)&&(numClickHelp == -1)) {
             defaultProperty();
-        }
-    }
-
+        }}
 }
