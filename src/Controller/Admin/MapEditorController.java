@@ -976,6 +976,7 @@ public class MapEditorController extends AbstractController {
 		SceneSwitcher.switchToUserMapView(this.getStage());
 	}
 
+	@FXML
 	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
 	{
 		SceneSwitcher.switchToModifyDirectoryView(this.getStage());
