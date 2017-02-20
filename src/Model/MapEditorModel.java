@@ -134,6 +134,8 @@ public class MapEditorModel
         this.currentFloor = floor;
         mapNodes.clear();
 
+        System.out.println("Changed to " + floor);
+
         for(MapNode n : floor.getFloorNodes()) {
             mapNodes.add(n);
         }
@@ -219,7 +221,7 @@ public class MapEditorModel
      */
     public void addMapEdge(NodeEdge e)
     {
-        mapEdges.remove(e);
+        mapEdges.add(e);
     }
 
     /**

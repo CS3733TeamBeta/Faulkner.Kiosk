@@ -1,12 +1,10 @@
 package Model.Database;
 
 /**
- * Created by IanCJ on 2/19/2017.
+ * Created by benhylak on 2/20/17.
  */
-public class CustomFilePath {
-    public static final String myFilePath = "jdbc:derby:/Users/jw97/";
 
-    CustomFilePath() {
-
-    }
+public class CustomFilePath
+{
+    public final static String myFilePath = "/Users/benhylak/";
 }

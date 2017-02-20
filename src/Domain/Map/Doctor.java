@@ -2,6 +2,7 @@ package Domain.Map;
 
 
 import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * Info specific for a doctor
@@ -9,14 +10,22 @@ import java.util.HashSet;
 public class Doctor extends Info
 {
 
-    int docID;
+    UUID docID;
     HashSet<Suite> suites;
     HashSet<String> myOffice;
     String phoneNum = "N/A";
 
-    public Doctor(int id, String name, String description, String hours, HashSet<Suite> suites) {
+    public Doctor(String name, String description, String hours, HashSet<Suite> suites) {
         super(name, description, hours);
-        this.docID = id;
+        this.docID = UUID.randomUUID();
+        this.suites = suites;
+
+        this.myOffice = new HashSet<>();
+    }
+
+    public Doctor(UUID docID, String name, String description, String hours, HashSet<Suite> suites) {
+        super(name, description, hours);
+        this.docID = docID;
         this.suites = suites;
 
         this.myOffice = new HashSet<>();
@@ -34,7 +43,7 @@ public class Doctor extends Info
 //        super.hours = hours;
 //    }
 
-    public int getDocID() {
+    public UUID getDocID() {
         return docID;
     }
 

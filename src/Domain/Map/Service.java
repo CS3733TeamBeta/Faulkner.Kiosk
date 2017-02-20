@@ -1,18 +1,30 @@
 package Domain.Map;
 
+import java.util.UUID;
+
 /**
  * Created by Brandon on 2/18/2017.
  */
 
 public class Service {
 
-    int serviceID;
+    UUID serviceID;
     String name;
     int nodeID;
     String type;
     int floor;
 
-    public Service(int serviceID, String name, int nodeID, String type, int floor) {
+
+    public Service(String name, int nodeID, String type, int floor) {
+
+        this.serviceID = UUID.randomUUID();
+        this.name = name;
+        this.nodeID = nodeID;
+        this.type = type;
+        this.floor = floor;
+    }
+
+    public Service(UUID serviceID, String name, int nodeID, String type, int floor) {
 
         this.serviceID = serviceID;
         this.name = name;
@@ -21,7 +33,7 @@ public class Service {
         this.floor = floor;
     }
 
-    public int getServiceID() {
+    public UUID getServiceID() {
         return serviceID;
     }
 
