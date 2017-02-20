@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -14,29 +13,28 @@
 
 <AnchorPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.MapEditorController">
    <children>
-      <TabPane fx:id="BuildingTabPane" layoutX="839.0" layoutY="48.0" opacity="0.82" prefHeight="456.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="145.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0" />
-      <AnchorPane layoutX="964.0" layoutY="611.0" prefWidth="300.0" AnchorPane.bottomAnchor="48.0" AnchorPane.rightAnchor="31.0">
+      <TabPane fx:id="BuildingTabPane" layoutX="839.0" layoutY="48.0" opacity="0.82" prefHeight="527.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="173.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0" />
+      <AnchorPane layoutX="969.0" layoutY="618.0" prefHeight="120.0" prefWidth="300.0" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="30.0">
          <children>
-            <JFXButton layoutX="5.0" layoutY="55.0" onAction="#saveInfoAndExit" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <effect>
-                  <DropShadow color="#000000cf" height="11.5" offsetX="2.0" offsetY="2.0" radius="5.625" spread="0.03" width="13.0" />
-               </effect>
-            </JFXButton>
-            <JFXButton fx:id="newBuildingButton" layoutX="1.0" layoutY="1.0" onAction="#onNewBuilding" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="New Building" textFill="WHITE" AnchorPane.leftAnchor="5.0">
+            <JFXButton layoutX="8.0" layoutY="100.0" onAction="#saveInfoAndExit" prefHeight="35.0" prefWidth="280.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton fx:id="newFloorButton" contentDisplay="TOP" layoutX="164.0" layoutY="1.0" onAction="#onNewFloor" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="New Floor" textFill="WHITE" AnchorPane.rightAnchor="5.0">
+            <JFXButton fx:id="newBuildingButton" layoutX="1.0" layoutY="1.0" onAction="#onNewBuilding" prefHeight="30.0" prefWidth="145.0" style="-fx-background-color: #3F51B5;" text="New Building" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="15.0">
                <font>
                   <Font size="14.0" />
                </font>
-               <effect>
-                  <DropShadow color="#00000099" height="19.04" offsetX="1.5" offsetY="1.5" radius="7.5" width="12.96" />
-               </effect>
+            </JFXButton>
+            <JFXButton fx:id="newFloorButton" contentDisplay="TOP" layoutX="164.0" layoutY="1.0" onAction="#onNewFloor" prefHeight="30.0" prefWidth="145.0" style="-fx-background-color: #3F51B5;" text="New Floor" textFill="WHITE" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </JFXButton>
+            <JFXButton layoutX="12.0" layoutY="43.0" onAction="#onDirectoryEditorSwitch" prefHeight="35.0" prefWidth="300.0" style="-fx-background-color: #3F51B5;" text="Open Directory Editor" textFill="WHITE" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
             </JFXButton>
          </children>
       </AnchorPane>
@@ -44,11 +42,11 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="472.0" prefWidth="829.0">
                <children>
-                  <ScrollPane hbarPolicy="ALWAYS" layoutX="21.0" layoutY="33.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane fx:id="scroll_pane" hbarPolicy="ALWAYS" layoutX="21.0" layoutY="33.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <content>
                       <AnchorPane fx:id="mapPane" minHeight="0.0" minWidth="0.0" prefHeight="1656.0" prefWidth="2300.0">
                            <children>
-                              <ImageView fx:id="mapImage" fitHeight="1656.0" fitWidth="2300.0" layoutX="186.0" layoutY="116.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <ImageView fx:id="mapImage" fitHeight="1656.0" fitWidth="2300.0" layoutX="186.0" layoutY="116.0" AnchorPane.bottomAnchor="1266.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1835.0" AnchorPane.topAnchor="0.0">
                                  <viewport>
                                     <Rectangle2D />
                                  </viewport>

@@ -38,6 +38,12 @@ public class DirectionStep {
         }
     }
 
+
+    public Floor getFloor()
+    {
+        return floorOfTheseDirections;
+    }
+
     public void setNodesInStep(LinkedList<MapNode> listOfMapNodes) {
         this.nodesInStep = listOfMapNodes;
     }

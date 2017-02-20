@@ -2,8 +2,6 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -19,7 +17,6 @@ import Model.Database.DatabaseManager;
 import Model.MapEditorModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -38,8 +35,6 @@ import javafx.scene.paint.Color;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
 import org.controlsfx.control.PopOver;
-import javafx.scene.image.Image;
-
 import static Controller.SceneSwitcher.switchToAddFloor;
 
 public class MapEditorController extends AbstractController {
@@ -66,16 +61,8 @@ public class MapEditorController extends AbstractController {
 	private EventHandler<DragEvent> onIconDragDropped = null;
 	private EventHandler<DragEvent> onIconDragOverRightPane = null;
 	private MapEditorModel model;
-	public static Floor newFloor = null;
 
 	NodeEdge drawingEdge;
-
-	public void changeFloorToSaved(String location, Floor floor) throws MalformedURLException {
-		//System.out.println(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString());
-		//this.mapImage.setImage(new Image(new URL("file:///" + System.getProperty("user.dir") + "/" + location).toString(), true));
-		System.out.println("Here");
-		this.mapImage.setImage(floor.getImageInfo().getFXImage());
-	}
 
 	public MapEditorController() {
 
@@ -162,21 +149,40 @@ public class MapEditorController extends AbstractController {
 
 		getCurrentTreeView().getSelectionModel().select(0); //selects first floor
 
-		renderInitialMap();
+		renderFloorMap();
 
-		mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
+		/*mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
 			if(drawingEdge != null)
 			{
+				// devondevon
+
 				Node sourceNode = drawingEdge.getSource().getNodeToDisplay();
+
 				Bounds sourceNodeBounds = sourceNode.getBoundsInParent();
 
-				if(!sourceNodeBounds.contains(clickEvent.getX(), clickEvent.getY()))
+				Point2D clickPoint = new Point2D(clickEvent.getX(), clickEvent.getY());
+
+				if(!sourceNodeBounds.contains(clickPoint))
 				{
-					System.out.println("Clicked Outside");
+
+					MapNode chainLinkNode = DragIcon.constructMapNodeFromType(DragIconType.connector);
+					chainLinkNode.setType(DragIconType.connector); //set the type
+
+					clickPoint = mapPane.localToScene(clickPoint);
+
+					clickPoint = new Point2D(clickPoint.getX() - 12.5, clickPoint.getY() - 12.5);
+
+					chainLinkNode.setPosX(clickPoint.getX());
+					chainLinkNode.setPosY(clickPoint.getY());
+
+					addToAdminMap(chainLinkNode);
+
+					drawingEdge.setTarget(chainLinkNode);
+
+					onEdgeComplete();
 				}
 			}
-		});
-
+		});*/
 	}
 
 	/**
@@ -185,44 +191,32 @@ public class MapEditorController extends AbstractController {
 	 */
 	public void loadBuildingsToTabPane(Collection<Building> buildings)
 	{
-		for(Building b : buildings)
+		for(Building b: buildings)
 		{
 			Tab t = makeBuildingTab(b);
 
-			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>)t.getContent();
+			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) t.getContent();
 
-			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldvalue, newvalue) -> {
-				if(newvalue.getValue().getValue() instanceof Floor)
+			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldvalue, newvalue) ->
+			{
+				if (newvalue.getValue().getValue() instanceof Floor)
 				{
-					changeFloorSelection((Floor)newvalue.getValue().getValue());
+					changeFloorSelection((Floor) newvalue.getValue().getValue());
 				}
 				else
 				{
-					changeFloorSelection((Floor)(newvalue.getParent().getValue().getValue()));
+					changeFloorSelection((Floor) (newvalue.getParent().getValue().getValue()));
 				}
 			});
 
-			for(Floor f: b.getFloors())
+			for (Floor f : b.getFloors())
 			{
 				treeView.getRoot().getChildren().add(makeTreeItem(f));
 			}
 
-			if(newFloor != null){
-				boolean duplicate = false;
-				for(Floor f2 : b.getFloors()) {
-					if(f2.getFloorNumber() == newFloor.getFloorNumber()) {
-						f2.setImageLocation(newFloor.getImageLocation());
-						duplicate = true;
-					}
-				}
-				if(!duplicate) {
-					treeView.getRoot().getChildren().add(makeTreeItem(newFloor));
-				}
-			}
+			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
 
 			model.addBuilding(b, t); //adds to building tab map
-
-			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
 		}
 	}
 	/**
@@ -317,12 +311,6 @@ public class MapEditorController extends AbstractController {
 		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
 
 		Floor f = b.newFloor(); //makes new floor
-		try {
-
-			switchToAddFloor(this.getStage());
-		} catch (IOException e) {
-
-		}
 
 		treeView.getRoot().getChildren().add(makeTreeItem(f));
 	}
@@ -338,28 +326,32 @@ public class MapEditorController extends AbstractController {
 		return treeItem;
 	}
 
-
 	public void changeFloorSelection(Floor f)
 	{
-		if(f.getImageLocation() == null){
-			try {
+		model.setCurrentFloor(f);
+
+
+		if(f.getImageLocation() == null)
+		{
+			try
+			{
 				switchToAddFloor(this.getStage());
-			}
-			catch(IOException e){
+			} catch (IOException e)
+			{
 				System.out.println("Threw an exception in MapEditorController: changeFloorSelection");
 				e.printStackTrace();
 			}
 		}
-		try{
-			changeFloorToSaved(f.getImageLocation(), f);
-		}catch(MalformedURLException e){
-			System.out.println("ERROR IN LOADING FLOORPLAN");
-		}
-		model.setCurrentFloor(f);
 
-		//change image
-		//clear nodes
-		//load nodes
+		mapPane.getChildren().clear();
+		mapPane.getChildren().add(mapImage);
+
+		this.mapImage.setImage(f.getImageInfo().getFXImage());
+
+		model.setCurrentFloor(f);
+		renderFloorMap();
+
+		System.out.println("Changed floor to " + f);
 	}
 
 	/**
@@ -381,14 +373,14 @@ public class MapEditorController extends AbstractController {
 		}
 	}
 
-	protected void renderInitialMap()
+	protected void renderFloorMap()
 	{
 		//and then set all the existing nodes up
 		HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
 
 		for(MapNode n : model.getCurrentFloor().getFloorNodes())
 		{
-			//System.out.println("Adding node");
+			System.out.println("Adding node");
 			addToAdminMap(n);
 
 			for(NodeEdge edge: n.getEdges())
@@ -400,7 +392,11 @@ public class MapEditorController extends AbstractController {
 		for(NodeEdge edge : collectedEdges)
 		{
 			addHandlersToEdge(edge);
-			mapPane.getChildren().add(edge.getNodeToDisplay());
+
+			if(!mapPane.getChildren().contains(edge.getNodeToDisplay()))
+			{
+				mapPane.getChildren().add(edge.getNodeToDisplay());
+			}
 
 			MapNode source = edge.getSource();
 			MapNode target = edge.getTarget();
@@ -593,7 +589,6 @@ public class MapEditorController extends AbstractController {
 
 				event.getDragboard().setContent(content);
 				event.setDropCompleted(true);
-
 			}
 		};
 
@@ -627,7 +622,11 @@ public class MapEditorController extends AbstractController {
 						droppedNode.setPosX(cursorPoint.getX()-12.5); //offset because mouse drag and pictures should start from upper corner
 						droppedNode.setPosY(cursorPoint.getY()-12.5);
 
-						addToAdminMap(droppedNode);
+						if(droppedNode instanceof Elevator)
+						{
+							addNewElevatorToAdminMap((Elevator)droppedNode);
+						}
+						else addToAdminMap(droppedNode);
 					}
 					event.consume();
 				}
@@ -637,60 +636,131 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
+	public void addNewElevatorToAdminMap(Elevator mapNode)
+	{
+		ArrayList<Elevator> nodesToAdd = new ArrayList<Elevator>();
+
+		if(!mapPane.getChildren().contains(mapNode.getNodeToDisplay()))
+		{
+			mapPane.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
+		}
+
+		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX(),
+				mapNode.getPosY())); //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
+							/* Build up event handlers for this droppedNode */
+
+		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
+
+		Elevator last=null;
+
+		for(Floor f: b.getFloors())
+		{
+			Elevator e;
+			if(f != model.getCurrentFloor())
+			{
+				e = new Elevator();
+				e.setPosX(mapNode.getPosX());
+				e.setPosY(mapNode.getPosY());
+
+				f.addNode(e);
+
+				nodesToAdd.add(e);
+			}
+			else
+			{
+				e = mapNode;
+				nodesToAdd.add(mapNode);
+				model.getCurrentFloor().addNode(mapNode);
+			}
+
+			if(last!=null)
+			{
+				LinkEdge edge = new LinkEdge(last, e);
+				last = e;
+			}
+		}
+
+		for(Elevator n: nodesToAdd)
+		{
+			model.addMapNode(mapNode); //add node to model
+
+			mapNode.toFront(); //send the node to the front
+
+			addEventHandlersToNode(n);
+			addDestToTreeView(n);
+		}
+	}
+
+	public void addDestToTreeView(Destination d)
+	{
+		if(!(d.getInfo().getName().isEmpty()))
+		{
+			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
+
+			for (TreeItem<MapTreeItem> floorTreeItem : treeView.getRoot().getChildren())
+			{
+				if (floorTreeItem.getValue().getValue() instanceof Floor && ((Floor) floorTreeItem.getValue().getValue()).getFloorNodes().contains(d))
+				{
+					boolean treeContainsNode = false;
+
+					for (TreeItem<MapTreeItem> item : floorTreeItem.getChildren())
+					{
+						if (item.getValue().getValue().equals(d))
+						{
+							treeContainsNode = true;
+							return;
+						}
+					}
+
+					if (!treeContainsNode)
+					{
+						((Floor) floorTreeItem.getValue().getValue()).addNode(d);
+						floorTreeItem.getChildren().add(makeTreeItem(d));
+					}
+				}
+
+				treeView.refresh();
+			}
+		}
+	}
+
 	/**
 	 * Adds a fresh node to the admin map, handles event handler creation, layering etc.
 	 * @param mapNode
 	 */
 	public void addToAdminMap(MapNode mapNode)
 	{
-		addEventHandlersToNode(mapNode);
+		ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
 
-		mapPane.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
+		if(!mapPane.getChildren().contains(mapNode.getNodeToDisplay()))
+		{
+			mapPane.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
+		}
 
-		model.addMapNode(mapNode); //add node to model
-
-		mapNode.toFront(); //send the node to the front
+		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX(),
+				mapNode.getPosY())); //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
+							/* Build up event handlers for this droppedNode */
 
 		if (!model.getCurrentFloor().getFloorNodes().contains(mapNode))
 		{
 			System.out.println("Node " + mapNode.getIconType().name() + " added to: " + mapNode.getPosX() + " " + mapNode.getPosY());
 			mapNode.setFloor(model.getCurrentFloor());
 			model.getCurrentFloor().getFloorNodes().add(mapNode);
+			nodesToAdd.add(mapNode);
 		}
 
-		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX(),
-				mapNode.getPosY())); //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
-						/* Build up event handlers for this droppedNode */
+			model.addMapNode(mapNode); //add node to model
 
-		if(mapNode instanceof Destination && !((Destination)mapNode).getInfo().getName().isEmpty())
-		{
-			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
+			mapNode.toFront(); //send the node to the front
 
-			TreeItem<MapTreeItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
+			addEventHandlersToNode(mapNode);
 
-			MapTreeItem selectedObject = selectedTreeItem.getValue();
-
-			if(selectedObject!=null)
+			if(mapNode instanceof Destination)
 			{
-				TreeItem<MapTreeItem> floorTreeItem;
-
-				//selectedObject.
-				if(selectedObject.getValue() instanceof Floor)
-				{
-					floorTreeItem = selectedTreeItem;
-				}
-				else
-				{
-					floorTreeItem = selectedTreeItem.getParent();
-				}
-
-				((Floor)floorTreeItem.getValue().getValue()).addNode(mapNode);
-				floorTreeItem.getChildren().add(makeTreeItem(mapNode));
+				addDestToTreeView((Destination)mapNode);
 			}
-
-			treeView.refresh();
 		}
-	}
+
 
 	/**
 	 *
@@ -906,6 +976,7 @@ public class MapEditorController extends AbstractController {
 		SceneSwitcher.switchToUserMapView(this.getStage());
 	}
 
+	@FXML
 	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
 	{
 		SceneSwitcher.switchToModifyDirectoryView(this.getStage());

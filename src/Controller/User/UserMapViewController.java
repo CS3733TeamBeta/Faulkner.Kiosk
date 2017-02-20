@@ -1,21 +1,18 @@
 package Controller.User;
 
 import Controller.AbstractController;
-import Controller.DragDropMain;
-import Controller.Main;
 import Controller.SceneSwitcher;
+import Domain.Map.Floor;
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.DragIcon;
-import Domain.ViewElements.DragIconType;
 import Exceptions.PathFindingException;
-import Model.MapEditorModel;
+import Model.Database.DatabaseManager;
 import Model.MapModel;
-import com.jfoenix.controls.JFXButton;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.geometry.Point2D;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -31,7 +28,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.HashSet;
 
 
@@ -40,7 +36,7 @@ import java.util.HashSet;
  *
  */
 public class UserMapViewController extends AbstractController {
-    public JFXButton emailButton;
+
     Boolean downArrow = true; // By default, the navigation arrow is to minimize the welcome page
     ColorAdjust colorAdjust = new ColorAdjust();
     int numClickDr = 0;
@@ -50,8 +46,13 @@ public class UserMapViewController extends AbstractController {
 
     double xNodeScale = 1200/941;
     double yNodeScale = 700/546;
-    boolean sendingEmail = false;
+
+    Floor kioskFloor;
+
     Guidance newRoute;
+
+    @FXML
+    AnchorPane mapPane;
 
     @FXML
     AnchorPane mainPane;
@@ -86,46 +87,53 @@ public class UserMapViewController extends AbstractController {
     @FXML
     TreeTableView doctorTable;
 
+    @FXML
+    ImageView mapImage;
+
     Stage primaryStage;
 
     MapModel model;
 
-    protected void renderInitialMap()
+    UserDirectionsPanel panel = new UserDirectionsPanel(mapImage);
+
+    public UserMapViewController() throws Exception
     {
+    }
+
+    protected void renderFloorMap()
+    {
+        mapPane.getChildren().clear();
+        mapPane.getChildren().add(mapImage);
+
+        mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
 
         //and then set all the existing nodes up
         HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
 
         for(MapNode n : model.getCurrentFloor().getFloorNodes())
         {
+            System.out.println("Adding node");
+
+            addToMap(n);
+
             for(NodeEdge edge: n.getEdges())
             {
                 if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
             }
 
-            if(!mainPane.getChildren().contains(n.getNodeToDisplay()))
-            {
-                mainPane.getChildren().add(n.getNodeToDisplay());
-            }
-
-
-            System.out.println("Adding node at X:" + n.getPosX() + "Y: " + n.getPosY());
-
-            n.getNodeToDisplay().relocate(n.getPosX()*xNodeScale*1.27, 1.27*n.getPosY()*yNodeScale);
             n.getNodeToDisplay().setOnMouseClicked(null);
-            n.getNodeToDisplay().setOnMouseEntered(null);
-            n.getNodeToDisplay().setOnMouseDragged(null);
-
-            setupImportedNode(n);
+            n.getNodeToDisplay().setOnDragDetected(null);
         }
-
 
         for(NodeEdge edge : collectedEdges)
         {
+            edge.getEdgeLine().setOnMouseClicked(null);
+            edge.getEdgeLine().setOnMouseEntered(null);
+            edge.getEdgeLine().setOnMouseExited(null);
 
-            if(!mainPane.getChildren().contains(edge.getEdgeLine()))
+            if(!mapPane.getChildren().contains(edge.getNodeToDisplay()))
             {
-                mainPane.getChildren().add(edge.getEdgeLine());
+                mapPane.getChildren().add(edge.getNodeToDisplay());
             }
 
             MapNode source = edge.getSource();
@@ -133,51 +141,96 @@ public class UserMapViewController extends AbstractController {
 
             //@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
 
-            if(!mainPane.getChildren().contains(source.getNodeToDisplay()))
+            if(!mapPane.getChildren().contains(source.getNodeToDisplay()))
             {
-
-                mainPane.getChildren().add(source.getNodeToDisplay());
-
-                source.getNodeToDisplay().relocate(source.getPosX() * 2*xNodeScale, source.getPosY() * 2* yNodeScale);
+                addToMap(source);
             }
 
-            if(!mainPane.getChildren().contains(target.getNodeToDisplay()))
+            if(!mapPane.getChildren().contains(target.getNodeToDisplay()))
             {
-                mainPane.getChildren().add(target.getNodeToDisplay());
-                target.getNodeToDisplay().relocate(target.getPosX() * 2*xNodeScale, target.getPosY() * 2*yNodeScale);
+                addToMap(target);
             }
 
             edge.updatePosViaNode(source);
             edge.updatePosViaNode(target);
 
-            edge.setSource(source);
-            edge.setTarget(target);
-
+            edge.toBack();
             source.toFront();
             target.toFront();
-
-            edge.getEdgeLine().setOnMouseEntered(null);
-            edge.getEdgeLine().setOnMouseClicked(null);
-
-            mainPane.toBack();
         }
 
-        searchMenu.toFront();
+        mapImage.toBack();
+    }
+
+    public void addToMap(MapNode n)
+    {
+        if(!mapPane.getChildren().contains(n.getNodeToDisplay()))
+        {
+            mapPane.getChildren().add(n.getNodeToDisplay()); //add to right panes children
+        }
+
+        ((DragIcon) n.getNodeToDisplay()).relocateToPoint(new Point2D(n.getPosX(),
+                n.getPosY()));
     }
 
     @FXML
-    private void initialize()
+    private void initialize() throws Exception
     {
         model = new MapModel();
-        renderInitialMap();
 
-        emailButton.setVisible(false);
+        renderFloorMap();
+
+        panel.addOnStepChangedHandler(event -> { //when the step is changed in the side panel, update this display!
+            model.setCurrentFloor(event.getSource().getFloor());
+        });
+
+        //kioskFloor = DatabaseManager.Faulkner.getBuildings().iterator().next().getFloor(1);
+
+        panel.mainPane.setPrefHeight(mainPane.getPrefHeight());
+
+        mainPane.getChildren().add(panel);
+        panel.toFront();
+        panel.relocate(mainPane.getPrefWidth()-panel.getPrefWidth(),0);
+
+        panel.setCloseHandler(event->
+        {
+            hideDirections();
+            loadMenu();
+        });
     }
+
+    private void hideDirections()
+    {
+        Timeline slideHideDirections = new Timeline();
+        KeyFrame keyFrame;
+        slideHideDirections.setCycleCount(1);
+        slideHideDirections.setAutoReverse(true);
+
+        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), panel.getPrefWidth());
+        keyFrame = new KeyFrame(Duration.millis(600), hideDirections);
+
+        slideHideDirections.getKeyFrames().add(keyFrame);
+        slideHideDirections.play();
+    }
+
+    private void showDirections()
+    {
+        Timeline slideHideDirections = new Timeline();
+        KeyFrame keyFrame;
+        slideHideDirections.setCycleCount(1);
+        slideHideDirections.setAutoReverse(true);
+
+        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), mainPane.getWidth()-panel.getPrefWidth());
+        keyFrame = new KeyFrame(Duration.millis(600), hideDirections);
+
+        slideHideDirections.getKeyFrames().add(keyFrame);
+        slideHideDirections.play();
+    }
+
 
     private void setupImportedNode(MapNode droppedNode){
 
         //droppedNode.setType(droppedNode.getIconType()); //set the type
-
 
         droppedNode.getNodeToDisplay().setOnMouseClicked(ev -> {
             if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
@@ -225,11 +278,12 @@ public class UserMapViewController extends AbstractController {
             }
         }
 
+        panel.fillDirectionsList(newRoute.getSteps().getFirst());
+
+        showDirections();
         newRoute.printTextDirections();
-        emailButton.setVisible(true);
-        searchBar.setPromptText("Your Email");
-        sendingEmail = true;
     }
+
     public void setStage(Stage s)
     {
         primaryStage = s;
@@ -257,15 +311,14 @@ public class UserMapViewController extends AbstractController {
     }
 
     public void searchMenuUp() {
-        if(!sendingEmail)
-        {
             Timeline menuSlideDown = new Timeline();
             KeyFrame keyFrame;
             menuSlideDown.setCycleCount(1);
             menuSlideDown.setAutoReverse(true);
 
             if (downArrow)
-            { // Navigate down icon -> welcome page down (left with search bar)
+            {
+                // Navigate down icon -> welcome page down (left with search bar)
                 KeyValue welcomeDown = new KeyValue(searchMenu.translateYProperty(), 180);
                 keyFrame = new KeyFrame(Duration.millis(600), welcomeDown);
                 welcomeGreeting.setVisible(false);
@@ -287,13 +340,13 @@ public class UserMapViewController extends AbstractController {
                 numClickHelp = 0;
 
                 searchBar.clear();
+
+                navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
             }
 
-            navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
+        menuSlideDown.getKeyFrames().add(keyFrame);
+        menuSlideDown.play();
 
-            menuSlideDown.getKeyFrames().add(keyFrame);
-            menuSlideDown.play();
-        }
     }
 
     public void loadMenu() {
@@ -417,6 +470,7 @@ public class UserMapViewController extends AbstractController {
         SceneSwitcher.switchToLoginView(primaryStage);
     }
 
+
     public void onEmailDirections(ActionEvent actionEvent) {
         String givenEmail = searchBar.getText().toLowerCase();
         if (givenEmail.contains("@") && (givenEmail.contains(".com") || givenEmail.contains(".org") || givenEmail.contains(".edu") || givenEmail.contains(".gov"))) {
@@ -439,4 +493,5 @@ public class UserMapViewController extends AbstractController {
             //@TODO Show in ui email was invalid
         }
     }
+
 }

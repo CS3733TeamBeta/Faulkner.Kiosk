@@ -4,8 +4,13 @@ package Domain.Map;
  * Elevators allow for navigation inbetween floors.
  */
 
-public class Elevator extends MapNode
+public class Elevator extends Destination
 {
+    public Elevator()
+    {
+        myInfo.setName("Elevator");
+    }
+
     /*
     Elevator elevatorAbove;
     Elevator elevatorBelow;

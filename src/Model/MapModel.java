@@ -123,6 +123,7 @@ public class MapModel {
     public void addMapNode(MapNode n) {
         if(!mapNodes.contains(n)) {
             mapNodes.add(n);
+            getCurrentFloor().addNode(n);
         }
     }
 
@@ -142,6 +143,7 @@ public class MapModel {
     public void addMapEdge(NodeEdge e) {
         if(!mapEdges.contains(e)) {
             mapEdges.add(e);
+            getCurrentFloor().addEdge(e);
         }
     }
 
