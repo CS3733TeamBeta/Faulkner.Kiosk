@@ -13,11 +13,11 @@ public class SendText {
     public static final String AUTH_TOKEN = "faac7f60b4323c9d486f850ceae38285";
 
     String address;
-    String message;
+    String messageBody;
 
-    SendText(String address, String message) {
+    SendText(String address, String messageBody) {
         this.address = address;
-        this.message = message;
+        this.messageBody = messageBody;
         sendTextTo();
 
     }
@@ -28,7 +28,7 @@ public class SendText {
         //Phone num MUST be of syntax "3107404451"
         Message message = Message.creator(new PhoneNumber("+1" + address),
                 new PhoneNumber("+14242958960"),
-                "Testing from main").create();
+                messageBody).create();
 
         System.out.println(message.getSid());
 

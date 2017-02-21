@@ -543,8 +543,16 @@ public class Guidance extends Path {
     }
 
     public boolean sendTextGuidance(String address) {
+        String textMessagebody = "Your instructions are:\n";
+        for (int i = 0; i < textDirections.size(); i++) {
+            textMessagebody += ((i+1) + ". ");
+            for (String s: textDirections.get(i).directionsForThisFloor) {
+                textMessagebody += (s + "\n");
+            }
+        }
+        textMessagebody += "End of directions";
         try {
-            SendText t = new SendText(address);
+            SendText t = new SendText(address, textMessagebody);
         } catch (Exception e) {
             e.printStackTrace();
         }
