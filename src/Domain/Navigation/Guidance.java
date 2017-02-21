@@ -485,9 +485,6 @@ public class Guidance extends Path {
                     throw new Exception();
                 }
 
-                 //load source images
-                //BufferedImage image = ImageIO.read(new File("emptyImage.png"));
-                //BufferedImage overlay = ImageIO.read(new File("directionPath.png"));
 
                 // create the new image, canvas size is the max. of both image sizes
                 int w = baseImage.getWidth();
