@@ -374,7 +374,7 @@ public class MapEditorController extends AbstractController {
 		//and then set all the existing nodes up
 		HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
 
-		//@TODO CONCURRENCY ERROR
+		/*//@TODO CONCURRENCY ERROR
 		for(Object x : model.getCurrentFloor().getFloorNodes().toArray())
 		{
 			MapNode n = (MapNode)x;
@@ -387,6 +387,17 @@ public class MapEditorController extends AbstractController {
 			}
 
 			addEventHandlersToNode(n);
+
+			n.getNodeToDisplay().setOnMouseClicked(null);
+			n.getNodeToDisplay().setOnDragDetected(null);
+		}*/
+
+		for(MapNode n: model.getCurrentFloor().getFloorNodes())
+		{
+			for(NodeEdge edge: n.getEdges())
+			{
+				if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+			}
 
 			n.getNodeToDisplay().setOnMouseClicked(null);
 			n.getNodeToDisplay().setOnDragDetected(null);
@@ -412,16 +423,13 @@ public class MapEditorController extends AbstractController {
 
 			if(!mapItems.getChildren().contains(source.getNodeToDisplay()))
 			{
-				addToAdminMap(source);
+				importNode(source);
 			}
 
 			if(!mapItems.getChildren().contains(target.getNodeToDisplay()))
 			{
-				addToAdminMap(target);
+				importNode(target);
 			}
-
-			addEventHandlersToNode(source);
-			addEventHandlersToNode(target);
 
 			edge.updatePosViaNode(source);
 			edge.updatePosViaNode(target);
@@ -434,15 +442,29 @@ public class MapEditorController extends AbstractController {
 		mapImage.toBack();
 	}
 
-	public void addToMap(MapNode n)
+	/**
+	 *
+	 * Imports map node without adding it to model
+	 *
+	 * @param mapNode
+	 */
+	protected void importNode(MapNode mapNode)
 	{
-		if(!mapItems.getChildren().contains(n.getNodeToDisplay()))
+		model.addMapNode(mapNode); //add node to model
+
+		if(!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
 		{
-			mapItems.getChildren().add(n.getNodeToDisplay()); //add to right panes children
+			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
 		}
 
-		((DragIcon) n.getNodeToDisplay()).relocateToPoint(new Point2D(n.getPosX(),
-				n.getPosY()));
+		mapNode.toFront(); //send the node to the front
+
+		addEventHandlersToNode(mapNode);
+
+		if(mapNode instanceof Destination)
+		{
+			addToTreeView((Destination)mapNode);
+		}
 	}
 
 	/**
@@ -861,35 +883,26 @@ public class MapEditorController extends AbstractController {
 	 */
 	public void addToAdminMap(MapNode mapNode)
 	{
-		ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
-
-		if(!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
-		{
-			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
-		}
- //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
-							/* Build up event handlers for this droppedNode */
+		importNode(mapNode);
 
 		if (!model.getCurrentFloor().getFloorNodes().contains(mapNode))
 		{
-
 			System.out.println("Node " + mapNode.getIconType().name() + " added to: " + mapNode.getPosX() + " " + mapNode.getPosY());
 			mapNode.setFloor(model.getCurrentFloor());
 			model.getCurrentFloor().getFloorNodes().add(mapNode);
-			nodesToAdd.add(mapNode);
 		}
 
-			model.addMapNode(mapNode); //add node to model
+		model.addMapNode(mapNode); //add node to model
 
-			mapNode.toFront(); //send the node to the front
+		mapNode.toFront(); //send the node to the front
 
-			addEventHandlersToNode(mapNode);
+		addEventHandlersToNode(mapNode);
 
-			if(mapNode instanceof Destination)
-			{
-				addToTreeView((Destination)mapNode);
-			}
+		if(mapNode instanceof Destination)
+		{
+			addToTreeView((Destination)mapNode);
 		}
+	}
 
 
 	/**
