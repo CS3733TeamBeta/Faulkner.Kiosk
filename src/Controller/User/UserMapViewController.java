@@ -188,7 +188,7 @@ public class UserMapViewController extends AbstractController {
 
         if(n.getIconType().equals(DragIconType.connector))
         {
-            n.getNodeToDisplay().setVisible(false);
+           // n.getNodeToDisplay().setVisible(false);
         }
 
         ((DragIcon) n.getNodeToDisplay()).relocateToPoint(new Point2D(n.getPosX(),

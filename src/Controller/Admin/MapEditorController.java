@@ -210,13 +210,20 @@ public class MapEditorController extends AbstractController {
 
 			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldvalue, newvalue) ->
 			{
+				Floor selectedFloor;
+
 				if (newvalue.getValue().getValue() instanceof Floor)
 				{
-					changeFloorSelection((Floor) newvalue.getValue().getValue());
+					selectedFloor =(Floor) newvalue.getValue().getValue();
 				}
 				else
 				{
-					changeFloorSelection((Floor) (newvalue.getParent().getValue().getValue()));
+					selectedFloor = (Floor) (newvalue.getParent().getValue().getValue());
+				}
+
+				if(!model.getCurrentFloor().equals(selectedFloor))
+				{
+					changeFloorSelection(selectedFloor);
 				}
 			});
 
@@ -1050,25 +1057,22 @@ public class MapEditorController extends AbstractController {
 
 		TreeItem<MapTreeItem> toDelete = null;
 
-		if(node instanceof Destination)
+		for (TreeItem<MapTreeItem> floorItem : getCurrentTreeView().getRoot().getChildren())
 		{
-			for (TreeItem<MapTreeItem> floorItem : getCurrentTreeView().getRoot().getChildren())
+			for(TreeItem<MapTreeItem>  nodeItem : floorItem.getChildren())
 			{
-				for(TreeItem<MapTreeItem>  nodeItem : floorItem.getChildren())
+				if (nodeItem.getValue().getValue().equals((node)))
 				{
-					if (nodeItem.getValue().getValue().equals((node)))
-					{
-						toDelete = nodeItem;
-						break;
-					}
+					toDelete = nodeItem;
+					break;
 				}
 			}
+		}
 
-			if(toDelete != null)
-			{
-				toDelete.getParent().getChildren().remove(toDelete);
-				getCurrentTreeView().refresh();
-			}
+		if(toDelete != null)
+		{
+			toDelete.getParent().getChildren().remove(toDelete);
+			getCurrentTreeView().refresh();
 		}
 	}
 
