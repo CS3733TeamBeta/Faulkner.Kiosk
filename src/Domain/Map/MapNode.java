@@ -138,6 +138,7 @@ public class MapNode implements DrawableMapEntity {
         if(isElevator)
         {
             label = "Elevator";
+            this.setType(DragIconType.elevator);
         }
     }
 
