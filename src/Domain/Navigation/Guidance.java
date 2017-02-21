@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.awt.Point;
 
 import Domain.Map.*;
 import Exceptions.*;
@@ -25,7 +26,8 @@ public class Guidance extends Path {
 
     //This is the direction that the user of the kiosk starts off facing.
     private int kioskDirection = 3;
-    private int scaleFactor = 8;
+    private int scaleFactor = 1;
+    private int boarderSize = 100;
 
     LinkedList<DirectionStep> textDirections;
 
@@ -526,7 +528,29 @@ public class Guidance extends Path {
                 }
 
                 // Save as new image
-                BufferedImage resizedVersion = createResizedCopy(combined, combined.getWidth()/scaleFactor, combined.getHeight()/scaleFactor, true);
+                LinkedList<Point> startAndEnd = findParemeters(this.pathNodes, d.getFloor().getFloorNumber());
+                Point startPoint = startAndEnd.getFirst();
+                Point endPoint = startAndEnd.getLast();
+                int scaledStartX = (startPoint.x * constant) - boarderSize;
+                int scaledStartY = (startPoint.y * constant) - boarderSize;
+                int scaledEndX = (endPoint.x * constant) + boarderSize;
+                int scaledEndY = (endPoint.y * constant) + boarderSize;
+                if(scaledEndX > combined.getWidth()){
+                    scaledEndX = combined.getWidth();
+                }
+                if(scaledEndY > combined.getHeight()){
+                    scaledEndY = combined.getHeight();
+                }
+                if(scaledStartX < 0){
+                    scaledStartX = 0;
+                }
+                if(scaledStartY < 0){
+                    scaledStartY = 0;
+                }
+                System.out.println("starting with: " + scaledStartX + " " + scaledStartY);
+                System.out.println("ending with: " + scaledEndX + " " + scaledEndY);
+                BufferedImage croppedImage = cropImage(combined,scaledStartX, scaledStartY, scaledEndX ,scaledEndY );
+                BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/scaleFactor, croppedImage.getHeight()/scaleFactor, true);
                 ImageIO.write(resizedVersion, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
             } catch (Exception e) {
                 System.out.println("threw something wrong");
@@ -558,5 +582,41 @@ public class Guidance extends Path {
         g.drawImage(originalImage, 0, 0, scaledWidth, scaledHeight, null);
         g.dispose();
         return scaledBI;
+    }
+
+    BufferedImage cropImage(BufferedImage origionalImage, int startX, int startY, int endX, int endY){
+        // create a cropped image from the original image
+        System.out.println("Start point: " + startX + ", " + startY);
+        System.out.println("End point: " + endX + ", " + endY);
+        return origionalImage.getSubimage(startX, startY, Math.abs(endX - startX), Math.abs(endY - startY));
+    }
+
+    LinkedList<Point> findParemeters(LinkedList<MapNode> listOfNodes, int floorNum){
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE;
+        double maxY = Double.MIN_VALUE;
+        for (MapNode n : listOfNodes){
+            if(n.getMyFloor().getFloorNumber() == floorNum){
+                if(n.getPosX() < minX){
+                    minX = n.getPosX();
+                }
+                if(n.getPosY() < minY){
+                    minY = n.getPosY();
+                }
+                if(n.getPosX() > maxX){
+                    maxX = n.getPosX();
+                }
+                if(n.getPosY() > maxY){
+                    maxY = n.getPosY();
+                }
+            }
+        }
+        Point startPoint = new Point((int)minX, (int)minY);
+        Point endPoint = new Point((int)maxX, (int)maxY);
+        LinkedList<Point> returnList = new LinkedList<>();
+        returnList.add(startPoint);
+        returnList.addLast(endPoint);
+        return returnList;
     }
 }
