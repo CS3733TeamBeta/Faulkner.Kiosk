@@ -341,7 +341,7 @@ public class DatabaseManager {
                     rs.getString(2));
 
             // add suite to hospital suites
-            h.addSuites(UUID.fromString(rs.getString(1)), tempSuite);
+            h.addDestinations(UUID.fromString(rs.getString(1)), tempSuite);
 
             // add offices to suite
             suiteOff.setString(1, rs.getString(1));
@@ -349,7 +349,7 @@ public class DatabaseManager {
             while(offRS.next()) {
                 Office tempOff = new Office(UUID.fromString(rs.getString(1)),
                         rs.getString(2),
-                        (h.getSuites().get(UUID.fromString(rs.getString(3)))));
+                        (h.getDestinations().get(UUID.fromString(rs.getString(3)))));
 
                 // add office to hospital offices list
                 h.addOffices(rs.getString(2), tempOff);
@@ -371,7 +371,7 @@ public class DatabaseManager {
             suiteDoc.setString(1, rs.getString(1));
             ResultSet results = suiteDoc.executeQuery();
             while(results.next()) {
-                locations.add(h.getSuites().get(UUID.fromString(results.getString(1))));
+                locations.add(h.getDestinations().get(UUID.fromString(results.getString(1))));
             }
 
             Doctor tempDoc = new Doctor(UUID.fromString(rs.getString(1)),
@@ -437,8 +437,8 @@ public class DatabaseManager {
 
                 // insert nodes into database
                 for (MapNode n : f.getFloorNodes()) {
-                    if (n instanceof Suite) {
-                        h.addSuites(((Suite) n).getSuiteID(),(Suite)n);
+                    if (n instanceof Destination) {
+                        h.addDestinations(((Destination) n).getDestUID(),(Destination)n);
                     }
                     try {
                         insertNodes.setString(1, n.getNodeID().toString());
@@ -475,7 +475,7 @@ public class DatabaseManager {
 
         System.out.println("Here");
         // saves Suites
-        for (Suite suite : h.getSuites().values()) {
+        for (Suite suite : h.getDestinations().values()) {
             try {
                 insertSuites.setString(1, suite.getSuiteID().toString());
                 insertSuites.setString(2, suite.getName());

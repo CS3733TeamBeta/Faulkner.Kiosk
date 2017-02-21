@@ -27,15 +27,11 @@ import javafx.animation.KeyValue;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import javafx.scene.control.Tooltip;
 
 import static Model.Database.DatabaseManager.Faulkner;
 
@@ -48,7 +44,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
     Boolean deptDirectoryUp = false;
     ObservableList<String> locations = FXCollections.observableArrayList();
     ObservableList<Office> offices = FXCollections.observableArrayList(Faulkner.getOffices().values());
-    ObservableList<UUID> existingSuites = FXCollections.observableArrayList(Faulkner.getSuites().keySet());
+    ObservableList<UUID> existingSuites = FXCollections.observableArrayList(Faulkner.getDestinations().keySet());
 
     @FXML
     private JFXTextField searchBar, firstName, lastName, description;
@@ -315,7 +311,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
             HashSet<Suite> newSuites = new HashSet<>();
 
             for (String l: locAssigned.getItems()) {
-                for (Suite s: Faulkner.getSuites().values()) {
+                for (Suite s: Faulkner.getDestinations().values()) {
                     if (s.getName().equals(l)) {
                         newSuites.add(s);
                     }
@@ -489,7 +485,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
         if (editorProcessable()) {
             int id;
             String deptName = deptNameField.getText();
-            Suite assignedSuite = Faulkner.getSuites().get(assignedLocField.getText());
+            Suite assignedSuite = Faulkner.getDestinations().get(assignedLocField.getText());
 
             switch (editorButton.getText()) {
                 case "Add":

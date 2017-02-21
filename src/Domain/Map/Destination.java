@@ -4,7 +4,6 @@ import Controller.Admin.PopUp.DestinationEditController;
 import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -17,6 +16,8 @@ public class Destination extends MapNode {
     UUID destUID; //Thing specific for the destination - brandon
 
     protected Info myInfo; //@TODO get rid of this class!!!
+
+    String name;
 
     Image icon;
     Image destinationView;
@@ -41,8 +42,12 @@ public class Destination extends MapNode {
     }
 
     //Creates a destination from a map node
-    public Destination(MapNode m)
+    public Destination(UUID uuid, MapNode m, String name)
     {
+
+        this.destUID = uuid;
+        this.name = name;
+
         this.setPosX(m.getPosX());
         this.setPosY(m.getPosY());
 
@@ -75,5 +80,9 @@ public class Destination extends MapNode {
     public String toString()
     {
         return myInfo.getName();
+    }
+
+    public UUID getDestUID() {
+        return this.destUID;
     }
 }
