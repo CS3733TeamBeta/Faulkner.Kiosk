@@ -69,6 +69,8 @@ public class Hospital {
         return this.offices;
     }
 
+
+
     public int buildingCount()
     {
         return buildings.size();
