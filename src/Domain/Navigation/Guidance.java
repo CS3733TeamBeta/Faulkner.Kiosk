@@ -2,13 +2,14 @@ package Domain.Navigation;
 
 
 import java.awt.*;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.awt.Point;
 
 import Domain.Map.*;
-import Domain.Map.Image;
 import Exceptions.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
@@ -25,6 +26,8 @@ public class Guidance extends Path {
 
     //This is the direction that the user of the kiosk starts off facing.
     private int kioskDirection = 3;
+    private int scaleFactor = 1;
+    private int boarderSize = 100;
 
     LinkedList<DirectionStep> textDirections;
 
@@ -529,7 +532,34 @@ public class Guidance extends Path {
                 }
 
                 // Save as new image
-                ImageIO.write(combined, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
+                LinkedList<Point> startAndEnd = findParemeters(this.pathNodes, d.getFloor().getFloorNumber());
+                Point startPoint = startAndEnd.getFirst();
+                Point endPoint = startAndEnd.getLast();
+                int scaledStartX = (startPoint.x * constant) - boarderSize + offsetWidth;
+                int scaledStartY = (startPoint.y * constant) - boarderSize + offsetHeight;
+                int scaledEndX = (endPoint.x * constant) + boarderSize + offsetWidth;
+                int scaledEndY = (endPoint.y * constant) + boarderSize + offsetHeight;
+                if(scaledEndX > combined.getWidth()){
+                    scaledEndX = combined.getWidth();
+                }
+                if(scaledEndY > combined.getHeight()){
+                    scaledEndY = combined.getHeight();
+                }
+                if(scaledStartX < 0){
+                    scaledStartX = 0;
+                }
+                if(scaledStartY < 0){
+                    scaledStartY = 0;
+                }
+                System.out.println("starting with: " + scaledStartX + " " + scaledStartY);
+                System.out.println("ending with: " + scaledEndX + " " + scaledEndY);
+                BufferedImage croppedImage = cropImage(combined,scaledStartX, scaledStartY, scaledEndX ,scaledEndY );
+                int resizedScaleWidthfactor = croppedImage.getWidth() * scaleFactor / (scaledEndX - scaledStartX);
+                int resizedScaleHeightFactor = croppedImage.getHeight() * scaleFactor / (scaledEndY - scaledStartY);
+                System.out.println("scaled height: " + resizedScaleHeightFactor);
+                System.out.println("scaled width: " + resizedScaleWidthfactor);
+                BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthfactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
+                ImageIO.write(resizedVersion, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
             } catch (Exception e) {
                 System.out.println("threw something wrong");
                 e.printStackTrace();
@@ -545,6 +575,59 @@ public class Guidance extends Path {
             return false;
         }
     }
+
+    BufferedImage createResizedCopy(Image originalImage,
+                                    int scaledWidth, int scaledHeight,
+                                    boolean preserveAlpha)
+    {
+        System.out.println("resizing...");
+        int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+        BufferedImage scaledBI = new BufferedImage(scaledWidth, scaledHeight, imageType);
+        Graphics2D g = scaledBI.createGraphics();
+        if (preserveAlpha) {
+            g.setComposite(AlphaComposite.Src);
+        }
+        g.drawImage(originalImage, 0, 0, scaledWidth, scaledHeight, null);
+        g.dispose();
+        return scaledBI;
+    }
+
+    BufferedImage cropImage(BufferedImage origionalImage, int startX, int startY, int endX, int endY){
+        // create a cropped image from the original image
+        System.out.println("Start point: " + startX + ", " + startY);
+        System.out.println("End point: " + endX + ", " + endY);
+        return origionalImage.getSubimage(startX, startY, Math.abs(endX - startX), Math.abs(endY - startY));
+    }
+
+    LinkedList<Point> findParemeters(LinkedList<MapNode> listOfNodes, int floorNum){
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE;
+        double maxY = Double.MIN_VALUE;
+        for (MapNode n : listOfNodes){
+            if(n.getMyFloor().getFloorNumber() == floorNum){
+                if(n.getPosX() < minX){
+                    minX = n.getPosX();
+                }
+                if(n.getPosY() < minY){
+                    minY = n.getPosY();
+                }
+                if(n.getPosX() > maxX){
+                    maxX = n.getPosX();
+                }
+                if(n.getPosY() > maxY){
+                    maxY = n.getPosY();
+                }
+            }
+        }
+        Point startPoint = new Point((int)minX, (int)minY);
+        Point endPoint = new Point((int)maxX, (int)maxY);
+        LinkedList<Point> returnList = new LinkedList<>();
+        returnList.add(startPoint);
+        returnList.addLast(endPoint);
+        return returnList;
+    }
+
 
     public boolean sendTextGuidance(String address) {
         String textMessagebody = "Your instructions are:\n";
