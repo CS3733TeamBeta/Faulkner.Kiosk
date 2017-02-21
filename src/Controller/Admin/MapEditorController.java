@@ -210,13 +210,20 @@ public class MapEditorController extends AbstractController {
 
 			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldvalue, newvalue) ->
 			{
+				Floor selectedFloor;
+
 				if (newvalue.getValue().getValue() instanceof Floor)
 				{
-					changeFloorSelection((Floor) newvalue.getValue().getValue());
+					selectedFloor =(Floor) newvalue.getValue().getValue();
 				}
 				else
 				{
-					changeFloorSelection((Floor) (newvalue.getParent().getValue().getValue()));
+					selectedFloor = (Floor) (newvalue.getParent().getValue().getValue());
+				}
+
+				if(!model.getCurrentFloor().equals(selectedFloor))
+				{
+					changeFloorSelection(selectedFloor);
 				}
 			});
 
@@ -457,14 +464,14 @@ public class MapEditorController extends AbstractController {
 			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
 		}
 
-		mapNode.toFront(); //send the node to the front
-
 		addEventHandlersToNode(mapNode);
 
-		if(mapNode instanceof Destination)
+		if(!mapNode.getIconType().equals(DragIconType.connector)) //treeview checks that floor actually contains
 		{
-			addToTreeView((Destination)mapNode);
+			addToTreeView(mapNode);
 		}
+
+		mapNode.toFront(); //send the node to the front
 	}
 
 	/**
@@ -748,7 +755,7 @@ public class MapEditorController extends AbstractController {
 						MapNode droppedNode;
 
 						droppedNode = DragIcon.constructMapNodeFromType((DragIconType.valueOf(container.getValue("type"))));
-						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
+						//droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
 
 						mapItems.getChildren().add(droppedNode.getNodeToDisplay());
 
@@ -861,7 +868,6 @@ public class MapEditorController extends AbstractController {
 						if (item.getValue().getValue().equals(d))
 						{
 							treeContainsNode = true;
-							return;
 						}
 					}
 
@@ -883,8 +889,6 @@ public class MapEditorController extends AbstractController {
 	 */
 	public void addToAdminMap(MapNode mapNode)
 	{
-		importNode(mapNode);
-
 		if (!model.getCurrentFloor().getFloorNodes().contains(mapNode))
 		{
 			System.out.println("Node " + mapNode.getIconType().name() + " added to: " + mapNode.getPosX() + " " + mapNode.getPosY());
@@ -892,16 +896,7 @@ public class MapEditorController extends AbstractController {
 			model.getCurrentFloor().getFloorNodes().add(mapNode);
 		}
 
-		model.addMapNode(mapNode); //add node to model
-
-		mapNode.toFront(); //send the node to the front
-
-		addEventHandlersToNode(mapNode);
-
-		if(mapNode instanceof Destination)
-		{
-			addToTreeView((Destination)mapNode);
-		}
+		importNode(mapNode); //must occur after adding node to model floor
 	}
 
 
@@ -1062,25 +1057,22 @@ public class MapEditorController extends AbstractController {
 
 		TreeItem<MapTreeItem> toDelete = null;
 
-		if(node instanceof Destination)
+		for (TreeItem<MapTreeItem> floorItem : getCurrentTreeView().getRoot().getChildren())
 		{
-			for (TreeItem<MapTreeItem> floorItem : getCurrentTreeView().getRoot().getChildren())
+			for(TreeItem<MapTreeItem>  nodeItem : floorItem.getChildren())
 			{
-				for(TreeItem<MapTreeItem>  nodeItem : floorItem.getChildren())
+				if (nodeItem.getValue().getValue().equals((node)))
 				{
-					if (nodeItem.getValue().getValue().equals((node)))
-					{
-						toDelete = nodeItem;
-						break;
-					}
+					toDelete = nodeItem;
+					break;
 				}
 			}
+		}
 
-			if(toDelete != null)
-			{
-				toDelete.getParent().getChildren().remove(toDelete);
-				getCurrentTreeView().refresh();
-			}
+		if(toDelete != null)
+		{
+			toDelete.getParent().getChildren().remove(toDelete);
+			getCurrentTreeView().refresh();
 		}
 	}
 

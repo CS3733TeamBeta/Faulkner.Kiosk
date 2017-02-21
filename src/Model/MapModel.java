@@ -41,7 +41,7 @@ public class MapModel {
         {
             try
             {
-                arbitraryFloor = b.getFloor(1);
+                arbitraryFloor = b.getFloor(3);
                 setCurrentFloor(arbitraryFloor);
                 break;
             }
