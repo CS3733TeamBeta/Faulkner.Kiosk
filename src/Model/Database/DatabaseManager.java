@@ -2,6 +2,7 @@ package Model.Database;
 
 import Domain.Map.*;
 
+import java.io.File;
 import java.sql.*;
 import java.util.*;
 
@@ -11,8 +12,7 @@ import java.util.*;
 public class DatabaseManager {
 
     private final String framework = "embedded";
-   // private final String protocol = "";
-    private final String protocol = CustomFilePath.myFilePath;
+
 
     private Connection conn = null;
     private ArrayList<Statement> statements = new ArrayList<Statement>(); // list of Statements, PreparedStatements
@@ -142,6 +142,13 @@ public class DatabaseManager {
             */
 
         try {
+            File varTmpDir = new File("src/Model/Database/CustomFilePath.java");
+            boolean exists = varTmpDir.exists();
+            System.out.println("HI");
+            String protocol = "";
+            if (exists) {
+                protocol = CustomFilePath.myFilePath;
+            }
             conn = DriverManager.getConnection(protocol + dbName, props);
         }
         catch (SQLException se) {
