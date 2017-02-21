@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -12,11 +13,17 @@ import java.util.UUID;
  */
 
 public class Destination extends MapNode {
-    UUID destUID;
-    protected Info myInfo;
+
+    UUID destUID; //Thing specific for the destination - brandon
+
+    protected Info myInfo; //@TODO get rid of this class!!!
+
     Image icon;
     Image destinationView;
-    ArrayList<Object> occupants;
+
+    HashSet<Doctor> doctors;
+    HashSet<Office> offices;
+
     private final String popOverEditFXML = "/Admin/Popup/DestinationEditPopup.fxml";
 
     /**
@@ -27,9 +34,21 @@ public class Destination extends MapNode {
         myInfo = new Info();
         myInfo.setName("Node");
     }
+
     public Destination(String name) {
         myInfo = new Info();
         myInfo.setName(name);
+    }
+
+    //Creates a destination from a map node
+    public Destination(MapNode m)
+    {
+        this.setPosX(m.getPosX());
+        this.setPosY(m.getPosY());
+
+        this.setType(m.getIconType());
+
+        this.nodeUID = m.getNodeID();
     }
 
 

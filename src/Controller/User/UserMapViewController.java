@@ -3,6 +3,7 @@ package Controller.User;
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
 import Domain.Map.Floor;
+import Domain.Map.LinkEdge;
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import Domain.Navigation.Guidance;
@@ -125,15 +126,17 @@ public class UserMapViewController extends AbstractController {
         {
             System.out.println("Adding node");
 
+            n.getNodeToDisplay().setOnMouseClicked(null);
+            n.getNodeToDisplay().setOnDragDetected(null);
+            n.getNodeToDisplay().setOnMouseDragged(null);
+            n.getNodeToDisplay().setOnMouseEntered(null);
+
             addToMap(n);
 
             for(NodeEdge edge: n.getEdges())
             {
-                if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+                if(!collectedEdges.contains(edge) && !(edge instanceof LinkEdge)) collectedEdges.add(edge);
             }
-
-            n.getNodeToDisplay().setOnMouseClicked(null);
-            n.getNodeToDisplay().setOnDragDetected(null);
         }
 
         for(NodeEdge edge : collectedEdges)
