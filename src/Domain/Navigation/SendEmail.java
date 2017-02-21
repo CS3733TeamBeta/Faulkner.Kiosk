@@ -113,7 +113,7 @@ public class SendEmail {
             msg.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipient, false));
             msg.setSubject(subject);
-            msg.setText(message);
+            //msg.setText(message);
             msg.setSentDate(new Date());
             Transport.send(msg);
             System.out.println("Message sent.");
