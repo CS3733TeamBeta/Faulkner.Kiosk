@@ -114,10 +114,9 @@ public class GuidanceTextTest extends TestCase{
 
     public void testSendText() {
         try {
-            Guidance g1 = new Guidance(nodeA, nodeO, true);
-            //Please don't uncomment this line unless you replace the email with your own. I'm getting a lot of spam -Ian
-            g1.sendTextGuidance("3107404451");
-            assertTrue(true);
+            Guidance g1 = new Guidance(nodeA, nodeO, false);
+            //Please try not to push with this line uncommented. When gradle or travis builds, it sends me a text. -Ian
+            assertTrue(g1.sendTextGuidance("3107404451"));
         } catch (Exception e) {
             e.printStackTrace();
             fail("Threw exception");

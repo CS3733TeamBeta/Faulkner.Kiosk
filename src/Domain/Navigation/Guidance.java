@@ -76,7 +76,11 @@ public class Guidance extends Path {
         int intersectionsPassed = 0;
 
         //Add the first node to the textual directions
-        tempTextDirections.add("Start at the Kiosk. (Node " + pathNodes.get(0).getNodeID() + ")");
+        if (vFlag) {
+            tempTextDirections.add("Start at the Kiosk. (Node " + pathNodes.get(0).getNodeID() + ")");
+        } else {
+            tempTextDirections.add("Start at the Kiosk.");
+        }
 
         for (int i = 0; i < this.pathNodes.size() - 1; i++) {
 
@@ -552,9 +556,10 @@ public class Guidance extends Path {
         }
         try {
             SendText t = new SendText(address, textMessagebody);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return true;
     }
 }
