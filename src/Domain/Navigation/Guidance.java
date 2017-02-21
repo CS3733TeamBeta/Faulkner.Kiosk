@@ -2,13 +2,13 @@ package Domain.Navigation;
 
 
 import java.awt.*;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
 import Domain.Map.*;
-import Domain.Map.Image;
 import Exceptions.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
@@ -25,6 +25,7 @@ public class Guidance extends Path {
 
     //This is the direction that the user of the kiosk starts off facing.
     private int kioskDirection = 3;
+    private int scaleFactor = 8;
 
     LinkedList<DirectionStep> textDirections;
 
@@ -528,7 +529,8 @@ public class Guidance extends Path {
                 }
 
                 // Save as new image
-                ImageIO.write(combined, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
+                BufferedImage resizedVersion = createResizedCopy(combined, combined.getWidth()/scaleFactor, combined.getHeight()/scaleFactor, true);
+                ImageIO.write(resizedVersion, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
             } catch (Exception e) {
                 System.out.println("threw something wrong");
                 e.printStackTrace();
@@ -543,5 +545,21 @@ public class Guidance extends Path {
             System.out.println("Threw an exception: " + e);
             return false;
         }
+    }
+
+    BufferedImage createResizedCopy(Image originalImage,
+                                    int scaledWidth, int scaledHeight,
+                                    boolean preserveAlpha)
+    {
+        System.out.println("resizing...");
+        int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+        BufferedImage scaledBI = new BufferedImage(scaledWidth, scaledHeight, imageType);
+        Graphics2D g = scaledBI.createGraphics();
+        if (preserveAlpha) {
+            g.setComposite(AlphaComposite.Src);
+        }
+        g.drawImage(originalImage, 0, 0, scaledWidth, scaledHeight, null);
+        g.dispose();
+        return scaledBI;
     }
 }
