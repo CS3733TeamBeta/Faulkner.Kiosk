@@ -69,7 +69,7 @@ public class SendEmail {
 
             String imageDirectionsPortion = "";
 
-            for (int i = 0; i < numDirectionFloors; i++) {
+            for (int i = 1; i < numDirectionFloors; i++) {
                 String tempString = "<img src =\"cid:imageDirections" + i + "\">";
                 imageDirectionsPortion = imageDirectionsPortion + tempString;
             }
@@ -94,7 +94,7 @@ public class SendEmail {
             multipart.addBodyPart(messageBodyPart);
 
             if (includeImage) {
-                for (int i = 0; i < numDirectionFloors; i++) {
+                for (int i = 1; i < numDirectionFloors; i++) {
                     messageBodyPart = new MimeBodyPart();
                     fds = new FileDataSource(
                             "combined" + i + ".png");
