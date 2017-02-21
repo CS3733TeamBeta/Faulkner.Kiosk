@@ -1,10 +1,11 @@
 package Domain.Map;
 
 import Controller.Admin.PopUp.DestinationEditController;
+import Domain.ViewElements.DragIconType;
 import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -12,11 +13,21 @@ import java.util.UUID;
  */
 
 public class Destination extends MapNode {
-    UUID destUID;
-    protected Info myInfo;
+
+    UUID destUID; //Thing specific for the destination - brandon
+
+    protected Info myInfo; //@TODO get rid of this class!!!
+
+    String name;
+
     Image icon;
     Image destinationView;
-    ArrayList<Object> occupants;
+
+    String floorID;
+
+    HashSet<Doctor> doctors;
+    HashSet<Office> offices;
+
     private final String popOverEditFXML = "/Admin/Popup/DestinationEditPopup.fxml";
 
     /**
@@ -27,9 +38,25 @@ public class Destination extends MapNode {
         myInfo = new Info();
         myInfo.setName("Node");
     }
+
     public Destination(String name) {
         myInfo = new Info();
         myInfo.setName(name);
+    }
+
+    //Creates a destination from a map node
+    public Destination(UUID uuid, MapNode m, String name, String floor)
+    {
+        this.destUID = uuid;
+        this.name = name;
+        this.floorID = floor;
+
+        this.setPosX(m.getPosX());
+        this.setPosY(m.getPosY());
+
+        this.setType(m.getIconType());
+
+        this.nodeUID = m.getNodeID();
     }
 
 
@@ -53,8 +80,34 @@ public class Destination extends MapNode {
     }
 
     @Override
+    public void setType(DragIconType type)
+    {
+        super.setType(type);
+    }
+
+    @Override
     public String toString()
     {
-        return myInfo.getName();
+        return this.name;
+    }
+
+    public UUID getDestUID() {
+        return this.destUID;
+    }
+
+    public void addOffice(Office o) {
+        offices.add(o);
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String s) {
+        this.name = s;
+    }
+
+    public String getFloorID() {
+        return this.floorID;
     }
 }

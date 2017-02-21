@@ -2,8 +2,8 @@ package Controller.Admin;
 
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
+import Domain.Map.Destination;
 import Domain.Map.Office;
-import Domain.Map.Suite;
 import Model.Database.DatabaseManager;
 import com.jfoenix.controls.*;
 import javafx.animation.FadeTransition;
@@ -27,15 +27,11 @@ import javafx.animation.KeyValue;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import javafx.scene.control.Tooltip;
 
 import static Model.Database.DatabaseManager.Faulkner;
 
@@ -48,7 +44,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
     Boolean deptDirectoryUp = false;
     ObservableList<String> locations = FXCollections.observableArrayList();
     ObservableList<Office> offices = FXCollections.observableArrayList(Faulkner.getOffices().values());
-    ObservableList<UUID> existingSuites = FXCollections.observableArrayList(Faulkner.getSuites().keySet());
+    ObservableList<UUID> existingSuites = FXCollections.observableArrayList(Faulkner.getDestinations().keySet());
 
     @FXML
     private JFXTextField searchBar, firstName, lastName, description;
@@ -290,11 +286,11 @@ public class AdminDirectoryEditorController  extends AbstractController {
             startTime.setText(selectedDoc.splitHours()[0]);
             endTime.setText(selectedDoc.splitHours()[1]);
 
-            HashSet<Suite> assignedSuites = selectedDoc.getSuites();
+            HashSet<Destination> assignedDestinations = selectedDoc.getDestinations();
 
             // Assigning to a suite = location
-            for (Suite s : assignedSuites) {
-                locations.add(s.getName());
+            for (Destination d : assignedDestinations) {
+                locations.add(d.getName());
             }
 
             locAssigned.setItems(locations);
@@ -312,12 +308,12 @@ public class AdminDirectoryEditorController  extends AbstractController {
                     phoneNum3.getText();
             String hours = startTime.getText() + " - " + endTime.getText();
 
-            HashSet<Suite> newSuites = new HashSet<>();
+            HashSet<Destination> newDests = new HashSet<>();
 
             for (String l: locAssigned.getItems()) {
-                for (Suite s: Faulkner.getSuites().values()) {
+                for (Destination s: Faulkner.getDestinations().values()) {
                     if (s.getName().equals(l)) {
-                        newSuites.add(s);
+                        newDests.add(s);
                     }
                 }
             }
@@ -334,11 +330,11 @@ public class AdminDirectoryEditorController  extends AbstractController {
                     }
                 }
 
-                Doctor newDoc = new Doctor(editId, name, d, hours, newSuites);
+                Doctor newDoc = new Doctor(editId, name, d, hours, newDests);
                 newDoc.setPhoneNum(phoneNum);
                 Faulkner.getDoctors().put(name, newDoc);
             } else {
-                addNewProfile(name, d, hours, newSuites, phoneNum);
+                addNewProfile(name, d, hours, newDests, phoneNum);
             }
 
         } else {
@@ -359,8 +355,8 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
     }
 
-    private void addNewProfile(String name, String d, String hrs, HashSet<Suite> suites, String phoneNum) {
-        Doctor newDoc = new Doctor(name, d, hrs, suites);
+    private void addNewProfile(String name, String d, String hrs, HashSet<Destination> destinations, String phoneNum) {
+        Doctor newDoc = new Doctor(name, d, hrs, destinations);
         newDoc.setPhoneNum(phoneNum); // If the phoneNum is valid
         Faulkner.getDoctors().put(name, newDoc);
     }
@@ -375,7 +371,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
         deptLocCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Office, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Office, String> p) {
-                return new ReadOnlyObjectWrapper(p.getValue().getSuite().getName());
+                return new ReadOnlyObjectWrapper(p.getValue().getDestination().getName());
             }
         });
 
@@ -469,7 +465,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
             Office o = deptDataTable.getSelectionModel().getSelectedItem();
 
             deptNameField.setText(o.getName());
-            assignedLocField.setText(o.getSuite().getName());
+            assignedLocField.setText(o.getDestination().getName());
         });
 
         delete.setOnAction((ActionEvent e) -> {
@@ -489,11 +485,11 @@ public class AdminDirectoryEditorController  extends AbstractController {
         if (editorProcessable()) {
             int id;
             String deptName = deptNameField.getText();
-            Suite assignedSuite = Faulkner.getSuites().get(assignedLocField.getText());
+            Destination assignedDest = Faulkner.getDestinations().get(assignedLocField.getText());
 
             switch (editorButton.getText()) {
                 case "Add":
-                    Office newOffice = new Office(deptName, assignedSuite);
+                    Office newOffice = new Office(deptName, assignedDest);
                     Faulkner.getOffices().put(deptName, newOffice);
 
                     break;
@@ -505,8 +501,8 @@ public class AdminDirectoryEditorController  extends AbstractController {
                         o.setName(deptName);
                     }
 
-                    if (o.getSuite() != assignedSuite) {
-                        o.setSuite(assignedSuite);
+                    if (o.getDestination() != assignedDest) {
+                        o.setSuite(assignedDest);
                     }
 
                     Faulkner.getOffices().put(o.getName(), o);
