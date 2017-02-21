@@ -8,7 +8,7 @@ build/
 out/
 derby.log
 
-src/Model/Database/CustomFilePath.*
+#src/Model/Database/CustomFilePath.*
 
 #Don't ignore these
 !.gitignore
