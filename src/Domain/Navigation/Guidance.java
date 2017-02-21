@@ -541,4 +541,13 @@ public class Guidance extends Path {
             return false;
         }
     }
+
+    public boolean sendTextGuidance(String address) {
+        try {
+            SendText t = new SendText(address);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 }
