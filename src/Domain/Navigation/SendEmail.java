@@ -8,6 +8,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Date;
 import java.util.Properties;
 
@@ -86,7 +88,9 @@ public class SendEmail {
 
             messageBodyPart = new MimeBodyPart();
             fds = new FileDataSource(
-                    "faulknerLogo.jpg");
+                    "scaled_falkner_banner.png");
+
+
 
             messageBodyPart.setDataHandler(new DataHandler(fds));
             messageBodyPart.setHeader("Content-ID", "<imageLogo>");
