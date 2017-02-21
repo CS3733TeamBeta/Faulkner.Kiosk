@@ -493,7 +493,7 @@ public class Guidance extends Path {
             // paint both images, preserving the alpha channels
             Graphics2D g = combined.createGraphics();
             g.drawImage(baseImage, 0, 0, null);
-            int constant = 150;
+            int constant = 1;
             //add nodes to the map
             for (MapNode n: d.nodesForThisFloor) {
                 System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
