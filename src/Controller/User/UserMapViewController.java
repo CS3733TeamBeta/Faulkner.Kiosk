@@ -360,9 +360,9 @@ public class UserMapViewController extends AbstractController {
         doctorTable.setItems(sortedDoctor);
 
 
-        deptName.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
-        deptPhoneNum.setCellValueFactory(new PropertyValueFactory<Office, String>("phoneNum"));
-        deptLocation.setCellValueFactory(new PropertyValueFactory<Office, String>("location"));
+        deptName.setCellValueFactory(new PropertyValueFactory<Destination, String>("name"));
+        deptPhoneNum.setCellValueFactory(new PropertyValueFactory<Destination, String>("phoneNum"));
+        deptLocation.setCellValueFactory(new PropertyValueFactory<Destination, String>("location"));
         Collection<Suite> suiteVal = Faulkner.getSuites().values();
         ObservableList<Suite> suites = FXCollections.observableArrayList(suiteVal);
         FilteredList<Suite> filteredSuite = new FilteredList<>(suites);
