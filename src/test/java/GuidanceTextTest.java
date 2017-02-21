@@ -1,13 +1,9 @@
 package test.java;
 
 import Domain.Map.*;
-import Domain.Navigation.DirectionStep;
 import Domain.Navigation.Guidance;
 import Domain.Navigation.Path;
-import Exceptions.PathFindingNoPathException;
 import junit.framework.TestCase;
-
-import java.util.LinkedList;
 
 
 /**
@@ -16,7 +12,7 @@ import java.util.LinkedList;
  * Jesus christ fuck this test
  *
  */
-public class GuidanceEmailTest extends TestCase{
+public class GuidanceTextTest extends TestCase{
 
     MapNode nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG, nodeH, nodeI, nodeJ, nodeK, nodeL, nodeM, nodeN, nodeO, nodeP, nodeQ, nodeR, nodeS, nodeT, nodeX, nodeY, nodeZ;
     NodeEdge edgeAB, edgeBC, edgeCD, edgeBE, edgeCF, edgeDG, edgeEJ, edgeGK, edgeAH, edgeHI, edgeIJ, edgeJK, edgeLM, edgeMN, edgeMP, edgeNQ, edgeOP, edgePZ, edgePS, edgeQT, edgeLR, edgeRS, edgeST, edgeYX, edgeEZ;
@@ -116,12 +112,11 @@ public class GuidanceEmailTest extends TestCase{
         myHospital.addBuilding(myBuilding);
     }
 
-    public void testSendEmail() {
+    public void testSendText() {
         try {
-            Guidance g1 = new Guidance(nodeA, nodeO, true);
-            //Please don't uncomment this line unless you replace the email with your own. I'm getting a lot of spam -Ian
-            //g1.sendEmailGuidance("pjpolley@wpi.edu");
-            assertTrue(true);
+            Guidance g1 = new Guidance(nodeA, nodeO, false);
+            //Please try not to push with this line uncommented. When gradle or travis builds, it sends me a text. -Ian
+            assertTrue(g1.sendTextGuidance("3107404451"));
         } catch (Exception e) {
             e.printStackTrace();
             fail("Threw exception");
