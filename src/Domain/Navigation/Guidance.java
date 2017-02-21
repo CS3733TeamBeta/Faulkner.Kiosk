@@ -1,11 +1,14 @@
 package Domain.Navigation;
 
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
 import Domain.Map.*;
+import Domain.Map.Image;
 import Exceptions.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
@@ -430,8 +433,7 @@ public class Guidance extends Path {
         return num;
     }
 
-    public LinkedList<DirectionStep> getTextDirections()
-    {
+    public LinkedList<DirectionStep> getTextDirections() {
         return textDirections;
     }
 
@@ -489,6 +491,65 @@ public class Guidance extends Path {
             }
         }
         directionLine += "</H3>";
+        BufferedImage nodeImg = null;
+        BufferedImage bathImg= null;
+        BufferedImage docImg = null;
+        BufferedImage elevatorImg = null;
+        BufferedImage foodImg = null;
+        BufferedImage infoImg = null;
+        BufferedImage storeImg = null;
+        try {
+            nodeImg = ImageIO.read(new File("src/View/Admin/MapBuilder/blank2.png"));
+            bathImg = ImageIO.read(new File("src/View/Admin/MapBuilder/bathroom.png"));
+            docImg = ImageIO.read(new File("src/View/Admin/MapBuilder/doctor.png"));
+            elevatorImg = ImageIO.read(new File("src/View/Admin/MapBuilder/elevator.png"));
+            foodImg = ImageIO.read(new File("src/View/Admin/MapBuilder/food.png"));
+            infoImg = ImageIO.read(new File("src/View/Admin/MapBuilder/info.png"));
+            storeImg = ImageIO.read(new File("src/View/Admin/MapBuilder/store.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        for(DirectionStep d : this.textDirections){
+            d.getFloor().initImage();
+            try {
+                //BufferedImage buffImg = d.getFloor().getImageInfo().getBufferedImage();
+                //@TODO replace this with loading from database
+                BufferedImage baseImage = ImageIO.read(new File("resources/FloorMaps/1_thefirstfloor.png"));
+
+
+                if (baseImage == null) {
+                    System.out.println("It's null somehow");
+                    throw new Exception();
+                }
+
+                 //load source images
+                //BufferedImage image = ImageIO.read(new File("emptyImage.png"));
+                //BufferedImage overlay = ImageIO.read(new File("directionPath.png"));
+
+                // create the new image, canvas size is the max. of both image sizes
+                int w = baseImage.getWidth();
+                int h = baseImage.getHeight();
+                BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+
+                // paint both images, preserving the alpha channels
+                Graphics g = combined.getGraphics();
+                g.drawImage(baseImage, 0, 0, null);
+                int constant = 150;
+                for (MapNode n: d.nodesForThisFloor) {
+                    g.drawImage(nodeImg, ((int) Math.round(n.getPosX()))*constant, ((int) Math.round(n.getPosY()))*constant, null);
+                }
+
+                // Save as new image
+
+                ImageIO.write(combined, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
+            } catch (Exception e) {
+                System.out.println("threw something wrong");
+                e.printStackTrace();
+            }
+
+        }
+
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine, false);
             return true;

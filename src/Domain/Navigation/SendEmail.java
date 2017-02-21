@@ -100,7 +100,7 @@ public class SendEmail {
             msg.setSubject(subject);
             //msg.setText(message);
             msg.setSentDate(new Date());
-            Transport.send(msg);
+            //Transport.send(msg);
             System.out.println("Message sent.");
         } catch (MessagingException e) {
             System.out.println("Message failed to send; cause:" + e);

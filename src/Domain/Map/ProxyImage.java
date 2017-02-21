@@ -34,4 +34,8 @@ public class ProxyImage implements Image {
         }
         realImage.display();
     }
+
+    public BufferedImage getBufferedImage(){
+        return this.realImage.getImg();
+    }
 }
