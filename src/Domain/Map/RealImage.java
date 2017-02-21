@@ -18,7 +18,6 @@ public class RealImage implements Image {
     public RealImage(String fileName) {
         this.fileName = fileName;
         this.img = null;
-        loadFromDisk(fileName);
     }
 
     // Getter for image in this class
@@ -26,14 +25,23 @@ public class RealImage implements Image {
         return img;
     }
 
-    javafx.scene.image.Image getFXImage(){
+    javafx.scene.image.Image getFXImage()
+    {
+        if(img==null)
+        {
+            loadFromDisk(fileName);
+        }
+
         return SwingFXUtils.toFXImage(img, null);
     }
 
     @Override
     public void display() {
+        if(img==null) {
+            loadFromDisk(fileName);
+        }
+
         System.out.println("Displaying " + fileName);
-        // TODO: Make display return the required format to update the map image
     }
 
     private void loadFromDisk(String fileName) {

@@ -1,7 +1,6 @@
 package Domain.Map;
 
 import Controller.Admin.PopUp.AbstractPopupController;
-import Controller.Admin.PopUp.DestinationEditController;
 import Controller.Admin.PopUp.NodeEditController;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
@@ -14,11 +13,10 @@ import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
-import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents a node in a Map, connected to other nodes by NodeEdges
@@ -39,7 +37,7 @@ public class MapNode implements DrawableMapEntity {
 
     int nodeID; //Used for a human-identifiable
 
-    UID nodeUID;
+    UUID nodeUID;
 
     /**
      * G value of this node, used for pathfinding, defaults to 0
@@ -67,48 +65,50 @@ public class MapNode implements DrawableMapEntity {
      * Creates a new MapNode, with no edges, a new UID, and a new Icon
      */
     public MapNode() {
-        this.edges = new HashSet<NodeEdge>();
-        this.nodeUID = new UID();
-        icon = new DragIcon();
-        icon.setPrefSize(25, 25);
+        this(UUID.randomUUID());
     }
 
     /**
      * Creates a new MapNode with no edges, a new UID, a new Icon, and the given nodeID
      * @param nodeID
      */
-    public MapNode(int nodeID) {
-        this();
-        this.nodeID = nodeID;
+    public MapNode(UUID nodeID) {
+        this(nodeID,0, 0, 0);
     }
 
     /**
      * Creates a new MapNode with no edges, a new UID, a new Icon, the given NodeID, posX, and posY. defaults to a toilet.
-     * @param nodeID
+     * @param //nodeID
      * @param posX
      * @param posY
      */
-    public MapNode(int nodeID, int posX, int posY) {
-        this(nodeID);
+    public MapNode(double posX, double posY) {
+        this(posX, posY, 0);
 
-        this.posX = posX;
-        this.posY = posY;
-
-        this.setType(DragIconType.values()[0]);
     }
 
     /**
      * Creates a new MapNode with no edges, a new UID, a new ICON, the given NodeID, posX, posY, and Type
-     * @param nodeID
+     * @param //nodeID
      * @param posX
      * @param posY
      * @param type
      */
-    public MapNode(int nodeID, int posX, int posY, int type) {
-        this(nodeID);
+    public MapNode(double posX, double posY, int type)
+    {
+        this(UUID.randomUUID(), posX, posY, type);
+    }
+
+    public MapNode(UUID nodeUID, double posX, double posY, int type)
+    {
+        this.nodeUID = nodeUID;
 
         this.posX = posX;
         this.posY = posY;
+
+        this.edges = new HashSet<NodeEdge>();
+        icon = new DragIcon();
+        icon.setPrefSize(25, 25);
 
         this.setType(DragIconType.values()[type]);
     }
@@ -118,7 +118,9 @@ public class MapNode implements DrawableMapEntity {
      * @param posX The desired position, as a double
      */
     public void setPosX(double posX) {
+
         this.posX = posX;
+        icon.relocate(posX, posY);
     }
 
     /**
@@ -126,7 +128,9 @@ public class MapNode implements DrawableMapEntity {
      * @param posY The desired position, as a double
      */
     public void setPosY(double posY) {
+
         this.posY = posY;
+        icon.relocate(posX, posY);
     }
 
     /**
@@ -203,15 +207,11 @@ public class MapNode implements DrawableMapEntity {
      * Retrieves this MapNode's NodeID, which is simply a human-readable identifier. Do not confuse with NodeUID
      * @return this MapNode's NodeID
      */
-    public int getNodeID(){
-        return this.nodeID;
-    }
-
     /**
      * Retrieves this MapNodes nodeUID, which is a unique ID that identifies this MapNode. Do not confuse with NodeID
      * @return this MapNode's  nodeUID
      */
-    public UID getNodeUID() {
+    public UUID getNodeID() {
         return this.nodeUID;
     }
 
@@ -229,21 +229,13 @@ public class MapNode implements DrawableMapEntity {
      * @return true if objects are equal
      */
     @Override
-    public boolean equals(Object obj) {
+     public boolean equals(Object obj)
+    {
         if (obj instanceof MapNode) {
-            return this.equals((MapNode) obj);
+           return this.equals((MapNode) obj);
         } else {
             return false;
         }
-    }
-
-    /**
-     * The hashcode for a MapNode is simply the hashcode for that MapNode's UID
-     * @return
-     */
-    @Override
-    public int hashCode() {
-        return (nodeUID.hashCode());
     }
 
     /**
@@ -252,7 +244,7 @@ public class MapNode implements DrawableMapEntity {
      * @return true if objects are equal
      */
     public boolean equals(MapNode aNode) {
-        return (this.nodeUID.equals(aNode.getNodeUID()));
+        return (this.nodeUID.equals(aNode.getNodeID()));
     }
 
     /*****************************GRAPHICAL FUNCTIONS**********************/

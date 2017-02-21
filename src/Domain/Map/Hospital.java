@@ -2,8 +2,9 @@ package Domain.Map;
 
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
 
 /**
   * Created by IanCJ on 1/29/2017.
@@ -12,7 +13,7 @@ public class Hospital {
     HashSet<Building> buildings;
 
     private HashMap<String, Doctor> doctors;
-    private HashMap<String, Suite> suites;
+    private HashMap<UUID, Suite> suites;
     private HashMap<String, Office> offices;
 
     public Hospital() {
@@ -43,13 +44,13 @@ public class Hospital {
 
 
     //Alter Suite HashMap: suites
-    public HashMap<String, Suite> getSuites() {
+    public HashMap<UUID, Suite> getSuites() {
         return suites;
     }
-    public void addSuites(String s, Suite suite) {
-        suites.put(s, suite);
+    public void addSuites(UUID uuid, Suite suite) {
+        suites.put(uuid, suite);
     }
-    public void setSuites(HashMap<String, Suite> suites) {
+    public void setSuites(HashMap<UUID, Suite> suites) {
         this.suites = suites;
     }
     public void removeSuites(String s){

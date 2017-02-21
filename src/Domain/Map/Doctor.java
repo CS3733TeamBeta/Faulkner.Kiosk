@@ -2,6 +2,7 @@ package Domain.Map;
 
 
 import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * Info specific for a doctor
@@ -9,10 +10,8 @@ import java.util.HashSet;
 public class Doctor extends Info
 {
 
-
-
-    int docID;
-    //HashSet<Suite> suites;
+    UUID docID;
+    HashSet<Suite> suites;
     HashSet<String> myOffice;
     String phoneNum = "N/A";
     private String name;
@@ -26,9 +25,17 @@ public class Doctor extends Info
 */
 
 
-    public Doctor(int id, String name, String description, String hours, HashSet<Suite> suites) {
+    public Doctor(String name, String description, String hours, HashSet<Suite> suites) {
         super(name, description, hours);
-        this.docID = id;
+        this.docID = UUID.randomUUID();
+        this.suites = suites;
+
+        this.myOffice = new HashSet<>();
+    }
+
+    public Doctor(UUID docID, String name, String description, String hours, HashSet<Suite> suites) {
+        super(name, description, hours);
+        this.docID = docID;
         this.suites = suites;
         this.myOffice = new HashSet<>();
         this.name = name;
@@ -49,7 +56,7 @@ public class Doctor extends Info
 //        super.hours = hours;
 //    }
 
-    public int getDocID() {
+    public UUID getDocID() {
         return docID;
     }
 
@@ -78,7 +85,7 @@ public class Doctor extends Info
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getDescription() {
@@ -93,7 +100,25 @@ public class Doctor extends Info
         return this.suites;
     }
 
+    public void setSuites(HashSet<Suite> suites) {
+        this.suites = suites;
+    }
 
+    public String[] splitName() {
+        String[] name = this.name.split(", ");
 
+        return name;
+    }
 
+    public String[] splitPhoneNum() {
+        String[] phoneNum = this.phoneNum.split("-");
+
+        return phoneNum;
+    }
+
+    public String[] splitHours() {
+        String[] hours = this.hours.split(" - ");
+
+        return hours;
+    }
 }

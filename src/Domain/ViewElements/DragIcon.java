@@ -1,24 +1,15 @@
 package Domain.ViewElements;
 
-import java.io.IOException;
-
 import Domain.Map.Destination;
 import Domain.Map.Elevator;
 import Domain.Map.MapNode;
-import Domain.Map.Office;
-import com.sun.corba.se.impl.orbutil.graph.Graph;
-import javafx.event.EventHandler;
+import Domain.Map.Suite;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Line;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.util.Map;
+
+import java.io.IOException;
 
 /**
  *
@@ -98,7 +89,7 @@ public class DragIcon extends AnchorPane{
 				getStyleClass().add("elevator");
 				break;
 
-			case doctor:
+			case suite:
 				getStyleClass().add("doctor");
 				break;
 
@@ -131,9 +122,9 @@ public class DragIcon extends AnchorPane{
 				break;
 			}
 
-			case doctor: //@TODO change this to office
+			case suite: //@TODO change this to office
 			{
-				newNode = new Office();
+				newNode = new Suite();
 				break;
 			}
 
