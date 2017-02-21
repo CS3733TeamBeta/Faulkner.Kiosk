@@ -438,45 +438,6 @@ public class Guidance extends Path {
         return textDirections;
     }
 
-    public void saveMapImage(Node aNode) {
-        WritableImage image = aNode.snapshot(new SnapshotParameters(), null);
-
-        // TODO: probably use a file chooser here
-        File file = new File("directions.png");
-
-        try {
-            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-        } catch (IOException e) {
-            // TODO: handle exception here
-            System.out.println("EGADS!  We have an exception!");
-        }
-    }
-
-    public boolean sendEmailGuidance(String address, Node aNode) {
-        saveMapImage(aNode);
-        String subjectLine;
-        String directionLine = "<H2>You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + ".</H2>" + "<H3>";
-        subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
-
-        for (DirectionStep step: textDirections) {
-            for(String s: step.getDirections()) {
-
-                System.out.println(s);
-                directionLine += s;
-                directionLine += "<br>";
-            }
-        }
-
-        directionLine += "</H3>";
-        try {
-            SendEmail e = new SendEmail(address, subjectLine, directionLine, true, textDirections.size());
-            return true;
-        } catch(Exception e) {
-            System.out.println("Threw an exception: " + e);
-            return false;
-        }
-    }
-
     public boolean sendEmailGuidance(String address) {
         String subjectLine;
         String directionLine = "<H2><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H2>" + "<H3>";
