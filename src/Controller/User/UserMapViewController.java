@@ -2,10 +2,7 @@ package Controller.User;
 
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
-import Domain.Map.Floor;
-import Domain.Map.LinkEdge;
-import Domain.Map.MapNode;
-import Domain.Map.NodeEdge;
+import Domain.Map.*;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
@@ -603,11 +600,11 @@ public class UserMapViewController extends AbstractController {
         deptName.setCellValueFactory(new PropertyValueFactory<Destination, String>("name"));
         deptPhoneNum.setCellValueFactory(new PropertyValueFactory<Destination, String>("phoneNum"));
         deptLocation.setCellValueFactory(new PropertyValueFactory<Destination, String>("location"));
-        Collection<Suite> suiteVal = Faulkner.getSuites().values();
-        ObservableList<Suite> suites = FXCollections.observableArrayList(suiteVal);
-        FilteredList<Suite> filteredSuite = new FilteredList<>(suites);
+        Collection<Destination> suiteVal = Faulkner.getDestinations().values();
+        ObservableList<Destination> suites = FXCollections.observableArrayList(suiteVal);
+        FilteredList<Destination> filteredSuite = new FilteredList<>(suites);
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            filteredSuite.setPredicate((Predicate<? super Suite>) profile -> {
+            filteredSuite.setPredicate((Predicate<? super Destination>) profile -> {
                 // By default, the entire directory is displayed
                 if (newValue == null || newValue.isEmpty()) { return true; }
                 // Compare the name of the doctor with filter text
@@ -617,7 +614,7 @@ public class UserMapViewController extends AbstractController {
                 // Filter does not match
                 return false;
             });});
-        SortedList<Suite> sortedSuite = new SortedList<Suite>(filteredSuite);
+        SortedList<Destination> sortedSuite = new SortedList<Destination>(filteredSuite);
         sortedSuite.comparatorProperty().bind(deptTable.comparatorProperty());
         deptTable.setItems(sortedSuite);
     }
