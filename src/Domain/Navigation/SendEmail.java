@@ -23,13 +23,16 @@ public class SendEmail {
     String subject;
     String message;
 
+    int numDirectionFloors;
+
     boolean includeImage;
 
-    public SendEmail(String recipient, String subject, String message, boolean includeImage){
+    public SendEmail(String recipient, String subject, String message, boolean includeImage, int numDirectionFloors){
         this.recipient = recipient;
         this.subject = subject;
         this.message = message;
         this.includeImage = includeImage;
+        this.numDirectionFloors = numDirectionFloors;
         sendEmail();
     }
 
@@ -63,12 +66,22 @@ public class SendEmail {
 
             BodyPart messageBodyPart = new MimeBodyPart();
             String htmlText;
+
+            String imageDirectionsPortion = "";
+
+            for (int i = 1; i <= numDirectionFloors; i++) {
+                String tempString = "<img src =\"cid:imageDirections" + i + "\">";
+                imageDirectionsPortion = imageDirectionsPortion + tempString;
+            }
+
             if (includeImage) {
-                htmlText = "<img src=\"cid:imageLogo\">" + this.message + "<img src=\"cid:imageDirections\">";
+                htmlText = "<img src=\"cid:imageLogo\">" + this.message + imageDirectionsPortion;
             } else {
                 htmlText = "<img src=\"cid:imageLogo\">" + this.message;
             }
+
             messageBodyPart.setContent(htmlText, "text/html");
+
             multipart.addBodyPart(messageBodyPart);
 
             messageBodyPart = new MimeBodyPart();
@@ -81,14 +94,16 @@ public class SendEmail {
             multipart.addBodyPart(messageBodyPart);
 
             if (includeImage) {
-                messageBodyPart = new MimeBodyPart();
-                fds = new FileDataSource(
-                        "directions.png");
+                for (int i = 1; i <= numDirectionFloors; i++) {
+                    messageBodyPart = new MimeBodyPart();
+                    fds = new FileDataSource(
+                            "combined" + i + ".png");
 
-                messageBodyPart.setDataHandler(new DataHandler(fds));
-                messageBodyPart.setHeader("Content-ID", "<imageDirections>");
+                    messageBodyPart.setDataHandler(new DataHandler(fds));
+                    messageBodyPart.setHeader("Content-ID", "<imageDirections" + i + ">");
 
-                multipart.addBodyPart(messageBodyPart);
+                    multipart.addBodyPart(messageBodyPart);
+                }
             }
 
 

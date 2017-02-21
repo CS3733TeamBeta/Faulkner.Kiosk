@@ -1,11 +1,14 @@
 package Domain.Navigation;
 
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
 import Domain.Map.*;
+import Domain.Map.Image;
 import Exceptions.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
@@ -65,6 +68,7 @@ public class Guidance extends Path {
 
     public void createTextDirections(boolean vFlag) {
         LinkedList<String> tempTextDirections = new LinkedList<String>();
+        LinkedList<MapNode> tempMapNodes = new LinkedList<>();
         int prevDirection = kioskDirection;
         MapNode fromNode = new MapNode();
         MapNode toNode = new MapNode();
@@ -72,7 +76,11 @@ public class Guidance extends Path {
         int intersectionsPassed = 0;
 
         //Add the first node to the textual directions
-        tempTextDirections.add("Start at the Kiosk. (Node " + pathNodes.get(0).getNodeID() + ")");
+        if (vFlag) {
+            tempTextDirections.add("Start at the Kiosk. (Node " + pathNodes.get(0).getNodeID() + ")");
+        } else {
+            tempTextDirections.add("Start at the Kiosk.");
+        }
 
         for (int i = 0; i < this.pathNodes.size() - 1; i++) {
 
@@ -118,28 +126,35 @@ public class Guidance extends Path {
                     System.out.println("fromNode has size of edges: " + fromNode.getEdges().size());
                     intersectionsPassed++;
                 }
+                tempMapNodes.add(fromNode);
                 intersectionsPassed++;
             } else if (!directionChangeString.equals("Straight") && (!directionChangeString.equals("up")) && (!directionChangeString.equals("down"))) {
                 if(intersectionsPassed  == 0) {
                     if (vFlag) {
                         tempTextDirections.add("Turn " + directionChangeString + " at the next intersection; ID: " + fromNode.getNodeID());
+                        tempMapNodes.add(fromNode);
                     } else {
                         tempTextDirections.add("Turn " + directionChangeString + " at the next intersection.");
+                        tempMapNodes.add(fromNode);
 
                     }
                 }
                 else if(intersectionsPassed == 1){
                     if (vFlag) {
                         tempTextDirections.add("After passing 1 intersection, turn " + directionChangeString + " at " + fromNode.getNodeID());
+                        tempMapNodes.add(fromNode);
                     } else {
                         tempTextDirections.add("After passing 1 intersection, turn " + directionChangeString + ".");
+                        tempMapNodes.add(fromNode);
                     }
                 }
                 else{
                     if (vFlag) {
                         tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + " at " + fromNode.getNodeID());
+                        tempMapNodes.add(fromNode);
                     } else {
                         tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + ".");
+                        tempMapNodes.add(fromNode);
 
                     }
                 }
@@ -149,29 +164,37 @@ public class Guidance extends Path {
                 if(intersectionsPassed == 0){
                     if (vFlag) {
                         tempTextDirections.add("Take an elevator at the next intersection from " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                        tempMapNodes.add(fromNode);
                     } else {
                         tempTextDirections.add("Take an elevator at the next intersection from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                        tempMapNodes.add(fromNode);
                     }
                 }
                 else if(intersectionsPassed == 1){
                     if (vFlag) {
                         tempTextDirections.add("After passing 1 intersection, take an elevator at " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                        tempMapNodes.add(fromNode);
                     } else {
                         tempTextDirections.add("After passing 1 intersection, take an elevator from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-
+                        tempMapNodes.add(fromNode);
                     }
                 }
                 else {
                     if (vFlag) {
                         tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator" + " at " + fromNode.getNodeID() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                        tempMapNodes.add(fromNode);
                     } else {
                         tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-
+                        tempMapNodes.add(fromNode);
                     }
                 }
-                this.textDirections.addLast(new DirectionStep(fromNode.getMyFloor()));
-                this.textDirections.getLast().setDirections(tempTextDirections);
-                tempTextDirections.clear();
+
+                System.out.println("Adding a direction step at 185");
+                this.textDirections.addLast(new DirectionStep(fromNode.getMyFloor(), tempTextDirections, tempMapNodes));
+                //this.textDirections.getLast().setDirections(tempTextDirections);
+                //this.textDirections.getLast().setNodesForThisFloor(tempMapNodes);
+                tempTextDirections = new LinkedList<>();
+                tempMapNodes = new LinkedList<>();
                 intersectionsPassed = 0;
             }
         }
@@ -196,8 +219,14 @@ public class Guidance extends Path {
                 tempTextDirections.add("Arrive at your destination.");
             }
         }
-        this.textDirections.add(new DirectionStep(toNode.getMyFloor()));
-        this.textDirections.getLast().setDirections(tempTextDirections);
+        tempMapNodes.add(toNode);
+        System.out.println("Adding step to textdirections");
+        this.textDirections.addLast(new DirectionStep(fromNode.getMyFloor(), tempTextDirections, tempMapNodes));
+        //this.textDirections.getLast().setDirections(tempTextDirections);
+        //this.textDirections.getLast().setNodesForThisFloor(tempMapNodes);
+        //tempTextDirections.clear();
+        //tempMapNodes.clear();
+
     }
 
     public void printTextDirections() {
@@ -205,25 +234,13 @@ public class Guidance extends Path {
         System.out.println("Printing Textual Directions");
         System.out.println("");
         for (DirectionStep step: textDirections) {
+            System.out.println("Printing a step: ");
             for(String s : step.getDirections()) {
                 System.out.println(s);
             }
         }
     }
 
-    public void saveMapImage(Node aNode) {
-        WritableImage image = aNode.snapshot(new SnapshotParameters(), null);
-
-        // TODO: probably use a file chooser here
-        File file = new File("directions.png");
-
-        try {
-            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-        } catch (IOException e) {
-            // TODO: handle exception here
-            System.out.println("EGADS!  We have an exception!");
-        }
-    }
 
     public static int nodesToDirection(MapNode fromNode, MapNode toNode) {
         return Guidance.nodesToDirection(fromNode, toNode, false);
@@ -421,34 +438,8 @@ public class Guidance extends Path {
         return num;
     }
 
-    public LinkedList<DirectionStep> getTextDirections()
-    {
+    public LinkedList<DirectionStep> getTextDirections() {
         return textDirections;
-    }
-
-    public boolean sendEmailGuidance(String address, Node aNode) {
-        saveMapImage(aNode);
-        String subjectLine;
-        String directionLine = "<H2>You have chosen to navigate from " + pathNodes.get(0).getNodeID() + " to " + pathNodes.get(pathNodes.size()-1).getNodeID() + ".</H2>" + "<H3>";
-        subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
-
-        for (DirectionStep step: textDirections) {
-            for(String s: step.getDirections()) {
-
-                System.out.println(s);
-                directionLine += s;
-                directionLine += "<br>";
-            }
-        }
-
-        directionLine += "</H3>";
-        try {
-            SendEmail e = new SendEmail(address, subjectLine, directionLine, true);
-            return true;
-        } catch(Exception e) {
-            System.out.println("Threw an exception: " + e);
-            return false;
-        }
     }
 
     public boolean sendEmailGuidance(String address) {
@@ -466,11 +457,108 @@ public class Guidance extends Path {
             }
         }
         directionLine += "</H3>";
+        BufferedImage nodeImg = null;
+        BufferedImage bathImg= null;
+        BufferedImage docImg = null;
+        BufferedImage elevatorImg = null;
+        BufferedImage foodImg = null;
+        BufferedImage infoImg = null;
+        BufferedImage storeImg = null;
         try {
-            SendEmail e = new SendEmail(address, subjectLine, directionLine, false);
+            nodeImg = ImageIO.read(new File("src/View/Admin/MapBuilder/blank2.png"));
+            bathImg = ImageIO.read(new File("src/View/Admin/MapBuilder/bathroom.png"));
+            docImg = ImageIO.read(new File("src/View/Admin/MapBuilder/doctor.png"));
+            elevatorImg = ImageIO.read(new File("src/View/Admin/MapBuilder/elevator.png"));
+            foodImg = ImageIO.read(new File("src/View/Admin/MapBuilder/food.png"));
+            infoImg = ImageIO.read(new File("src/View/Admin/MapBuilder/info.png"));
+            storeImg = ImageIO.read(new File("src/View/Admin/MapBuilder/store.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        for(DirectionStep d : this.textDirections){
+            d.getFloor().initImage();
+            try {
+                //BufferedImage buffImg = d.getFloor().getImageInfo().getBufferedImage();
+                //@TODO replace this with loading from database
+                BufferedImage baseImage = ImageIO.read(new File("resources/FloorMaps/1_thefirstfloor.png"));
+
+
+                if (baseImage == null) {
+                    System.out.println("It's null somehow");
+                    throw new Exception();
+                }
+
+
+                // create the new image, canvas size is the max. of both image sizes
+                int w = baseImage.getWidth();
+                int h = baseImage.getHeight();
+                BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+
+                // paint both images, preserving the alpha channels
+                Graphics2D g = combined.createGraphics();
+                g.drawImage(baseImage, 0, 0, null);
+                int constant = 150;
+                //add nodes to the map
+                for (MapNode n: d.nodesForThisFloor) {
+                    System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
+                    g.drawImage(nodeImg, ((int) Math.round(n.getPosX()))*constant, ((int) Math.round(n.getPosY()))*constant, null);
+                }
+                //add edges to the map
+                g.setStroke(new BasicStroke(25, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+                g.setColor(Color.RED);
+                int offsetHeight = nodeImg.getHeight() / 2;
+                int offsetWidth = nodeImg.getWidth() / 2;
+                //System.out.println("Height: " + offsetHeight + " Width: " + offsetWidth);
+                for (NodeEdge e : this.pathEdges){
+                    //check the edge to see if it's on the current floor
+                    if(e.getSource().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()
+                            && e.getTarget().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()){
+                        //get the nodes to draw the lines between
+                        MapNode targetNode = e.getTarget();
+                        MapNode sourceNode = e.getSource();
+                        //output info to user for debugging
+                        System.out.println("Drawing line between nodes on floor: " + e.getSource().getMyFloor().getFloorNumber());
+                        System.out.println("x1: " + Math.round(targetNode.getPosX() * constant) + " y1: " + Math.round( targetNode.getPosY() * constant) +
+                                " x2: " + Math.round(sourceNode.getPosX() * constant) + " y2: " + Math.round(sourceNode.getPosY() * constant));
+                        //draw the line between the two points. apply offset to account
+                        //for image being anchored at upper left of picture
+                        g.drawLine((int)Math.round(targetNode.getPosX() * constant) + offsetWidth, (int)Math.round(targetNode.getPosY() * constant) + offsetHeight,
+                                (int)Math.round(sourceNode.getPosX() * constant) + offsetWidth, (int)Math.round(sourceNode.getPosY() * constant) + offsetHeight);
+                    }
+                }
+
+                // Save as new image
+                ImageIO.write(combined, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
+            } catch (Exception e) {
+                System.out.println("threw something wrong");
+                e.printStackTrace();
+            }
+
+        }
+
+        try {
+            SendEmail e = new SendEmail(address, subjectLine, directionLine, true, textDirections.size());
             return true;
         } catch(Exception e) {
             System.out.println("Threw an exception: " + e);
+            return false;
+        }
+    }
+
+    public boolean sendTextGuidance(String address) {
+        String textMessagebody = "Your instructions are:\n";
+        for (int i = 0; i < textDirections.size(); i++) {
+            textMessagebody += ((i+1) + ". ");
+            for (String s: textDirections.get(i).directionsForThisFloor) {
+                textMessagebody += (s + "\n");
+            }
+        }
+        try {
+            SendText t = new SendText(address, textMessagebody);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }

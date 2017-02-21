@@ -23,6 +23,10 @@ public class Floor implements Comparable{
         imageInfo = new ProxyImage(imageLocation);
     }
 
+    public void initImage(){
+        imageInfo = new ProxyImage(imageLocation);
+    }
+
     public ProxyImage getImageInfo(){
         return imageInfo;
     }
