@@ -118,9 +118,9 @@ public class GuidanceEmailTest extends TestCase{
 
     public void testSendEmail() {
         try {
-            Guidance g1 = new Guidance(nodeA, nodeO, false);
+            Guidance g1 = new Guidance(nodeA, nodeO, true);
             //Please don't uncomment this line unless you replace the email with your own. I'm getting a lot of spam -Ian
-            g1.sendEmailGuidance("blah3100@aol.com");
+            g1.sendEmailGuidance("pjpolley@wpi.edu");
             assertTrue(true);
         } catch (Exception e) {
             e.printStackTrace();

@@ -534,7 +534,7 @@ public class Guidance extends Path {
                 BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 
                 // paint both images, preserving the alpha channels
-                Graphics g = combined.getGraphics();
+                Graphics2D g = combined.createGraphics();
                 g.drawImage(baseImage, 0, 0, null);
                 int constant = 150;
                 //add nodes to the map
@@ -543,6 +543,11 @@ public class Guidance extends Path {
                     g.drawImage(nodeImg, ((int) Math.round(n.getPosX()))*constant, ((int) Math.round(n.getPosY()))*constant, null);
                 }
                 //add edges to the map
+                g.setStroke(new BasicStroke(25, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+                g.setColor(Color.RED);
+                int offsetHeight = nodeImg.getHeight() / 2;
+                int offsetWidth = nodeImg.getWidth() / 2;
+                //System.out.println("Height: " + offsetHeight + " Width: " + offsetWidth);
                 for (NodeEdge e : this.pathEdges){
                     //only add the node if it's on this floor
                     if(e.getSource().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()
@@ -552,8 +557,8 @@ public class Guidance extends Path {
                         System.out.println("Drawing line between nodes on floor: " + e.getSource().getMyFloor().getFloorNumber());
                         System.out.println("x1: " + Math.round(targetNode.getPosX() * constant) + " y1: " + Math.round( targetNode.getPosY() * constant) +
                                 " x2: " + Math.round(sourceNode.getPosX() * constant) + " y2: " + Math.round(sourceNode.getPosY() * constant));
-                        g.drawLine((int)Math.round(targetNode.getPosX() * constant), (int)Math.round(targetNode.getPosY() * constant),
-                                (int)Math.round(sourceNode.getPosX() * constant), (int)Math.round(sourceNode.getPosY() * constant));
+                        g.drawLine((int)Math.round(targetNode.getPosX() * constant) + offsetWidth, (int)Math.round(targetNode.getPosY() * constant) + offsetHeight,
+                                (int)Math.round(sourceNode.getPosX() * constant) + offsetWidth, (int)Math.round(sourceNode.getPosY() * constant) + offsetHeight);
 
 
                     }
@@ -570,7 +575,7 @@ public class Guidance extends Path {
         }
 
         try {
-            SendEmail e = new SendEmail(address, subjectLine, directionLine, false);
+            SendEmail e = new SendEmail(address, subjectLine, directionLine, true);
             return true;
         } catch(Exception e) {
             System.out.println("Threw an exception: " + e);
