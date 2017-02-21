@@ -374,8 +374,11 @@ public class MapEditorController extends AbstractController {
 		//and then set all the existing nodes up
 		HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
 
-		for(MapNode n : model.getCurrentFloor().getFloorNodes())
+		//@TODO CONCURRENCY ERROR
+		for(Object x : model.getCurrentFloor().getFloorNodes().toArray())
 		{
+			MapNode n = (MapNode)x;
+
 			addToAdminMap(n);
 
 			for(NodeEdge edge: n.getEdges())
