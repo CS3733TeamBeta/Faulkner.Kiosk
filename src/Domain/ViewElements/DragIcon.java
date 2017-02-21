@@ -2,7 +2,6 @@ package Domain.ViewElements;
 
 import Domain.Map.Destination;
 import Domain.Map.MapNode;
-import Domain.Map.Suite;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
@@ -124,7 +123,7 @@ public class DragIcon extends AnchorPane{
 
 			case suite: //@TODO change this to office
 			{
-				newNode = new Suite();
+				newNode = new Destination();
 				break;
 			}
 

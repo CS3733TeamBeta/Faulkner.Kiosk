@@ -10,19 +10,19 @@ public class Office
 {
     UUID id;
     String name;
-    Suite suite;
+    Destination destination;
 
     protected String department;
 
-    public Office(String name, Suite suite) {
+    public Office(String name, Destination destination) {
         this.name = name;
-        this.suite = suite;
+        this.destination = destination;
     }
 
-    public Office(UUID id, String name, Suite suite) {
+    public Office(UUID id, String name, Destination destination) {
         this.id = id;
         this.name = name;
-        this.suite = suite;
+        this.destination = destination;
     }
 
     public Office()
@@ -38,8 +38,8 @@ public class Office
         this.name = name;
     }
 
-    public Suite getSuite() {
-        return this.suite;
+    public Destination getDestination() {
+        return this.destination;
     }
 
     public UUID getId() {
@@ -56,7 +56,7 @@ public class Office
         return this.department;
     }
 
-    public void setSuite(Suite s) {
-        this.suite = s;
+    public void setSuite(Destination d) {
+        this.destination = d;
     }
 }

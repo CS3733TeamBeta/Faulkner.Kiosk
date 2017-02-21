@@ -22,6 +22,8 @@ public class Destination extends MapNode {
     Image icon;
     Image destinationView;
 
+    String floorID;
+
     HashSet<Doctor> doctors;
     HashSet<Office> offices;
 
@@ -42,11 +44,12 @@ public class Destination extends MapNode {
     }
 
     //Creates a destination from a map node
-    public Destination(UUID uuid, MapNode m, String name)
+    public Destination(UUID uuid, MapNode m, String name, String floor)
     {
 
         this.destUID = uuid;
         this.name = name;
+        this.floorID = floor;
 
         this.setPosX(m.getPosX());
         this.setPosY(m.getPosY());
@@ -79,10 +82,26 @@ public class Destination extends MapNode {
     @Override
     public String toString()
     {
-        return myInfo.getName();
+        return this.name;
     }
 
     public UUID getDestUID() {
         return this.destUID;
+    }
+
+    public void addOffice(Office o) {
+        offices.add(o);
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String s) {
+        this.name = s;
+    }
+
+    public String getFloorID() {
+        return this.floorID;
     }
 }

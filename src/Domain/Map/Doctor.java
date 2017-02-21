@@ -11,22 +11,22 @@ public class Doctor extends Info
 {
 
     UUID docID;
-    HashSet<Suite> suites;
+    HashSet<Destination> destinations;
     HashSet<String> myOffice;
     String phoneNum = "N/A";
 
-    public Doctor(String name, String description, String hours, HashSet<Suite> suites) {
+    public Doctor(String name, String description, String hours, HashSet<Destination> destinations) {
         super(name, description, hours);
         this.docID = UUID.randomUUID();
-        this.suites = suites;
+        this.destinations = destinations;
 
         this.myOffice = new HashSet<>();
     }
 
-    public Doctor(UUID docID, String name, String description, String hours, HashSet<Suite> suites) {
+    public Doctor(UUID docID, String name, String description, String hours, HashSet<Destination> destinations) {
         super(name, description, hours);
         this.docID = docID;
-        this.suites = suites;
+        this.destinations = destinations;
 
         this.myOffice = new HashSet<>();
     }
@@ -83,12 +83,12 @@ public class Doctor extends Info
         return this.hours;
     }
 
-    public HashSet<Suite> getSuites() {
-        return this.suites;
+    public HashSet<Destination> getDestinations() {
+        return this.destinations;
     }
 
-    public void setSuites(HashSet<Suite> suites) {
-        this.suites = suites;
+    public void setDestinations(HashSet<Destination> suites) {
+        this.destinations = suites;
     }
 
     public String[] splitName() {
