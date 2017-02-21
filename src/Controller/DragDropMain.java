@@ -101,7 +101,7 @@ public class DragDropMain extends Application {
 		floor1.addEdge(edgeHI);
 		floor1.addEdge(edgeIJ);
 		floor1.addEdge(edgeJK);
-		floor1.setKioskLocation(nodeA);
+		myHospital.setKioskLocation(nodeA);
 
 
 		nodeL = new MapNode(12, 00, 100);

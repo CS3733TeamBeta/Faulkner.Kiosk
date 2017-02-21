@@ -211,7 +211,7 @@ public class UserMapViewController extends AbstractController {
     protected void findPathToNode(MapNode endPoint) throws PathFindingException {
         System.out.println("In path finding");
 
-        MapNode startPoint = model.getCurrentFloor().getKioskNode();
+        MapNode startPoint = model.getHospital().getKioskNode();
         if (endPoint == startPoint) {
             System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
             return;//TODO add error message of some kind

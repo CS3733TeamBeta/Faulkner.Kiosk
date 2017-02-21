@@ -28,6 +28,7 @@ public class MapNode implements DrawableMapEntity {
     double posX;
     double posY;
 
+    boolean isKiosk;
     protected DragIcon icon;
 
     final double NODE_HOVER_OPACITY = .65;
@@ -430,6 +431,14 @@ public class MapNode implements DrawableMapEntity {
         this.heuristic = Double.MAX_VALUE;
         this.f = Double.MAX_VALUE;
         this.parent = null;
+    }
+
+    public boolean getIsKioskNode () {
+        return isKiosk;
+    }
+
+    public void setIsKioskNode (boolean isKiosk) {
+        this.isKiosk = isKiosk;
     }
 
 }

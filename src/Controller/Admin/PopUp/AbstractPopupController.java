@@ -52,6 +52,8 @@ public abstract class AbstractPopupController
      */
     public abstract void saveEdits();
 
+
+    public abstract void isKiosk ();
     /**
      * When the okay button is pressed
      * @param event

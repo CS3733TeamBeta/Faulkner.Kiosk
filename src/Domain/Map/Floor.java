@@ -10,7 +10,7 @@ import java.util.LinkedList;
 public class Floor implements Comparable{
     LinkedList<MapNode> floorNodes;
     LinkedList<NodeEdge> floorEdges;
-    MapNode kioskNode = null;
+
     int floorNumber;
 
 
@@ -50,13 +50,8 @@ public class Floor implements Comparable{
         n.setFloor(this);
     }
 
-    /**
-     * Retrieves the node currently set as the KioskNode
-     * @return the kioskNode as a MapNode
-     */
-    public MapNode getKioskNode(){
-        return kioskNode;
-    }
+
+
 
     /**
      * Retrieves the floor number of the given floor
@@ -92,17 +87,7 @@ public class Floor implements Comparable{
     }
 
 
-    /**
-     * Sets this floor's KioskNode, which is the node that navigation begins from, to the given MapNode
-     * @param kioskNode
-     */
-    public void setKioskLocation(MapNode kioskNode){
-        for(MapNode n : this.floorNodes){
-            if(kioskNode.equals(n)){
-                this.kioskNode = kioskNode;
-            }
-        }
-    }
+
 
 
     @Override

@@ -676,7 +676,7 @@ public class MapEditorController extends AbstractController {
 			{
 				PopOver popOver = mapNode.getEditPopover();
 
-				/***If the name is set, at it to the tree*/
+				/***If the name is set, add it to the tree*/
 				popOver.setOnHiding(event -> {
 					getCurrentTreeView().refresh(); //refresh the treeview once the popup editor closes
 				});
@@ -842,9 +842,9 @@ public class MapEditorController extends AbstractController {
 			i++;
 		}
 
-		if(model.getCurrentFloor().getKioskNode() == null && model.getCurrentFloor().getFloorNodes().size() > 0){
+		if(model.getHospital().getKioskNode() == null && model.getCurrentFloor().getFloorNodes().size() > 0){
 			System.out.println("ERROR; NO KIOSK NODE SET; SETTING ONE RANDOMLY");
-			model.getCurrentFloor().setKioskLocation(model.getCurrentFloor().getFloorNodes().get(0));
+			model.getHospital().setKioskLocation(model.getCurrentFloor().getFloorNodes().get(0));
 		}
 
 		if(Main.mvm != null) {

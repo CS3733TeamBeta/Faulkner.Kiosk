@@ -148,4 +148,5 @@ public class MapModel {
     {
         mapEdges.remove(e);
     }
+    public Hospital getHospital () {return hospital;}
 }

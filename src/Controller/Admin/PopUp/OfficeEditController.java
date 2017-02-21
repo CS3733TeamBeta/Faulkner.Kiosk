@@ -51,4 +51,8 @@ public class OfficeEditController extends AbstractPopupController
         deptBox.setText(officeUnderEdit.getDepartment());
         phoneBox.setText(officeUnderEdit.getInfo().getPhoneNumber());
     }
+
+    @Override
+    public void isKiosk() {
+    }
 }

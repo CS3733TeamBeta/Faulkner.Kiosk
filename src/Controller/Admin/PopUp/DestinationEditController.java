@@ -46,4 +46,7 @@ public class DestinationEditController extends AbstractPopupController
         nameBox.setText(destinationUnderEdit.getInfo().getName());
         phoneBox.setText(destinationUnderEdit.getInfo().getPhoneNumber());
     }
+
+    @Override
+    public void isKiosk () {}
 }
