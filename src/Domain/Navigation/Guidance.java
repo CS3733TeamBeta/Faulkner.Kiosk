@@ -550,7 +550,6 @@ public class Guidance extends Path {
                 textMessagebody += (s + "\n");
             }
         }
-        textMessagebody += "End of directions";
         try {
             SendText t = new SendText(address, textMessagebody);
         } catch (Exception e) {
