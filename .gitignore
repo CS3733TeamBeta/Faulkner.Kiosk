@@ -9,6 +9,7 @@ out/
 derby.log
 
 src/Model/Database/CustomPackage/*
+src/Model/Database/CustomFilePath.*
 
 #Don't ignore these
 !.gitignore
