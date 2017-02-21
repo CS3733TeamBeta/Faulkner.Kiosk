@@ -283,6 +283,7 @@ public class UserMapViewController extends AbstractController {
 
         panel.setCloseHandler(event->
         {
+            ///DEVONNNN
             hideDirections();
             loadMenu();
 
