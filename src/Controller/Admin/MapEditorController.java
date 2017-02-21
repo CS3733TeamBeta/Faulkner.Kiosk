@@ -394,14 +394,10 @@ public class MapEditorController extends AbstractController {
 
 		for(MapNode n: model.getCurrentFloor().getFloorNodes())
 		{
-			importNode(n);
-
 			for(NodeEdge edge: n.getEdges())
 			{
 				if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
 			}
-
-			addEventHandlersToNode(n);
 
 			n.getNodeToDisplay().setOnMouseClicked(null);
 			n.getNodeToDisplay().setOnDragDetected(null);
@@ -435,9 +431,6 @@ public class MapEditorController extends AbstractController {
 				importNode(target);
 			}
 
-			addEventHandlersToNode(source);
-			addEventHandlersToNode(target);
-
 			edge.updatePosViaNode(source);
 			edge.updatePosViaNode(target);
 
@@ -449,6 +442,12 @@ public class MapEditorController extends AbstractController {
 		mapImage.toBack();
 	}
 
+	/**
+	 *
+	 * Imports map node without adding it to model
+	 *
+	 * @param mapNode
+	 */
 	protected void importNode(MapNode mapNode)
 	{
 		model.addMapNode(mapNode); //add node to model
