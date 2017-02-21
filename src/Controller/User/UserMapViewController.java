@@ -422,7 +422,7 @@ public class UserMapViewController extends AbstractController {
             }
         }
 
-        panel.fillDirectionsList(newRoute.getSteps().getFirst());
+        panel.fillGuidance(newRoute);
 
         showDirections();
         newRoute.printTextDirections();
