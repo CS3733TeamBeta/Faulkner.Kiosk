@@ -184,6 +184,7 @@ public class Guidance extends Path {
                         tempMapNodes.add(fromNode);
                     }
                 }
+
                 System.out.println("Adding a direction step at 185");
                 this.textDirections.addLast(new DirectionStep(fromNode.getMyFloor(), tempTextDirections, tempMapNodes));
                 //this.textDirections.getLast().setDirections(tempTextDirections);
@@ -536,8 +537,26 @@ public class Guidance extends Path {
                 Graphics g = combined.getGraphics();
                 g.drawImage(baseImage, 0, 0, null);
                 int constant = 150;
+                //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
+                    System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
                     g.drawImage(nodeImg, ((int) Math.round(n.getPosX()))*constant, ((int) Math.round(n.getPosY()))*constant, null);
+                }
+                //add edges to the map
+                for (NodeEdge e : this.pathEdges){
+                    //only add the node if it's on this floor
+                    if(e.getSource().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()
+                            && e.getTarget().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()){
+                        MapNode targetNode = e.getTarget();
+                        MapNode sourceNode = e.getSource();
+                        System.out.println("Drawing line between nodes on floor: " + e.getSource().getMyFloor().getFloorNumber());
+                        System.out.println("x1: " + Math.round(targetNode.getPosX() * constant) + " y1: " + Math.round( targetNode.getPosY() * constant) +
+                                " x2: " + Math.round(sourceNode.getPosX() * constant) + " y2: " + Math.round(sourceNode.getPosY() * constant));
+                        g.drawLine((int)Math.round(targetNode.getPosX() * constant), (int)Math.round(targetNode.getPosY() * constant),
+                                (int)Math.round(sourceNode.getPosX() * constant), (int)Math.round(sourceNode.getPosY() * constant));
+
+
+                    }
                 }
 
                 // Save as new image
