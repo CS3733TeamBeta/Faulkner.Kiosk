@@ -1,7 +1,6 @@
 package Domain.ViewElements;
 
 import Domain.Map.Destination;
-import Domain.Map.Elevator;
 import Domain.Map.MapNode;
 import Domain.Map.Suite;
 import javafx.fxml.FXML;
@@ -118,7 +117,8 @@ public class DragIcon extends AnchorPane{
 		{
 			case elevator:
 			{
-				newNode = new Elevator();
+				newNode = new MapNode();
+				newNode.setIsElevator(true);
 				break;
 			}
 
