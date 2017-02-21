@@ -216,7 +216,7 @@ public class UserMapViewController extends AbstractController {
       //  stackPane = content;
 
         group.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
-            // keep it at least as large as the content
+        // keep it at least as large as the content
             content.setMinWidth(newBounds.getWidth());
             content.setMinHeight(newBounds.getHeight());
         });
@@ -242,7 +242,7 @@ public class UserMapViewController extends AbstractController {
         final Bounds viewportBounds = scrollPane.getViewportBounds();
 
         if(groupBounds.getWidth()>viewportBounds.getWidth() || evt.getDeltaY()>0) //if max and trying to scroll out
-        {
+        {       //DEVON  also checkout zoom to extents
             // calculate pixel offsets from [0, 1] range
             double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
             double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
