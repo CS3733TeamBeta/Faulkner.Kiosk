@@ -142,6 +142,9 @@ public class UserDirectionsPanel extends AnchorPane
     @FXML
     void onSendEmail(ActionEvent event)
     {
-
+        if(guidance!=null)
+        {
+            guidance.sendEmailGuidance(emailField.getText()); //should send email
+        }
     }
 }
