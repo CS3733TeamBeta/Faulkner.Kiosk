@@ -550,7 +550,11 @@ public class Guidance extends Path {
                 System.out.println("starting with: " + scaledStartX + " " + scaledStartY);
                 System.out.println("ending with: " + scaledEndX + " " + scaledEndY);
                 BufferedImage croppedImage = cropImage(combined,scaledStartX, scaledStartY, scaledEndX ,scaledEndY );
-                BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/scaleFactor, croppedImage.getHeight()/scaleFactor, true);
+                int resizedScaleWidthfactor = croppedImage.getWidth() * scaleFactor / (scaledEndX - scaledStartX);
+                int resizedScaleHeightFactor = croppedImage.getHeight() * scaleFactor / (scaledEndY - scaledStartY);
+                System.out.println("scaled height: " + resizedScaleHeightFactor);
+                System.out.println("scaled width: " + resizedScaleWidthfactor);
+                BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthfactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
                 ImageIO.write(resizedVersion, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
             } catch (Exception e) {
                 System.out.println("threw something wrong");
