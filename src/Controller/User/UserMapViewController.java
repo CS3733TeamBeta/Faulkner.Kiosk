@@ -8,6 +8,7 @@ import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.DragIcon;
+import Domain.ViewElements.DragIconType;
 import Exceptions.PathFindingException;
 import Model.Database.DatabaseManager;
 import Model.MapModel;
@@ -184,6 +185,11 @@ public class UserMapViewController extends AbstractController {
         }
 
         setupImportedNode(n);
+
+        if(n.getIconType().equals(DragIconType.connector))
+        {
+            n.getNodeToDisplay().setVisible(false);
+        }
 
         ((DragIcon) n.getNodeToDisplay()).relocateToPoint(new Point2D(n.getPosX(),
                 n.getPosY()));

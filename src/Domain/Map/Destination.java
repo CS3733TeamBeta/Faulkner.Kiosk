@@ -1,6 +1,7 @@
 package Domain.Map;
 
 import Controller.Admin.PopUp.DestinationEditController;
+import Domain.ViewElements.DragIconType;
 import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
 
@@ -46,7 +47,6 @@ public class Destination extends MapNode {
     //Creates a destination from a map node
     public Destination(UUID uuid, MapNode m, String name, String floor)
     {
-
         this.destUID = uuid;
         this.name = name;
         this.floorID = floor;
@@ -77,6 +77,12 @@ public class Destination extends MapNode {
     public PopOver getEditPopover() {
         DestinationEditController controller = new DestinationEditController(this);
         return getPopOver(controller, popOverEditFXML);
+    }
+
+    @Override
+    public void setType(DragIconType type)
+    {
+        super.setType(type);
     }
 
     @Override

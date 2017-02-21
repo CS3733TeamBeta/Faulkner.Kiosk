@@ -457,14 +457,14 @@ public class MapEditorController extends AbstractController {
 			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
 		}
 
-		mapNode.toFront(); //send the node to the front
-
 		addEventHandlersToNode(mapNode);
 
-		if(mapNode instanceof Destination)
+		if(!mapNode.getIconType().equals(DragIconType.connector)) //treeview checks that floor actually contains
 		{
-			addToTreeView((Destination)mapNode);
+			addToTreeView(mapNode);
 		}
+
+		mapNode.toFront(); //send the node to the front
 	}
 
 	/**
@@ -748,7 +748,7 @@ public class MapEditorController extends AbstractController {
 						MapNode droppedNode;
 
 						droppedNode = DragIcon.constructMapNodeFromType((DragIconType.valueOf(container.getValue("type"))));
-						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
+						//droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
 
 						mapItems.getChildren().add(droppedNode.getNodeToDisplay());
 
@@ -861,7 +861,6 @@ public class MapEditorController extends AbstractController {
 						if (item.getValue().getValue().equals(d))
 						{
 							treeContainsNode = true;
-							return;
 						}
 					}
 
@@ -883,8 +882,6 @@ public class MapEditorController extends AbstractController {
 	 */
 	public void addToAdminMap(MapNode mapNode)
 	{
-		importNode(mapNode);
-
 		if (!model.getCurrentFloor().getFloorNodes().contains(mapNode))
 		{
 			System.out.println("Node " + mapNode.getIconType().name() + " added to: " + mapNode.getPosX() + " " + mapNode.getPosY());
@@ -892,16 +889,7 @@ public class MapEditorController extends AbstractController {
 			model.getCurrentFloor().getFloorNodes().add(mapNode);
 		}
 
-		model.addMapNode(mapNode); //add node to model
-
-		mapNode.toFront(); //send the node to the front
-
-		addEventHandlersToNode(mapNode);
-
-		if(mapNode instanceof Destination)
-		{
-			addToTreeView((Destination)mapNode);
-		}
+		importNode(mapNode); //must occur after adding node to model floor
 	}
 
 
