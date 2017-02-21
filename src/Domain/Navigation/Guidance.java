@@ -565,7 +565,6 @@ public class Guidance extends Path {
                 }
 
                 // Save as new image
-
                 ImageIO.write(combined, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
             } catch (Exception e) {
                 System.out.println("threw something wrong");
