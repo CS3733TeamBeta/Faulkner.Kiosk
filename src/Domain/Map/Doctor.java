@@ -7,8 +7,13 @@ import java.util.UUID;
 /**
  * Info specific for a doctor
  */
-public class Doctor extends Info
+public class Doctor
 {
+
+    String name;
+    String description;
+    String hours;
+    protected Image view;
 
     UUID docID;
     HashSet<Destination> destinations;
@@ -16,7 +21,9 @@ public class Doctor extends Info
     String phoneNum = "N/A";
 
     public Doctor(String name, String description, String hours, HashSet<Destination> destinations) {
-        super(name, description, hours);
+        this.name = name;
+        this.description = description;
+        this.hours = hours;
         this.docID = UUID.randomUUID();
         this.destinations = destinations;
 
@@ -24,7 +31,9 @@ public class Doctor extends Info
     }
 
     public Doctor(UUID docID, String name, String description, String hours, HashSet<Destination> destinations) {
-        super(name, description, hours);
+        this.name = name;
+        this.description = description;
+        this.hours = hours;
         this.docID = docID;
         this.destinations = destinations;
 
