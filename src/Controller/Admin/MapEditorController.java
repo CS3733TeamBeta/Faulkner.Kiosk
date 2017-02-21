@@ -794,7 +794,7 @@ public class MapEditorController extends AbstractController {
 			nodesToAdd.add(mapNode);
 		}
 
-			model.addMapNode(mapNode); //add node to model
+		//	model.addMapNode(mapNode); //add node to model
 
 			mapNode.toFront(); //send the node to the front
 
