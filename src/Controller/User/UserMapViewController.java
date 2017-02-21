@@ -183,8 +183,11 @@ public class UserMapViewController extends AbstractController {
             mapItems.getChildren().add(n.getNodeToDisplay()); //add to right panes children
         }
 
+        setupImportedNode(n);
+
         ((DragIcon) n.getNodeToDisplay()).relocateToPoint(new Point2D(n.getPosX(),
                 n.getPosY()));
+
     }
 
     public void zoomToExtents(Group group)
@@ -219,7 +222,7 @@ public class UserMapViewController extends AbstractController {
       //  stackPane = content;
 
         group.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
-            // keep it at least as large as the content
+        // keep it at least as large as the content
             content.setMinWidth(newBounds.getWidth());
             content.setMinHeight(newBounds.getHeight());
         });
@@ -237,38 +240,38 @@ public class UserMapViewController extends AbstractController {
 
         content.setOnScroll(evt ->
         {
-        evt.consume();
+            evt.consume();
 
-        final double zoomFactor = evt.getDeltaY() > 0 ? 1.2 : 1 / 1.2;
+            final double zoomFactor = evt.getDeltaY() > 0 ? 1.2 : 1 / 1.2;
 
-        Bounds groupBounds = group.getLayoutBounds();
-        final Bounds viewportBounds = scrollPane.getViewportBounds();
+            Bounds groupBounds = group.getLayoutBounds();
+            final Bounds viewportBounds = scrollPane.getViewportBounds();
 
-        if(groupBounds.getWidth()>viewportBounds.getWidth() || evt.getDeltaY()>0) //if max and trying to scroll out
-        {
-            // calculate pixel offsets from [0, 1] range
-            double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
-            double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
+            if(groupBounds.getWidth()>viewportBounds.getWidth() || evt.getDeltaY()>0) //if max and trying to scroll out
+            {       //DEVON  also checkout zoom to extents
+                // calculate pixel offsets from [0, 1] range
+                double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
+                double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
 
-            // convert content coordinates to zoomTarget coordinates
-            Point2D posInZoomTarget = zoomTarget.parentToLocal(group.parentToLocal(new Point2D(evt.getX(), evt.getY())));
+                // convert content coordinates to zoomTarget coordinates
+                Point2D posInZoomTarget = zoomTarget.parentToLocal(group.parentToLocal(new Point2D(evt.getX(), evt.getY())));
 
-            // calculate adjustment of scroll position (pixels)
-            Point2D adjustment = zoomTarget.getLocalToParentTransform().deltaTransform(posInZoomTarget.multiply(zoomFactor - 1));
+                // calculate adjustment of scroll position (pixels)
+                Point2D adjustment = zoomTarget.getLocalToParentTransform().deltaTransform(posInZoomTarget.multiply(zoomFactor - 1));
 
-            // do the resizing
-            zoomTarget.setScaleX(zoomFactor * zoomTarget.getScaleX());
-            zoomTarget.setScaleY(zoomFactor * zoomTarget.getScaleY());
+                // do the resizing
+                zoomTarget.setScaleX(zoomFactor * zoomTarget.getScaleX());
+                zoomTarget.setScaleY(zoomFactor * zoomTarget.getScaleY());
 
-            // refresh ScrollPane scroll positions & content bounds
-            scrollPane.layout();
+                // refresh ScrollPane scroll positions & content bounds
+                scrollPane.layout();
 
-            // convert back to [0, 1] range
-            // (too large/small values are automatically corrected by ScrollPane)
-            groupBounds = group.getLayoutBounds();
-            scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
-            scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
-        }
+                // convert back to [0, 1] range
+                // (too large/small values are automatically corrected by ScrollPane)
+                groupBounds = group.getLayoutBounds();
+                scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
+                scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
+            }
     });
 
         panel.addOnStepChangedHandler(event -> { //when the step is changed in the side panel, update this display!
@@ -286,6 +289,7 @@ public class UserMapViewController extends AbstractController {
 
         panel.setCloseHandler(event->
         {
+            ///DEVONNNN
             hideDirections();
             loadMenu();
 
@@ -356,29 +360,35 @@ public class UserMapViewController extends AbstractController {
     }
 
 
-    private void setupImportedNode(MapNode droppedNode){
+    private void setupImportedNode(MapNode nodeToSetup){
 
         //droppedNode.setType(droppedNode.getIconType()); //set the type
 
-        droppedNode.getNodeToDisplay().setOnMouseClicked(ev -> {
+        nodeToSetup.getNodeToDisplay().setOnMouseClicked(null);
+        nodeToSetup.getNodeToDisplay().setOnDragDetected(null);
+        nodeToSetup.getNodeToDisplay().setOnMouseDragged(null);
+        nodeToSetup.getNodeToDisplay().setOnMouseEntered(null);
+        nodeToSetup.getNodeToDisplay().setOnMouseExited(null);
+
+        nodeToSetup.getNodeToDisplay().setOnMouseClicked(ev -> {
             if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
                 try{
-                    findPathToNode(droppedNode);
+                    findPathToNode(nodeToSetup);
                 }catch(PathFindingException e){
 
                 }
             }
         });
 
-        droppedNode.getNodeToDisplay().setOnMouseEntered(ev->
+        /*nodeToSetup.getNodeToDisplay().setOnMouseEntered(ev->
         {
-            droppedNode.getNodeToDisplay().setOpacity(.65);
+            nodeToSetup.getNodeToDisplay().setOpacity(.65);
         });
 
-        droppedNode.getNodeToDisplay().setOnMouseExited(ev->
+        nodeToSetup.getNodeToDisplay().setOnMouseExited(ev->
         {
-            droppedNode.getNodeToDisplay().setOpacity(1);
-        });
+            nodeToSetup.getNodeToDisplay().setOpacity(1);
+        });*/
     }
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException {
