@@ -569,8 +569,6 @@ public class Guidance extends Path {
 
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine, true, textDirections.size());
-            e.sendEmail();
-
             return true;
         } catch(Exception e) {
             System.out.println("Threw an exception: " + e);
