@@ -12,6 +12,7 @@ import Domain.ViewElements.DragIconType;
 import Exceptions.PathFindingException;
 import Model.Database.DatabaseManager;
 import Model.MapModel;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -19,6 +20,7 @@ import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -291,14 +293,16 @@ public class UserMapViewController extends AbstractController {
 
         mainPane.getChildren().add(panel);
         panel.toFront();
-        panel.relocate(mainPane.getPrefWidth()-panel.getPrefWidth(),0);
+        panel.relocate(mainPane.getPrefWidth()-5, 0);
 
 
         panel.setCloseHandler(event->
         {
             ///DEVONNNN
             hideDirections();
-            loadMenu();
+            // Ben, you might want to consider reset the direction panel here
+            panel.setVisible(false);
+            searchMenuUp();
 
             zoomToExtents(group); // TESTING PROGRAMATIC ZOOMING
 
@@ -336,6 +340,28 @@ public class UserMapViewController extends AbstractController {
                 scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
                 scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
         });
+
+        panel.setVisible(false);
+        directionPaneView();
+    }
+
+    private void directionPaneView() {
+
+        panel.addEventHandler(MouseEvent.MOUSE_ENTERED,
+                new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                        showDirections();
+                    }
+                });
+
+        panel.addEventHandler(MouseEvent.MOUSE_EXITED,
+                new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                        hideDirections();
+                    }
+                });
     }
 
     private void hideDirections()
@@ -345,7 +371,7 @@ public class UserMapViewController extends AbstractController {
         slideHideDirections.setCycleCount(1);
         slideHideDirections.setAutoReverse(true);
 
-        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), panel.getPrefWidth());
+        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), 0);
         keyFrame = new KeyFrame(Duration.millis(600), hideDirections);
 
         slideHideDirections.getKeyFrames().add(keyFrame);
@@ -354,12 +380,13 @@ public class UserMapViewController extends AbstractController {
 
     private void showDirections()
     {
+        panel.setVisible(true);
         Timeline slideHideDirections = new Timeline();
         KeyFrame keyFrame;
         slideHideDirections.setCycleCount(1);
         slideHideDirections.setAutoReverse(true);
 
-        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), mainPane.getWidth()-panel.getPrefWidth());
+        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), -panel.getWidth()+5);
         keyFrame = new KeyFrame(Duration.millis(600), hideDirections);
 
         slideHideDirections.getKeyFrames().add(keyFrame);
@@ -457,6 +484,7 @@ public class UserMapViewController extends AbstractController {
 
         // Title shown
         welcomeGreeting.setVisible(true);
+        panel.setVisible(false);
     }
 
     public void searchMenuUp() {
@@ -473,9 +501,11 @@ public class UserMapViewController extends AbstractController {
                 welcomeGreeting.setVisible(false);
                 downArrow = false; // Changes to up icon
                 searchMenu.setStyle("-fx-background-color: transparent;");
+                panel.setVisible(true);
             }
             else
             { // Navigate up icon -> show welcome page
+                panel.setVisible(false);
                 KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
                 keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
 
