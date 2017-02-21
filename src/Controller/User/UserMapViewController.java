@@ -3,10 +3,12 @@ package Controller.User;
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
 import Domain.Map.Floor;
+import Domain.Map.LinkEdge;
 import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.DragIcon;
+import Domain.ViewElements.DragIconType;
 import Exceptions.PathFindingException;
 import Model.Database.DatabaseManager;
 import Model.MapModel;
@@ -125,11 +127,16 @@ public class UserMapViewController extends AbstractController {
         {
             System.out.println("Adding node");
 
+            n.getNodeToDisplay().setOnMouseClicked(null);
+            n.getNodeToDisplay().setOnDragDetected(null);
+            n.getNodeToDisplay().setOnMouseDragged(null);
+            n.getNodeToDisplay().setOnMouseEntered(null);
+
             addToMap(n);
 
             for(NodeEdge edge: n.getEdges())
             {
-                if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+                if(!collectedEdges.contains(edge) && !(edge instanceof LinkEdge)) collectedEdges.add(edge);
             }
         }
 
@@ -178,6 +185,11 @@ public class UserMapViewController extends AbstractController {
         }
 
         setupImportedNode(n);
+
+        if(n.getIconType().equals(DragIconType.connector))
+        {
+           // n.getNodeToDisplay().setVisible(false);
+        }
 
         ((DragIcon) n.getNodeToDisplay()).relocateToPoint(new Point2D(n.getPosX(),
                 n.getPosY()));

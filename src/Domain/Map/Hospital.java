@@ -13,14 +13,14 @@ public class Hospital {
     HashSet<Building> buildings;
 
     private HashMap<String, Doctor> doctors;
-    private HashMap<UUID, Suite> suites;
+    private HashMap<UUID, Destination> destinations;
     private HashMap<String, Office> offices;
 
     public Hospital() {
         buildings = new HashSet<Building>();
 
         doctors = new HashMap<>();
-        suites = new HashMap<>();
+        destinations = new HashMap<>();
         offices = new HashMap<>();
     }
 
@@ -43,18 +43,18 @@ public class Hospital {
     }
 
 
-    //Alter Suite HashMap: suites
-    public HashMap<UUID, Suite> getSuites() {
-        return suites;
+    //Alter Suite HashMap: destinations
+    public HashMap<UUID, Destination> getDestinations() {
+        return destinations;
     }
-    public void addSuites(UUID uuid, Suite suite) {
-        suites.put(uuid, suite);
+    public void addDestinations(UUID uuid, Destination suite) {
+        destinations.put(uuid, suite);
     }
-    public void setSuites(HashMap<UUID, Suite> suites) {
-        this.suites = suites;
+    public void setDestinations(HashMap<UUID, Destination> destinations) {
+        this.destinations = destinations;
     }
     public void removeSuites(String s){
-        suites.remove(s);
+        destinations.remove(s);
     }
     public boolean containsBuilding(Building b)
     {

@@ -292,6 +292,8 @@ public class MapNode implements DrawableMapEntity {
      */
     public void setType (DragIconType type) {
         icon.setType(type);
+        label = type.name();
+        System.out.println(type.name());
     }
 
     /**
