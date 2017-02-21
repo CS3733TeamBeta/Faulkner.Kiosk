@@ -531,10 +531,10 @@ public class Guidance extends Path {
                 LinkedList<Point> startAndEnd = findParemeters(this.pathNodes, d.getFloor().getFloorNumber());
                 Point startPoint = startAndEnd.getFirst();
                 Point endPoint = startAndEnd.getLast();
-                int scaledStartX = (startPoint.x * constant) - boarderSize;
-                int scaledStartY = (startPoint.y * constant) - boarderSize;
-                int scaledEndX = (endPoint.x * constant) + boarderSize;
-                int scaledEndY = (endPoint.y * constant) + boarderSize;
+                int scaledStartX = (startPoint.x * constant) - boarderSize + offsetWidth;
+                int scaledStartY = (startPoint.y * constant) - boarderSize + offsetHeight;
+                int scaledEndX = (endPoint.x * constant) + boarderSize + offsetWidth;
+                int scaledEndY = (endPoint.y * constant) + boarderSize + offsetHeight;
                 if(scaledEndX > combined.getWidth()){
                     scaledEndX = combined.getWidth();
                 }
