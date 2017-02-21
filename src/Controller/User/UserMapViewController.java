@@ -2,9 +2,7 @@ package Controller.User;
 
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
-import Domain.Map.Floor;
-import Domain.Map.MapNode;
-import Domain.Map.NodeEdge;
+import Domain.Map.*;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.DragIcon;
 import Exceptions.PathFindingException;
@@ -361,7 +359,7 @@ public class UserMapViewController extends AbstractController {
             navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
             menuSlideDown.getKeyFrames().add(keyFrame);
             menuSlideDown.play();
-        }}
+        }
 
     public void loadMenu() {
         //defaultProperty();
@@ -413,7 +411,7 @@ public class UserMapViewController extends AbstractController {
     public void adminLogin() throws IOException {
         SceneSwitcher.switchToLoginView(primaryStage);
     }
-
+/*
     public void onEmailDirections(ActionEvent actionEvent) {
         String givenEmail = searchBar.getText().toLowerCase();
         if (givenEmail.contains("@") && (givenEmail.contains(".com") || givenEmail.contains(".org") || givenEmail.contains(".edu") || givenEmail.contains(".gov"))) {
@@ -429,7 +427,7 @@ public class UserMapViewController extends AbstractController {
             System.out.println("Not a valid address!");
             //@TODO Show in ui email was invalid
         }}
-
+*/
     private void LoadTableData() {
         docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
