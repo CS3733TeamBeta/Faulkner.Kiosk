@@ -4,9 +4,6 @@ package Domain.Map;
 import java.util.HashSet;
 import java.util.UUID;
 
-/**
- * Info specific for a doctor
- */
 public class Doctor
 {
 
