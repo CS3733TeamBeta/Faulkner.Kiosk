@@ -3,7 +3,9 @@ package Model;
 import Domain.Map.*;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
+import Model.Database.DatabaseManager;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -28,36 +30,37 @@ public class MapModel {
         sideBarIcons = new ArrayList<DragIcon>();
         mapNodes = new HashSet<MapNode>();
         mapEdges = new HashSet<NodeEdge>();
+        currentFloor = new Floor(1);
 
-        hospital = new Hospital();
-
-        Building b  = new Building();
-        Floor f1 = new Floor(1);
-
-        try //attempts to add floor 1
+        try
         {
-            b.addFloor(f1);
-        } catch (Exception e)
+            hospital = DatabaseManager.getInstance().loadData();
+        } catch (SQLException e)
         {
             e.printStackTrace();
         }
 
-        hospital.addBuilding(b);
+        /**@TODO HACKY **/
 
-        currentFloor = f1;
+        Floor arbitraryFloor;
+
+        for(Building b : hospital.getBuildings())
+        {
+            try
+            {
+                arbitraryFloor = b.getFloor(3);
+                setCurrentFloor(arbitraryFloor);
+                break;
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void setCurrentFloor(Floor floor){
         this.currentFloor = floor;
-        mapNodes.clear();
-        for(MapNode n : floor.getFloorNodes()) {
-            mapNodes.add(n);
-        }
-
-        mapEdges.clear();
-        for(NodeEdge m : floor.getFloorEdges()) {
-            mapEdges.add(m);
-        }
     }
 
     public Floor getCurrentFloor()
@@ -73,15 +76,6 @@ public class MapModel {
     public void addNodeToCurrentFloor(MapNode nodeToAdd)
     {
         getCurrentFloor().addNode(nodeToAdd);
-    }
-
-    /**
-     * Place holder for function to switch floors
-     * @param f
-     */
-    public void switchFloor(Floor f)
-    {
-
     }
 
     /**
@@ -118,6 +112,7 @@ public class MapModel {
     public void addMapNode(MapNode n) {
         if(!mapNodes.contains(n)) {
             mapNodes.add(n);
+            getCurrentFloor().addNode(n);
         }
     }
 
@@ -137,6 +132,7 @@ public class MapModel {
     public void addMapEdge(NodeEdge e) {
         if(!mapEdges.contains(e)) {
             mapEdges.add(e);
+            getCurrentFloor().addEdge(e);
         }
     }
 
@@ -147,5 +143,10 @@ public class MapModel {
     public void removeMapEdge(NodeEdge e)
     {
         mapEdges.remove(e);
+    }
+
+    public Hospital getHospital()
+    {
+        return hospital;
     }
 }

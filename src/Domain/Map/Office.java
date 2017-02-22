@@ -1,53 +1,50 @@
 package Domain.Map;
 
-import Controller.Admin.PopUp.OfficeEditController;
-import org.controlsfx.control.PopOver;
-
-import java.util.HashSet;
+import java.util.UUID;
 
 /**
  *  Office is a particular type of destination that is a doctor's office
  */
 
-public class Office extends Destination
+public class Office
 {
-    int id;
+    UUID id;
+    String name;
+    Destination destination;
 
-    HashSet<Doctor> occupants;
     protected String department;
-    private final String popOverEditFXML = "/Admin/Popup/OfficeEditPopup.fxml";
 
-    public Office(int id, HashSet<Doctor> doctors) {
+    public Office(String name, Destination destination) {
+        this.name = name;
+        this.destination = destination;
+        this.id = UUID.randomUUID();
+    }
+
+    public Office(UUID id, String name, Destination destination) {
         this.id = id;
-        this.occupants = doctors;
+        this.name = name;
+        this.destination = destination;
     }
 
     public Office()
     {
-
+        super();
     }
 
-    @Override
-    public PopOver getEditPopover()
-    {
-        OfficeEditController controller = new OfficeEditController(this);
-
-        return getPopOver(controller, popOverEditFXML);
+    public String getName() {
+        return this.name;
     }
-    public int getId() {
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Destination getDestination() {
+        return this.destination;
+    }
+
+    public UUID getId() {
         return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public HashSet<Doctor> getOccupants() {
-        return this.occupants;
-    }
-
-    public void setOccupants(HashSet<Doctor> doctors) {
-        this.occupants = doctors;
     }
 
     public void setDepartment(String department)
@@ -58,5 +55,9 @@ public class Office extends Destination
     public String getDepartment()
     {
         return this.department;
+    }
+
+    public void setSuite(Destination d) {
+        this.destination = d;
     }
 }

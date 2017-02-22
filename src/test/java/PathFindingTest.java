@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 
 import java.rmi.server.UID;
 import java.util.LinkedList;
+import java.util.UUID;
 
 
 /**
@@ -35,29 +36,29 @@ public class PathFindingTest extends TestCase{
         myBuilding = new Building();
         floor1 = new Floor(1);
         floor2 = new Floor(2);
-        nodeA = new MapNode(1, 0, 10);
-        nodeB = new MapNode(2, 10, 10);
-        nodeC = new MapNode(3, 15, 10);
-        nodeD = new MapNode(4, 20, 10);
-        nodeE = new MapNode(5, 10, 5);
-        nodeF = new MapNode(6, 15, 5);
-        nodeG = new MapNode(7, 20, 5);
-        nodeH = new MapNode(8, 0, 0);
-        nodeI = new MapNode(9, 5, 0);
-        nodeJ = new MapNode(10, 10, 0);
-        nodeK = new MapNode(11, 20, 0);
-        nodeL = new MapNode(12, 0, 10);
-        nodeM = new MapNode(13, 10, 10);
-        nodeN = new MapNode(14, 20, 10);
-        nodeO = new MapNode(15, 5, 5);
-        nodeP = new MapNode(16, 10, 5);
-        nodeQ = new MapNode(17, 20, 5);
-        nodeR = new MapNode(18, 0, 0);
-        nodeS = new MapNode(19, 10, 0);
-        nodeT = new MapNode(20, 20, 0);
-        nodeX = new MapNode(22, 25, 0);
-        nodeY = new MapNode(23, 25, 5);
-        nodeZ = new MapNode(24, 15, 5);
+        nodeA = new MapNode(0, 5);
+        nodeB = new MapNode(10, 5);
+        nodeC = new MapNode( 15, 10);
+        nodeD = new MapNode( 20, 10);
+        nodeE = new MapNode( 10, 5);
+        nodeF = new MapNode( 15, 5);
+        nodeG = new MapNode( 20, 5);
+        nodeH = new MapNode( 0, 0);
+        nodeI = new MapNode( 5, 0);
+        nodeJ = new MapNode(10, 0);
+        nodeK = new MapNode( 20, 0);
+        nodeL = new MapNode( 0, 10);
+        nodeM = new MapNode( 10, 10);
+        nodeN = new MapNode( 20, 10);
+        nodeO = new MapNode( 5, 5);
+        nodeP = new MapNode( 10, 5);
+        nodeQ = new MapNode( 20, 5);
+        nodeR = new MapNode( 0, 0);
+        nodeS = new MapNode(10, 0);
+        nodeT = new MapNode(20, 0);
+        nodeX = new MapNode( 25, 0);
+        nodeY = new MapNode( 25, 5);
+        nodeZ = new MapNode( 15, 5);
         edgeAB = new NodeEdge(nodeA, nodeB, 8);
         edgeBC = new NodeEdge(nodeB, nodeC, 5);
         edgeCD = new NodeEdge(nodeC, nodeD, 5);
@@ -113,13 +114,13 @@ public class PathFindingTest extends TestCase{
             myBuilding.addFloor(floor1);
             myBuilding.addFloor(floor2);
         } catch(Exception e) {}
+
         myHospital.addBuilding(myBuilding);
     }
 
     //Tests that UIDs are working properly
     public void testUID() {
-        UID id = nodeA.getNodeUID();
-        //System.out.println(id.toString())
+
         assertEquals(nodeA, nodeA);
         assertEquals(nodeB, nodeB);
         assertNotSame(nodeA, nodeB);
@@ -174,17 +175,45 @@ public class PathFindingTest extends TestCase{
             assertFalse(p3.equals(p5));
             assertFalse(p5.equals(p3));
         } catch(Exception e) {
-            fail("Threw unexpected exception");
+            fail("Threw unexpected exception in testEquals");
         }
     }
 
     public void testGuidance() {
         try {
-            g1 = new Guidance(nodeT, nodeH, true);
-            g2 = new Guidance(nodeO, nodeI, false);
+            g1 = new Guidance(nodeT, nodeH, false);
+            g2 = new Guidance(nodeA, nodeL, true);
+            g2.printTextDirections();
+            System.out.println("line break");
+            System.out.println("Nodes in first step are: ");
+            g2.getTextDirections().getFirst();
             assertTrue(true);
-        } catch(Exception e) {
-            fail("Threw unexpected exception");
+       } catch(Exception e) {
+            fail("Threw unexpected exception in testGuidance");
+        }
+    }
+
+    public void testBreadth() {
+       try {
+            p1 = new Path(nodeA, nodeL, true, "breadthfirst");
+        } catch (Exception e) {
+            fail("Threw unexpected exception in testBreadth");
+        }
+    }
+
+    public void testDepth() {
+        try {
+            p1 = new Path(nodeA, nodeL, true, "depthfirst");
+        } catch (Exception e) {
+            fail("Threw unexpected exception in testDepth");
+        }
+    }
+
+    public void testRandom() {
+        try {
+            p1 = new Path(nodeA, nodeL, true, "random");
+        } catch (Exception e) {
+            fail("Threw unexpected exception in testRandom");
         }
     }
 
