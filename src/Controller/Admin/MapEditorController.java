@@ -372,34 +372,11 @@ public class MapEditorController extends AbstractController {
 
 	protected void renderFloorMap()
 	{
-		mapItems = new Group();
-		mapItems.getChildren().add(mapImage);
-
+		mapItems.getChildren().clear();
 		mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
-
-		mapPane.getChildren().clear();
-		mapPane.getChildren().add(mapItems);
-
+		mapItems.getChildren().add(mapImage);
 		//and then set all the existing nodes up
 		HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
-
-		/*//@TODO CONCURRENCY ERROR
-		for(Object x : model.getCurrentFloor().getFloorNodes().toArray())
-		{
-			MapNode n = (MapNode)x;
-
-			addToAdminMap(n);
-
-			for(NodeEdge edge: n.getEdges())
-			{
-				if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
-			}
-
-			addEventHandlersToNode(n);
-
-			n.getNodeToDisplay().setOnMouseClicked(null);
-			n.getNodeToDisplay().setOnDragDetected(null);
-		}*/
 
 		for(MapNode n: model.getCurrentFloor().getFloorNodes())
 		{
@@ -407,6 +384,8 @@ public class MapEditorController extends AbstractController {
 			{
 				if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
 			}
+
+			///this is why stranded nodes have a bug
 
 			n.getNodeToDisplay().setOnMouseClicked(null);
 			n.getNodeToDisplay().setOnDragDetected(null);
