@@ -207,7 +207,7 @@ public class DatabaseManager {
             Faulkner = new Hospital();
         }
 
-       // executeStatements(dropTables);
+        //executeStatements(dropTables);
         //executeStatements(createTables);
 
         loadHospital(Faulkner);
@@ -220,7 +220,7 @@ public class DatabaseManager {
         executeStatements(createTables);
         saveHospital(Faulkner);
         s.close();
-        
+
         System.out.println("Data Saved Correctly");
     }
 
@@ -394,7 +394,7 @@ public class DatabaseManager {
 
         }
         System.out.println(doctors.keySet());
-  
+
         rs.close();
 
     }
