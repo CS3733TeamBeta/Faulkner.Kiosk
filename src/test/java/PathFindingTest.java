@@ -217,4 +217,15 @@ public class PathFindingTest extends TestCase{
         }
     }
 
+    public void testTextDirections(){
+        try {
+            Guidance g1 = new Guidance(nodeA, nodeD, false);
+            g1.printTextDirections();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Unexpected Exception");
+        }
+
+    }
+
 }

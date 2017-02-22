@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * Created by Samuel on 2/4/2017.
  */
-public class UI_Tests extends TestCase{
+public class UI_Tests1 extends TestCase{
 
    public void UI_Tests () throws AddFoundException, RemoveNotFoundException{
         this.test_admin();
