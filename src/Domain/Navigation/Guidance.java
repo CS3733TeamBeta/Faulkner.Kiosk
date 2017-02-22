@@ -474,7 +474,7 @@ public class Guidance extends Path {
         System.out.println("Saving images!");
         System.out.println("There are " + this.textDirections.size() + " directionSteps");
         for(int i = 1; i <= this.textDirections.size(); i++){
-            DirectionStep d = textDirections.get(i);
+            DirectionStep d = textDirections.get(i-1);
             System.out.println("Creating info for floor " + d.getFloor().getFloorNumber());
             d.getFloor().initImage();
             try {
