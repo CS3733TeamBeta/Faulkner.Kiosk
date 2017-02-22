@@ -266,6 +266,9 @@ public class Guidance extends Path {
             for(String s : step.getDirections()) {
                 System.out.println(s);
             }
+            for (MapNode n: step.nodesForThisFloor){
+                System.out.println("X is " + n.getPosX() + ", Y is " + n.getPosY());
+            }
         }
     }
 
@@ -520,7 +523,6 @@ public class Guidance extends Path {
                 Graphics2D g = combined.createGraphics();
                 g.drawImage(realBaseImage, 0, 0, null);
                 double constant = 2.173;
-
                 //add edges to the map
                 g.setStroke(new BasicStroke(25, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
                 g.setColor(Color.RED);
@@ -555,10 +557,12 @@ public class Guidance extends Path {
                 LinkedList<Point> startAndEnd = findParemeters(this.pathNodes, d.getFloor().getFloorNumber());
                 Point startPoint = startAndEnd.getFirst();
                 Point endPoint = startAndEnd.getLast();
+
                 int scaledStartX = (int)(startPoint.x * constant) - boarderSize + offsetWidth;
                 int scaledStartY = (int)(startPoint.y * constant) - boarderSize + offsetHeight;
                 int scaledEndX = (int)(endPoint.x * constant) + boarderSize + offsetWidth;
                 int scaledEndY = (int)(endPoint.y * constant) + boarderSize + offsetHeight;
+
                 if(scaledEndX > combined.getWidth()){
                     scaledEndX = combined.getWidth();
                 }
@@ -580,9 +584,10 @@ public class Guidance extends Path {
                 System.out.println("scaled width: " + resizedScaleWidthFactor);
                 BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthFactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
                 System.out.println("Writing image to combined" + i + ".png");
-                ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
+                //ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
+                ImageIO.write(combined, "PNG", new File("combined" + i + ".png"));
             } catch (Exception e) {
-                System.out.println("threw something wrong");
+                System.out.println("threw something very wrong");
                 e.printStackTrace();
             }
 
@@ -606,6 +611,11 @@ public class Guidance extends Path {
         directionLine += "</H3>";
 
         saveStepImages();
+
+        if (Math.random()%100 < 1) {
+            System.out.println("Egg called");
+            directionLine += "<a href=\"https://youtu.be/dQw4w9WgXcQ\">Some music for your enjoyement, hospital-goer.</a>";
+        }
 
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine, true, textDirections.size());
