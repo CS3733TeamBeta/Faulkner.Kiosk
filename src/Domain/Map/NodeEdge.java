@@ -8,6 +8,10 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
 /**
  * An edge that connects two nodes and has a cost (edge length)
  */
@@ -123,8 +127,16 @@ public class NodeEdge implements DrawableMapEntity
     public void updatePosViaNode(MapNode node) {
         Node drawableNode = node.getNodeToDisplay();
 
-        Point2D newPoint = new Point2D (drawableNode.getLayoutX() + drawableNode.getBoundsInLocal().getWidth() / 2,
-                                        drawableNode.getLayoutY() + drawableNode.getBoundsInLocal().getHeight() / 2);
+        //TODO: WE REALLY NEED TO MOVE THESE CONSTANTS SOMEWHERE
+        //TODO: These exist because we autoscale all the png files to be 30x30 when displaying them.
+        //TODO: We either need to store the scaled pixel measurements somewhere and pull them here or move all instances of 30 to a constant somewhere
+        int offsetX = 30/2;
+        int offsetY = 30/2;
+
+        System.out.println("Width: " + offsetX);
+        System.out.println("Height: " + offsetY);
+        Point2D newPoint = new Point2D (drawableNode.getLayoutX() + offsetX ,
+                                        drawableNode.getLayoutY() + offsetY );
 
         System.out.println(newPoint.getX());
 
