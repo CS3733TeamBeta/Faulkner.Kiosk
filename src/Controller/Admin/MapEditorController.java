@@ -372,6 +372,8 @@ public class MapEditorController extends AbstractController {
 
 				e.updatePosViaNode(n);
 			}
+
+			n.getNodeToDisplay().toFront();
 		}
 
 		mapImage.toBack();
@@ -478,13 +480,13 @@ public class MapEditorController extends AbstractController {
 		MouseControlUtil.makeDraggable(n.getNodeToDisplay(), //could be used to track node and update line
 				event ->
 				{
+					n.setPosX(event.getSceneX());
+					n.setPosY(event.getSceneY());
+
 					for (NodeEdge edge : n.getEdges())
 					{
 						edge.updatePosViaNode(n);
 					}
-
-					n.setPosX(event.getSceneX());
-					n.setPosY(event.getSceneY());
 
 					//System.out.println("Node " + n.getIconType().name() + " moved to (X: "+ event.getSceneX() + ", Y: " + event.getSceneY() + ")");
 
