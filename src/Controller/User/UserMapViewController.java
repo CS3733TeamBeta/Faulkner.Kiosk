@@ -1,6 +1,7 @@
 package Controller.User;
 
 import Controller.AbstractController;
+import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
 import Domain.Navigation.Guidance;
@@ -158,6 +159,7 @@ public class UserMapViewController extends AbstractController {
         for(MapNode n : model.getCurrentFloor().getFloorNodes())
         {
             System.out.println("Adding node");
+
 
             n.getNodeToDisplay().setOnMouseClicked(null);
             n.getNodeToDisplay().setOnDragDetected(null);
@@ -483,7 +485,7 @@ public class UserMapViewController extends AbstractController {
             }
         }
 
-        panel.fillDirectionsList(newRoute.getSteps().getFirst());
+        panel.fillGuidance(newRoute);
 
         showDirections();
         newRoute.printTextDirections();

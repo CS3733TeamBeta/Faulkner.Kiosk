@@ -97,6 +97,20 @@ public class UserDirectionsPanel extends AnchorPane
             stepChangedEventHandler.handle(new StepChangedEvent(step));
         }
     }
+
+    public void fillGuidance(Guidance g)
+    {
+        this.guidance = g;
+        stepIndex = 0;
+
+        fillDirectionsList(stepIndex);
+    }
+
+    public void fillDirectionsList(int index)
+    {
+        fillDirectionsList(guidance.getSteps().get(index));
+    }
+
     public void fillDirectionsList(DirectionStep step)
     {
         directionsListView.getItems().clear();
@@ -142,9 +156,13 @@ public class UserDirectionsPanel extends AnchorPane
     @FXML
     void onSendEmail(ActionEvent event)
     {
-        if(guidance!=null)
-        {
-            guidance.sendEmailGuidance(emailField.getText()); //should send email
-        }
+        Runnable sendEmail = () -> {
+            if(guidance!=null)
+            {
+                guidance.sendEmailGuidance(emailField.getText());
+            }
+        };
+
+        new Thread(sendEmail).start();
     }
 }
