@@ -484,6 +484,8 @@ public class Guidance extends Path {
                 //BufferedImage buffImg = d.getFloor().getImageInfo().getBufferedImage();
                 d.getFloor().getImageInfo().display();
                 BufferedImage realBaseImage = d.getFloor().getImageInfo().getBufferedImage();
+                System.out.println("Width of image: " + realBaseImage.getWidth());
+                System.out.println("Height of image: " + realBaseImage.getHeight());
 
                 DirectionStep aStep = d;
                 Floor aFloor = d.getFloor();
@@ -517,11 +519,11 @@ public class Guidance extends Path {
                 // paint both images, preserving the alpha channels
                 Graphics2D g = combined.createGraphics();
                 g.drawImage(realBaseImage, 0, 0, null);
-                int constant = 1;
+                double constant = 2.173;
                 //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
                     System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
-                    g.drawImage(nodeImg, ((int) Math.round(n.getPosX()))*constant, ((int) Math.round(n.getPosY()))*constant, null);
+                    g.drawImage(nodeImg, (int) (Math.round(n.getPosX())*constant), (int)(Math.round(n.getPosY())*constant), null);
                 }
                 //add edges to the map
                 g.setStroke(new BasicStroke(25, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
@@ -551,10 +553,10 @@ public class Guidance extends Path {
                 LinkedList<Point> startAndEnd = findParemeters(this.pathNodes, d.getFloor().getFloorNumber());
                 Point startPoint = startAndEnd.getFirst();
                 Point endPoint = startAndEnd.getLast();
-                int scaledStartX = (startPoint.x * constant) - boarderSize + offsetWidth;
-                int scaledStartY = (startPoint.y * constant) - boarderSize + offsetHeight;
-                int scaledEndX = (endPoint.x * constant) + boarderSize + offsetWidth;
-                int scaledEndY = (endPoint.y * constant) + boarderSize + offsetHeight;
+                int scaledStartX = (int)(startPoint.x * constant) - boarderSize + offsetWidth;
+                int scaledStartY = (int)(startPoint.y * constant) - boarderSize + offsetHeight;
+                int scaledEndX = (int)(endPoint.x * constant) + boarderSize + offsetWidth;
+                int scaledEndY = (int)(endPoint.y * constant) + boarderSize + offsetHeight;
                 if(scaledEndX > combined.getWidth()){
                     scaledEndX = combined.getWidth();
                 }
