@@ -41,9 +41,9 @@ import static Model.Database.DatabaseManager.Faulkner;
 
 public class AdminDirectoryEditorController  extends AbstractController {
     Boolean deptDirectoryUp = false;
-    ObservableList<Doctor> existingDoctors = FXCollections.observableArrayList(Faulkner.getDoctors().values());
+    ObservableList<Doctor> existingDoctors;
     ObservableList<Office> existingDepts = FXCollections.observableArrayList(Faulkner.getOffices().values());;
-    ObservableList<Destination> existingLoc = FXCollections.observableArrayList(Faulkner.getDestinations().values());
+    ObservableList<String> existingLoc = FXCollections.observableArrayList();
 
     @FXML
     private JFXTextField searchBar, firstName, lastName, description;
@@ -110,6 +110,8 @@ public class AdminDirectoryEditorController  extends AbstractController {
         phoneNumCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("phoneNum"));
         hourCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("hours"));
 
+        existingDoctors = FXCollections.observableArrayList(Faulkner.getDoctors().values());
+
         dataTable.setItems(existingDoctors);
 
         // Creating list of data to be filtered
@@ -142,6 +144,12 @@ public class AdminDirectoryEditorController  extends AbstractController {
         // Set table data
         dataTable.setItems(sortedDoctors);
 
+        existingLoc.clear();
+
+        for (Destination d: Faulkner.getDestinations().values()) {
+            existingLoc.add(d.getName());
+        }
+
         TextFields.bindAutoCompletion(searchForLoc, existingLoc);
 
         searchForLoc.setOnKeyPressed((KeyEvent e) -> {
@@ -157,6 +165,9 @@ public class AdminDirectoryEditorController  extends AbstractController {
         setPhoneNumConstraint(phoneNum1, 3);
         setPhoneNumConstraint(phoneNum2, 3);
         setPhoneNumConstraint(phoneNum3, 4);
+
+        showDeptOptions();
+        delAssignedLoc();
     }
 
     public void setPhoneNumConstraint(TextField textField, int length) {
@@ -176,7 +187,10 @@ public class AdminDirectoryEditorController  extends AbstractController {
     }
 
     public void addToAssignedDept(String location) {
-        locAssigned.getItems().add(location);
+        if (!locAssigned.getItems().contains(location)) {
+            locAssigned.getItems().add(location);
+        }
+
         searchForLoc.clear();
     }
 
@@ -242,7 +256,6 @@ public class AdminDirectoryEditorController  extends AbstractController {
             return false;
         }
 
-        /*
         if (phoneNum1.getText().length() > 0 ||
                 phoneNum2.getText().length() > 0 ||
                 phoneNum3.getText().length() > 0) {
@@ -252,7 +265,6 @@ public class AdminDirectoryEditorController  extends AbstractController {
                 return false;
             }
         }
-        */
 
         if (startTime.getText() == null || (startTime.getText().isEmpty())){
             return false;
@@ -274,7 +286,6 @@ public class AdminDirectoryEditorController  extends AbstractController {
     @FXML
     private void displaySelectedDocInfo() {
         showDelOption();
-        delAssignedLoc();
         searchForLoc.clear();
         locAssigned.getItems().clear();
 
@@ -302,6 +313,8 @@ public class AdminDirectoryEditorController  extends AbstractController {
             for (Destination d : selectedDoc.getDestinations()) {
                 locAssigned.getItems().add(d.getName());
             }
+
+            delAssignedLoc();
         }
     }
 
@@ -342,6 +355,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
                         break;
                     }
                 }
+
 
                 Doctor newDoc = new Doctor(editId, name, d, hours, newDestinations);
                 newDoc.setPhoneNum(phoneNum);
@@ -416,8 +430,16 @@ public class AdminDirectoryEditorController  extends AbstractController {
         // Set table data
         deptDataTable.setItems(sortedDepts);
 
+        existingLoc.clear();
+
+        for (Destination d: Faulkner.getDestinations().values()) {
+            existingLoc.add(d.getName());
+        }
+
+        TextFields.bindAutoCompletion(assignedLocField, existingLoc);
         editDeptFields.setVisible(false);
         editorButton.setText("Add");
+        showDeptOptions();
     }
 
     @FXML
@@ -457,14 +479,12 @@ public class AdminDirectoryEditorController  extends AbstractController {
         ft.setToValue(1.0);
         ft.setAutoReverse(true);
         ft.play();
-        TextFields.bindAutoCompletion(assignedLocField, existingLoc);
     }
 
     @FXML
     private void showDeptOptions() {
         MenuItem edit = new MenuItem("Edit");
         MenuItem delete = new MenuItem("Delete");
-
 
         edit.setOnAction((ActionEvent e) -> {
             showEditor();
