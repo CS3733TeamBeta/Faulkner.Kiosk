@@ -37,9 +37,6 @@ public class Hospital {
         buildings.add(b);
     }
 
-    public void addOffices (String s, Office office) {offices.put(s, office);}
-    public HashMap<String, Office> getOffices () {return offices;}
-
     //Alter Doctor HashMap: doctors
     public HashMap<String, Doctor> getDoctors() {
         return doctors;
@@ -72,6 +69,16 @@ public class Hospital {
     {
         return buildings.contains(b);
     }
+
+    //Alter Office HashMap: offices
+    public void addOffices(String s, Office off) {
+        offices.put(s, off);
+    }
+    public HashMap<String, Office> getOffices() {
+        return this.offices;
+    }
+
+
 
     public int buildingCount()
     {
@@ -115,5 +122,9 @@ public class Hospital {
 
     public static void setFloorsWithKiosk(Floor floor) {
         Hospital.floorsWithKiosk.add(floor.floorNumber);
+    }
+
+    public void setKioskNode(MapNode kioskNode) {
+        this.kioskNode = kioskNodeList.get(kioskNode.myFloor);
     }
 }

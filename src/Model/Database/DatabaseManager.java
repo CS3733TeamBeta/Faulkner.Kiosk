@@ -207,7 +207,7 @@ public class DatabaseManager {
             Faulkner = new Hospital();
         }
 
-       // executeStatements(dropTables);
+        //executeStatements(dropTables);
         //executeStatements(createTables);
 
         loadHospital(Faulkner);
@@ -220,7 +220,7 @@ public class DatabaseManager {
         executeStatements(createTables);
         saveHospital(Faulkner);
         s.close();
-        
+
         System.out.println("Data Saved Correctly");
     }
 
@@ -275,7 +275,9 @@ public class DatabaseManager {
                             destRS.getString(2),
                             floorRS.getString(1));
                     nodes.remove(UUID.fromString(destRS.getString(3)));
+                    System.out.println(nodes.keySet());
                     nodes.put(UUID.fromString(destRS.getString(3)), tempDest);
+                    System.out.println(nodes.keySet());
                     h.addDestinations(UUID.fromString(destRS.getString(3)), tempDest);
                 }
                 // print out list of nodes for each floor
@@ -392,7 +394,7 @@ public class DatabaseManager {
 
         }
         System.out.println(doctors.keySet());
-  
+
         rs.close();
 
     }
@@ -443,7 +445,7 @@ public class DatabaseManager {
                     {
                         if (!(h.getDestinations().containsKey(((Destination) n).getDestUID())))
                         {
-                            h.addDestinations(((Destination) n).getDestUID(), (Destination) n);
+                            h.addDestinations(n.getNodeID(), (Destination) n);
                         }
                     }
                     try {

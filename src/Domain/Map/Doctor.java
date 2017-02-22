@@ -11,9 +11,18 @@ public class Doctor extends Info
 {
 
     UUID docID;
-    HashSet<Destination> destinations;
     HashSet<String> myOffice;
     String phoneNum = "N/A";
+    private String name;
+    private String description;
+    private HashSet<Destination> destinations;
+
+    /*
+    HashSet<String> lstNames;
+    HashSet<HashSet<Suite>> lstSuites;
+    HashSet<String> lstDescriptions;
+*/
+
 
     public Doctor(String name, String description, String hours, HashSet<Destination> destinations) {
         super(name, description, hours);
@@ -27,8 +36,11 @@ public class Doctor extends Info
         super(name, description, hours);
         this.docID = docID;
         this.destinations = destinations;
-
         this.myOffice = new HashSet<>();
+        this.name = name;
+        this.description = description;
+
+
     }
 
 //    public Doctor(String dept, String phoneNum, Office docOff, String name, String description, String hours)

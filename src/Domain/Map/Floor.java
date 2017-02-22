@@ -9,7 +9,7 @@ public class Floor implements Comparable{
     LinkedList<MapNode> floorNodes;
     LinkedList<NodeEdge> floorEdges;
 
-    MapNode kioskNode = null;
+
     String imageLocation = "../FloorMaps/1_thefirstfloor.png"; //default floor image path
 
     ProxyImage imageInfo;
@@ -57,9 +57,7 @@ public class Floor implements Comparable{
         n.setFloor(this);
     }
 
-    public MapNode getKioskNode(){
-        return kioskNode;
-    }
+
 
 
 
@@ -89,17 +87,7 @@ public class Floor implements Comparable{
     }
 
 
-    /**
-     * Sets this floor's KioskNode, which is the node that navigation begins from, to the given MapNode
-     * @param kioskNode
-     */
-    public void setKioskLocation(MapNode kioskNode){
-        for(MapNode n : this.floorNodes){
-            if(kioskNode.equals(n)){
-                this.kioskNode = kioskNode;
-            }
-        }
-    }
+
 
 
     @Override

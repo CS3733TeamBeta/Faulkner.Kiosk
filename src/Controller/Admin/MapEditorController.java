@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import Controller.AbstractController;
+import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
 import Domain.ViewElements.*;
@@ -350,26 +351,27 @@ public class MapEditorController extends AbstractController {
 
 	public void changeFloorSelection(Floor f)
 	{
-		model.setCurrentFloor(f);
-
-		if(f.getImageLocation() == null)
+		if(!f.equals(model.getCurrentFloor()))
 		{
-			try
+			if (f.getImageLocation() == null)
 			{
-				switchToAddFloor(this.getStage());
-			} catch (IOException e)
-			{
-				System.out.println("Threw an exception in MapEditorController: changeFloorSelection");
-				e.printStackTrace();
+				try
+				{
+					switchToAddFloor(this.getStage());
+				} catch (IOException e)
+				{
+					System.out.println("Threw an exception in MapEditorController: changeFloorSelection");
+					e.printStackTrace();
+				}
 			}
+
+			this.mapImage.setImage(f.getImageInfo().getFXImage());
+
+			model.setCurrentFloor(f);
+			renderFloorMap();
+
+			System.out.println("Changed floor to " + f);
 		}
-
-		this.mapImage.setImage(f.getImageInfo().getFXImage());
-
-		model.setCurrentFloor(f);
-		renderFloorMap();
-
-		System.out.println("Changed floor to " + f);
 	}
 
 	protected void renderFloorMap()
@@ -491,8 +493,8 @@ public class MapEditorController extends AbstractController {
 		{
 			DragIcon icon = (DragIcon)n.getNodeToDisplay();
 
-			Point2D newPoint = new Point2D(icon.getLayoutX() + icon.getBoundsInLocal().getWidth() / 2,
-					icon.getLayoutY() + icon.getBoundsInLocal().getHeight() / 2);
+			Point2D newPoint = new Point2D(icon.getLayoutX() ,
+					icon.getLayoutY());
 
 			n.setPosX((newPoint.getX()));
 			n.setPosY((newPoint.getY()));
