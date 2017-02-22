@@ -66,7 +66,8 @@ public class Guidance extends Path {
 
         //Declare and initialize directions
         textDirections = new LinkedList<DirectionStep>();
-        createTextDirections(vFlag);
+        TextDirectionsCreator tdc = new TextDirectionsCreator(pathNodes, pathEdges, kioskDirection, vFlag);
+        textDirections = tdc.getDirectionSteps();
 
         if (vFlag) {
             printTextDirections();
@@ -80,7 +81,9 @@ public class Guidance extends Path {
         kioskDirection = Guidance.directionToNum(kioskInputDirection);
 
         textDirections = new LinkedList<DirectionStep>();
-        createTextDirections(false);
+        TextDirectionsCreator tdc = new TextDirectionsCreator(pathNodes, pathEdges, kioskDirection, false);
+        textDirections = tdc.getDirectionSteps();
+        //createTextDirections(false);
 
 
     }
@@ -91,10 +94,12 @@ public class Guidance extends Path {
     }
 
     public void createTextDirections() {
-        createTextDirections(false);
+        TextDirectionsCreator tdc = new TextDirectionsCreator(pathNodes, pathEdges, kioskDirection, false);
+        textDirections = tdc.getDirectionSteps();
+        //createTextDirections(false);
     }
 
-    public void createTextDirections(boolean vFlag) {
+    private void createTextDirections(boolean vFlag) {
         LinkedList<String> tempTextDirections = new LinkedList<String>();
         LinkedList<MapNode> tempMapNodes = new LinkedList<>();
         int prevDirection = kioskDirection;
@@ -107,7 +112,7 @@ public class Guidance extends Path {
         if (vFlag) {
             tempTextDirections.add("Start at the Kiosk. (Node " + pathNodes.get(0).getNodeID() + ")");
         } else {
-            tempTextDirections.add("Start at the Kiosk.");
+            tempTextDirections.add("Start at the Kiosk, facing " + numToDirection(kioskDirection));
         }
 
         for (int i = 0; i < this.pathNodes.size() - 1; i++) {
@@ -266,9 +271,11 @@ public class Guidance extends Path {
             for(String s : step.getDirections()) {
                 System.out.println(s);
             }
+            /*
             for (MapNode n: step.nodesForThisFloor){
                 System.out.println("X is " + n.getPosX() + ", Y is " + n.getPosY());
             }
+            */
         }
     }
 
