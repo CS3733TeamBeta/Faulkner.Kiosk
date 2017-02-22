@@ -347,6 +347,12 @@ public class MapEditorController extends AbstractController {
 
 	public void changeFloorSelection(Floor f)
 	{
+		int counter = 0;
+		for (MapNode n : model.getCurrentFloor().getFloorNodes())
+		{
+			counter++;
+		}
+		System.out.println(counter + " Nodes saved");
 		if(!f.equals(model.getCurrentFloor()))
 		{
 			if (f.getImageLocation() == null)
@@ -856,7 +862,7 @@ public class MapEditorController extends AbstractController {
 
 					if (!treeContainsNode)
 					{
-						((Floor) floorTreeItem.getValue().getValue()).addNode(d);
+						//((Floor) floorTreeItem.getValue().getValue()).addNode(d);
 						floorTreeItem.getChildren().add(makeTreeItem(d));
 					}
 				}
