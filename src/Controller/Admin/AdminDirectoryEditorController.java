@@ -570,7 +570,7 @@ public class AdminDirectoryEditorController extends AbstractController {
 
     private void saveData() {
         try {
-            DatabaseManager.getInstance().saveData(null);
+            DatabaseManager.getInstance().saveData(hospital);
         } catch (Exception e) {
             e.printStackTrace();
         }
