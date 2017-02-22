@@ -9,7 +9,7 @@ import Domain.ViewElements.DragIconType;
 import Exceptions.PathFindingException;
 import Model.Database.DatabaseManager;
 import Model.MapModel;
-import javafx.event.EventHandler;
+<<<<<<< HEAD
 import com.jfoenix.controls.JFXButton;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -17,6 +17,9 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+=======
+import javafx.event.EventHandler;
+>>>>>>> develop
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.control.*;
@@ -367,6 +370,13 @@ public class UserMapViewController extends AbstractController {
                 scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
                 scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
         });
+<<<<<<< HEAD
+        numClickDr = -1;
+        numClickFood = -1;
+        numClickBath = -1;
+        numClickHelp = -1;
+        LoadTableData();
+=======
 
         panel.setVisible(false);
         directionPaneView();
@@ -389,11 +399,7 @@ public class UserMapViewController extends AbstractController {
                         hideDirections();
                     }
                 });
-        numClickDr = -1;
-        numClickFood = -1;
-        numClickBath = -1;
-        numClickHelp = -1;
-        LoadTableData();
+>>>>>>> develop
     }
 
     private void hideDirections()
@@ -477,8 +483,14 @@ public class UserMapViewController extends AbstractController {
             if(newRoute.getPathEdges().contains(edge)) {
                 edge.changeOpacity(1.0);
                 edge.changeColor(Color.RED);
+<<<<<<< HEAD
             } else {
                 edge.changeOpacity(0.8);
+=======
+            }
+            else{
+                edge.changeOpacity(0.0);
+>>>>>>> develop
                 edge.changeColor(Color.BLACK);
             }
         }
@@ -523,9 +535,15 @@ public class UserMapViewController extends AbstractController {
                 welcomeGreeting.setVisible(false);
                 downArrow = false; // Changes to up icon
                 searchMenu.setStyle("-fx-background-color: transparent;");
-                panel.setVisible(true);
+<<<<<<< HEAD
             } else { // Navigate up icon -> show welcome page
+=======
+                panel.setVisible(true);
+            }
+            else
+            { // Navigate up icon -> show welcome page
                 panel.setVisible(false);
+>>>>>>> develop
                 KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
                 keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
                 // Reset to default

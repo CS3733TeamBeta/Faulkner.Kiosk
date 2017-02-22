@@ -9,7 +9,6 @@ import Domain.ViewElements.DragIconType;
 import Exceptions.PathFindingException;
 import Model.Database.DatabaseManager;
 import Model.MapModel;
-import javafx.event.EventHandler;
 import com.jfoenix.controls.JFXButton;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -26,7 +25,6 @@ import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -199,7 +197,6 @@ public class UserMapViewController extends AbstractController {
             edge.updatePosViaNode(target);
 
             edge.toBack();
-            edge.changeOpacity(0.0);
             source.toFront();
             target.toFront();
         }
@@ -320,16 +317,14 @@ public class UserMapViewController extends AbstractController {
 
         mainPane.getChildren().add(panel);
         panel.toFront();
-        panel.relocate(mainPane.getPrefWidth()-5, 0);
+        panel.relocate(mainPane.getPrefWidth()-panel.getPrefWidth(),0);
 
 
         panel.setCloseHandler(event->
         {
             ///DEVONNNN
             hideDirections();
-            // Ben, you might want to consider reset the direction panel here
-            panel.setVisible(false);
-            searchMenuUp();
+            loadMenu();
 
             zoomToExtents(group); // TESTING PROGRAMATIC ZOOMING
 
@@ -367,28 +362,6 @@ public class UserMapViewController extends AbstractController {
                 scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
                 scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
         });
-
-        panel.setVisible(false);
-        directionPaneView();
-    }
-
-    private void directionPaneView() {
-
-        panel.addEventHandler(MouseEvent.MOUSE_ENTERED,
-                new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent e) {
-                        showDirections();
-                    }
-                });
-
-        panel.addEventHandler(MouseEvent.MOUSE_EXITED,
-                new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent e) {
-                        hideDirections();
-                    }
-                });
         numClickDr = -1;
         numClickFood = -1;
         numClickBath = -1;
@@ -403,7 +376,7 @@ public class UserMapViewController extends AbstractController {
         slideHideDirections.setCycleCount(1);
         slideHideDirections.setAutoReverse(true);
 
-        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), 0);
+        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), panel.getPrefWidth());
         keyFrame = new KeyFrame(Duration.millis(600), hideDirections);
 
         slideHideDirections.getKeyFrames().add(keyFrame);
@@ -412,13 +385,12 @@ public class UserMapViewController extends AbstractController {
 
     private void showDirections()
     {
-        panel.setVisible(true);
         Timeline slideHideDirections = new Timeline();
         KeyFrame keyFrame;
         slideHideDirections.setCycleCount(1);
         slideHideDirections.setAutoReverse(true);
 
-        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), -panel.getWidth()+5);
+        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), mainPane.getWidth()-panel.getPrefWidth());
         keyFrame = new KeyFrame(Duration.millis(600), hideDirections);
 
         slideHideDirections.getKeyFrames().add(keyFrame);
@@ -460,10 +432,6 @@ public class UserMapViewController extends AbstractController {
     protected void findPathToNode(MapNode endPoint) throws PathFindingException {
         System.out.println("In path finding");
         MapNode startPoint = model.getCurrentFloor().getKioskNode();
-        if(startPoint == null){
-            System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
-            startPoint = model.getCurrentFloor().getFloorNodes().getFirst();
-        }
         if (endPoint == startPoint) {
             System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
             return;//TODO add error message of some kind
@@ -509,7 +477,6 @@ public class UserMapViewController extends AbstractController {
         searchBar.setPromptText("Search for Departments");
         // Title shown
         welcomeGreeting.setVisible(true);
-        panel.setVisible(false);
     }
 
     public void searchMenuUp() {
@@ -523,9 +490,7 @@ public class UserMapViewController extends AbstractController {
                 welcomeGreeting.setVisible(false);
                 downArrow = false; // Changes to up icon
                 searchMenu.setStyle("-fx-background-color: transparent;");
-                panel.setVisible(true);
             } else { // Navigate up icon -> show welcome page
-                panel.setVisible(false);
                 KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
                 keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
                 // Reset to default

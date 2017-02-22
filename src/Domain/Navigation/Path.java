@@ -431,6 +431,8 @@ public class Path implements Iterable {
         this.vFlag = vFlag;
         switch (algo) {
             case "astar":
+                System.out.println(start.toString());
+                System.out.println(end.toString());
                 createPathAStar(start, end, vFlag);
                 break;
             case "breadthfirst":

@@ -442,6 +442,8 @@ public class MapEditorController extends AbstractController {
 			edge.updatePosViaNode(target);
 
 			edge.toBack();
+			edge.changeOpacity(1.0);
+			edge.changeColor(Color.BLACK);
 			source.toFront();
 			target.toFront();
 		}

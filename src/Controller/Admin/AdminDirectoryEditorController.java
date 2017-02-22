@@ -44,7 +44,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
     Boolean deptDirectoryUp = false;
     ObservableList<String> locations = FXCollections.observableArrayList();
     ObservableList<Office> offices = FXCollections.observableArrayList(Faulkner.getOffices().values());
-    ObservableList<UUID> existingSuites = FXCollections.observableArrayList(Faulkner.getDestinations().keySet());
+    ObservableList<Destination> existingLoc = FXCollections.observableArrayList(Faulkner.getDestinations().values());
 
     @FXML
     private JFXTextField searchBar, firstName, lastName, description;
@@ -154,12 +154,12 @@ public class AdminDirectoryEditorController  extends AbstractController {
         // Set table data
         dataTable.setItems(sorted);
 
-        TextFields.bindAutoCompletion(searchForLoc, existingSuites);
+        TextFields.bindAutoCompletion(searchForLoc, existingLoc);
 
         searchForLoc.setOnKeyPressed((KeyEvent e) -> {
             switch (e.getCode()) {
                 case ENTER:
-                    if(existingSuites.contains(searchForLoc.getText())) {
+                    if(existingLoc.contains(searchForLoc.getText())) {
                         addToAssignedDept(searchForLoc.getText());
                     } else if (locations.contains(searchForLoc.getText())){
                         System.out.println("This location is assigned to the doctor already.");
@@ -449,7 +449,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
         ft.setToValue(1.0);
         ft.setAutoReverse(true);
         ft.play();
-        TextFields.bindAutoCompletion(assignedLocField, existingSuites);
+        TextFields.bindAutoCompletion(assignedLocField, existingLoc);
     }
 
     @FXML
