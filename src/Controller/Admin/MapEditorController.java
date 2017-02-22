@@ -349,8 +349,6 @@ public class MapEditorController extends AbstractController {
 	{
 		if(!f.equals(model.getCurrentFloor()))
 		{
-			model.setCurrentFloor(f);
-
 			if (f.getImageLocation() == null)
 			{
 				try
