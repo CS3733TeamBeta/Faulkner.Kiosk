@@ -520,7 +520,7 @@ public class Guidance extends Path {
                 // paint both images, preserving the alpha channels
                 Graphics2D g = combined.createGraphics();
                 g.drawImage(realBaseImage, 0, 0, null);
-                double constant = 1.4;
+                double constant = 2.17;
                 //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
                     System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
@@ -584,7 +584,7 @@ public class Guidance extends Path {
                 //ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
                 ImageIO.write(combined, "PNG", new File("combined" + i + ".png"));
             } catch (Exception e) {
-                System.out.println("threw something wrong");
+                System.out.println("threw something very wrong");
                 e.printStackTrace();
             }
 
