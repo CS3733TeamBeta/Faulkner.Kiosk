@@ -1,11 +1,11 @@
 package Domain.ViewElements;
 
 public enum DragIconType {
-	bathroom,
+	connector,
 	store,
 	elevator,
 	food,
 	info,
-	doctor,
-	connector
+	department,
+	bathroom
 }

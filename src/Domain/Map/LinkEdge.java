@@ -9,5 +9,13 @@ public class LinkEdge extends NodeEdge
     public LinkEdge(MapNode nodeA, MapNode nodeB)
     {
         super(nodeA, nodeB, 0);
+        edgeLine.setVisible(false);
+    }
+
+
+    @Override
+    public void updateCost()
+    {
+        this.cost = 0;
     }
 }

@@ -2,47 +2,60 @@ package Domain.Map;
 
 
 import java.util.HashSet;
+import java.util.UUID;
 
-/**
- * Info specific for a doctor
- */
-public class Doctor extends Info
+public class Doctor
 {
 
-    int docID;
-    HashSet<String> department;
-    HashSet<String> myOffice;
+    UUID docID;
     String phoneNum = "N/A";
+    private String name;
+    private String description;
+    private HashSet<Destination> destinations;
 
-    public Doctor(String name, String description, String hours) {
-        super(name, description, hours);
+    protected String hours;
+    protected String phoneNumber;
 
-        this.department = new HashSet<>();
-        this.myOffice = new HashSet<>();
+    /*
+    HashSet<String> lstNames;
+    HashSet<HashSet<Suite>> lstSuites;
+    HashSet<String> lstDescriptions;
+*/
+
+
+    public Doctor(String name, String description, String hours, HashSet<Destination> destinations) {
+        this.name = name;
+        this.description = description;
+        this.hours = hours;
+        this.docID = UUID.randomUUID();
+        this.destinations = destinations;
+
     }
 
-    public Doctor(String dept, String phoneNum, Office docOff, String name, String description, String hours)
-    {
-        super(name, description, hours);
+    public Doctor(UUID docID, String name, String description, String hours, HashSet<Destination> destinations) {
+        this.name = name;
+        this.description = description;
+        this.hours = hours;
+        this.docID = docID;
+        this.destinations = destinations;
 
-        //this.department.add(dept);
-        this.phoneNum = phoneNum;
-        //this.myOffice.add(docOff);
-        super.name = name;
-        super.description = description;
-        super.hours = hours;
+
     }
 
-    public int getDocID() {
+//    public Doctor(String dept, String phoneNum, Office docOff, String name, String description, String hours)
+//    {
+//        super(name, description, hours);
+//
+//        //this.department.add(dept);
+//        this.phoneNum = phoneNum;
+//        //this.myOffice.add(docOff);
+//        super.name = name;
+//        super.description = description;
+//        super.hours = hours;
+//    }
+
+    public UUID getDocID() {
         return docID;
-    }
-
-    public HashSet<String> getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(HashSet<String> department) {
-        this.department = department;
     }
 
     public String getPhoneNum() {
@@ -53,32 +66,12 @@ public class Doctor extends Info
         this.phoneNum = phoneNumber;
     }
 
-    public HashSet<String> getMyOffice() {
-        return myOffice;
-    }
-
-    public void setMyOffice(HashSet<String> office) {
-        this.myOffice = office;
-    }
-
-    public void addDepartment(String department) {
-        this.department.add(department);
-    }
-
-    public void removeDepartment(String department) {
-        this.department.remove(department);
-    }
-
-    public void addOffice(String office) {
-        this.myOffice.add(office);
-    }
-
-    public void removeOffice(String office) {
-        this.myOffice.remove(office);
-    }
-
     public String getName() {
         return this.name;
+    }
+
+    public void setName(String s) {
+        this.name = s;
     }
 
     public String getDescription() {
@@ -87,5 +80,31 @@ public class Doctor extends Info
 
     public String getHours() {
         return this.hours;
+    }
+
+    public HashSet<Destination> getDestinations() {
+        return this.destinations;
+    }
+
+    public void setDestinations(HashSet<Destination> suites) {
+        this.destinations = suites;
+    }
+
+    public String[] splitName() {
+        String[] name = this.name.split(", ");
+
+        return name;
+    }
+
+    public String[] splitPhoneNum() {
+        String[] phoneNum = this.phoneNum.split("-");
+
+        return phoneNum;
+    }
+
+    public String[] splitHours() {
+        String[] hours = this.hours.split(" - ");
+
+        return hours;
     }
 }
