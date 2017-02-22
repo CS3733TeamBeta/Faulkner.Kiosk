@@ -395,6 +395,11 @@ public class MapEditorController extends AbstractController {
 			System.out.println("Node added to map in renderFloorMap");
 			n.getNodeToDisplay().setOnMouseClicked(null);
 			n.getNodeToDisplay().setOnDragDetected(null);
+
+			if(!mapItems.getChildren().contains(n.getNodeToDisplay()))
+			{
+				importNode(n);
+			}
 		}
 
 		for(NodeEdge edge : collectedEdges)
@@ -414,16 +419,6 @@ public class MapEditorController extends AbstractController {
 			MapNode target = edge.getTarget();
 
 			//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
-
-			if(!mapItems.getChildren().contains(source.getNodeToDisplay()))
-			{
-				importNode(source);
-			}
-
-			if(!mapItems.getChildren().contains(target.getNodeToDisplay()))
-			{
-				importNode(target);
-			}
 
 			edge.updatePosViaNode(source);
 			edge.updatePosViaNode(target);
