@@ -16,11 +16,11 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import Domain.Map.Doctor;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.animation.KeyValue;
@@ -41,10 +41,9 @@ import static Model.Database.DatabaseManager.Faulkner;
 
 public class AdminDirectoryEditorController  extends AbstractController {
     Boolean deptDirectoryUp = false;
-    ObservableList<Doctor> doctors = FXCollections.observableArrayList(Faulkner.getDoctors().values());
-    ObservableList<Office> existingDepts = FXCollections.observableArrayList(Faulkner.getOffices().values());
+    ObservableList<Doctor> existingDoctors = FXCollections.observableArrayList(Faulkner.getDoctors().values());
+    ObservableList<Office> existingDepts = FXCollections.observableArrayList(Faulkner.getOffices().values());;
     ObservableList<Destination> existingLoc = FXCollections.observableArrayList(Faulkner.getDestinations().values());
-    ObservableList<String> locations = FXCollections.observableArrayList();
 
     @FXML
     private JFXTextField searchBar, firstName, lastName, description;
@@ -60,12 +59,6 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
     @FXML
     private JFXListView<String> locAssigned;
-
-    @FXML
-    private JFXButton save;
-
-    @FXML
-    private JFXButton newProfile;
 
     @FXML
     private TableColumn<Doctor, String> nameCol;
@@ -117,20 +110,19 @@ public class AdminDirectoryEditorController  extends AbstractController {
         phoneNumCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("phoneNum"));
         hourCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("hours"));
 
-        dataTable.setItems(doctors);
+        dataTable.setItems(existingDoctors);
 
         // Creating list of data to be filtered
-        FilteredList<Doctor> filtered = new FilteredList<>(doctors);
+        FilteredList<Doctor> filteredDoctors = new FilteredList<>(existingDoctors);
 
         // Adding a listener to the search bar, filtering through the data as the user types
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            filtered.setPredicate((Predicate<? super Doctor>) profile -> {
+            filteredDoctors.setPredicate((Predicate<? super Doctor>) profile -> {
                 // By default, the entire directory is displayed
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
 
-                // Compare first name and last name of every person with filter text.
                 String lowerCaseFilter = newValue.toLowerCase();
 
                 // Checks if filter matches
@@ -144,35 +136,47 @@ public class AdminDirectoryEditorController  extends AbstractController {
         });
 
         // Create a sorted list for the filtered data list
-        SortedList<Doctor> sorted = new SortedList<>(filtered);
+        SortedList<Doctor> sortedDoctors = new SortedList<>(filteredDoctors);
         // Bind the sorted list to table
-        sorted.comparatorProperty().bind(dataTable.comparatorProperty());
+        sortedDoctors.comparatorProperty().bind(dataTable.comparatorProperty());
         // Set table data
-        dataTable.setItems(sorted);
+        dataTable.setItems(sortedDoctors);
 
         TextFields.bindAutoCompletion(searchForLoc, existingLoc);
 
         searchForLoc.setOnKeyPressed((KeyEvent e) -> {
             switch (e.getCode()) {
                 case ENTER:
-                    if(existingLoc.contains(searchForLoc.getText())) {
-                        addToAssignedDept(searchForLoc.getText());
-                    } else if (locations.contains(searchForLoc.getText())){
-                        System.out.println("This location is assigned to the doctor already.");
-                    } else {
-                        System.out.println("This suite does not exist.");
-                    }
-
+                    addToAssignedDept(searchForLoc.getText());
                     break;
                 default:
                     break;
             }
         });
+
+        setPhoneNumConstraint(phoneNum1, 3);
+        setPhoneNumConstraint(phoneNum2, 3);
+        setPhoneNumConstraint(phoneNum3, 4);
+    }
+
+    public void setPhoneNumConstraint(TextField textField, int length) {
+        textField.setOnKeyTyped(e -> {
+            if (textField.getText().length() >= length) {
+                e.consume();
+            }
+        });
+
+        textField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override public void handle(KeyEvent keyEvent) {
+                if (!"0123456789".contains(keyEvent.getCharacter())) {
+                    keyEvent.consume();
+                }
+            }
+        });
     }
 
     public void addToAssignedDept(String location) {
-        locations.add(location);
-        locAssigned.setItems(locations);
+        locAssigned.getItems().add(location);
         searchForLoc.clear();
     }
 
@@ -183,13 +187,16 @@ public class AdminDirectoryEditorController  extends AbstractController {
         options.getItems().add(delete);
         dataTable.setContextMenu(options);
 
-        delete.setOnAction((ActionEvent e) -> {
+        delete.setOnAction((ActionEvent event) -> {
                 Doctor d = dataTable.getSelectionModel().getSelectedItem();
 
-                Faulkner.getDoctors().remove(d.getName());
+                if (Faulkner.getDoctors().get(d.getName()) == d) {
+                    Faulkner.getDoctors().remove(d.getName());
 
-                reset();
-                initialize();
+                    saveData();
+                    reset();
+                    initialize();
+                }
         });
     }
 
@@ -203,7 +210,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
         delete.setOnAction((ActionEvent e) -> {
             String s = locAssigned.getSelectionModel().getSelectedItem();
 
-            locations.remove(s);
+            locAssigned.getItems().remove(s);
         });
     }
 
@@ -235,6 +242,18 @@ public class AdminDirectoryEditorController  extends AbstractController {
             return false;
         }
 
+        /*
+        if (phoneNum1.getText().length() > 0 ||
+                phoneNum2.getText().length() > 0 ||
+                phoneNum3.getText().length() > 0) {
+            if (!((phoneNum1.getText().length() == 3) &&
+                    (phoneNum2.getText().length() == 3) &&
+                    (phoneNum3.getText().length() == 4))) {
+                return false;
+            }
+        }
+        */
+
         if (startTime.getText() == null || (startTime.getText().isEmpty())){
             return false;
         }
@@ -243,7 +262,8 @@ public class AdminDirectoryEditorController  extends AbstractController {
             return false;
         }
 
-        if (locations.isEmpty()) {
+
+        if (locAssigned.getItems().isEmpty()) {
             return false;
         }
 
@@ -265,7 +285,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
             lastName.setText(selectedDoc.splitName()[0]);
             description.setText(selectedDoc.getDescription());
 
-            if (!(selectedDoc.splitPhoneNum()[0].equals(selectedDoc.getPhoneNum()))) {
+            if (!selectedDoc.getPhoneNum().equals("N/A")) {
                 phoneNum1.setText(selectedDoc.splitPhoneNum()[0]);
                 phoneNum2.setText(selectedDoc.splitPhoneNum()[1]);
                 phoneNum3.setText(selectedDoc.splitPhoneNum()[2]);
@@ -278,14 +298,10 @@ public class AdminDirectoryEditorController  extends AbstractController {
             startTime.setText(selectedDoc.splitHours()[0]);
             endTime.setText(selectedDoc.splitHours()[1]);
 
-            HashSet<Destination> assignedDestinations = selectedDoc.getDestinations();
-
-            // Assigning to a suite = location
-            for (Destination d : assignedDestinations) {
-                locations.add(d.getName());
+            // Displaying the locations the doctor is assigned to
+            for (Destination d : selectedDoc.getDestinations()) {
+                locAssigned.getItems().add(d.getName());
             }
-
-            locAssigned.setItems(locations);
         }
     }
 
@@ -296,60 +312,58 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
             String name = lastName.getText() + ", " + firstName.getText();
             String d = description.getText();
-            String phoneNum = phoneNum1.getText() + "-" + phoneNum2.getText() + "-" +
-                    phoneNum3.getText();
+
+            String phoneNum = "N/A";
+
+            if (phoneNum1.getText().length() > 0) {
+                phoneNum = phoneNum1.getText() + "-" + phoneNum2.getText() + "-" +
+                        phoneNum3.getText();
+            }
+
             String hours = startTime.getText() + " - " + endTime.getText();
 
-            HashSet<Destination> newDests = new HashSet<>();
+            HashSet<Destination> newDestinations = new HashSet<>();
 
             for (String l: locAssigned.getItems()) {
                 for (Destination s: Faulkner.getDestinations().values()) {
                     if (s.getName().equals(l)) {
-                        newDests.add(s);
+                        newDestinations.add(s);
                     }
                 }
             }
+
 
             if (toEdit != null) {
                 UUID editId = toEdit.getDocID();
 
-                for (String n: Faulkner.getDoctors().keySet()) {
-                    if (n.equals(toEdit.getName())) {
-                        if (Faulkner.getDoctors().get(n).getDocID() == editId) {
-                            Faulkner.getDoctors().remove(n);
-                            break;
-                        }
+                for (Doctor exist: Faulkner.getDoctors().values()) {
+                    if (exist == toEdit) {
+                        Faulkner.getDoctors().remove(exist.getName());
+                        break;
                     }
                 }
 
-                Doctor newDoc = new Doctor(editId, name, d, hours, newDests);
+                Doctor newDoc = new Doctor(editId, name, d, hours, newDestinations);
                 newDoc.setPhoneNum(phoneNum);
                 Faulkner.getDoctors().put(name, newDoc);
             } else {
-                addNewProfile(name, d, hours, newDests, phoneNum);
+                addNewProfile(name, d, hours, newDestinations, phoneNum);
             }
 
+            saveData();
+            reset();
+            initialize();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
             alert.setTitle("Action denied.");
             alert.setHeaderText(null);
             alert.showAndWait();
         }
-
-        try {
-            DatabaseManager.getInstance().saveData();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        reset();
-        initialize();
-
     }
 
     private void addNewProfile(String name, String d, String hrs, HashSet<Destination> destinations, String phoneNum) {
         Doctor newDoc = new Doctor(name, d, hrs, destinations);
-        newDoc.setPhoneNum(phoneNum); // If the phoneNum is valid
+        newDoc.setPhoneNum(phoneNum);
         Faulkner.getDoctors().put(name, newDoc);
     }
 
@@ -367,14 +381,16 @@ public class AdminDirectoryEditorController  extends AbstractController {
             }
         });
 
+        existingDepts = FXCollections.observableArrayList(Faulkner.getOffices().values());
+
         deptDataTable.setItems(existingDepts);
 
         // Creating list of data to be filtered
-        FilteredList<Office> filtered = new FilteredList<>(existingDepts);
+        FilteredList<Office> filteredDepts = new FilteredList<>(existingDepts);
 
         // Adding a listener to the search bar, filtering through the data as the user types
         searchDeptBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            filtered.setPredicate((Predicate<? super Office>) o -> {
+            filteredDepts.setPredicate((Predicate<? super Office>) o -> {
                 // By default, the entire directory is displayed
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
@@ -394,11 +410,11 @@ public class AdminDirectoryEditorController  extends AbstractController {
         });
 
         // Create a sorted list for the filtered data list
-        SortedList<Office> sorted = new SortedList<>(filtered);
+        SortedList<Office> sortedDepts = new SortedList<>(filteredDepts);
         // Bind the sorted list to table
-        sorted.comparatorProperty().bind(deptDataTable.comparatorProperty());
+        sortedDepts.comparatorProperty().bind(deptDataTable.comparatorProperty());
         // Set table data
-        deptDataTable.setItems(sorted);
+        deptDataTable.setItems(sortedDepts);
 
         editDeptFields.setVisible(false);
         editorButton.setText("Add");
@@ -464,6 +480,8 @@ public class AdminDirectoryEditorController  extends AbstractController {
             Office o = deptDataTable.getSelectionModel().getSelectedItem();
 
             Faulkner.getOffices().remove(o.getName());
+
+            saveData();
             initializeDeptDirectory();
         });
 
@@ -475,9 +493,15 @@ public class AdminDirectoryEditorController  extends AbstractController {
     @FXML
     private void deptEditOperation() {
         if (editorProcessable()) {
-            int id;
             String deptName = deptNameField.getText();
-            Destination assignedDest = Faulkner.getDestinations().get(assignedLocField.getText());
+            Destination assignedDest = new Destination();
+
+            for (Destination d: Faulkner.getDestinations().values()) {
+                if (d.getName().equals(assignedLocField.getText())) {
+                    assignedDest = d;
+                    break;
+                }
+            }
 
             switch (editorButton.getText()) {
                 case "Add":
@@ -503,6 +527,8 @@ public class AdminDirectoryEditorController  extends AbstractController {
                 default:
                     break;
             }
+
+            saveData();
             initializeDeptDirectory();
         }
     }
@@ -517,6 +543,14 @@ public class AdminDirectoryEditorController  extends AbstractController {
         }
 
         return true;
+    }
+
+    private void saveData() {
+        try {
+            DatabaseManager.getInstance().saveData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
