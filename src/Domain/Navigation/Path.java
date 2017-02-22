@@ -1,13 +1,13 @@
 package Domain.Navigation;
 
-import Domain.Map.*;
+import Domain.Map.MapNode;
+import Domain.Map.NodeEdge;
+import Exceptions.PathFindingException;
+import Exceptions.PathFindingInvalidPathException;
+import Exceptions.PathFindingNoPathException;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-
-import Exceptions.*;
 //Testing
 
 /**
@@ -431,6 +431,8 @@ public class Path implements Iterable {
         this.vFlag = vFlag;
         switch (algo) {
             case "astar":
+                System.out.println(start.toString());
+                System.out.println(end.toString());
                 createPathAStar(start, end, vFlag);
                 break;
             case "breadthfirst":
@@ -533,7 +535,7 @@ public class Path implements Iterable {
     public void printPathEdges(){
         System.out.println("Printing Edges");
         for (NodeEdge e: this.pathEdges) {
-            System.out.println("From " + Integer.toString(e.getSource().getNodeID()) + "to " + Integer.toString(e.getTarget().getNodeID()));
+            System.out.println("From " + Integer.toString(e.getSource().getType()) + "to " + Integer.toString(e.getTarget().getType()));
         }
     }
 

@@ -28,7 +28,7 @@ public class Building {
 
     public Floor newFloor()
     {
-        Floor f = new Floor(buildingFloors.size() +1);
+        Floor f = new Floor(buildingFloors.size() + 1);
 
         try
         {
@@ -89,6 +89,14 @@ public class Building {
     public String getName()
     {
         return name;
+    }
+
+    /**
+     * @param name Set name of building
+     */
+    public void setName(String name)
+    {
+        this.name = name;
     }
 
 }

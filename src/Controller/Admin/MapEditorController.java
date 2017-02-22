@@ -2,11 +2,10 @@ package Controller.Admin;
 
 import java.awt.*;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 
 import Controller.AbstractController;
-import Controller.DragDropMain;
-import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
 import Domain.ViewElements.*;
@@ -14,13 +13,17 @@ import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.DataSourceClasses.MapTreeItem;
 import Model.DataSourceClasses.TreeViewWithItems;
+import Model.Database.DatabaseManager;
 import Model.MapEditorModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -33,6 +36,7 @@ import javafx.scene.paint.Color;
 import jfxtras.labs.util.event.MouseControlUtil;
 import javafx.scene.input.KeyCode;
 import org.controlsfx.control.PopOver;
+import static Controller.SceneSwitcher.switchToAddFloor;
 
 public class MapEditorController extends AbstractController {
 
@@ -47,6 +51,7 @@ public class MapEditorController extends AbstractController {
 
 	@FXML
 	Button newFloorButton;
+
 
 	@FXML
 	ChoiceBox floorsHavKiosk;
@@ -63,6 +68,8 @@ public class MapEditorController extends AbstractController {
 
 	NodeEdge drawingEdge;
 
+	Group mapItems;
+
 	public MapEditorController() {
 
 		fill();
@@ -72,6 +79,9 @@ public class MapEditorController extends AbstractController {
 		//connects the two, sends sources, positions them etc.
 		model.addEdgeCompleteHandler(event->
 		{
+
+			System.out.println("Edge Complete Handler Invoked");
+
 			NodeEdge completedEdge = drawingEdge;
 
 			addHandlersToEdge(completedEdge);
@@ -108,7 +118,15 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	private void initialize() {
 
-		//BuildingTabPane.getTabs().add(createEditableTab("Building 3"));
+		mapItems = new Group();
+
+		mapPane.getChildren().add(mapItems);
+
+		//mapItems.relocate(0, 0);
+		mapImage.relocate(0, 0);
+		mapPane.relocate(0, 0);
+
+		BuildingTabPane.getTabs().clear();
 
 		//Add one icon that will be used for the drag-drop process
 		//This is added as a child to the root anchorpane so it can be visible
@@ -146,7 +164,40 @@ public class MapEditorController extends AbstractController {
 
 		getCurrentTreeView().getSelectionModel().select(0); //selects first floor
 
-		renderInitialMap();
+		renderFloorMap();
+
+		/*mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
+			if(drawingEdge != null)
+			{
+				// devondevon
+
+				Node sourceNode = drawingEdge.getSource().getNodeToDisplay();
+
+				Bounds sourceNodeBounds = sourceNode.getBoundsInParent();
+
+				Point2D clickPoint = new Point2D(clickEvent.getX(), clickEvent.getY());
+
+				if(!sourceNodeBounds.contains(clickPoint))
+				{
+
+					MapNode chainLinkNode = DragIcon.constructMapNodeFromType(DragIconType.connector);
+					chainLinkNode.setType(DragIconType.connector); //set the type
+
+					clickPoint = mapPane.localToScene(clickPoint);
+
+					clickPoint = new Point2D(clickPoint.getX() - 12.5, clickPoint.getY() - 12.5);
+
+					chainLinkNode.setPosX(clickPoint.getX());
+					chainLinkNode.setPosY(clickPoint.getY());
+
+					addToAdminMap(chainLinkNode);
+
+					drawingEdge.setTarget(chainLinkNode);
+
+					onEdgeComplete();
+				}
+			}
+		});*/
 	}
 
 	/**
@@ -155,29 +206,39 @@ public class MapEditorController extends AbstractController {
 	 */
 	public void loadBuildingsToTabPane(Collection<Building> buildings)
 	{
-		for(Building b : buildings)
+		for(Building b: buildings)
 		{
-			Tab t = addBuilding(b);
+			Tab t = makeBuildingTab(b);
 
-			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>)t.getContent();
+			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) t.getContent();
 
-			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldvalue, newvalue) -> {
-				if(newvalue.getValue().getValue() instanceof Floor)
+			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldvalue, newvalue) ->
+			{
+				Floor selectedFloor;
+
+				if (newvalue.getValue().getValue() instanceof Floor)
 				{
-					changeFloorSelection((Floor)newvalue.getValue().getValue());
+					selectedFloor =(Floor) newvalue.getValue().getValue();
 				}
 				else
 				{
-					changeFloorSelection((Floor)(newvalue.getParent().getValue().getValue()));
+					selectedFloor = (Floor) (newvalue.getParent().getValue().getValue());
+				}
+
+				if(!model.getCurrentFloor().equals(selectedFloor))
+				{
+					changeFloorSelection(selectedFloor);
 				}
 			});
 
-			for(Floor f: b.getFloors())
+			for (Floor f : b.getFloors())
 			{
 				treeView.getRoot().getChildren().add(makeTreeItem(f));
 			}
 
 			treeView.getRoot().getChildren().sort(Comparator.comparing(o -> o.toString()));
+
+			model.addBuilding(b, t); //adds to building tab map
 		}
 	}
 	/**
@@ -187,13 +248,8 @@ public class MapEditorController extends AbstractController {
 	 * @param b Building
 	 * @return
 	 */
-	public Tab addBuilding(Building b)
+	public Tab makeBuildingTab(Building b)
 	{
-		if(b==null)
-		{
-			b = new Building("Building " + model.getBuildingCount()+1); //@TODO Hacky fix -BEN
-		}
-
 		final Label label = new Label(b.getName());
 		final Tab tab = new Tab();
 		tab.setGraphic(label);
@@ -206,6 +262,7 @@ public class MapEditorController extends AbstractController {
 				if (event.getClickCount()==2)
 				{
 					textField.setText(label.getText());
+
 					tab.setGraphic(textField);
 					textField.selectAll();
 					textField.requestFocus();
@@ -222,6 +279,7 @@ public class MapEditorController extends AbstractController {
 			public void handle(ActionEvent event) {
 				label.setText(textField.getText());
 				tab.setGraphic(label);
+				b.setName(label.getText());
 			}
 		});
 
@@ -244,7 +302,6 @@ public class MapEditorController extends AbstractController {
 
 		tab.setContent(tV);
 
-		model.addBuilding(b, tab);
 		BuildingTabPane.getTabs().add(tab);
 
 		return tab;
@@ -258,7 +315,9 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	void onNewBuilding(ActionEvent event)
 	{
-		addBuilding(null);
+		Building b = new Building("Building " + (model.getBuildingCount()+1)); //@TODO Hacky fix -BEN
+
+		model.addBuilding(b, makeBuildingTab(b));
 	}
 
 	/**
@@ -293,9 +352,132 @@ public class MapEditorController extends AbstractController {
 	{
 		model.setCurrentFloor(f);
 
-		//change image
-		//clear nodes
-		//load nodes
+		if(f.getImageLocation() == null)
+		{
+			try
+			{
+				switchToAddFloor(this.getStage());
+			} catch (IOException e)
+			{
+				System.out.println("Threw an exception in MapEditorController: changeFloorSelection");
+				e.printStackTrace();
+			}
+		}
+
+		this.mapImage.setImage(f.getImageInfo().getFXImage());
+
+		model.setCurrentFloor(f);
+		renderFloorMap();
+
+		System.out.println("Changed floor to " + f);
+	}
+
+	protected void renderFloorMap()
+	{
+		mapItems = new Group();
+		mapItems.getChildren().add(mapImage);
+
+		mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
+
+		mapPane.getChildren().clear();
+		mapPane.getChildren().add(mapItems);
+
+		//and then set all the existing nodes up
+		HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+
+		/*//@TODO CONCURRENCY ERROR
+		for(Object x : model.getCurrentFloor().getFloorNodes().toArray())
+		{
+			MapNode n = (MapNode)x;
+
+			addToAdminMap(n);
+
+			for(NodeEdge edge: n.getEdges())
+			{
+				if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+			}
+
+			addEventHandlersToNode(n);
+
+			n.getNodeToDisplay().setOnMouseClicked(null);
+			n.getNodeToDisplay().setOnDragDetected(null);
+		}*/
+
+		for(MapNode n: model.getCurrentFloor().getFloorNodes())
+		{
+			for(NodeEdge edge: n.getEdges())
+			{
+				if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+			}
+
+			n.getNodeToDisplay().setOnMouseClicked(null);
+			n.getNodeToDisplay().setOnDragDetected(null);
+		}
+
+		for(NodeEdge edge : collectedEdges)
+		{
+			edge.getEdgeLine().setOnMouseClicked(null);
+			edge.getEdgeLine().setOnMouseEntered(null);
+			edge.getEdgeLine().setOnMouseExited(null);
+
+			addHandlersToEdge(edge);
+
+			if(!mapItems.getChildren().contains(edge.getNodeToDisplay()))
+			{
+				mapItems.getChildren().add(edge.getNodeToDisplay());
+			}
+
+			MapNode source = edge.getSource();
+			MapNode target = edge.getTarget();
+
+			//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
+
+			if(!mapItems.getChildren().contains(source.getNodeToDisplay()))
+			{
+				importNode(source);
+			}
+
+			if(!mapItems.getChildren().contains(target.getNodeToDisplay()))
+			{
+				importNode(target);
+			}
+
+			edge.updatePosViaNode(source);
+			edge.updatePosViaNode(target);
+
+			edge.toBack();
+			edge.changeOpacity(1.0);
+			edge.changeColor(Color.BLACK);
+			source.toFront();
+			target.toFront();
+		}
+
+		mapImage.toBack();
+	}
+
+	/**
+	 *
+	 * Imports map node without adding it to model
+	 *
+	 * @param mapNode
+	 */
+	protected void importNode(MapNode mapNode)
+	{
+		model.addMapNode(mapNode); //add node to model
+
+		if(!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
+		{
+			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
+		}
+
+		addEventHandlersToNode(mapNode);
+
+		if(!mapNode.getIconType().equals(DragIconType.connector)) //treeview checks that floor actually contains
+		{
+			addToTreeView(mapNode);
+		}
+
+		mapNode.toFront(); //send the node to the front
 	}
 
 	/**
@@ -317,69 +499,76 @@ public class MapEditorController extends AbstractController {
 		}
 	}
 
-	protected void renderInitialMap()
+	/*protected void renderFloorMap()
 	{
-		if(DragDropMain.mvm != null) {
-			System.out.println("Begin render...");
-			//System.out.println("Nodes to add: " + DragDropMain.mvm.getCurrentFloor().getFloorNodes().size());
-			//import a model if one exists
-			model.setCurrentFloor(DragDropMain.mvm.getCurrentFloor());
-		}
-		else if(Main.mvm != null) {
-			model.setCurrentFloor(Main.mvm.getCurrentFloor());
-		}
+		mapItems.getChildren().clear();
+		mapPane.getChildren().remove(mapImage);
+		mapItems.getChildren().add(mapImage);
+		mapImage.toBack();
 
-		if(DragDropMain.mvm != null || Main.mvm != null){
-			//and then set all the existing nodes up
-			HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+		//and then set all the existing nodes up
+		HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
 
-			for(MapNode n : model.getCurrentFloor().getFloorNodes())
+		for(MapNode n : model.getCurrentFloor().getFloorNodes())
+		{
+			System.out.println("Adding node");
+			addToAdminMap(n);
+
+			if(n.getIsElevator())
 			{
-				//System.out.println("Adding node");
-				addToAdminMap(n);
-
-				for(NodeEdge edge: n.getEdges())
-				{
-					if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
-				}
+				System.out.println("Before Set Location: " + n.getPosX() + ", " + n.getPosY());
 			}
 
+			n.setPos(n.getPosX(), n.getPosY()); // @TODO refresh function
 
-			for(NodeEdge edge : collectedEdges)
+			if(n.getIsElevator())
 			{
-				addHandlersToEdge(edge);
-				mapPane.getChildren().add(edge.getNodeToDisplay());
+				System.out.println("After Se Location: " + n.getPosX() + ", " + n.getPosY());
+			}
 
-				MapNode source = edge.getSource();
-				MapNode target = edge.getTarget();
-
-				//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
-
-				if(!mapPane.getChildren().contains(source.getNodeToDisplay()))
-				{
-					addToAdminMap(source);
-				}
-
-				if(!mapPane.getChildren().contains(target.getNodeToDisplay()))
-				{
-					addToAdminMap(target);
-				}
-
-				edge.updatePosViaNode(source);
-				edge.updatePosViaNode(target);
-
-				edge.toBack();
-				source.toFront();
-				target.toFront();
-
-				mapImage.toBack();
+			for(NodeEdge edge: n.getEdges())
+			{
+				if(!collectedEdges.contains(edge) && !(edge instanceof LinkEdge)) collectedEdges.add(edge);
 			}
 		}
-		else{
-			model = new MapEditorModel();
-		}
 
-	}
+		for(NodeEdge edge : collectedEdges)
+		{
+			addHandlersToEdge(edge);
+
+			if(!mapItems.getChildren().contains(edge.getNodeToDisplay()))
+			{
+				mapItems.getChildren().add(edge.getNodeToDisplay());
+			}
+
+			MapNode source = edge.getSource();
+			MapNode target = edge.getTarget();
+
+			//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
+
+			if(!mapItems.getChildren().contains(source.getNodeToDisplay()))
+			{
+				addToAdminMap(source);
+			}
+
+			if(!mapItems.getChildren().contains(target.getNodeToDisplay()))
+			{
+				addToAdminMap(target);
+			}
+
+			source.setPos(source.getPosX(), source.getPosY());
+			target.setPos(target.getPosX(), target.getPosY());
+
+			edge.updatePosViaNode(source);
+			edge.updatePosViaNode(target);
+
+			edge.toBack();
+			source.toFront();
+			target.toFront();
+
+			mapImage.toBack();
+		}
+	}*/
 
 	/**Adds handlers to handle edge deletion mostly
 	 *
@@ -405,15 +594,17 @@ public class MapEditorController extends AbstractController {
 				if (deEvent.getClickCount() == 2) {
 					edge.getSource().getEdges().remove(edge);
 					edge.getTarget().getEdges().remove(edge);
-					mapPane.getChildren().remove(edge.getNodeToDisplay()); //remove from the right pane
+					mapItems.getChildren().remove(edge.getNodeToDisplay()); //remove from the right pane
 					model.removeMapEdge(edge);
 				}
 			}
 		});
 	}
 
-	public void onEdgeComplete() {
+	public void onEdgeComplete()
+	{
 		System.out.println("Edge complete");
+
 		for(EdgeCompleteEventHandler handler : model.getEdgeCompleteHandlers())
 		{
 			if(!model.getCurrentFloor().getFloorEdges().contains(drawingEdge)){
@@ -544,7 +735,6 @@ public class MapEditorController extends AbstractController {
 
 				event.getDragboard().setContent(content);
 				event.setDropCompleted(true);
-
 			}
 		};
 
@@ -571,14 +761,28 @@ public class MapEditorController extends AbstractController {
 						MapNode droppedNode;
 
 						droppedNode = DragIcon.constructMapNodeFromType((DragIconType.valueOf(container.getValue("type"))));
-						droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
+						//droppedNode.setType(DragIconType.valueOf(container.getValue("type"))); //set the type
+
+						mapItems.getChildren().add(droppedNode.getNodeToDisplay());
 
 						Point2D cursorPoint = container.getValue("scene_coords"); //cursor point
 
-						droppedNode.setPosX(cursorPoint.getX()-12.5); //offset because mouse drag and pictures should start from upper corner
-						droppedNode.setPosY(cursorPoint.getY()-12.5);
+						System.out.println("Started off with: " + cursorPoint.getX());
 
-						addToAdminMap(droppedNode);
+						cursorPoint = droppedNode.getNodeToDisplay().getParent().sceneToLocal(cursorPoint);
+
+						System.out.println("Ended with: ");
+						System.out.println(droppedNode.getNodeToDisplay().parentToLocal(droppedNode.
+										getNodeToDisplay().getParent().localToScene(cursorPoint)).getX());
+
+						droppedNode.setPos(cursorPoint.getX()-12.5,
+								cursorPoint.getY()-12.5); //offset because mouse drag and pictures should start from upper corn
+
+						if(droppedNode.getIsElevator())
+						{
+							addNewElevatorToAdminMap(droppedNode);
+						}
+						else addToAdminMap(droppedNode);
 					}
 					event.consume();
 				}
@@ -588,20 +792,109 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
+	public void addNewElevatorToAdminMap(MapNode mapNode)
+	{
+		if(mapNode.getIsElevator())
+		{
+			System.out.println("Adding new elevator...");
+
+			ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
+
+			if (!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
+			{
+				mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
+			}
+
+			//mapNode.setPos(mapNode.getPosX(), mapNode.getPosY());
+
+			Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
+
+			MapNode last = null;
+
+			MapNode e;
+
+			for (Floor f : b.getFloors())
+			{
+				if (f != model.getCurrentFloor())
+				{
+					e = new MapNode();
+
+					e.setIsElevator(true);
+
+					mapItems.getChildren().add(e.getNodeToDisplay()); //ya don't try to understand this
+
+					e.setPos(mapNode.getPosX(), mapNode.getPosY());
+
+					mapItems.getChildren().remove(e.getNodeToDisplay()); //cause i don't either
+
+					f.addNode(e);
+
+					nodesToAdd.add(e);
+				}
+				else
+				{
+					e = mapNode;
+					nodesToAdd.add(mapNode);
+					model.getCurrentFloor().addNode(mapNode);
+				}
+
+				if (last != null)
+				{
+					LinkEdge edge = new LinkEdge(last, e);
+				}
+
+				last = e;
+			}
+
+			for (MapNode n : nodesToAdd)
+			{
+				addEventHandlersToNode(n);
+				addToTreeView(n);
+			}
+
+			model.addMapNode(mapNode); //add node to model
+			mapNode.toFront();
+		}
+	}
+
+	public void addToTreeView(MapNode d)
+	{
+		if(!(d.toString().isEmpty()))
+		{
+			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
+
+			for (TreeItem<MapTreeItem> floorTreeItem : treeView.getRoot().getChildren())
+			{
+				if (floorTreeItem.getValue().getValue() instanceof Floor && ((Floor) floorTreeItem.getValue().getValue()).getFloorNodes().contains(d))
+				{
+					boolean treeContainsNode = false;
+
+					for (TreeItem<MapTreeItem> item : floorTreeItem.getChildren())
+					{
+						if (item.getValue().getValue().equals(d))
+						{
+							treeContainsNode = true;
+						}
+					}
+
+					if (!treeContainsNode)
+					{
+						((Floor) floorTreeItem.getValue().getValue()).addNode(d);
+						floorTreeItem.getChildren().add(makeTreeItem(d));
+					}
+				}
+
+				treeView.refresh();
+			}
+		}
+	}
+
 	/**
 	 * Adds a fresh node to the admin map, handles event handler creation, layering etc.
 	 * @param mapNode
 	 */
 	public void addToAdminMap(MapNode mapNode)
 	{
-		addEventHandlersToNode(mapNode);
-
-		mapPane.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
-
-		model.addMapNode(mapNode); //add node to model
-
-		mapNode.toFront(); //send the node to the front
-
 		if (!model.getCurrentFloor().getFloorNodes().contains(mapNode))
 		{
 			System.out.println("Node " + mapNode.getIconType().name() + " added to: " + mapNode.getPosX() + " " + mapNode.getPosY());
@@ -609,39 +902,9 @@ public class MapEditorController extends AbstractController {
 			model.getCurrentFloor().getFloorNodes().add(mapNode);
 		}
 
-		((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX(),
-				mapNode.getPosY())); //placed by upper left corner	((DragIcon) mapNode.getNodeToDisplay()).relocateToPoint(new Point2D(mapNode.getPosX()-32,
-						/* Build up event handlers for this droppedNode */
-
-		if(mapNode instanceof Destination && !((Destination)mapNode).getInfo().getName().isEmpty())
-		{
-			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
-
-			TreeItem<MapTreeItem> selectedTreeItem = treeView.getSelectionModel().getSelectedItem();
-
-			MapTreeItem selectedObject = selectedTreeItem.getValue();
-
-			if(selectedObject!=null)
-			{
-				TreeItem<MapTreeItem> floorTreeItem;
-
-				//selectedObject.
-				if(selectedObject.getValue() instanceof Floor)
-				{
-					floorTreeItem = selectedTreeItem;
-				}
-				else
-				{
-					floorTreeItem = selectedTreeItem.getParent();
-				}
-
-				((Floor)floorTreeItem.getValue().getValue()).addNode(mapNode);
-				floorTreeItem.getChildren().add(makeTreeItem(mapNode));
-			}
-
-			treeView.refresh();
-		}
+		importNode(mapNode); //must occur after adding node to model floor
 	}
+
 
 	/**
 	 *
@@ -728,16 +991,16 @@ public class MapEditorController extends AbstractController {
 	{
 		if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
 		{
-			if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
+			if(mapItems.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
 			{
-				mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
+				mapItems.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
 			}
 		}
 
 		drawingEdge = new NodeEdge();
 		drawingEdge.setSource(mapNode);
 
-		mapPane.getChildren().add(drawingEdge.getNodeToDisplay());
+		mapItems.getChildren().add(drawingEdge.getNodeToDisplay());
 		drawingEdge.toBack();
 		mapImage.toBack();
 
@@ -746,9 +1009,9 @@ public class MapEditorController extends AbstractController {
 
 		root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
 			if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
-				if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
+				if(mapItems.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
 				{
-					mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
+					mapItems.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
 				}
 				drawingEdge = null;
 
@@ -779,14 +1042,14 @@ public class MapEditorController extends AbstractController {
 	{
 		for (Iterator<NodeEdge> i = node.getEdges().iterator(); i.hasNext();) {
 			NodeEdge edge = (NodeEdge)i.next();
-			mapPane.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
+			mapItems.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
 
 			model.removeMapEdge(edge); //remove edge from model
 
 			i.remove();
 		}
 
-		mapPane.getChildren().remove(node.getNodeToDisplay()); //remove the node
+		mapItems.getChildren().remove(node.getNodeToDisplay()); //remove the node
 
 		if(drawingEdge!=null)
 		{
@@ -800,25 +1063,22 @@ public class MapEditorController extends AbstractController {
 
 		TreeItem<MapTreeItem> toDelete = null;
 
-		if(node instanceof Destination)
+		for (TreeItem<MapTreeItem> floorItem : getCurrentTreeView().getRoot().getChildren())
 		{
-			for (TreeItem<MapTreeItem> floorItem : getCurrentTreeView().getRoot().getChildren())
+			for(TreeItem<MapTreeItem>  nodeItem : floorItem.getChildren())
 			{
-				for(TreeItem<MapTreeItem>  nodeItem : floorItem.getChildren())
+				if (nodeItem.getValue().getValue().equals((node)))
 				{
-					if (nodeItem.getValue().getValue().equals((node)))
-					{
-						toDelete = nodeItem;
-						break;
-					}
+					toDelete = nodeItem;
+					break;
 				}
 			}
+		}
 
-			if(toDelete != null)
-			{
-				toDelete.getParent().getChildren().remove(toDelete);
-				getCurrentTreeView().refresh();
-			}
+		if(toDelete != null)
+		{
+			toDelete.getParent().getChildren().remove(toDelete);
+			getCurrentTreeView().refresh();
 		}
 	}
 
@@ -834,7 +1094,8 @@ public class MapEditorController extends AbstractController {
 	 */
 
 	@FXML
-	public void saveInfoAndExit() throws IOException{
+	public void saveInfoAndExit() throws IOException, SQLException
+	{
 		//removeHandlers();
 		updateEdgeWeights();
 
@@ -851,13 +1112,12 @@ public class MapEditorController extends AbstractController {
 			model.getHospital().setKioskLocation(model.getCurrentFloor().getFloorNodes().get(0));
 		}
 
-		if(Main.mvm != null) {
-			Main.mvm.setCurrentFloor(this.model.getCurrentFloor());
-		}
+		DatabaseManager.getInstance().saveData();
 
 		SceneSwitcher.switchToUserMapView(this.getStage());
 	}
 
+	@FXML
 	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
 	{
 		SceneSwitcher.switchToModifyDirectoryView(this.getStage());

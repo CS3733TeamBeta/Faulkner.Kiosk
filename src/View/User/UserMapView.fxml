@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeTableColumn?>
 <?import javafx.scene.control.TreeTableView?>
@@ -16,11 +16,19 @@
 
 <AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.User.UserMapViewController">
    <children>
-      <ImageView fx:id="floor3Map" fitHeight="700.0" fitWidth="1200.0" layoutX="6.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <image>
-            <Image url="@MapViewer/floor3.png" />
-         </image>
-      </ImageView>
+      <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" pannable="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <content>
+          <AnchorPane fx:id="mapPane" minHeight="0.0" minWidth="0.0" prefHeight="1656.0" prefWidth="2300.0">
+               <children>
+                  <ImageView fx:id="mapImage" fitHeight="1656.0" fitWidth="2300.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <image>
+                        <Image url="@MapViewer/floor3.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
       <AnchorPane fx:id="searchMenu" layoutY="351.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.9" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #f2f2f2;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="350.0">
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" />
@@ -138,11 +146,6 @@
                   <Image url="@MapViewer/magnifying_glass.png" />
                </image>
             </ImageView>
-            <JFXButton fx:id="emailButton" layoutX="766.0" layoutY="90.0" onAction="#onEmailDirections" prefHeight="54.0" prefWidth="233.0" style="-fx-background-color: #3F51B5;" text="Send Directions &gt;" textFill="WHITE">
-               <font>
-                  <Font size="19.0" />
-               </font>
-            </JFXButton>
          </children>
       </AnchorPane>
       <ImageView fx:id="adminLogin" fitHeight="42.0" fitWidth="41.0" layoutX="900.0" layoutY="89.0" onMouseClicked="#adminLogin" opacity="0.21" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">

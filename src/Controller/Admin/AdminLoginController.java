@@ -66,12 +66,11 @@ public class AdminLoginController extends AbstractController
     @FXML
     private void clickedBack() throws IOException
     {
-        System.out.println("test");
-        SceneSwitcher.switchToUserMapView(this.getStage());
+        SceneSwitcher.switchToUserMapView(primaryStage);
     }
 
     @FXML
-    protected void initialize() {
+    protected void initialize()   {
 
     }
 }

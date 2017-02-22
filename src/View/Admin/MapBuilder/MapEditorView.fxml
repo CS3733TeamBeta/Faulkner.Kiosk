@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
@@ -11,27 +12,27 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="737.0" prefWidth="1295.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.MapEditorController">
+<AnchorPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.MapEditorController">
    <children>
-      <TabPane fx:id="BuildingTabPane" layoutX="839.0" layoutY="48.0" opacity="0.82" prefHeight="551.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="136.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0" />
-      <AnchorPane layoutX="961.0" layoutY="620.0" prefHeight="83.0" prefWidth="309.0" AnchorPane.bottomAnchor="34.0" AnchorPane.rightAnchor="25.0">
+      <TabPane fx:id="BuildingTabPane" layoutX="839.0" layoutY="48.0" opacity="0.82" prefHeight="527.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="173.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0" />
+      <AnchorPane layoutX="969.0" layoutY="618.0" prefHeight="120.0" prefWidth="300.0" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="30.0">
          <children>
-            <JFXButton layoutX="5.0" layoutY="55.0" onAction="#saveInfoAndExit" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #3F51B5;" text="Exit" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="162.0" AnchorPane.rightAnchor="5.0">
+            <JFXButton layoutX="8.0" layoutY="100.0" onAction="#saveInfoAndExit" prefHeight="35.0" prefWidth="280.0" style="-fx-background-color: #3F51B5;" text="Save" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton layoutX="1.0" layoutY="1.0" onAction="#onNewBuilding" prefHeight="30.0" prefWidth="140.0" style="-fx-background-color: #3F51B5;" text="New Building" textFill="WHITE" AnchorPane.leftAnchor="5.0">
+            <JFXButton fx:id="newBuildingButton" layoutX="1.0" layoutY="1.0" onAction="#onNewBuilding" prefHeight="30.0" prefWidth="145.0" style="-fx-background-color: #3F51B5;" text="New Building" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="15.0">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton contentDisplay="TOP" layoutX="164.0" layoutY="1.0" onAction="#onNewFloor" prefHeight="30.0" prefWidth="141.0" style="-fx-background-color: #3F51B5;" text="New Floor" textFill="WHITE" AnchorPane.rightAnchor="5.0">
+            <JFXButton fx:id="newFloorButton" contentDisplay="TOP" layoutX="164.0" layoutY="1.0" onAction="#onNewFloor" prefHeight="30.0" prefWidth="145.0" style="-fx-background-color: #3F51B5;" text="New Floor" textFill="WHITE" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton contentDisplay="TOP" layoutX="5.0" layoutY="55.0" onAction="#onDirectoryEditorSwitch" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: #3F51B5;" text="Directory Editor" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="162.0">
+            <JFXButton layoutX="12.0" layoutY="43.0" onAction="#onDirectoryEditorSwitch" prefHeight="35.0" prefWidth="300.0" style="-fx-background-color: #3F51B5;" text="Open Directory Editor" textFill="WHITE" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <font>
                   <Font size="14.0" />
                </font>
@@ -40,7 +41,7 @@
       </AnchorPane>
       <SplitPane fx:id="base_pane" dividerPositions="0.83" layoutX="32.0" layoutY="52.0" orientation="VERTICAL" prefHeight="655.0" prefWidth="913.0" AnchorPane.leftAnchor="32.0">
         <items>
-          <AnchorPane fx:id="mapPane" minHeight="0.0" minWidth="0.0" prefHeight="472.0" prefWidth="829.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="472.0" prefWidth="829.0">
                <children>
                   <ImageView fx:id="mapImage" fitHeight="546.0" fitWidth="941.0" layoutX="-9.0" layoutY="-12.0" preserveRatio="true" AnchorPane.bottomAnchor="-3.0" AnchorPane.leftAnchor="-9.0" AnchorPane.rightAnchor="-21.0">
                      <image>
@@ -48,6 +49,22 @@
                      </image>
                   </ImageView>
                   <ChoiceBox fx:id="floorsHavKisok" layoutX="747.0" layoutY="14.0" prefWidth="150.0" />
+                  <ScrollPane fx:id="scroll_pane" hbarPolicy="ALWAYS" layoutX="21.0" layoutY="33.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <content>
+                      <AnchorPane fx:id="mapPane" minHeight="0.0" minWidth="0.0" prefHeight="1656.0" prefWidth="2300.0">
+                           <children>
+                              <ImageView fx:id="mapImage" fitHeight="1656.0" fitWidth="2300.0" layoutX="186.0" layoutY="116.0" AnchorPane.bottomAnchor="1266.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1835.0" AnchorPane.topAnchor="0.0">
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                                 <image>
+                                    <Image url="@../../FloorMaps/1_thefirstfloor.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </ScrollPane>
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="61.0" prefWidth="913.0">
