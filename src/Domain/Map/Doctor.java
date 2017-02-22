@@ -4,18 +4,17 @@ package Domain.Map;
 import java.util.HashSet;
 import java.util.UUID;
 
-/**
- * Info specific for a doctor
- */
-public class Doctor extends Info
+public class Doctor
 {
 
     UUID docID;
-    HashSet<String> myOffice;
     String phoneNum = "N/A";
     private String name;
     private String description;
     private HashSet<Destination> destinations;
+
+    protected String hours;
+    protected String phoneNumber;
 
     /*
     HashSet<String> lstNames;
@@ -25,20 +24,20 @@ public class Doctor extends Info
 
 
     public Doctor(String name, String description, String hours, HashSet<Destination> destinations) {
-        super(name, description, hours);
+        this.name = name;
+        this.description = description;
+        this.hours = hours;
         this.docID = UUID.randomUUID();
         this.destinations = destinations;
 
-        this.myOffice = new HashSet<>();
     }
 
     public Doctor(UUID docID, String name, String description, String hours, HashSet<Destination> destinations) {
-        super(name, description, hours);
-        this.docID = docID;
-        this.destinations = destinations;
-        this.myOffice = new HashSet<>();
         this.name = name;
         this.description = description;
+        this.hours = hours;
+        this.docID = docID;
+        this.destinations = destinations;
 
 
     }
@@ -67,24 +66,12 @@ public class Doctor extends Info
         this.phoneNum = phoneNumber;
     }
 
-    public HashSet<String> getMyOffice() {
-        return myOffice;
-    }
-
-    public void setMyOffice(HashSet<String> office) {
-        this.myOffice = office;
-    }
-
-    public void addOffice(String office) {
-        this.myOffice.add(office);
-    }
-
-    public void removeOffice(String office) {
-        this.myOffice.remove(office);
-    }
-
     public String getName() {
         return this.name;
+    }
+
+    public void setName(String s) {
+        this.name = s;
     }
 
     public String getDescription() {

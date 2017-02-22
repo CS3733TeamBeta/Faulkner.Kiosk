@@ -439,13 +439,6 @@ public class DatabaseManager {
 
                 // insert nodes into database
                 for (MapNode n : f.getFloorNodes()) {
-                    if (n instanceof Destination)
-                    {
-                        if (!(h.getDestinations().containsKey(((Destination) n).getDestUID())))
-                        {
-                            h.addDestinations(n.getNodeID(), (Destination) n);
-                        }
-                    }
                     try {
                         insertNodes.setString(1, n.getNodeID().toString());
                         insertNodes.setDouble(2, n.getPosX());
@@ -458,6 +451,20 @@ public class DatabaseManager {
                         System.out.println("Error saving node " + e.getMessage());
                     }
                     conn.commit();
+                    if (n instanceof Destination)
+                    {
+                        try {
+                            insertDestinations.setString(1, ((Destination)n).getDestUID().toString());
+                            insertDestinations.setString(2, ((Destination)n).getName());
+                            insertDestinations.setString(3, n.getNodeID().toString());
+                            insertDestinations.setString(4, floorID);
+                            insertDestinations.executeUpdate();
+                        }
+                        catch (SQLException e) {
+                            System.out.println("Error saving suite " + e.getMessage());
+                        }
+                        conn.commit();
+                    }
                 }
                 // insert edges into database
                 for (NodeEdge edge : f.getFloorEdges()) {
