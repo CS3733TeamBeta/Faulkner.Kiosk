@@ -947,6 +947,7 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	public void saveInfoAndExit() throws IOException, SQLException
 	{
+		refreshNodePositions();
 		//removeHandlers();
 		updateEdgeWeights();
 
