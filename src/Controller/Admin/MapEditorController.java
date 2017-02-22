@@ -119,7 +119,7 @@ public class MapEditorController extends AbstractController {
 
 		mapPane.getChildren().add(mapItems);
 
-		//mapItems.relocate(0, 0);
+		mapItems.relocate(0, 0);
 		mapImage.relocate(0, 0);
 		mapPane.relocate(0, 0);
 
@@ -160,41 +160,6 @@ public class MapEditorController extends AbstractController {
 		loadBuildingsToTabPane(model.getHospital().getBuildings());
 
 		getCurrentTreeView().getSelectionModel().select(0); //selects first floor
-
-		renderFloorMap();
-
-		/*mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
-			if(drawingEdge != null)
-			{
-				// devondevon
-
-				Node sourceNode = drawingEdge.getSource().getNodeToDisplay();
-
-				Bounds sourceNodeBounds = sourceNode.getBoundsInParent();
-
-				Point2D clickPoint = new Point2D(clickEvent.getX(), clickEvent.getY());
-
-				if(!sourceNodeBounds.contains(clickPoint))
-				{
-
-					MapNode chainLinkNode = DragIcon.constructMapNodeFromType(DragIconType.connector);
-					chainLinkNode.setType(DragIconType.connector); //set the type
-
-					clickPoint = mapPane.localToScene(clickPoint);
-
-					clickPoint = new Point2D(clickPoint.getX() - 12.5, clickPoint.getY() - 12.5);
-
-					chainLinkNode.setPosX(clickPoint.getX());
-					chainLinkNode.setPosY(clickPoint.getY());
-
-					addToAdminMap(chainLinkNode);
-
-					drawingEdge.setTarget(chainLinkNode);
-
-					onEdgeComplete();
-				}
-			}
-		});*/
 	}
 
 	/**
@@ -361,8 +326,7 @@ public class MapEditorController extends AbstractController {
 				}
 			}
 
-			this.mapImage.setImage(f.getImageInfo().getFXImage());
-
+			refreshNodePositions();
 			model.setCurrentFloor(f);
 			renderFloorMap();
 
@@ -375,58 +339,22 @@ public class MapEditorController extends AbstractController {
 		mapItems.getChildren().clear();
 		mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
 		mapItems.getChildren().add(mapImage);
-		//and then set all the existing nodes up
-		HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
+
+		mapItems.relocate(0, 0);
 
 		for(MapNode n: model.getCurrentFloor().getFloorNodes())
 		{
-			for(NodeEdge edge: n.getEdges())
+			importNode(n);
+
+			for(NodeEdge e : n.getEdges())
 			{
-				if(!collectedEdges.contains(edge)) collectedEdges.add(edge);
+				if(!mapItems.getChildren().contains(e.getEdgeLine()))
+				{
+					mapItems.getChildren().add(e.getEdgeLine());
+				}
+
+				e.updatePosViaNode(n);
 			}
-
-			///this is why stranded nodes have a bug
-
-			n.getNodeToDisplay().setOnMouseClicked(null);
-			n.getNodeToDisplay().setOnDragDetected(null);
-		}
-
-		for(NodeEdge edge : collectedEdges)
-		{
-			edge.getEdgeLine().setOnMouseClicked(null);
-			edge.getEdgeLine().setOnMouseEntered(null);
-			edge.getEdgeLine().setOnMouseExited(null);
-
-			addHandlersToEdge(edge);
-
-			if(!mapItems.getChildren().contains(edge.getNodeToDisplay()))
-			{
-				mapItems.getChildren().add(edge.getNodeToDisplay());
-			}
-
-			MapNode source = edge.getSource();
-			MapNode target = edge.getTarget();
-
-			//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
-
-			if(!mapItems.getChildren().contains(source.getNodeToDisplay()))
-			{
-				importNode(source);
-			}
-
-			if(!mapItems.getChildren().contains(target.getNodeToDisplay()))
-			{
-				importNode(target);
-			}
-
-			edge.updatePosViaNode(source);
-			edge.updatePosViaNode(target);
-
-			edge.toBack();
-			edge.changeOpacity(1.0);
-			edge.changeColor(Color.BLACK);
-			source.toFront();
-			target.toFront();
 		}
 
 		mapImage.toBack();
@@ -440,18 +368,18 @@ public class MapEditorController extends AbstractController {
 	 */
 	protected void importNode(MapNode mapNode)
 	{
-		model.addMapNode(mapNode); //add node to model
-
 		if(!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
 		{
 			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
 		}
 
+		mapNode.setPos(mapNode.getPosX(), mapNode.getPosY());
+
 		addEventHandlersToNode(mapNode);
 
 		if(!mapNode.getIconType().equals(DragIconType.connector)) //treeview checks that floor actually contains
 		{
-			addToTreeView(mapNode);
+			//addToTreeView(mapNode); disabled for now.
 		}
 
 		mapNode.toFront(); //send the node to the front
@@ -471,81 +399,9 @@ public class MapEditorController extends AbstractController {
 			Point2D newPoint = new Point2D(icon.getLayoutX() ,
 					icon.getLayoutY());
 
-			n.setPosX((newPoint.getX()));
-			n.setPosY((newPoint.getY()));
+			n.setPos(newPoint.getX(), newPoint.getY());
 		}
 	}
-
-	/*protected void renderFloorMap()
-	{
-		mapItems.getChildren().clear();
-		mapPane.getChildren().remove(mapImage);
-		mapItems.getChildren().add(mapImage);
-		mapImage.toBack();
-
-		//and then set all the existing nodes up
-		HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
-
-		for(MapNode n : model.getCurrentFloor().getFloorNodes())
-		{
-			System.out.println("Adding node");
-			addToAdminMap(n);
-
-			if(n.getIsElevator())
-			{
-				System.out.println("Before Set Location: " + n.getPosX() + ", " + n.getPosY());
-			}
-
-			n.setPos(n.getPosX(), n.getPosY()); // @TODO refresh function
-
-			if(n.getIsElevator())
-			{
-				System.out.println("After Se Location: " + n.getPosX() + ", " + n.getPosY());
-			}
-
-			for(NodeEdge edge: n.getEdges())
-			{
-				if(!collectedEdges.contains(edge) && !(edge instanceof LinkEdge)) collectedEdges.add(edge);
-			}
-		}
-
-		for(NodeEdge edge : collectedEdges)
-		{
-			addHandlersToEdge(edge);
-
-			if(!mapItems.getChildren().contains(edge.getNodeToDisplay()))
-			{
-				mapItems.getChildren().add(edge.getNodeToDisplay());
-			}
-
-			MapNode source = edge.getSource();
-			MapNode target = edge.getTarget();
-
-			//@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
-
-			if(!mapItems.getChildren().contains(source.getNodeToDisplay()))
-			{
-				addToAdminMap(source);
-			}
-
-			if(!mapItems.getChildren().contains(target.getNodeToDisplay()))
-			{
-				addToAdminMap(target);
-			}
-
-			source.setPos(source.getPosX(), source.getPosY());
-			target.setPos(target.getPosX(), target.getPosY());
-
-			edge.updatePosViaNode(source);
-			edge.updatePosViaNode(target);
-
-			edge.toBack();
-			source.toFront();
-			target.toFront();
-
-			mapImage.toBack();
-		}
-	}*/
 
 	/**Adds handlers to handle edge deletion mostly
 	 *

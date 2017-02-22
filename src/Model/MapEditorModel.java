@@ -132,18 +132,6 @@ public class MapEditorModel
 
     public void setCurrentFloor(Floor floor){
         this.currentFloor = floor;
-        mapNodes.clear();
-
-        System.out.println("Changed to " + floor);
-
-        for(MapNode n : floor.getFloorNodes()) {
-            mapNodes.add(n);
-        }
-
-        mapEdges.clear();
-        for(NodeEdge m : floor.getFloorEdges()) {
-            mapEdges.add(m);
-        }
     }
 
     public Floor getCurrentFloor()
@@ -151,15 +139,6 @@ public class MapEditorModel
         return currentFloor;
     }
 
-    /**
-     * Adds a node to the current floor
-     *
-     * @param nodeToAdd The node to add to the floor
-     */
-    public void addNodeToCurrentFloor(MapNode nodeToAdd)
-    {
-        getCurrentFloor().addNode(nodeToAdd);
-    }
 
     /**
      * Place holder for function to switch floors
