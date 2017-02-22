@@ -108,7 +108,7 @@ public class UserMapViewController extends AbstractController {
 
     Group mapItems;
 
-    Group zoomTarget;
+    Group zoomGroup;
 
     public UserMapViewController() throws Exception
     {
@@ -117,7 +117,7 @@ public class UserMapViewController extends AbstractController {
 
     protected void renderFloorMap()
     {
-        mapItems = new Group();
+        mapItems.getChildren().clear();
         mapItems.getChildren().add(mapImage);
 
         mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
@@ -198,7 +198,7 @@ public class UserMapViewController extends AbstractController {
 
     }
 
-    public void zoomToExtents(Group group)
+    /*public void zoomToExtents(Group group)
     {
         Bounds groupBounds = group.getLayoutBounds();
         final Bounds viewportBounds = scrollPane.getViewportBounds();
@@ -209,27 +209,27 @@ public class UserMapViewController extends AbstractController {
             zoomTarget.setScaleY(.9 * zoomTarget.getScaleY());
             groupBounds = group.getLayoutBounds();
         }
-    }
+    }*/
 
     @FXML
     private void initialize() throws Exception
     {
         model = new MapModel();
+        mapItems = new Group();
 
         renderFloorMap();
 
         mapItems.relocate(0, 0);
 
-        zoomTarget = mapItems;
 
-        Group group = new Group(zoomTarget);
+        zoomGroup = new Group(mapItems);
 
         // stackpane for centering the content, in case the ScrollPane viewport
         // is larget than zoomTarget
-        StackPane content = new StackPane(group);
+        StackPane content = new StackPane(zoomGroup);
       //  stackPane = content;
 
-        group.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
+        zoomGroup.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
         // keep it at least as large as the content
             content.setMinWidth(newBounds.getWidth());
             content.setMinHeight(newBounds.getHeight());
@@ -252,7 +252,7 @@ public class UserMapViewController extends AbstractController {
 
             final double zoomFactor = evt.getDeltaY() > 0 ? 1.2 : 1 / 1.2;
 
-            Bounds groupBounds = group.getLayoutBounds();
+            Bounds groupBounds = zoomGroup.getLayoutBounds();
             final Bounds viewportBounds = scrollPane.getViewportBounds();
 
             if(groupBounds.getWidth()>viewportBounds.getWidth() || evt.getDeltaY()>0) //if max and trying to scroll out
@@ -262,21 +262,21 @@ public class UserMapViewController extends AbstractController {
                 double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
 
                 // convert content coordinates to zoomTarget coordinates
-                Point2D posInZoomTarget = zoomTarget.parentToLocal(group.parentToLocal(new Point2D(evt.getX(), evt.getY())));
+                Point2D posInZoomTarget = mapItems.parentToLocal(mapItems.parentToLocal(new Point2D(evt.getX(), evt.getY())));
 
                 // calculate adjustment of scroll position (pixels)
-                Point2D adjustment = zoomTarget.getLocalToParentTransform().deltaTransform(posInZoomTarget.multiply(zoomFactor - 1));
+                Point2D adjustment = mapItems.getLocalToParentTransform().deltaTransform(posInZoomTarget.multiply(zoomFactor - 1));
 
                 // do the resizing
-                zoomTarget.setScaleX(zoomFactor * zoomTarget.getScaleX());
-                zoomTarget.setScaleY(zoomFactor * zoomTarget.getScaleY());
+                mapItems.setScaleX(zoomFactor * mapItems.getScaleX());
+                mapItems.setScaleY(zoomFactor * mapItems.getScaleY());
 
                 // refresh ScrollPane scroll positions & content bounds
                 scrollPane.layout();
 
                 // convert back to [0, 1] range
                 // (too large/small values are automatically corrected by ScrollPane)
-                groupBounds = group.getLayoutBounds();
+                groupBounds = zoomGroup.getLayoutBounds();
                 scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
                 scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
             }
@@ -303,45 +303,48 @@ public class UserMapViewController extends AbstractController {
             panel.setVisible(false);
             searchMenuUp();
 
-            zoomToExtents(group); // TESTING PROGRAMATIC ZOOMING
-
-            Bounds groupBounds = group.getLayoutBounds();
-
-            final Bounds viewportBounds = scrollPane.getViewportBounds();
-
-
-              //calculate pixel offsets from [0, 1] range
-                double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
-                double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
-
-                // convert content coordinates to zoomTarget coordinates
-               /* Point2D posInZoomTarget = zoomTarget.parentToLocal(group.parentToLocal(new Point2D(viewportBounds.getWidth()/2,
-                        viewportBounds.getHeight()/2)));*/
-
-                Point2D zoomTargetCenter = zoomTarget.parentToLocal(group.parentToLocal(content.getWidth()/2, content.getHeight()/2));
-
-                Point2D posInZoomTarget = zoomTargetCenter;
-
-                // calculate adjustment of scroll position (pixels)
-                Point2D adjustment = zoomTarget.getLocalToParentTransform().deltaTransform(posInZoomTarget.multiply(viewportBounds.getWidth()/400- 1));
-
-                // do the resizing
-                zoomTarget.setScaleX(viewportBounds.getWidth()/400 * zoomTarget.getScaleX());
-                zoomTarget.setScaleY(viewportBounds.getWidth()/400 * zoomTarget.getScaleY());
-
-                // refresh ScrollPane scroll positions & content bounds
-                scrollPane.layout();
-
-                // convert back to [0, 1] range
-                // (too large/small values are automatically corrected by ScrollPane)
-                groupBounds = group.getLayoutBounds();
-
-                scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
-                scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
+            panToCenter();
         });
 
         panel.setVisible(false);
         directionPaneView();
+    }
+
+    private void panToCenter()
+    {
+        Bounds groupBounds = zoomGroup.getLayoutBounds();
+        final Bounds viewportBounds = scrollPane.getViewportBounds();
+
+        double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
+        double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
+
+        // convert content coordinates to zoomTarget coordinates
+        //Point2D posInZoomTarget = mapItems.parentToLocal(mapItems.parentToLocal(new Point2D(evt.getX(), evt.getY())));
+
+        // calculate adjustment of scroll position (pixels)
+
+        double scaleX = (scrollPane.getHmax()-scrollPane.getHmin())/mapItems.getBoundsInLocal().getWidth();
+        double scaleY = (scrollPane.getVmax()-scrollPane.getVmin())/mapItems.getBoundsInLocal().getHeight();
+
+        double middleX = mapItems.getBoundsInLocal().getWidth()/2;
+        double middleY = mapItems.getBoundsInLocal().getHeight()/2;
+
+        System.out.println("Middle Coordinates-- X: " + middleX + "Y: " + middleY);
+
+        System.out.println("Scaling X: " + scaleX);
+
+        /*Point2D adjustment = new Transform() mapImage.deltaTransform(new Point2D(
+                mapItems.getBoundsInParent().getWidth()/2, mapItems.getBoundsInParent().getHeight()/2));*/
+
+        // refresh ScrollPane scroll positions & content bounds
+        scrollPane.layout();
+
+        // convert back to [0, 1] range
+        // (too large/small values are automatically corrected by ScrollPane)
+        groupBounds = zoomGroup.getLayoutBounds();
+
+        scrollPane.setHvalue(middleX*scaleX);
+        scrollPane.setVvalue(middleY*scaleY);
     }
 
     private void directionPaneView() {
@@ -391,7 +394,6 @@ public class UserMapViewController extends AbstractController {
         slideHideDirections.getKeyFrames().add(keyFrame);
         slideHideDirections.play();
     }
-
 
     private void setupImportedNode(MapNode nodeToSetup){
 
