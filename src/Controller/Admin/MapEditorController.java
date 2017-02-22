@@ -347,26 +347,29 @@ public class MapEditorController extends AbstractController {
 
 	public void changeFloorSelection(Floor f)
 	{
-		model.setCurrentFloor(f);
-
-		if(f.getImageLocation() == null)
+		if(!f.equals(model.getCurrentFloor()))
 		{
-			try
+			model.setCurrentFloor(f);
+
+			if (f.getImageLocation() == null)
 			{
-				switchToAddFloor(this.getStage());
-			} catch (IOException e)
-			{
-				System.out.println("Threw an exception in MapEditorController: changeFloorSelection");
-				e.printStackTrace();
+				try
+				{
+					switchToAddFloor(this.getStage());
+				} catch (IOException e)
+				{
+					System.out.println("Threw an exception in MapEditorController: changeFloorSelection");
+					e.printStackTrace();
+				}
 			}
+
+			this.mapImage.setImage(f.getImageInfo().getFXImage());
+
+			model.setCurrentFloor(f);
+			renderFloorMap();
+
+			System.out.println("Changed floor to " + f);
 		}
-
-		this.mapImage.setImage(f.getImageInfo().getFXImage());
-
-		model.setCurrentFloor(f);
-		renderFloorMap();
-
-		System.out.println("Changed floor to " + f);
 	}
 
 	protected void renderFloorMap()
