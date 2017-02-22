@@ -3,10 +3,7 @@ package Controller.User;
 import Controller.AbstractController;
 import Controller.Main;
 import Controller.SceneSwitcher;
-import Domain.Map.Floor;
-import Domain.Map.LinkEdge;
-import Domain.Map.MapNode;
-import Domain.Map.NodeEdge;
+import Domain.Map.*;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
@@ -14,8 +11,17 @@ import Exceptions.PathFindingException;
 import Model.Database.DatabaseManager;
 import Model.MapModel;
 import javafx.event.EventHandler;
+import com.jfoenix.controls.JFXButton;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
@@ -30,13 +36,19 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.function.Predicate;
+import static Model.Database.DatabaseManager.Faulkner;
+import static Model.Database.DatabaseManager.destinations;
 
 
 /**
@@ -47,10 +59,10 @@ public class UserMapViewController extends AbstractController {
 
     Boolean downArrow = true; // By default, the navigation arrow is to minimize the welcome page
     ColorAdjust colorAdjust = new ColorAdjust();
-    int numClickDr = 0;
-    int numClickFood = 0;
-    int numClickBath = 0;
-    int numClickHelp = 0;
+    int numClickDr = -1;
+    int numClickFood = -1;
+    int numClickBath = -1;
+    int numClickHelp = -1;
 
     double xNodeScale = 1200/941;
     double yNodeScale = 700/546;
@@ -90,10 +102,28 @@ public class UserMapViewController extends AbstractController {
     Text welcomeGreeting;
 
     @FXML
-    TreeTableView deptTable;
+    TableView deptTable;
 
     @FXML
-    TreeTableView doctorTable;
+    TableColumn deptName;
+
+    @FXML
+    TableColumn deptPhoneNum;
+
+    @FXML
+    TableColumn deptLocation;
+
+    @FXML
+    TableView doctorTable;
+
+    @FXML
+    TableColumn docName;
+
+    @FXML
+    TableColumn jobTitle;
+
+    @FXML
+    TableColumn docDepts;
 
     @FXML
     ImageView mapImage;
@@ -154,10 +184,8 @@ public class UserMapViewController extends AbstractController {
             {
                 mapItems.getChildren().add(edge.getNodeToDisplay());
             }
-
             MapNode source = edge.getSource();
             MapNode target = edge.getTarget();
-
             //@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
 
             if(!mapItems.getChildren().contains(source.getNodeToDisplay()))
@@ -169,7 +197,6 @@ public class UserMapViewController extends AbstractController {
             {
                 addToMap(target);
             }
-
             edge.updatePosViaNode(source);
             edge.updatePosViaNode(target);
 
@@ -215,10 +242,10 @@ public class UserMapViewController extends AbstractController {
     }*/
 
     @FXML
-    private void initialize() throws Exception
-    {
+    private void initialize() throws Exception {
         model = new MapModel();
         mapItems = new Group();
+
 
         renderFloorMap();
 
@@ -367,6 +394,11 @@ public class UserMapViewController extends AbstractController {
                         hideDirections();
                     }
                 });
+        numClickDr = -1;
+        numClickFood = -1;
+        numClickBath = -1;
+        numClickHelp = -1;
+        LoadTableData();
     }
 
     private void hideDirections()
@@ -431,7 +463,6 @@ public class UserMapViewController extends AbstractController {
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException {
         System.out.println("In path finding");
-
         MapNode startPoint = model.getCurrentFloor().getKioskNode();
         if(startPoint == null){
             System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
@@ -446,14 +477,12 @@ public class UserMapViewController extends AbstractController {
         } catch (PathFindingException e) {
             return;//TODO add error message throw
         }
-
         for (NodeEdge edge : model.getCurrentFloor().getFloorEdges()) {
             if(newRoute.getPathEdges().contains(edge)) {
                 edge.changeOpacity(1.0);
                 edge.changeColor(Color.RED);
-            }
-            else{
-                edge.changeOpacity(0.0);
+            } else {
+                edge.changeOpacity(0.8);
                 edge.changeColor(Color.BLACK);
             }
         }
@@ -464,14 +493,12 @@ public class UserMapViewController extends AbstractController {
         newRoute.printTextDirections();
     }
 
-    public void setStage(Stage s)
-    {
+    public void setStage(Stage s) {
         primaryStage = s;
     }
 
     public void defaultProperty() {
         searchMenu.setStyle("-fx-background-color:  #f2f2f2;");
-
         // Sets the color of the icons to black
         ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
@@ -479,13 +506,11 @@ public class UserMapViewController extends AbstractController {
         bathroomIcon.setEffect(original);
         foodIcon.setEffect(original);
         helpIcon.setEffect(original);
-
         // By default, only the departments table is shown
         deptTable.setVisible(true);
         // Set all other tables false
         doctorTable.setVisible(false);
         searchBar.setPromptText("Search for Departments");
-
         // Title shown
         welcomeGreeting.setVisible(true);
         panel.setVisible(false);
@@ -496,160 +521,172 @@ public class UserMapViewController extends AbstractController {
             KeyFrame keyFrame;
             menuSlideDown.setCycleCount(1);
             menuSlideDown.setAutoReverse(true);
-
-            if (downArrow)
-            {
-                // Navigate down icon -> welcome page down (left with search bar)
+            if (downArrow) { // Navigate down icon -> welcome page down (left with search bar)
                 KeyValue welcomeDown = new KeyValue(searchMenu.translateYProperty(), 180);
                 keyFrame = new KeyFrame(Duration.millis(600), welcomeDown);
                 welcomeGreeting.setVisible(false);
                 downArrow = false; // Changes to up icon
                 searchMenu.setStyle("-fx-background-color: transparent;");
                 panel.setVisible(true);
-            }
-            else
-            { // Navigate up icon -> show welcome page
+            } else { // Navigate up icon -> show welcome page
                 panel.setVisible(false);
                 KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
                 keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
-
                 // Reset to default
-                defaultProperty();
-
+                //defaultProperty();
                 downArrow = true;
-                numClickDr = 0;
-                numClickFood = 0;
-                numClickBath = 0;
-                numClickHelp = 0;
-
+                numClickDr = -1;
+                numClickFood = -1;
+                numClickBath = -1;
+                numClickHelp = -1;
                 searchBar.clear();
-
-                navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
             }
-
-        menuSlideDown.getKeyFrames().add(keyFrame);
-        menuSlideDown.play();
-
-    }
+            navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
+            menuSlideDown.getKeyFrames().add(keyFrame);
+            menuSlideDown.play();
+        }
 
     public void loadMenu() {
-        defaultProperty();
-
+        //defaultProperty();
         Timeline menuSlideUp = new Timeline();
         menuSlideUp.setCycleCount(1);
         menuSlideUp.setAutoReverse(true);
-
         KeyValue menuUp = new KeyValue(searchMenu.translateYProperty(), -(mainPane.getHeight() - 350));
         KeyFrame keyFrame = new KeyFrame(Duration.millis(600), menuUp);
-
         menuSlideUp.getKeyFrames().add(keyFrame);
-
         menuSlideUp.play();
     }
 
-    public void doctorSelected()
-    {
+    public void doctorSelected() {
         loadMenu();
-        numClickDr = numClickDr + 1;
-        numClickHelp = 0;
-        numClickBath = 0;
-        numClickFood = 0;
-
-        if (numClickDr == 2)
-        {
-            defaultProperty();
-            numClickDr = 0;
-        }
-        else
-        {
-            defaultProperty();
-
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-
-            doctorIcon.setEffect(clicked);
-
-            searchBar.setPromptText("Search for doctors");
-
-            deptTable.setVisible(false);
-            doctorTable.setVisible(true);
-        }
-
+        numClickDr = numClickDr*(-1);
+        numClickHelp = -1;
+        numClickBath = -1;
+        numClickFood = -1;
+        DisplayCorrectTable();
     }
 
     public void bathroomSelected() {
         loadMenu();
-        numClickBath = numClickBath + 1;
-        numClickHelp = 0;
-        numClickDr = 0;
-        numClickFood = 0;
-
-        if (numClickBath == 2) {
-            defaultProperty();
-            numClickBath = 0;
-        } else {
-            defaultProperty();
-
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-
-            ColorAdjust original = new ColorAdjust();
-            original.setContrast(0);
-
-            bathroomIcon.setEffect(clicked);
-
-            searchBar.setPromptText("Search for bathrooms");
-        }
+        numClickDr = -1;
+        numClickHelp = -1;
+        numClickBath = numClickBath*(-1);
+        numClickFood = -1;
+        DisplayCorrectTable();
     }
 
     public void foodSelected() {
         loadMenu();
-        numClickFood = numClickFood + 1;
-        numClickHelp = 0;
-        numClickBath = 0;
-        numClickDr = 0;
-
-        if (numClickFood == 2) {
-            defaultProperty();
-            numClickFood = 0;
-        } else {
-            defaultProperty();
-
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-
-            ColorAdjust original = new ColorAdjust();
-            original.setContrast(0);
-            foodIcon.setEffect(clicked);
-
-            searchBar.setPromptText("Search for food");
-        }
+        numClickDr = -1;
+        numClickHelp = -1;
+        numClickBath = -1;
+        numClickFood = numClickFood*(-1);
+        DisplayCorrectTable();
     }
 
     public void helpSelected() {
         loadMenu();
-        numClickHelp = numClickHelp + 1;
-        numClickDr = 0;
-        numClickBath = 0;
-        numClickFood = 0;
-
-        if (numClickHelp == 2) {
-            defaultProperty();
-            numClickHelp = 0;
-        } else {
-            defaultProperty();
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-
-            ColorAdjust original = new ColorAdjust();
-            original.setContrast(0);
-            helpIcon.setEffect(clicked);
-
-            searchBar.setPromptText("Search for help");
-        }
+        numClickDr = -1;
+        numClickHelp = numClickHelp*(-1);
+        numClickBath = -1;
+        numClickFood = -1;
+        DisplayCorrectTable();
     }
 
     public void adminLogin() throws IOException {
         SceneSwitcher.switchToLoginView(primaryStage);
     }
+/*
+    public void onEmailDirections(ActionEvent actionEvent) {
+        String givenEmail = searchBar.getText().toLowerCase();
+        if (givenEmail.contains("@") && (givenEmail.contains(".com") || givenEmail.contains(".org") || givenEmail.contains(".edu") || givenEmail.contains(".gov"))) {
+            System.out.println("onEmailDirections called");
+            emailButton.setVisible(false);
+            System.out.println(searchBar.getText());
+            System.out.println("end");
+            newRoute.sendEmailGuidance(searchBar.getText(), mainPane);
+            defaultProperty();
+            searchBar.setText("Search Hospital");
+            sendingEmail = false;
+        } else {
+            System.out.println("Not a valid address!");
+            //@TODO Show in ui email was invalid
+        }}
+*/
+    private void LoadTableData() {
+        docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
+        jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
+        docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
+        Collection<Doctor> doctrine = Faulkner.getDoctors().values();
+        ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
+        FilteredList<Doctor> filteredDoctor = new FilteredList<>(doctors);
+        searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            filteredDoctor.setPredicate((Predicate<? super Doctor>) profile -> {
+                // By default, the entire directory is displayed
+                if (newValue == null || newValue.isEmpty()) { return true; }
+                // Compare the name of the doctor with filter text
+                String lowerCaseFilter = newValue.toLowerCase();
+                // Checks if filter matches
+                if (profile.getName().toLowerCase().contains(lowerCaseFilter)) { return true; }
+                // Filter does not match
+                return false;
+            });});
+        SortedList<Doctor> sortedDoctor = new SortedList<Doctor>(filteredDoctor);
+        sortedDoctor.comparatorProperty().bind(deptTable.comparatorProperty());
+        doctorTable.setItems(sortedDoctor);
+
+
+        deptName.setCellValueFactory(new PropertyValueFactory<Destination, String>("name"));
+        deptPhoneNum.setCellValueFactory(new PropertyValueFactory<Destination, String>("phoneNum"));
+        deptLocation.setCellValueFactory(new PropertyValueFactory<Destination, String>("location"));
+        Collection<Destination> suiteVal = Faulkner.getDestinations().values();
+        ObservableList<Destination> suites = FXCollections.observableArrayList(suiteVal);
+        FilteredList<Destination> filteredSuite = new FilteredList<>(suites);
+        searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            filteredSuite.setPredicate((Predicate<? super Destination>) profile -> {
+                // By default, the entire directory is displayed
+                if (newValue == null || newValue.isEmpty()) { return true; }
+                // Compare the name of the doctor with filter text
+                String lowerCaseFilter = newValue.toLowerCase();
+                // Checks if filter matches
+                if (profile.getName().toLowerCase().contains(lowerCaseFilter)) { return true; }
+                // Filter does not match
+                return false;
+            });});
+        SortedList<Destination> sortedSuite = new SortedList<Destination>(filteredSuite);
+        sortedSuite.comparatorProperty().bind(deptTable.comparatorProperty());
+        deptTable.setItems(sortedSuite);
+    }
+
+    public void DisplayCorrectTable() {
+        defaultProperty();
+        if (numClickDr == 1) {
+            ColorAdjust clicked = new ColorAdjust();
+            clicked.setContrast(-10);
+            doctorIcon.setEffect(clicked);
+            searchBar.setPromptText("Search for doctors");
+            deptTable.setVisible(false);
+            doctorTable.setVisible(true);
+        }
+        if (numClickBath == 1) {
+            ColorAdjust clicked = new ColorAdjust();
+            clicked.setContrast(-10);
+            bathroomIcon.setEffect(clicked);
+            searchBar.setPromptText("Search for bathrooms");
+        }
+        if (numClickFood == 1) {
+            ColorAdjust clicked = new ColorAdjust();
+            clicked.setContrast(-10);
+            foodIcon.setEffect(clicked);
+            searchBar.setPromptText("Search for food");
+        }
+        if (numClickHelp == 1) {
+            ColorAdjust clicked = new ColorAdjust();
+            clicked.setContrast(-10);
+            helpIcon.setEffect(clicked);
+            searchBar.setPromptText("Search for help");
+        }
+        if((numClickDr == -1)&&(numClickBath == -1)&&(numClickFood == -1)&&(numClickHelp == -1)) {
+            defaultProperty();
+        }}
 }

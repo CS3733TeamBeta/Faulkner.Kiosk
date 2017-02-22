@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -13,8 +22,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
 
-<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.User.UserMapViewController">
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.User.UserMapViewController">
    <children>
       <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" pannable="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <content>
@@ -89,22 +100,22 @@
                   <Image url="@resources/navigate_down.png" />
                </image>
             </ImageView>
-            <TreeTableView fx:id="doctorTable" layoutX="359.0" layoutY="381.0" opacity="0.82" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
+            <TableView fx:id="doctorTable" layoutX="359.0" layoutY="381.0" opacity="0.82" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
               <columns>
-                <TreeTableColumn fx:id="docName" minWidth="100.0" prefWidth="297.00001525878906" text="Name" />
-                <TreeTableColumn fx:id="jobTitle" minWidth="0.0" prefWidth="128.0000457763672" text="Job Title" />
-                  <TreeTableColumn fx:id="docDepts" minWidth="0.0" prefWidth="413.3334045410156" text="Department(s)" />
-                  <TreeTableColumn fx:id="navigateCol" prefWidth="162.666748046875" text="Navigate to Here" />
+                <TableColumn fx:id="docName" minWidth="100.0" prefWidth="297.00001525878906" text="Name" />
+                <TableColumn fx:id="jobTitle" minWidth="0.0" prefWidth="128.0000457763672" text="Job Title" />
+                  <TableColumn fx:id="docDepts" minWidth="0.0" prefWidth="413.3334045410156" text="Department(s)" />
+                  <TableColumn fx:id="navigateCol" prefWidth="162.666748046875" text="Navigate to Here" />
               </columns>
-            </TreeTableView>
-            <TreeTableView fx:id="deptTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
+            </TableView>
+            <TableView fx:id="deptTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
               <columns>
-                <TreeTableColumn fx:id="deptName" prefWidth="358.99998474121094" text="Name" />
-                <TreeTableColumn fx:id="deptPhoneNum" minWidth="0.0" prefWidth="252.33328247070312" text="Phone Number" />
-                  <TreeTableColumn fx:id="deptLocation" prefWidth="239.9998779296875" text="Location" />
-                  <TreeTableColumn fx:id="navigateCol" prefWidth="150.00006103515625" text="Navigate to Here" />
+                <TableColumn fx:id="deptName" prefWidth="358.99998474121094" text="Name" />
+                <TableColumn fx:id="deptPhoneNum" minWidth="0.0" prefWidth="252.33328247070312" text="Phone Number" />
+                  <TableColumn fx:id="deptLocation" prefWidth="239.9998779296875" text="Location" />
+                  <TableColumn fx:id="navigateCol1" prefWidth="150.00006103515625" text="Navigate to Here" />
               </columns>
-            </TreeTableView>
+            </TableView>
             <HBox layoutX="220.0" layoutY="273.0" prefHeight="62.0" prefWidth="792.0" spacing="42.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="290.0">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Doctors">
