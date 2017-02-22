@@ -172,6 +172,7 @@ public class UserMapViewController extends AbstractController {
             edge.updatePosViaNode(target);
 
             edge.toBack();
+            edge.changeOpacity(0.0);
             source.toFront();
             target.toFront();
         }
@@ -428,6 +429,10 @@ public class UserMapViewController extends AbstractController {
         System.out.println("In path finding");
 
         MapNode startPoint = model.getCurrentFloor().getKioskNode();
+        if(startPoint == null){
+            System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
+            startPoint = model.getCurrentFloor().getFloorNodes().getFirst();
+        }
         if (endPoint == startPoint) {
             System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
             return;//TODO add error message of some kind
@@ -444,7 +449,7 @@ public class UserMapViewController extends AbstractController {
                 edge.changeColor(Color.RED);
             }
             else{
-                edge.changeOpacity(0.8);
+                edge.changeOpacity(0.0);
                 edge.changeColor(Color.BLACK);
             }
         }
