@@ -612,6 +612,11 @@ public class Guidance extends Path {
 
         saveStepImages();
 
+        if (Math.random()%100 < 1) {
+            System.out.println("Egg called");
+            directionLine += "<a href=\"https://youtu.be/dQw4w9WgXcQ\">Some music for your enjoyement, hospital-goer.</a>";
+        }
+
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine, true, textDirections.size());
             return true;
