@@ -17,6 +17,7 @@ public class Office
     public Office(String name, Destination destination) {
         this.name = name;
         this.destination = destination;
+        this.id = UUID.randomUUID();
     }
 
     public Office(UUID id, String name, Destination destination) {

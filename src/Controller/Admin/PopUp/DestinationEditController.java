@@ -34,13 +34,11 @@ public class DestinationEditController extends AbstractPopupController
     public void saveEdits()
     {
         destinationUnderEdit.setName(nameBox.getText());
-        destinationUnderEdit.getInfo().setPhoneNumber(phoneBox.getText());
     }
 
     @Override
     public void fillFields()
     {
         nameBox.setText(destinationUnderEdit.getName());
-        phoneBox.setText(destinationUnderEdit.getInfo().getPhoneNumber());
     }
 }

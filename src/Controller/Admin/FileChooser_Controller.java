@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
+import java.sql.SQLException;
 
 public class FileChooser_Controller extends AbstractController
 {
@@ -51,7 +52,11 @@ public class FileChooser_Controller extends AbstractController
 
     Floor newFloor;
 
-    Hospital theHospital = DatabaseManager.getInstance().Faulkner;
+    Hospital theHospital = DatabaseManager.getInstance().loadData();
+
+    public FileChooser_Controller() throws SQLException
+    {
+    }
 
     @FXML
     private void clickGoBack()throws IOException{

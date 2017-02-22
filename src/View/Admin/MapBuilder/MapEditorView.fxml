@@ -51,7 +51,7 @@
                                     <Rectangle2D />
                                  </viewport>
                                  <image>
-                                    <Image url="@../../FloorMaps/1_thefirstfloor.png" />
+                                    <Image url="@../../../../resources/FloorMaps/1_thefirstfloor.png" />
                                  </image>
                               </ImageView>
                            </children>

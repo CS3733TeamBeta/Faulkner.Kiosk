@@ -8,6 +8,7 @@ import Domain.ViewElements.DrawableMapEntity;
 import Domain.ViewElements.Events.DeleteRequestedEvent;
 import Domain.ViewElements.Events.DeleteRequestedHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
@@ -468,6 +469,7 @@ public class MapNode implements DrawableMapEntity {
     {
         return icon.getType().ordinal();
     }
+
 
     @Override
     public String toString()
