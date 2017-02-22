@@ -164,6 +164,8 @@ public class UserMapViewController extends AbstractController {
 
                 e.updatePosViaNode(n);
             }
+
+            n.getNodeToDisplay().toFront();
         }
 
         mapImage.toBack();

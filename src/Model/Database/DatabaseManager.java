@@ -486,21 +486,7 @@ public class DatabaseManager {
         }
 
         System.out.println("Here");
-        // saves Suites
-//        for (Destination dest : h.getDestinations().values()) {
-//            try {
-//                insertDestinations.setString(1, dest.getDestUID().toString());
-//                insertDestinations.setString(2, dest.getName());
-//                insertDestinations.setString(3, dest.getNodeID().toString());
-//                insertDestinations.setString(4, dest.getFloorID());
-//                insertDestinations.executeUpdate();
-//            }
-//            catch (SQLException e) {
-//                System.out.println("Error saving suite " + e.getMessage());
-//            }
-//            conn.commit();
-//        }
-        // saves Doctors
+        
         for (Doctor doc : h.getDoctors().values()) {
             try {
                 insertDoctors.setString(1, doc.getDocID().toString());

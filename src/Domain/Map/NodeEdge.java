@@ -130,8 +130,8 @@ public class NodeEdge implements DrawableMapEntity
         //TODO: WE REALLY NEED TO MOVE THESE CONSTANTS SOMEWHERE
         //TODO: These exist because we autoscale all the png files to be 30x30 when displaying them.
         //TODO: We either need to store the scaled pixel measurements somewhere and pull them here or move all instances of 30 to a constant somewhere
-        int offsetX = 30/2;
-        int offsetY = 30/2;
+        double offsetX = 12.5;
+        double offsetY = 12.5;
 
         System.out.println("Width: " + offsetX);
         System.out.println("Height: " + offsetY);
