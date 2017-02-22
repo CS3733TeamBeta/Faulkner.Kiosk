@@ -306,7 +306,7 @@ public class UserMapViewController extends AbstractController {
             panel.setVisible(false);
             searchMenuUp();
 
-            panToCenter();
+            //panToCenter();
         });
 
         panel.setVisible(false);
