@@ -266,6 +266,9 @@ public class Guidance extends Path {
             for(String s : step.getDirections()) {
                 System.out.println(s);
             }
+            for (MapNode n: step.nodesForThisFloor){
+                System.out.println("X is " + n.getPosX() + ", Y is " + n.getPosY());
+            }
         }
     }
 
@@ -517,11 +520,12 @@ public class Guidance extends Path {
                 // paint both images, preserving the alpha channels
                 Graphics2D g = combined.createGraphics();
                 g.drawImage(realBaseImage, 0, 0, null);
-                int constant = 1;
+                double constant = 1.4;
                 //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
                     System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
-                    g.drawImage(nodeImg, ((int) Math.round(n.getPosX()))*constant, ((int) Math.round(n.getPosY()))*constant, null);
+                    g.drawImage(nodeImg, (int) (Math.round(n.getPosX())*constant), (int) (Math.round(n.getPosX())*constant), null);
+                    //g.drawImage(nodeImg, 100, 100, null);
                 }
                 //add edges to the map
                 g.setStroke(new BasicStroke(25, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
@@ -551,10 +555,11 @@ public class Guidance extends Path {
                 LinkedList<Point> startAndEnd = findParemeters(this.pathNodes, d.getFloor().getFloorNumber());
                 Point startPoint = startAndEnd.getFirst();
                 Point endPoint = startAndEnd.getLast();
-                int scaledStartX = (startPoint.x * constant) - boarderSize + offsetWidth;
-                int scaledStartY = (startPoint.y * constant) - boarderSize + offsetHeight;
-                int scaledEndX = (endPoint.x * constant) + boarderSize + offsetWidth;
-                int scaledEndY = (endPoint.y * constant) + boarderSize + offsetHeight;
+                int intConstant = 1;
+                int scaledStartX = (startPoint.x * intConstant) - boarderSize + offsetWidth;
+                int scaledStartY = (startPoint.y * intConstant) - boarderSize + offsetHeight;
+                int scaledEndX = (endPoint.x * intConstant) + boarderSize + offsetWidth;
+                int scaledEndY = (endPoint.y * intConstant) + boarderSize + offsetHeight;
                 if(scaledEndX > combined.getWidth()){
                     scaledEndX = combined.getWidth();
                 }
@@ -576,7 +581,8 @@ public class Guidance extends Path {
                 System.out.println("scaled width: " + resizedScaleWidthFactor);
                 BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthFactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
                 System.out.println("Writing image to combined" + i + ".png");
-                ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
+                //ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
+                ImageIO.write(combined, "PNG", new File("combined" + i + ".png"));
             } catch (Exception e) {
                 System.out.println("threw something wrong");
                 e.printStackTrace();
