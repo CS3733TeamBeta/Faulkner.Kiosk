@@ -520,11 +520,7 @@ public class Guidance extends Path {
                 Graphics2D g = combined.createGraphics();
                 g.drawImage(realBaseImage, 0, 0, null);
                 double constant = 2.173;
-                //add nodes to the map
-                for (MapNode n: d.nodesForThisFloor) {
-                    System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
-                    g.drawImage(nodeImg, (int) (Math.round(n.getPosX())*constant), (int)(Math.round(n.getPosY())*constant), null);
-                }
+
                 //add edges to the map
                 g.setStroke(new BasicStroke(25, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
                 g.setColor(Color.RED);
@@ -547,6 +543,12 @@ public class Guidance extends Path {
                         g.drawLine((int)Math.round(targetNode.getPosX() * constant) + offsetWidth, (int)Math.round(targetNode.getPosY() * constant) + offsetHeight,
                                 (int)Math.round(sourceNode.getPosX() * constant) + offsetWidth, (int)Math.round(sourceNode.getPosY() * constant) + offsetHeight);
                     }
+                }
+
+                //add nodes to the map
+                for (MapNode n: d.nodesForThisFloor) {
+                    System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
+                    g.drawImage(nodeImg, (int) (Math.round(n.getPosX())*constant), (int)(Math.round(n.getPosY())*constant), null);
                 }
 
                 // Save as new image
