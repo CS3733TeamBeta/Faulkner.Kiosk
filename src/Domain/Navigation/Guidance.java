@@ -293,25 +293,25 @@ public class Guidance extends Path {
         String stringDirection = "Error";
         switch (changeInDirection) {
             case -7:
-                stringDirection = "slight left";
+                stringDirection = "slight right-new";
                 break;
             case -6:
-                stringDirection = "left";
+                stringDirection = "right-new";
                 break;
             case -5:
-                stringDirection = "hard left";
+                stringDirection = "hard right-new";
                 break;
             case -4:
                 stringDirection = "U-Turn";
                 break;
             case -3:
-                stringDirection = "hard right";
+                stringDirection = "hard left-new";
                 break;
             case -2:
-                stringDirection = "right";
+                stringDirection = "left-new";
                 break;
             case -1:
-                stringDirection = "slight right";
+                stringDirection = "slight left";
                 break;
             case 0:
                 stringDirection = "Straight";
@@ -320,22 +320,22 @@ public class Guidance extends Path {
                 stringDirection = "slight right";
                 break;
             case 2:
-                stringDirection = "left";
+                stringDirection = "right-new";
                 break;
             case 3:
-                stringDirection = "hard left";
+                stringDirection = "hard right-new";
                 break;
             case 4:
                 stringDirection = "U-Turn";
                 break;
             case 5:
-                stringDirection = "hard right";
+                stringDirection = "hard left-new";
                 break;
             case 6:
-                stringDirection = "right";
+                stringDirection = "left-new";
                 break;
             case 7:
-                stringDirection = "slight right";
+                stringDirection = "slight left-new";
                 break;
             case 9:
                 stringDirection = "up";
@@ -389,7 +389,7 @@ public class Guidance extends Path {
         } else if (angle > -67.5 && angle <= -22.5) {
             direction = 8;
         }
-
+        System.out.println("Direction is " + direction);
         return direction;
     }
 
@@ -400,28 +400,28 @@ public class Guidance extends Path {
                 textDirection = "Error";
                 break;
             case 1:
-                textDirection = "North";
-                break;
-            case 2:
-                textDirection = "NorthEast";
-                break;
-            case 3:
-                textDirection = "East";
-                break;
-            case 4:
-                textDirection = "SouthEast";
-                break;
-            case 5:
                 textDirection = "South";
                 break;
-            case 6:
+            case 2:
                 textDirection = "SouthWest";
                 break;
-            case 7:
+            case 3:
                 textDirection = "West";
                 break;
-            case 8:
+            case 4:
                 textDirection = "NorthWest";
+                break;
+            case 5:
+                textDirection = "North";
+                break;
+            case 6:
+                textDirection = "NorthEast";
+                break;
+            case 7:
+                textDirection = "East";
+                break;
+            case 8:
+                textDirection = "SouthEast";
                 break;
             case 9:
                 textDirection = "Up";
@@ -439,28 +439,28 @@ public class Guidance extends Path {
     public static int directionToNum(String direction) {
         int num;
         switch (direction) {
-            case "North":
+            case "South":
                 num = 1;
                 break;
-            case "NorthEast":
+            case "SouthEast":
                 num = 2;
                 break;
             case "East":
                 num = 3;
                 break;
-            case "SouthEast":
+            case "NorthEast":
                 num = 4;
                 break;
-            case "South":
+            case "North":
                 num = 5;
                 break;
-            case "SouthWest":
+            case "NorthWest":
                 num = 6;
                 break;
             case "West":
                 num = 7;
                 break;
-            case "NorthWest":
+            case "SouthWest":
                 num = 8;
                 break;
             case "Up":
