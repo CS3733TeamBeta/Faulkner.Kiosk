@@ -293,7 +293,7 @@ public class Guidance extends Path {
         String stringDirection = "Error";
         switch (changeInDirection) {
             case -7:
-                stringDirection = "slight right-new";
+                stringDirection = "slight right2-new";
                 break;
             case -6:
                 stringDirection = "right-new";
@@ -311,13 +311,13 @@ public class Guidance extends Path {
                 stringDirection = "left-new";
                 break;
             case -1:
-                stringDirection = "slight left";
+                stringDirection = "slight left-new";
                 break;
             case 0:
                 stringDirection = "Straight";
                 break;
             case 1:
-                stringDirection = "slight right";
+                stringDirection = "slight right-new";
                 break;
             case 2:
                 stringDirection = "right-new";
