@@ -37,6 +37,9 @@ public class Hospital {
         buildings.add(b);
     }
 
+    public void addOffices (String s, Office office) {offices.put(s, office);}
+    public HashMap<String, Office> getOffices () {return offices;}
+
     //Alter Doctor HashMap: doctors
     public HashMap<String, Doctor> getDoctors() {
         return doctors;
