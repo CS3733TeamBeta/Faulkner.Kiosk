@@ -474,6 +474,9 @@ public class Guidance extends Path {
         for(DirectionStep d : this.textDirections){
             d.getFloor().initImage();
             try {
+
+                // BEGIN AREA WITH ERROR
+
                 //BufferedImage buffImg = d.getFloor().getImageInfo().getBufferedImage();
                 BufferedImage realBaseImage = d.getFloor().getImageInfo().getBufferedImage();
 
@@ -482,6 +485,8 @@ public class Guidance extends Path {
                     System.out.println("It's null somehow");
                     throw new Exception();
                 }
+
+                // END AREA WITH ERROR
 
                 // create the new image, canvas size is the max. of both image sizes
                 int w = realBaseImage.getWidth();
