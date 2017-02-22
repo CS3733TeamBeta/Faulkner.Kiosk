@@ -35,7 +35,6 @@ public class Destination extends MapNode {
      */
     public Destination() {
         this.destUID = UUID.randomUUID();
-        this.setName("Node");
     }
 
     public Destination(String name) {
@@ -99,5 +98,9 @@ public class Destination extends MapNode {
 
     public String getFloorID() {
         return this.floorID;
+    }
+
+    public void setFloorID(String s) {
+        this.floorID = s;
     }
 }
