@@ -480,9 +480,25 @@ public class Guidance extends Path {
                 //BufferedImage buffImg = d.getFloor().getImageInfo().getBufferedImage();
                 BufferedImage realBaseImage = d.getFloor().getImageInfo().getBufferedImage();
 
+                DirectionStep aStep = d;
+                Floor aFloor = d.getFloor();
+                ProxyImage aImageInfo = d.getFloor().getImageInfo();
+
+                if (aStep == null) {
+                    System.out.println("It's aStep");
+                    throw new Exception();
+                }
+                if (aFloor == null) {
+                    System.out.println("It's aFloor");
+                    throw new Exception();
+                }
+                if (aImageInfo == null) {
+                    System.out.println("It's imageInfo");
+                    throw new Exception();
+                }
 
                 if (realBaseImage == null) {
-                    System.out.println("It's null somehow");
+                    System.out.println("It's bufferedImage");
                     throw new Exception();
                 }
 
