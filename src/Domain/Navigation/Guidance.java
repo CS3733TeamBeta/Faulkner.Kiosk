@@ -29,16 +29,40 @@ public class Guidance extends Path {
     private int scaleFactor = 1;
     private int boarderSize = 100;
 
+    BufferedImage nodeImg = null;
+    BufferedImage bathImg= null;
+    BufferedImage docImg = null;
+    BufferedImage elevatorImg = null;
+    BufferedImage foodImg = null;
+    BufferedImage infoImg = null;
+    BufferedImage storeImg = null;
+
     LinkedList<DirectionStep> textDirections;
+
+    public void setImages() {
+        try {
+            nodeImg = ImageIO.read(new File("src/View/Admin/MapBuilder/blank2.png"));
+            bathImg = ImageIO.read(new File("src/View/Admin/MapBuilder/bathroom.png"));
+            docImg = ImageIO.read(new File("src/View/Admin/MapBuilder/doctor.png"));
+            elevatorImg = ImageIO.read(new File("src/View/Admin/MapBuilder/elevator.png"));
+            foodImg = ImageIO.read(new File("src/View/Admin/MapBuilder/food.png"));
+            infoImg = ImageIO.read(new File("src/View/Admin/MapBuilder/info.png"));
+            storeImg = ImageIO.read(new File("src/View/Admin/MapBuilder/store.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public Guidance (MapNode start, MapNode end) throws PathFindingException {
             this(start, end, false);
+            setImages();
             printTextDirections();
     }
 
     public Guidance (MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
         //Make the path part
         super(start, end, vFlag);
+        setImages();
 
         //Declare and initialize directions
         textDirections = new LinkedList<DirectionStep>();
@@ -51,6 +75,7 @@ public class Guidance extends Path {
 
     public Guidance (MapNode start, MapNode end, String kioskInputDirection) throws PathFindingException{
         super(start, end, false);
+        setImages();
 
         kioskDirection = Guidance.directionToNum(kioskInputDirection);
 
@@ -445,63 +470,54 @@ public class Guidance extends Path {
         return textDirections;
     }
 
-    public boolean sendEmailGuidance(String address) {
-        String subjectLine;
-        String directionLine = "<H2><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H2>" + "<H3>";
-        subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
-
-        int stepNumber = 1;
-        for (DirectionStep step: textDirections) {
-            for(String s: step.getDirections()) {
-                directionLine += "<b>" + stepNumber + ":</b> ";
-                directionLine += s;
-                directionLine += "<br>";
-                stepNumber++;
-            }
-        }
-        directionLine += "</H3>";
-        BufferedImage nodeImg = null;
-        BufferedImage bathImg= null;
-        BufferedImage docImg = null;
-        BufferedImage elevatorImg = null;
-        BufferedImage foodImg = null;
-        BufferedImage infoImg = null;
-        BufferedImage storeImg = null;
-        try {
-            nodeImg = ImageIO.read(new File("src/View/Admin/MapBuilder/blank2.png"));
-            bathImg = ImageIO.read(new File("src/View/Admin/MapBuilder/bathroom.png"));
-            docImg = ImageIO.read(new File("src/View/Admin/MapBuilder/doctor.png"));
-            elevatorImg = ImageIO.read(new File("src/View/Admin/MapBuilder/elevator.png"));
-            foodImg = ImageIO.read(new File("src/View/Admin/MapBuilder/food.png"));
-            infoImg = ImageIO.read(new File("src/View/Admin/MapBuilder/info.png"));
-            storeImg = ImageIO.read(new File("src/View/Admin/MapBuilder/store.png"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        for(DirectionStep d : this.textDirections){
+    public void saveStepImages() {
+        System.out.println("Saving images!");
+        System.out.println("There are " + this.textDirections.size() + " directionSteps");
+        for(int i = 1; i <= this.textDirections.size(); i++){
+            DirectionStep d = textDirections.get(i-1);
+            System.out.println("Creating info for floor " + d.getFloor().getFloorNumber());
             d.getFloor().initImage();
             try {
+
+                // BEGIN AREA WITH ERROR
+
                 //BufferedImage buffImg = d.getFloor().getImageInfo().getBufferedImage();
-                //@TODO replace this with loading from database
-                BufferedImage baseImage = ImageIO.read(new File("resources/FloorMaps/1_thefirstfloor.png"));
+                d.getFloor().getImageInfo().display();
+                BufferedImage realBaseImage = d.getFloor().getImageInfo().getBufferedImage();
 
+                DirectionStep aStep = d;
+                Floor aFloor = d.getFloor();
+                ProxyImage aImageInfo = d.getFloor().getImageInfo();
 
-                if (baseImage == null) {
-                    System.out.println("It's null somehow");
+                if (aStep == null) {
+                    System.out.println("It's aStep");
+                    throw new Exception();
+                }
+                if (aFloor == null) {
+                    System.out.println("It's aFloor");
+                    throw new Exception();
+                }
+                if (aImageInfo == null) {
+                    System.out.println("It's imageInfo");
                     throw new Exception();
                 }
 
+                if (realBaseImage == null) {
+                    System.out.println("It's bufferedImage");
+                    throw new Exception();
+                }
+
+                // END AREA WITH ERROR
 
                 // create the new image, canvas size is the max. of both image sizes
-                int w = baseImage.getWidth();
-                int h = baseImage.getHeight();
+                int w = realBaseImage.getWidth();
+                int h = realBaseImage.getHeight();
                 BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 
                 // paint both images, preserving the alpha channels
                 Graphics2D g = combined.createGraphics();
-                g.drawImage(baseImage, 0, 0, null);
-                int constant = 150;
+                g.drawImage(realBaseImage, 0, 0, null);
+                int constant = 1;
                 //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
                     System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
@@ -554,18 +570,38 @@ public class Guidance extends Path {
                 System.out.println("starting with: " + scaledStartX + " " + scaledStartY);
                 System.out.println("ending with: " + scaledEndX + " " + scaledEndY);
                 BufferedImage croppedImage = cropImage(combined,scaledStartX, scaledStartY, scaledEndX ,scaledEndY );
-                int resizedScaleWidthfactor = croppedImage.getWidth() * scaleFactor / (scaledEndX - scaledStartX);
+                int resizedScaleWidthFactor = croppedImage.getWidth() * scaleFactor / (scaledEndX - scaledStartX);
                 int resizedScaleHeightFactor = croppedImage.getHeight() * scaleFactor / (scaledEndY - scaledStartY);
                 System.out.println("scaled height: " + resizedScaleHeightFactor);
-                System.out.println("scaled width: " + resizedScaleWidthfactor);
-                BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthfactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
-                ImageIO.write(resizedVersion, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
+                System.out.println("scaled width: " + resizedScaleWidthFactor);
+                BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthFactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
+                System.out.println("Writing image to combined" + i + ".png");
+                ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
             } catch (Exception e) {
                 System.out.println("threw something wrong");
                 e.printStackTrace();
             }
 
         }
+    }
+
+    public boolean sendEmailGuidance(String address) {
+        String subjectLine;
+        String directionLine = "<H2><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H2>" + "<H3>";
+        subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
+
+        int stepNumber = 1;
+        for (DirectionStep step: textDirections) {
+            for(String s: step.getDirections()) {
+                directionLine += "<b>" + stepNumber + ":</b> ";
+                directionLine += s;
+                directionLine += "<br>";
+                stepNumber++;
+            }
+        }
+        directionLine += "</H3>";
+
+        saveStepImages();
 
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine, true, textDirections.size());
