@@ -16,7 +16,8 @@ public class Destination extends MapNode {
 
     UUID destUID; //Thing specific for the destination - brandon
 
-    protected Info myInfo; //@TODO get rid of this class!!!
+    protected String description;
+    protected String hours;
 
     String name;
 
@@ -35,13 +36,10 @@ public class Destination extends MapNode {
      */
     public Destination() {
         this.destUID = UUID.randomUUID();
-        myInfo = new Info();
-        myInfo.setName("Node");
     }
 
     public Destination(String name) {
-        myInfo = new Info();
-        myInfo.setName(name);
+        this.name = name;
     }
 
     //Creates a destination from a map node
@@ -57,17 +55,10 @@ public class Destination extends MapNode {
         this.setType(m.getIconType());
 
         this.nodeUID = m.getNodeID();
+        this.doctors = new HashSet<>();
+        this.offices = new HashSet<>();
     }
 
-
-    /**
-     * Returns the info of this Destination
-     * @return Info of this Destination
-     */
-    public Info getInfo()
-    {
-        return myInfo;
-    }
 
     //Returns a pop over window to edit this node
     /**
@@ -109,5 +100,9 @@ public class Destination extends MapNode {
 
     public String getFloorID() {
         return this.floorID;
+    }
+
+    public void addDoctor(Doctor d) {
+        doctors.add(d);
     }
 }
