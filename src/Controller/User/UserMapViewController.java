@@ -101,6 +101,8 @@ public class UserMapViewController extends AbstractController {
     @FXML
     ScrollPane scrollPane;
 
+    static boolean fixedOffsetsAlready = false;
+
     Stage primaryStage;
 
     MapModel model;
@@ -130,11 +132,6 @@ public class UserMapViewController extends AbstractController {
         {
             System.out.println("Adding node");
 
-            if(Main.fixOffsetsFromEditor){
-                System.out.println("Fixing node positons");
-                n.setPosX(n.getPosX() + 7.5);
-                n.setPosY(n.getPosY() + 7.5);
-            }
 
             n.getNodeToDisplay().setOnMouseClicked(null);
             n.getNodeToDisplay().setOnDragDetected(null);
@@ -151,6 +148,7 @@ public class UserMapViewController extends AbstractController {
 
         if(Main.fixOffsetsFromEditor){
             Main.fixOffsetsFromEditor = false;
+            fixedOffsetsAlready = true;
         }
 
         for(NodeEdge edge : collectedEdges)
