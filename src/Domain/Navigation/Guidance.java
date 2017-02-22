@@ -471,93 +471,93 @@ public class Guidance extends Path {
     }
 
     public void saveStepImages() {
-    for(DirectionStep d : this.textDirections){
-        d.getFloor().initImage();
-        try {
-            //BufferedImage buffImg = d.getFloor().getImageInfo().getBufferedImage();
-            //@TODO replace this with loading from database
-            BufferedImage baseImage = ImageIO.read(new File("resources/FloorMaps/1_thefirstfloor.png"));
+        for(DirectionStep d : this.textDirections){
+            d.getFloor().initImage();
+            try {
+                //BufferedImage buffImg = d.getFloor().getImageInfo().getBufferedImage();
+                //@TODO replace this with loading from database
+                BufferedImage baseImage = ImageIO.read(new File("resources/FloorMaps/1_thefirstfloor.png"));
 
 
-            if (baseImage == null) {
-                System.out.println("It's null somehow");
-                throw new Exception();
-            }
-
-
-            // create the new image, canvas size is the max. of both image sizes
-            int w = baseImage.getWidth();
-            int h = baseImage.getHeight();
-            BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-
-            // paint both images, preserving the alpha channels
-            Graphics2D g = combined.createGraphics();
-            g.drawImage(baseImage, 0, 0, null);
-            int constant = 1;
-            //add nodes to the map
-            for (MapNode n: d.nodesForThisFloor) {
-                System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
-                g.drawImage(nodeImg, ((int) Math.round(n.getPosX()))*constant, ((int) Math.round(n.getPosY()))*constant, null);
-            }
-            //add edges to the map
-            g.setStroke(new BasicStroke(25, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-            g.setColor(Color.RED);
-            int offsetHeight = nodeImg.getHeight() / 2;
-            int offsetWidth = nodeImg.getWidth() / 2;
-            //System.out.println("Height: " + offsetHeight + " Width: " + offsetWidth);
-            for (NodeEdge e : this.pathEdges){
-                //check the edge to see if it's on the current floor
-                if(e.getSource().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()
-                        && e.getTarget().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()){
-                    //get the nodes to draw the lines between
-                    MapNode targetNode = e.getTarget();
-                    MapNode sourceNode = e.getSource();
-                    //output info to user for debugging
-                    System.out.println("Drawing line between nodes on floor: " + e.getSource().getMyFloor().getFloorNumber());
-                    System.out.println("x1: " + Math.round(targetNode.getPosX() * constant) + " y1: " + Math.round( targetNode.getPosY() * constant) +
-                            " x2: " + Math.round(sourceNode.getPosX() * constant) + " y2: " + Math.round(sourceNode.getPosY() * constant));
-                    //draw the line between the two points. apply offset to account
-                    //for image being anchored at upper left of picture
-                    g.drawLine((int)Math.round(targetNode.getPosX() * constant) + offsetWidth, (int)Math.round(targetNode.getPosY() * constant) + offsetHeight,
-                            (int)Math.round(sourceNode.getPosX() * constant) + offsetWidth, (int)Math.round(sourceNode.getPosY() * constant) + offsetHeight);
+                if (baseImage == null) {
+                    System.out.println("It's null somehow");
+                    throw new Exception();
                 }
+
+
+                // create the new image, canvas size is the max. of both image sizes
+                int w = baseImage.getWidth();
+                int h = baseImage.getHeight();
+                BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+
+                // paint both images, preserving the alpha channels
+                Graphics2D g = combined.createGraphics();
+                g.drawImage(baseImage, 0, 0, null);
+                int constant = 1;
+                //add nodes to the map
+                for (MapNode n: d.nodesForThisFloor) {
+                    System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
+                    g.drawImage(nodeImg, ((int) Math.round(n.getPosX()))*constant, ((int) Math.round(n.getPosY()))*constant, null);
+                }
+                //add edges to the map
+                g.setStroke(new BasicStroke(25, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+                g.setColor(Color.RED);
+                int offsetHeight = nodeImg.getHeight() / 2;
+                int offsetWidth = nodeImg.getWidth() / 2;
+                //System.out.println("Height: " + offsetHeight + " Width: " + offsetWidth);
+                for (NodeEdge e : this.pathEdges){
+                    //check the edge to see if it's on the current floor
+                    if(e.getSource().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()
+                            && e.getTarget().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()){
+                        //get the nodes to draw the lines between
+                        MapNode targetNode = e.getTarget();
+                        MapNode sourceNode = e.getSource();
+                        //output info to user for debugging
+                        System.out.println("Drawing line between nodes on floor: " + e.getSource().getMyFloor().getFloorNumber());
+                        System.out.println("x1: " + Math.round(targetNode.getPosX() * constant) + " y1: " + Math.round( targetNode.getPosY() * constant) +
+                                " x2: " + Math.round(sourceNode.getPosX() * constant) + " y2: " + Math.round(sourceNode.getPosY() * constant));
+                        //draw the line between the two points. apply offset to account
+                        //for image being anchored at upper left of picture
+                        g.drawLine((int)Math.round(targetNode.getPosX() * constant) + offsetWidth, (int)Math.round(targetNode.getPosY() * constant) + offsetHeight,
+                                (int)Math.round(sourceNode.getPosX() * constant) + offsetWidth, (int)Math.round(sourceNode.getPosY() * constant) + offsetHeight);
+                    }
+                }
+
+                // Save as new image
+                LinkedList<Point> startAndEnd = findParemeters(this.pathNodes, d.getFloor().getFloorNumber());
+                Point startPoint = startAndEnd.getFirst();
+                Point endPoint = startAndEnd.getLast();
+                int scaledStartX = (startPoint.x * constant) - boarderSize + offsetWidth;
+                int scaledStartY = (startPoint.y * constant) - boarderSize + offsetHeight;
+                int scaledEndX = (endPoint.x * constant) + boarderSize + offsetWidth;
+                int scaledEndY = (endPoint.y * constant) + boarderSize + offsetHeight;
+                if(scaledEndX > combined.getWidth()){
+                    scaledEndX = combined.getWidth();
+                }
+                if(scaledEndY > combined.getHeight()){
+                    scaledEndY = combined.getHeight();
+                }
+                if(scaledStartX < 0){
+                    scaledStartX = 0;
+                }
+                if(scaledStartY < 0){
+                    scaledStartY = 0;
+                }
+                System.out.println("starting with: " + scaledStartX + " " + scaledStartY);
+                System.out.println("ending with: " + scaledEndX + " " + scaledEndY);
+                BufferedImage croppedImage = cropImage(combined,scaledStartX, scaledStartY, scaledEndX ,scaledEndY );
+                int resizedScaleWidthfactor = croppedImage.getWidth() * scaleFactor / (scaledEndX - scaledStartX);
+                int resizedScaleHeightFactor = croppedImage.getHeight() * scaleFactor / (scaledEndY - scaledStartY);
+                System.out.println("scaled height: " + resizedScaleHeightFactor);
+                System.out.println("scaled width: " + resizedScaleWidthfactor);
+                BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthfactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
+                ImageIO.write(resizedVersion, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
+            } catch (Exception e) {
+                System.out.println("threw something wrong");
+                e.printStackTrace();
             }
 
-            // Save as new image
-            LinkedList<Point> startAndEnd = findParemeters(this.pathNodes, d.getFloor().getFloorNumber());
-            Point startPoint = startAndEnd.getFirst();
-            Point endPoint = startAndEnd.getLast();
-            int scaledStartX = (startPoint.x * constant) - boarderSize + offsetWidth;
-            int scaledStartY = (startPoint.y * constant) - boarderSize + offsetHeight;
-            int scaledEndX = (endPoint.x * constant) + boarderSize + offsetWidth;
-            int scaledEndY = (endPoint.y * constant) + boarderSize + offsetHeight;
-            if(scaledEndX > combined.getWidth()){
-                scaledEndX = combined.getWidth();
-            }
-            if(scaledEndY > combined.getHeight()){
-                scaledEndY = combined.getHeight();
-            }
-            if(scaledStartX < 0){
-                scaledStartX = 0;
-            }
-            if(scaledStartY < 0){
-                scaledStartY = 0;
-            }
-            System.out.println("starting with: " + scaledStartX + " " + scaledStartY);
-            System.out.println("ending with: " + scaledEndX + " " + scaledEndY);
-            BufferedImage croppedImage = cropImage(combined,scaledStartX, scaledStartY, scaledEndX ,scaledEndY );
-            int resizedScaleWidthfactor = croppedImage.getWidth() * scaleFactor / (scaledEndX - scaledStartX);
-            int resizedScaleHeightFactor = croppedImage.getHeight() * scaleFactor / (scaledEndY - scaledStartY);
-            System.out.println("scaled height: " + resizedScaleHeightFactor);
-            System.out.println("scaled width: " + resizedScaleWidthfactor);
-            BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthfactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
-            ImageIO.write(resizedVersion, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
-        } catch (Exception e) {
-            System.out.println("threw something wrong");
-            e.printStackTrace();
         }
-
-    }
     }
 
     public boolean sendEmailGuidance(String address) {
