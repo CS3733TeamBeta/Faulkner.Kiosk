@@ -40,11 +40,11 @@ import static Model.Database.DatabaseManager.Faulkner;
  */
 
 public class AdminDirectoryEditorController  extends AbstractController {
-    private ObservableList<String> departments = FXCollections.observableArrayList();
     Boolean deptDirectoryUp = false;
-    ObservableList<String> locations = FXCollections.observableArrayList();
-    ObservableList<Office> offices = FXCollections.observableArrayList(Faulkner.getOffices().values());
+    ObservableList<Doctor> doctors = FXCollections.observableArrayList(Faulkner.getDoctors().values());
+    ObservableList<Office> existingDepts = FXCollections.observableArrayList(Faulkner.getOffices().values());
     ObservableList<Destination> existingLoc = FXCollections.observableArrayList(Faulkner.getDestinations().values());
+    ObservableList<String> locations = FXCollections.observableArrayList();
 
     @FXML
     private JFXTextField searchBar, firstName, lastName, description;
@@ -86,9 +86,6 @@ public class AdminDirectoryEditorController  extends AbstractController {
     private AnchorPane deptDirectory;
 
     @FXML
-    private ImageView addDeptIcon;
-
-    @FXML
     private JFXTextField searchDeptBar;
 
     @FXML
@@ -120,7 +117,6 @@ public class AdminDirectoryEditorController  extends AbstractController {
         phoneNumCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("phoneNum"));
         hourCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("hours"));
 
-        ObservableList<Doctor> doctors = FXCollections.observableArrayList(Faulkner.getDoctors().values());
         dataTable.setItems(doctors);
 
         // Creating list of data to be filtered
@@ -172,10 +168,6 @@ public class AdminDirectoryEditorController  extends AbstractController {
                     break;
             }
         });
-
-        // Would removing also removes the key from
-        // all other tables?
-
     }
 
     public void addToAssignedDept(String location) {
@@ -375,10 +367,10 @@ public class AdminDirectoryEditorController  extends AbstractController {
             }
         });
 
-        deptDataTable.setItems(offices);
+        deptDataTable.setItems(existingDepts);
 
         // Creating list of data to be filtered
-        FilteredList<Office> filtered = new FilteredList<>(offices);
+        FilteredList<Office> filtered = new FilteredList<>(existingDepts);
 
         // Adding a listener to the search bar, filtering through the data as the user types
         searchDeptBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
