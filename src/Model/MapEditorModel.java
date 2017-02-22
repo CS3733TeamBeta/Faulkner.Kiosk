@@ -203,7 +203,10 @@ public class MapEditorModel
      */
     public void addMapNode(MapNode n)
     {
-        mapNodes.add(n);
+        if (!mapNodes.contains(n))
+        {
+            mapNodes.add(n);
+        }
     }
 
     /**

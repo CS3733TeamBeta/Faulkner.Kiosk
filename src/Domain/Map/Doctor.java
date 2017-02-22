@@ -14,7 +14,6 @@ public class Doctor
 
     UUID docID;
     HashSet<Destination> destinations;
-    HashSet<String> myOffice;
     String phoneNum = "N/A";
 
     public Doctor(String name, String description, String hours, HashSet<Destination> destinations) {
@@ -23,8 +22,6 @@ public class Doctor
         this.hours = hours;
         this.docID = UUID.randomUUID();
         this.destinations = destinations;
-
-        this.myOffice = new HashSet<>();
     }
 
     public Doctor(UUID docID, String name, String description, String hours, HashSet<Destination> destinations) {
@@ -33,21 +30,7 @@ public class Doctor
         this.hours = hours;
         this.docID = docID;
         this.destinations = destinations;
-
-        this.myOffice = new HashSet<>();
     }
-
-//    public Doctor(String dept, String phoneNum, Office docOff, String name, String description, String hours)
-//    {
-//        super(name, description, hours);
-//
-//        //this.department.add(dept);
-//        this.phoneNum = phoneNum;
-//        //this.myOffice.add(docOff);
-//        super.name = name;
-//        super.description = description;
-//        super.hours = hours;
-//    }
 
     public UUID getDocID() {
         return docID;
@@ -59,22 +42,6 @@ public class Doctor
 
     public void setPhoneNum(String phoneNumber) {
         this.phoneNum = phoneNumber;
-    }
-
-    public HashSet<String> getMyOffice() {
-        return myOffice;
-    }
-
-    public void setMyOffice(HashSet<String> office) {
-        this.myOffice = office;
-    }
-
-    public void addOffice(String office) {
-        this.myOffice.add(office);
-    }
-
-    public void removeOffice(String office) {
-        this.myOffice.remove(office);
     }
 
     public String getName() {
