@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import Controller.AbstractController;
+import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
 import Domain.ViewElements.*;
@@ -487,8 +488,8 @@ public class MapEditorController extends AbstractController {
 		{
 			DragIcon icon = (DragIcon)n.getNodeToDisplay();
 
-			Point2D newPoint = new Point2D(icon.getLayoutX() + icon.getBoundsInLocal().getWidth() / 2,
-					icon.getLayoutY() + icon.getBoundsInLocal().getHeight() / 2);
+			Point2D newPoint = new Point2D(icon.getLayoutX() ,
+					icon.getLayoutY());
 
 			n.setPosX((newPoint.getX()));
 			n.setPosY((newPoint.getY()));
@@ -1109,6 +1110,8 @@ public class MapEditorController extends AbstractController {
 		}
 
 		DatabaseManager.getInstance().saveData();
+
+		Main.fixOffsetsFromEditor = true;
 
 		SceneSwitcher.switchToUserMapView(this.getStage());
 	}
