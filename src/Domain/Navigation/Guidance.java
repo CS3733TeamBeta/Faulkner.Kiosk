@@ -592,7 +592,7 @@ public class Guidance extends Path {
                 BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthFactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
                 System.out.println("Writing image to combined" + i + ".png");
                 //ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
-                ImageIO.write(combined, "PNG", new File("combined" + i + ".png"));
+                ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
             } catch (Exception e) {
                 System.out.println("threw something very wrong");
                 e.printStackTrace();
