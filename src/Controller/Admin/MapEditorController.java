@@ -49,6 +49,9 @@ public class MapEditorController extends AbstractController {
 	Button newFloorButton;
 
 	@FXML
+	ChoiceBox floorsHavKiosk;
+
+	@FXML
 	private TabPane BuildingTabPane;
 
 	private DragIcon mDragOverIcon = null;
@@ -62,6 +65,7 @@ public class MapEditorController extends AbstractController {
 
 	public MapEditorController() {
 
+		fill();
 		model = new MapEditorModel();
 
 		//Runs once the edge is drawn from one node to another
@@ -857,5 +861,9 @@ public class MapEditorController extends AbstractController {
 	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
 	{
 		SceneSwitcher.switchToModifyDirectoryView(this.getStage());
+	}
+
+	public void fill () {
+		floorsHavKiosk.setItems(Hospital.floorsWithKiosk);
 	}
 }

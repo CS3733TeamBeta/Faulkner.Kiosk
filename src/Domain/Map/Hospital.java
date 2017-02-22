@@ -1,7 +1,10 @@
 package Domain.Map;
 
 
+import javafx.collections.ObservableList;
+
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -10,8 +13,9 @@ import java.util.Map;
  */
 public class Hospital {
     HashSet<Building> buildings;
+    HashMap<Floor, MapNode> kioskNodeList = null;
     MapNode kioskNode = null;
-
+    public static ObservableList<Integer> floorsWithKiosk;
     /**
      * Creates a new Hospital with an empty HashSet of buildings
      */
@@ -59,13 +63,18 @@ public class Hospital {
                     for (j = 0; j < nextBuilding.getFloors().size(); i++) {
                         Floor nextFloor = nextBuilding.getFloors().iterator().next();
                         for (MapNode n : nextFloor.floorNodes) {
-                            if (kioskNode.equals(n)) {
-                                this.kioskNode = kioskNode;
+                            if (kioskNodeList.get(kioskNode.myFloor).equals(n)) {
+                                kioskNodeList.put(kioskNode.myFloor, kioskNode);
+                                setFloorsWithKiosk(kioskNode.myFloor);
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    public static void setFloorsWithKiosk(Floor floor) {
+        Hospital.floorsWithKiosk.add(floor.floorNumber);
     }
 }
