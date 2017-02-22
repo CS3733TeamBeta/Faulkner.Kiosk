@@ -161,7 +161,7 @@ public class MapEditorController extends AbstractController {
 
 		getCurrentTreeView().getSelectionModel().select(0); //selects first floor
 
-		renderFloorMap();
+		//renderFloorMap();
 
 		/*mapPane.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
 			if(drawingEdge != null)
@@ -392,7 +392,7 @@ public class MapEditorController extends AbstractController {
 			}
 
 			///this is why stranded nodes have a bug
-
+			System.out.println("Node added to map in renderFloorMap");
 			n.getNodeToDisplay().setOnMouseClicked(null);
 			n.getNodeToDisplay().setOnDragDetected(null);
 		}
