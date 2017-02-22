@@ -475,24 +475,22 @@ public class Guidance extends Path {
             d.getFloor().initImage();
             try {
                 //BufferedImage buffImg = d.getFloor().getImageInfo().getBufferedImage();
-                //@TODO replace this with loading from database
-                BufferedImage baseImage = ImageIO.read(new File("resources/FloorMaps/1_thefirstfloor.png"));
+                BufferedImage realBaseImage = d.getFloor().getImageInfo().getBufferedImage();
 
 
-                if (baseImage == null) {
+                if (realBaseImage == null) {
                     System.out.println("It's null somehow");
                     throw new Exception();
                 }
 
-
                 // create the new image, canvas size is the max. of both image sizes
-                int w = baseImage.getWidth();
-                int h = baseImage.getHeight();
+                int w = realBaseImage.getWidth();
+                int h = realBaseImage.getHeight();
                 BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 
                 // paint both images, preserving the alpha channels
                 Graphics2D g = combined.createGraphics();
-                g.drawImage(baseImage, 0, 0, null);
+                g.drawImage(realBaseImage, 0, 0, null);
                 int constant = 1;
                 //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
