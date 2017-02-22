@@ -473,7 +473,8 @@ public class Guidance extends Path {
     public void saveStepImages() {
         System.out.println("Saving images!");
         System.out.println("There are " + this.textDirections.size() + " directionSteps");
-        for(DirectionStep d : this.textDirections){
+        for(int i = 1; i <= this.textDirections.size(); i++){
+            DirectionStep d = textDirections.get(i);
             System.out.println("Creating info for floor " + d.getFloor().getFloorNumber());
             d.getFloor().initImage();
             try {
@@ -574,8 +575,8 @@ public class Guidance extends Path {
                 System.out.println("scaled height: " + resizedScaleHeightFactor);
                 System.out.println("scaled width: " + resizedScaleWidthFactor);
                 BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthFactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
-                System.out.println("Writing image to combined" + d.getFloor().getFloorNumber() + ".png");
-                ImageIO.write(resizedVersion, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
+                System.out.println("Writing image to combined" + i + ".png");
+                ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
             } catch (Exception e) {
                 System.out.println("threw something wrong");
                 e.printStackTrace();
