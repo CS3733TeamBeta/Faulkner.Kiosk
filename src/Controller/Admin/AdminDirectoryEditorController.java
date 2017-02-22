@@ -3,6 +3,7 @@ package Controller.Admin;
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
 import Domain.Map.Destination;
+import Domain.Map.Hospital;
 import Domain.Map.Office;
 import Model.Database.DatabaseManager;
 import com.jfoenix.controls.*;
@@ -29,20 +30,21 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import org.controlsfx.control.textfield.TextFields;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import static Model.Database.DatabaseManager.Faulkner;
 
 /*
  * Created by jw97 on 2/18/2017
  */
 
-public class AdminDirectoryEditorController  extends AbstractController {
+public class AdminDirectoryEditorController extends AbstractController {
     Boolean deptDirectoryUp = false;
+    Hospital hospital = DatabaseManager.getInstance().loadData();
     ObservableList<Doctor> existingDoctors;
-    ObservableList<Office> existingDepts = FXCollections.observableArrayList(Faulkner.getOffices().values());;
+    ObservableList<Office> existingDepts = FXCollections.observableArrayList(hospital.getOffices().values());;
     ObservableList<String> existingLoc = FXCollections.observableArrayList();
 
     @FXML
@@ -100,7 +102,8 @@ public class AdminDirectoryEditorController  extends AbstractController {
     private Button editorButton;
 
 
-    public AdminDirectoryEditorController() {
+    public AdminDirectoryEditorController() throws SQLException
+    {
     }
 
     @FXML
@@ -110,7 +113,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
         phoneNumCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("phoneNum"));
         hourCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("hours"));
 
-        existingDoctors = FXCollections.observableArrayList(Faulkner.getDoctors().values());
+        existingDoctors = FXCollections.observableArrayList(hospital.getDoctors().values());
 
         dataTable.setItems(existingDoctors);
 
@@ -146,7 +149,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
         existingLoc.clear();
 
-        for (Destination d: Faulkner.getDestinations().values()) {
+        for (Destination d: hospital.getDestinations().values()) {
             existingLoc.add(d.getName());
         }
 
@@ -204,8 +207,8 @@ public class AdminDirectoryEditorController  extends AbstractController {
         delete.setOnAction((ActionEvent event) -> {
                 Doctor d = dataTable.getSelectionModel().getSelectedItem();
 
-                if (Faulkner.getDoctors().get(d.getName()) == d) {
-                    Faulkner.getDoctors().remove(d.getName());
+                if (hospital.getDoctors().get(d.getName()) == d) {
+                    hospital.getDoctors().remove(d.getName());
 
                     saveData();
                     reset();
@@ -338,7 +341,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
             HashSet<Destination> newDestinations = new HashSet<>();
 
             for (String l: locAssigned.getItems()) {
-                for (Destination s: Faulkner.getDestinations().values()) {
+                for (Destination s: hospital.getDestinations().values()) {
                     if (s.getName().equals(l)) {
                         newDestinations.add(s);
                     }
@@ -349,9 +352,9 @@ public class AdminDirectoryEditorController  extends AbstractController {
             if (toEdit != null) {
                 UUID editId = toEdit.getDocID();
 
-                for (Doctor exist: Faulkner.getDoctors().values()) {
+                for (Doctor exist: hospital.getDoctors().values()) {
                     if (exist == toEdit) {
-                        Faulkner.getDoctors().remove(exist.getName());
+                        hospital.getDoctors().remove(exist.getName());
                         break;
                     }
                 }
@@ -359,7 +362,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
                 Doctor newDoc = new Doctor(editId, name, d, hours, newDestinations);
                 newDoc.setPhoneNum(phoneNum);
-                Faulkner.getDoctors().put(name, newDoc);
+                hospital.getDoctors().put(name, newDoc);
             } else {
                 addNewProfile(name, d, hours, newDestinations, phoneNum);
             }
@@ -378,7 +381,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
     private void addNewProfile(String name, String d, String hrs, HashSet<Destination> destinations, String phoneNum) {
         Doctor newDoc = new Doctor(name, d, hrs, destinations);
         newDoc.setPhoneNum(phoneNum);
-        Faulkner.getDoctors().put(name, newDoc);
+        hospital.getDoctors().put(name, newDoc);
     }
 
     //---------------------------------------------------------------------- (Dept directory)
@@ -395,7 +398,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
             }
         });
 
-        existingDepts = FXCollections.observableArrayList(Faulkner.getOffices().values());
+        existingDepts = FXCollections.observableArrayList(hospital.getOffices().values());
 
         deptDataTable.setItems(existingDepts);
 
@@ -432,7 +435,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
         existingLoc.clear();
 
-        for (Destination d: Faulkner.getDestinations().values()) {
+        for (Destination d: hospital.getDestinations().values()) {
             existingLoc.add(d.getName());
         }
 
@@ -499,7 +502,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
         delete.setOnAction((ActionEvent e) -> {
             Office o = deptDataTable.getSelectionModel().getSelectedItem();
 
-            Faulkner.getOffices().remove(o.getName());
+            hospital.getOffices().remove(o.getName());
 
             saveData();
             initializeDeptDirectory();
@@ -516,7 +519,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
             String deptName = deptNameField.getText();
             Destination assignedDest = new Destination();
 
-            for (Destination d: Faulkner.getDestinations().values()) {
+            for (Destination d: hospital.getDestinations().values()) {
                 if (d.getName().equals(assignedLocField.getText())) {
                     assignedDest = d;
                     break;
@@ -526,7 +529,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
             switch (editorButton.getText()) {
                 case "Add":
                     Office newOffice = new Office(deptName, assignedDest);
-                    Faulkner.getOffices().put(deptName, newOffice);
+                    hospital.getOffices().put(deptName, newOffice);
 
                     break;
 
@@ -541,7 +544,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
                         o.setSuite(assignedDest);
                     }
 
-                    Faulkner.getOffices().put(o.getName(), o);
+                    hospital.getOffices().put(o.getName(), o);
 
                     break;
                 default:
@@ -567,7 +570,7 @@ public class AdminDirectoryEditorController  extends AbstractController {
 
     private void saveData() {
         try {
-            DatabaseManager.getInstance().saveData();
+            DatabaseManager.getInstance().saveData(null);
         } catch (Exception e) {
             e.printStackTrace();
         }

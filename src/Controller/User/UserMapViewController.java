@@ -47,7 +47,6 @@ import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Predicate;
-import static Model.Database.DatabaseManager.Faulkner;
 import static Model.Database.DatabaseManager.destinations;
 
 
@@ -149,64 +148,43 @@ public class UserMapViewController extends AbstractController {
     protected void renderFloorMap()
     {
         mapItems.getChildren().clear();
+        mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
         mapItems.getChildren().add(mapImage);
 
-        mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
-
-        //and then set all the existing nodes up
-        HashSet<NodeEdge> collectedEdges = new HashSet<NodeEdge>();
-
-        for(MapNode n : model.getCurrentFloor().getFloorNodes())
+        for(MapNode n: model.getCurrentFloor().getFloorNodes())
         {
-            System.out.println("Adding node");
-
-
-            n.getNodeToDisplay().setOnMouseClicked(null);
-            n.getNodeToDisplay().setOnDragDetected(null);
-            n.getNodeToDisplay().setOnMouseDragged(null);
-            n.getNodeToDisplay().setOnMouseEntered(null);
-
             addToMap(n);
 
-            for(NodeEdge edge: n.getEdges())
+            for(NodeEdge e : n.getEdges())
             {
-                if(!collectedEdges.contains(edge) && !(edge instanceof LinkEdge)) collectedEdges.add(edge);
+                if(!mapItems.getChildren().contains(e.getEdgeLine()))
+                {
+                    mapItems.getChildren().add(e.getEdgeLine());
+                }
+
+                e.updatePosViaNode(n);
             }
-        }
-
-        for(NodeEdge edge : collectedEdges)
-        {
-            edge.getEdgeLine().setOnMouseClicked(null);
-            edge.getEdgeLine().setOnMouseEntered(null);
-            edge.getEdgeLine().setOnMouseExited(null);
-
-            if(!mapItems.getChildren().contains(edge.getNodeToDisplay()))
-            {
-                mapItems.getChildren().add(edge.getNodeToDisplay());
-            }
-            MapNode source = edge.getSource();
-            MapNode target = edge.getTarget();
-            //@TODO BUG WITH SOURCE DATA, I SHOULDNT HAVE TO DO THIS
-
-            if(!mapItems.getChildren().contains(source.getNodeToDisplay()))
-            {
-                addToMap(source);
-            }
-
-            if(!mapItems.getChildren().contains(target.getNodeToDisplay()))
-            {
-                addToMap(target);
-            }
-            edge.updatePosViaNode(source);
-            edge.updatePosViaNode(target);
-
-            edge.toBack();
-            edge.changeOpacity(0.0);
-            source.toFront();
-            target.toFront();
         }
 
         mapImage.toBack();
+    }
+
+    protected void importNode(MapNode mapNode)
+    {
+        if(!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
+        {
+            mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
+        }
+
+        mapNode.setPos(mapNode.getPosX(), mapNode.getPosY());
+
+
+        if(!mapNode.getIconType().equals(DragIconType.connector)) //treeview checks that floor actually contains
+        {
+            //addToTreeView(mapNode); disabled for now.
+        }
+
+        mapNode.toFront(); //send the node to the front
     }
 
     public void addToMap(MapNode n)
@@ -246,11 +224,7 @@ public class UserMapViewController extends AbstractController {
         model = new MapModel();
         mapItems = new Group();
 
-
         renderFloorMap();
-
-        mapItems.relocate(0, 0);
-
 
         zoomGroup = new Group(mapItems);
 
@@ -593,7 +567,9 @@ public class UserMapViewController extends AbstractController {
         DisplayCorrectTable();
     }
 
-    public void adminLogin() throws IOException {
+    public void adminLogin() throws IOException
+    {
+
         SceneSwitcher.switchToLoginView(primaryStage);
     }
 /*
@@ -617,7 +593,7 @@ public class UserMapViewController extends AbstractController {
         docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
         docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
-        Collection<Doctor> doctrine = Faulkner.getDoctors().values();
+        Collection<Doctor> doctrine = model.getHospital().getDoctors().values();
         ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
         FilteredList<Doctor> filteredDoctor = new FilteredList<>(doctors);
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -639,7 +615,7 @@ public class UserMapViewController extends AbstractController {
         deptName.setCellValueFactory(new PropertyValueFactory<Destination, String>("name"));
         deptPhoneNum.setCellValueFactory(new PropertyValueFactory<Destination, String>("phoneNum"));
         deptLocation.setCellValueFactory(new PropertyValueFactory<Destination, String>("location"));
-        Collection<Destination> suiteVal = Faulkner.getDestinations().values();
+        Collection<Destination> suiteVal = model.getHospital().getDestinations().values();
         ObservableList<Destination> suites = FXCollections.observableArrayList(suiteVal);
         FilteredList<Destination> filteredSuite = new FilteredList<>(suites);
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {

@@ -30,7 +30,6 @@ public class DatabaseManager {
     public static HashMap<String, Office> offices = new HashMap<>();
 
     public static DatabaseManager instance = null;
-    public static Hospital Faulkner;
 
     public static final String[] createTables = {
             "CREATE TABLE USER1.BUILDING (BUILDING_ID INT PRIMARY KEY NOT NULL, " +
@@ -176,7 +175,7 @@ public class DatabaseManager {
         //executeStatements(createTables);
     }
 
-    public static DatabaseManager getInstance() {
+    public static synchronized DatabaseManager getInstance() {
         if(instance == null) {
             try
             {
@@ -199,26 +198,25 @@ public class DatabaseManager {
         state.close();
     }
 
-    public void loadData() throws SQLException {
+    public Hospital loadData() throws SQLException {
         s = conn.createStatement();
 
-        if(Faulkner==null) //if not initialized
-        {
-            Faulkner = new Hospital();
-        }
-
+        Hospital h = new Hospital();
         //executeStatements(dropTables);
         //executeStatements(createTables);
 
-        loadHospital(Faulkner);
+        loadHospital(h);
+
         conn.commit();
+
+        return h;
     }
 
-    public void saveData() throws SQLException {
+    public void saveData(Hospital h) throws SQLException {
         s = conn.createStatement();
         executeStatements(dropTables);
         executeStatements(createTables);
-        saveHospital(Faulkner);
+        saveHospital(h);
         s.close();
 
         System.out.println("Data Saved Correctly");

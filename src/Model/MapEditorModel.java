@@ -7,6 +7,7 @@ import Model.Database.DatabaseManager;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TreeItem;
 
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -37,25 +38,16 @@ public class MapEditorModel
         mapNodes = new HashSet<MapNode>();
         mapEdges = new HashSet<NodeEdge>();
 
-        hospital = DatabaseManager.getInstance().Faulkner;
+        try
+        {
+            hospital = DatabaseManager.getInstance().loadData();
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
 
         /**@TODO HACKY **/
 
-        Floor arbitraryFloor;
-
-        for(Building b : hospital.getBuildings())
-        {
-            try
-            {
-                arbitraryFloor = b.getFloor(3);
-                setCurrentFloor(arbitraryFloor);
-                break;
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
 
         buildingTabMap = new HashMap<>();
     }
@@ -141,15 +133,6 @@ public class MapEditorModel
 
 
     /**
-     * Place holder for function to switch floors
-     * @param f
-     */
-    public void switchFloor(Floor f)
-    {
-
-    }
-
-    /**
      * Adds a handler to handle the edge complete event raised when two nodes are connected
      * @param e
      */
@@ -167,12 +150,6 @@ public class MapEditorModel
     public void addSideBarIcon(DragIcon iconToAdd)
     {
         sideBarIcons.add(iconToAdd);
-    }
-
-    //get icons in side bar
-    public List<DragIcon> getSideBarIcons()
-    {
-        return sideBarIcons;
     }
 
     /**

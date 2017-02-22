@@ -5,6 +5,7 @@ import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.Database.DatabaseManager;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -31,7 +32,13 @@ public class MapModel {
         mapEdges = new HashSet<NodeEdge>();
         currentFloor = new Floor(1);
 
-        hospital = DatabaseManager.getInstance().Faulkner;
+        try
+        {
+            hospital = DatabaseManager.getInstance().loadData();
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
 
         /**@TODO HACKY **/
 
@@ -54,15 +61,6 @@ public class MapModel {
 
     public void setCurrentFloor(Floor floor){
         this.currentFloor = floor;
-        mapNodes.clear();
-        for(MapNode n : floor.getFloorNodes()) {
-            mapNodes.add(n);
-        }
-
-        mapEdges.clear();
-        for(NodeEdge m : floor.getFloorEdges()) {
-            mapEdges.add(m);
-        }
     }
 
     public Floor getCurrentFloor()
@@ -78,15 +76,6 @@ public class MapModel {
     public void addNodeToCurrentFloor(MapNode nodeToAdd)
     {
         getCurrentFloor().addNode(nodeToAdd);
-    }
-
-    /**
-     * Place holder for function to switch floors
-     * @param f
-     */
-    public void switchFloor(Floor f)
-    {
-
     }
 
     /**
@@ -154,5 +143,10 @@ public class MapModel {
     public void removeMapEdge(NodeEdge e)
     {
         mapEdges.remove(e);
+    }
+
+    public Hospital getHospital()
+    {
+        return hospital;
     }
 }

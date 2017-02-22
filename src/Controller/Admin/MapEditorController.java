@@ -76,7 +76,6 @@ public class MapEditorController extends AbstractController {
 		//connects the two, sends sources, positions them etc.
 		model.addEdgeCompleteHandler(event->
 		{
-
 			System.out.println("Edge Complete Handler Invoked");
 
 			NodeEdge completedEdge = drawingEdge;
@@ -109,17 +108,35 @@ public class MapEditorController extends AbstractController {
 		});
 	}
 
+	public void initNodes()
+	{
+		Group initGroup = new Group();
+
+		for(Building b: model.getHospital().getBuildings())
+		{
+			for(Floor f: b.getFloors())
+			{
+				for(MapNode n : f.getFloorNodes())
+				{
+					initGroup.getChildren().add(n.getNodeToDisplay());
+					n.setPos(n.getPosX(), n.getPosY());
+				}
+			}
+		}
+	}
+
 	/**
 	 * FXML initialize function
 	 */
 	@FXML
 	private void initialize() {
 
+		initNodes();
+
 		mapItems = new Group();
 
 		mapPane.getChildren().add(mapItems);
 
-		mapItems.relocate(0, 0);
 		mapImage.relocate(0, 0);
 		mapPane.relocate(0, 0);
 
@@ -187,7 +204,7 @@ public class MapEditorController extends AbstractController {
 					selectedFloor = (Floor) (newvalue.getParent().getValue().getValue());
 				}
 
-				if(!model.getCurrentFloor().equals(selectedFloor))
+				if(model.getCurrentFloor() == null || !model.getCurrentFloor().equals(selectedFloor))
 				{
 					changeFloorSelection(selectedFloor);
 				}
@@ -326,7 +343,6 @@ public class MapEditorController extends AbstractController {
 				}
 			}
 
-			refreshNodePositions();
 			model.setCurrentFloor(f);
 			renderFloorMap();
 
@@ -336,11 +352,12 @@ public class MapEditorController extends AbstractController {
 
 	protected void renderFloorMap()
 	{
-		mapItems.getChildren().clear();
+		mapItems = new Group();
+		mapPane.getChildren().clear();
+		mapPane.getChildren().add(mapItems);
+
 		mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
 		mapItems.getChildren().add(mapImage);
-
-		mapItems.relocate(0, 0);
 
 		for(MapNode n: model.getCurrentFloor().getFloorNodes())
 		{
@@ -373,8 +390,6 @@ public class MapEditorController extends AbstractController {
 			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
 		}
 
-		mapNode.setPos(mapNode.getPosX(), mapNode.getPosY());
-
 		addEventHandlersToNode(mapNode);
 
 		if(!mapNode.getIconType().equals(DragIconType.connector)) //treeview checks that floor actually contains
@@ -392,14 +407,17 @@ public class MapEditorController extends AbstractController {
 	 */
 	public void refreshNodePositions()
 	{
-		for (MapNode n : model.getCurrentFloor().getFloorNodes())
+		if(model.getCurrentFloor()!=null)
 		{
-			DragIcon icon = (DragIcon)n.getNodeToDisplay();
+			for (MapNode n : model.getCurrentFloor().getFloorNodes())
+			{
+				DragIcon icon = (DragIcon) n.getNodeToDisplay();
 
-			Point2D newPoint = new Point2D(icon.getLayoutX() ,
-					icon.getLayoutY());
+				Point2D newPoint = new Point2D(icon.getLayoutX(),
+						icon.getLayoutY());
 
-			n.setPos(newPoint.getX(), newPoint.getY());
+				n.setPos(newPoint.getX(), newPoint.getY());
+			}
 		}
 	}
 
@@ -932,20 +950,7 @@ public class MapEditorController extends AbstractController {
 		//removeHandlers();
 		updateEdgeWeights();
 
-		refreshNodePositions();
-
-		int i = 0;
-		for(NodeEdge e: model.getCurrentFloor().getFloorEdges()){
-			System.out.println(Integer.toString(i) + ": Node " + e.getSource().getNodeID() + " Finalized to: " + e.getTarget().getNodeID());
-			i++;
-		}
-
-		if(model.getCurrentFloor().getKioskNode() == null && model.getCurrentFloor().getFloorNodes().size() > 0){
-			System.out.println("ERROR; NO KIOSK NODE SET; SETTING ONE RANDOMLY");
-			model.getCurrentFloor().setKioskLocation(model.getCurrentFloor().getFloorNodes().get(0));
-		}
-
-		DatabaseManager.getInstance().saveData();
+		DatabaseManager.getInstance().saveData(model.getHospital());
 
 		SceneSwitcher.switchToUserMapView(this.getStage());
 	}
