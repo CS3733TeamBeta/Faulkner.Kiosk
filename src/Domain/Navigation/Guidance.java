@@ -471,13 +471,17 @@ public class Guidance extends Path {
     }
 
     public void saveStepImages() {
+        System.out.println("Saving images!");
+        System.out.println("There are " + this.textDirections.size() + " directionSteps");
         for(DirectionStep d : this.textDirections){
+            System.out.println("Creating info for floor " + d.getFloor().getFloorNumber());
             d.getFloor().initImage();
             try {
 
                 // BEGIN AREA WITH ERROR
 
                 //BufferedImage buffImg = d.getFloor().getImageInfo().getBufferedImage();
+                d.getFloor().getImageInfo().display();
                 BufferedImage realBaseImage = d.getFloor().getImageInfo().getBufferedImage();
 
                 DirectionStep aStep = d;
@@ -565,11 +569,12 @@ public class Guidance extends Path {
                 System.out.println("starting with: " + scaledStartX + " " + scaledStartY);
                 System.out.println("ending with: " + scaledEndX + " " + scaledEndY);
                 BufferedImage croppedImage = cropImage(combined,scaledStartX, scaledStartY, scaledEndX ,scaledEndY );
-                int resizedScaleWidthfactor = croppedImage.getWidth() * scaleFactor / (scaledEndX - scaledStartX);
+                int resizedScaleWidthFactor = croppedImage.getWidth() * scaleFactor / (scaledEndX - scaledStartX);
                 int resizedScaleHeightFactor = croppedImage.getHeight() * scaleFactor / (scaledEndY - scaledStartY);
                 System.out.println("scaled height: " + resizedScaleHeightFactor);
-                System.out.println("scaled width: " + resizedScaleWidthfactor);
-                BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthfactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
+                System.out.println("scaled width: " + resizedScaleWidthFactor);
+                BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthFactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
+                System.out.println("Writing image to combined" + d.getFloor().getFloorNumber() + ".png");
                 ImageIO.write(resizedVersion, "PNG", new File("combined" + d.getFloor().getFloorNumber() + ".png"));
             } catch (Exception e) {
                 System.out.println("threw something wrong");
