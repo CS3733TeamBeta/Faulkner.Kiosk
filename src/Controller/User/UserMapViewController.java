@@ -1,6 +1,7 @@
 package Controller.User;
 
 import Controller.AbstractController;
+import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.Floor;
 import Domain.Map.LinkEdge;
@@ -129,6 +130,12 @@ public class UserMapViewController extends AbstractController {
         {
             System.out.println("Adding node");
 
+            if(Main.fixOffsetsFromEditor){
+                System.out.println("Fixing node positons");
+                n.setPosX(n.getPosX() + 7.5);
+                n.setPosY(n.getPosY() + 7.5);
+            }
+
             n.getNodeToDisplay().setOnMouseClicked(null);
             n.getNodeToDisplay().setOnDragDetected(null);
             n.getNodeToDisplay().setOnMouseDragged(null);
@@ -140,6 +147,10 @@ public class UserMapViewController extends AbstractController {
             {
                 if(!collectedEdges.contains(edge) && !(edge instanceof LinkEdge)) collectedEdges.add(edge);
             }
+        }
+
+        if(Main.fixOffsetsFromEditor){
+            Main.fixOffsetsFromEditor = false;
         }
 
         for(NodeEdge edge : collectedEdges)
