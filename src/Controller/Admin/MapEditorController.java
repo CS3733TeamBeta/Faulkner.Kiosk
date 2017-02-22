@@ -686,6 +686,7 @@ public class MapEditorController extends AbstractController {
 				{
 					e = mapNode;
 					nodesToAdd.add(mapNode);
+
 					model.getCurrentFloor().addNode(mapNode);
 				}
 
@@ -703,7 +704,6 @@ public class MapEditorController extends AbstractController {
 				addToTreeView(n);
 			}
 
-			model.addMapNode(mapNode); //add node to model
 			mapNode.toFront();
 		}
 	}
@@ -730,7 +730,6 @@ public class MapEditorController extends AbstractController {
 
 					if (!treeContainsNode)
 					{
-						((Floor) floorTreeItem.getValue().getValue()).addNode(d);
 						floorTreeItem.getChildren().add(makeTreeItem(d));
 					}
 				}
