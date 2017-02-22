@@ -619,7 +619,7 @@ public class Guidance extends Path {
 
         saveStepImages();
 
-        if (Math.random()%100 < 1) {
+        if (Math.random() < .25) {
             System.out.println("Egg called");
             directionLine += "<a href=\"https://youtu.be/dQw4w9WgXcQ\">Some music for your enjoyement, hospital-goer.</a>";
         }
