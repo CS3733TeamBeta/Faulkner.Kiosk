@@ -34,8 +34,6 @@ public class Main extends Application {
     public static final ObservableList<String> departments =
             FXCollections.observableArrayList();
 
-    public static boolean fixOffsetsFromEditor = false;
-
     public static final ObservableList<Doctor> FaulknerHospitalDirectory = FXCollections.observableArrayList();
 
     @Override

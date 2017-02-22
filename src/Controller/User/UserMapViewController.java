@@ -101,8 +101,6 @@ public class UserMapViewController extends AbstractController {
     @FXML
     ScrollPane scrollPane;
 
-    static boolean fixedOffsetsAlready = false;
-
     Stage primaryStage;
 
     MapModel model;
@@ -144,11 +142,6 @@ public class UserMapViewController extends AbstractController {
             {
                 if(!collectedEdges.contains(edge) && !(edge instanceof LinkEdge)) collectedEdges.add(edge);
             }
-        }
-
-        if(Main.fixOffsetsFromEditor){
-            Main.fixOffsetsFromEditor = false;
-            fixedOffsetsAlready = true;
         }
 
         for(NodeEdge edge : collectedEdges)
