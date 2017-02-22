@@ -275,7 +275,9 @@ public class DatabaseManager {
                             destRS.getString(2),
                             floorRS.getString(1));
                     nodes.remove(UUID.fromString(destRS.getString(3)));
+                    System.out.println(nodes.keySet());
                     nodes.put(UUID.fromString(destRS.getString(3)), tempDest);
+                    System.out.println(nodes.keySet());
                     h.addDestinations(UUID.fromString(destRS.getString(3)), tempDest);
                 }
                 // print out list of nodes for each floor
@@ -440,6 +442,7 @@ public class DatabaseManager {
                 System.out.println(f.getFloorNodes());
                 // insert nodes into database
                 for (MapNode n : f.getFloorNodes()) {
+
 //                    System.out.println(n.getNodeID());
 
 //                        if (!(h.getDestinations().containsKey(((Destination) n).getNodeID())))
@@ -447,6 +450,7 @@ public class DatabaseManager {
 //                            h.addDestinations(n.getNodeID(), (Destination) n);
 //                            System.out.println("Hello");
 //                        }
+
                     try {
                         insertNodes.setString(1, n.getNodeID().toString());
                         insertNodes.setDouble(2, n.getPosX());

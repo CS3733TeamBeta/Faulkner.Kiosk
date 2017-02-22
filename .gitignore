@@ -7,9 +7,12 @@ build/
 .*
 out/
 derby.log
+combined1.png
+combined.png
+combined2.png
+combined3.png
+combined4.png
 src/Model/Database/CustomFilePath.*
-
-src/Model/Database/CustomPackage/*
 
 #Don't ignore these
 !.gitignore
