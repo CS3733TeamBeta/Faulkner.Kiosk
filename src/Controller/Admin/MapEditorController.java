@@ -1111,8 +1111,6 @@ public class MapEditorController extends AbstractController {
 
 		DatabaseManager.getInstance().saveData();
 
-		Main.fixOffsetsFromEditor = true;
-
 		SceneSwitcher.switchToUserMapView(this.getStage());
 	}
 
