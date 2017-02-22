@@ -193,6 +193,7 @@ public class MapNode implements DrawableMapEntity {
      */
     public void setFloor(Floor f) {
         this.myFloor = f;
+
     }
 
     /**

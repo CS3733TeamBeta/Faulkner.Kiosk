@@ -362,7 +362,7 @@ public class DatabaseManager {
                 h.addOffices(rs.getString(2), tempOff);
 
                 // add office to list of offices for a suite
-                h.getDestinations().get(UUID.fromString(rs.getString(1))).addOffice(tempOff);
+                h.getDestinations().get(UUID.fromString(rs.getString(3))).addOffice(tempOff);
             }
         }
 
@@ -439,15 +439,18 @@ public class DatabaseManager {
                 }
                 conn.commit();
 
+                System.out.println(f.getFloorNodes());
                 // insert nodes into database
                 for (MapNode n : f.getFloorNodes()) {
-                    if (n instanceof Destination)
-                    {
-                        if (!(h.getDestinations().containsKey(((Destination) n).getDestUID())))
-                        {
-                            h.addDestinations(n.getNodeID(), (Destination) n);
-                        }
-                    }
+
+//                    System.out.println(n.getNodeID());
+
+//                        if (!(h.getDestinations().containsKey(((Destination) n).getNodeID())))
+//                        {
+//                            h.addDestinations(n.getNodeID(), (Destination) n);
+//                            System.out.println("Hello");
+//                        }
+
                     try {
                         insertNodes.setString(1, n.getNodeID().toString());
                         insertNodes.setDouble(2, n.getPosX());
@@ -460,6 +463,19 @@ public class DatabaseManager {
                         System.out.println("Error saving node " + e.getMessage());
                     }
                     conn.commit();
+
+                    if (n instanceof Destination) {
+                        try {
+                            insertDestinations.setString(1, ((Destination) n).getDestUID().toString());
+                            insertDestinations.setString(2, ((Destination) n).getName());
+                            insertDestinations.setString(3, n.getNodeID().toString());
+                            insertDestinations.setString(4, floorID);
+                            insertDestinations.executeUpdate();
+                        } catch (SQLException e) {
+                            System.out.println("Error saving destination " + e.getMessage());
+                        }
+                        conn.commit();
+                    }
                 }
                 // insert edges into database
                 for (NodeEdge edge : f.getFloorEdges()) {
@@ -483,19 +499,19 @@ public class DatabaseManager {
 
         System.out.println("Here");
         // saves Suites
-        for (Destination dest : h.getDestinations().values()) {
-            try {
-                insertDestinations.setString(1, dest.getDestUID().toString());
-                insertDestinations.setString(2, dest.getName());
-                insertDestinations.setString(3, dest.getNodeID().toString());
-                insertDestinations.setString(4, dest.getFloorID());
-                insertDestinations.executeUpdate();
-            }
-            catch (SQLException e) {
-                System.out.println("Error saving suite " + e.getMessage());
-            }
-            conn.commit();
-        }
+//        for (Destination dest : h.getDestinations().values()) {
+//            try {
+//                insertDestinations.setString(1, dest.getDestUID().toString());
+//                insertDestinations.setString(2, dest.getName());
+//                insertDestinations.setString(3, dest.getNodeID().toString());
+//                insertDestinations.setString(4, dest.getFloorID());
+//                insertDestinations.executeUpdate();
+//            }
+//            catch (SQLException e) {
+//                System.out.println("Error saving suite " + e.getMessage());
+//            }
+//            conn.commit();
+//        }
         // saves Doctors
         for (Doctor doc : h.getDoctors().values()) {
             try {
