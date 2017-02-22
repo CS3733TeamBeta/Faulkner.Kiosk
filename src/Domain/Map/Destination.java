@@ -55,6 +55,8 @@ public class Destination extends MapNode {
         this.setType(m.getIconType());
 
         this.nodeUID = m.getNodeID();
+        this.doctors = new HashSet<>();
+        this.offices = new HashSet<>();
     }
 
 
@@ -98,5 +100,9 @@ public class Destination extends MapNode {
 
     public String getFloorID() {
         return this.floorID;
+    }
+
+    public void addDoctor(Doctor d) {
+        doctors.add(d);
     }
 }

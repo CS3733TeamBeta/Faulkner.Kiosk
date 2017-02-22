@@ -276,7 +276,7 @@ public class DatabaseManager {
                     System.out.println(nodes.keySet());
                     nodes.put(UUID.fromString(destRS.getString(3)), tempDest);
                     System.out.println(nodes.keySet());
-                    h.addDestinations(UUID.fromString(destRS.getString(3)), tempDest);
+                    h.addDestinations(UUID.fromString(destRS.getString(1)), tempDest);
                 }
                 // print out list of nodes for each floor
                 System.out.println(nodes.values());
@@ -370,18 +370,18 @@ public class DatabaseManager {
         while(rs.next()) {
             HashSet<Destination> locations = new HashSet<>();
 
-            destDoc.setString(1, rs.getString(1));
-            ResultSet results = destDoc.executeQuery();
-            while(results.next()) {
-                locations.add(h.getDestinations().get(UUID.fromString(results.getString(1))));
-            }
-
             Doctor tempDoc = new Doctor(UUID.fromString(rs.getString(1)),
                     rs.getString(2),
                     rs.getString(3),
                     rs.getString(5),
                     locations);
 
+            destDoc.setString(1, rs.getString(1));
+            ResultSet results = destDoc.executeQuery();
+            while(results.next()) {
+                h.getDestinations().get(UUID.fromString(results.getString(1))).addDoctor(tempDoc);
+                locations.add(h.getDestinations().get(UUID.fromString(results.getString(1))));
+            }
 //            doctors.put(rs.getString(2),
 //                    new Doctor(UUID.fromString(rs.getString(1)),
 //                            rs.getString(2),
@@ -392,7 +392,6 @@ public class DatabaseManager {
 
         }
         System.out.println(doctors.keySet());
-
         rs.close();
 
     }
@@ -488,19 +487,19 @@ public class DatabaseManager {
 
         System.out.println("Here");
         // saves Suites
-        for (Destination dest : h.getDestinations().values()) {
-            try {
-                insertDestinations.setString(1, dest.getDestUID().toString());
-                insertDestinations.setString(2, dest.getName());
-                insertDestinations.setString(3, dest.getNodeID().toString());
-                insertDestinations.setString(4, dest.getFloorID());
-                insertDestinations.executeUpdate();
-            }
-            catch (SQLException e) {
-                System.out.println("Error saving suite " + e.getMessage());
-            }
-            conn.commit();
-        }
+//        for (Destination dest : h.getDestinations().values()) {
+//            try {
+//                insertDestinations.setString(1, dest.getDestUID().toString());
+//                insertDestinations.setString(2, dest.getName());
+//                insertDestinations.setString(3, dest.getNodeID().toString());
+//                insertDestinations.setString(4, dest.getFloorID());
+//                insertDestinations.executeUpdate();
+//            }
+//            catch (SQLException e) {
+//                System.out.println("Error saving suite " + e.getMessage());
+//            }
+//            conn.commit();
+//        }
         // saves Doctors
         for (Doctor doc : h.getDoctors().values()) {
             try {
