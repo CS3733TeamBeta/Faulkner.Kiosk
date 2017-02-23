@@ -216,14 +216,14 @@ public class PathFindingTest extends TestCase{
             fail("Threw unexpected exception in testDepth");
         }
     }
-/*
+
     public void testRandom() {
         try {
-            p1 = new Path(nodeA, nodeL, true, "random");
+            p1 = new Path(nodeA, nodeL, true, new RandomAlgorithm(nodeA, nodeB));
         } catch (Exception e) {
             fail("Threw unexpected exception in testRandom");
         }
     }
-    */
+
 
 }
