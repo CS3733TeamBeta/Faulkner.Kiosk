@@ -88,29 +88,20 @@ public class UserDirectionsPanel extends AnchorPane
         closeButton.setOnMouseClicked(e);
     }
 
-    public void setGuidance(Guidance g)
-    {
+    public void setGuidance(Guidance g) {
         stepIndex = 0;
         guidance = g; //@TODO Make GUIDANCE ITERABLE
-        System.out.println("1");
 
     }
 
-    public void addOnStepChangedHandler(StepChangedEventHandler h)
-    {
-        System.out.println("9");
+    public void addOnStepChangedHandler(StepChangedEventHandler h) {
 
         stepChangedEventHandlers.add(h);
 
     }
 
-    public void onStepChanged(DirectionFloorStep step)
-    {
-        System.out.println("8");
-
-        System.out.println("called step changed");
-        for(StepChangedEventHandler stepChangedEventHandler: stepChangedEventHandlers)
-        {
+    public void onStepChanged(DirectionFloorStep step) {
+        for(StepChangedEventHandler stepChangedEventHandler: stepChangedEventHandlers) {
             stepChangedEventHandler.handle(new StepChangedEvent(step));
         }
     }
@@ -131,16 +122,11 @@ public class UserDirectionsPanel extends AnchorPane
 
     }
 
-    public void fillDirectionsList(int index)
-    {
-        System.out.println("6");
-
+    public void fillDirectionsList(int index) {
         fillDirectionsList(guidance.getSteps().get(index));
     }
 
-    public void fillDirectionsList(DirectionFloorStep step)
-    {
-        System.out.println("5");
+    public void fillDirectionsList(DirectionFloorStep step) {
 
         directionsListView.getItems().clear();
 
@@ -153,25 +139,20 @@ public class UserDirectionsPanel extends AnchorPane
                 }
             });
             directionsListView.getItems().add(l);
-            System.out.println("added a thing to the list");
         }
     }
 
     @FXML
-    void onCloseButtonClicked(MouseEvent event)
-    {
+    void onCloseButtonClicked(MouseEvent event) {
 
     }
 
     @FXML
-    void onNextButtonClicked(MouseEvent event)
-    {
-        System.out.println("4");
+    void onNextButtonClicked(MouseEvent event) {
 
         stepIndex++;
 
-        if(stepIndex<guidance.getNumSteps()-1)
-        {
+        if(stepIndex<guidance.getNumSteps()-1) {
             fillDirectionsList(guidance.getSteps().get(stepIndex));
             onStepChanged(guidance.getSteps().get(stepIndex));
         }
