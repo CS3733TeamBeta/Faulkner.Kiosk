@@ -1107,7 +1107,7 @@ public class MapEditorController extends AbstractController {
 				if(otherNodes.size() > 0){
 					System.out.println("ERROR: NO KIOSK NODES ALLOCATED. PICKING A RANDOM NODE AS A KIOSK");
 					MapNode newKiosk = otherNodes.getFirst();
-					newKiosk.setType(DragIconType.kiosk);
+					newKiosk.setType(DragIconType.Kiosk);
 					model.getHospital().setMainKioskNode(newKiosk);
 					model.getHospital().setDirectionOfMainNode("N");
 				}

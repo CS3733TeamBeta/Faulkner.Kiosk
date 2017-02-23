@@ -5,7 +5,6 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import org.controlsfx.control.PopOver;
 
-import static Domain.ViewElements.DragIconType.kiosk;
 
 /**
  * Controlled for popup that edits an office map node
