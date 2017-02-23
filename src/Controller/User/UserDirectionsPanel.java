@@ -1,6 +1,6 @@
 package Controller.User;
 
-import Domain.Navigation.DirectionStep;
+import Domain.Navigation.DirectionFloorStep;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.Events.StepChangedEvent;
 import Domain.ViewElements.Events.StepChangedEventHandler;
@@ -90,7 +90,7 @@ public class UserDirectionsPanel extends AnchorPane
         stepChangedEventHandlers.add(h);
     }
 
-    public void onStepChanged(DirectionStep step)
+    public void onStepChanged(DirectionFloorStep step)
     {
         for(StepChangedEventHandler stepChangedEventHandler: stepChangedEventHandlers)
         {
@@ -111,7 +111,7 @@ public class UserDirectionsPanel extends AnchorPane
         fillDirectionsList(guidance.getSteps().get(index));
     }
 
-    public void fillDirectionsList(DirectionStep step)
+    public void fillDirectionsList(DirectionFloorStep step)
     {
         directionsListView.getItems().clear();
 

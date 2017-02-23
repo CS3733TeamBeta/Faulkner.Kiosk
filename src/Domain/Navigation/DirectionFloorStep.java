@@ -11,18 +11,20 @@ import java.util.Map;
 /**
  * Created by Pattop on 2/16/2017.
  */
-public class DirectionStep {
+public class DirectionFloorStep {
     Floor floorOfTheseDirections;
     LinkedList<String> directionsForThisFloor;
     LinkedList<MapNode> nodesForThisFloor;
+    LinkedList<LinkedList<NodeEdge>> listOfEdgeSets;
 
-    public DirectionStep(Floor floor, LinkedList<String> directionsForThisFloor, LinkedList<MapNode> nodesForThisFloor) {
+    public DirectionFloorStep(Floor floor, LinkedList<String> directionsForThisFloor, LinkedList<MapNode> nodesForThisFloor, LinkedList<LinkedList<NodeEdge>> listOfEdgeSets) {
         this.floorOfTheseDirections = floor;
         this.directionsForThisFloor = directionsForThisFloor;
         this.nodesForThisFloor = nodesForThisFloor;
+        this.listOfEdgeSets = listOfEdgeSets;
     }
 
-    public DirectionStep(Floor floor){
+    public DirectionFloorStep(Floor floor){
         floorOfTheseDirections = floor;
         directionsForThisFloor = new LinkedList<String>();
     }
