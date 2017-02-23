@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 
@@ -65,17 +67,27 @@ public class FileChooser_Controller extends AbstractController
 
     @FXML
     private void clickSaveFile() throws IOException{
+        if(!filesAreSame( strFilePath.toString(), fullName.toString()))
         try
         {
+            source = new FileInputStream(strFilePath).getChannel();
+
+            size = 0;
+            try {
+                size = source.size();
+            }
+            catch (Exception e){
+
+            }
+            outChannel = new FileOutputStream(fullName).getChannel();
             source.transferTo(0, size, outChannel);
+            outChannel.force(true);
+            source.force(true);
+            outChannel.close();
+            source.close();
         }
         catch(Exception e){}
 
-
-        outChannel.force(true);
-        source.force(true);
-        outChannel.close();
-        source.close();
 
         System.out.println("Loading image to: " + fullName);
 
@@ -85,9 +97,13 @@ public class FileChooser_Controller extends AbstractController
             floorNum = Integer.parseInt(inputFloorNumber.getText());
             building = dropDown.getValue();
             if(fullName != null) {
-                outChannel.close();
-                source.close();
                 addFloorInfo(fullName, floorNum, building);
+                try {
+                    DatabaseManager.getInstance().saveData(theHospital);
+                }
+                catch(SQLException e){
+                    System.out.println("ERROR IN SAVING DATA FROM FILECHOOSER");
+                }
                 SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
             }
             else{
@@ -167,16 +183,6 @@ public class FileChooser_Controller extends AbstractController
         File userFile = new File(strFilePath);
         String filename = userFile.getName();
         fullName = "resources/FloorMaps/" + filename;
-        source = new FileInputStream(strFilePath).getChannel();
-
-        size = 0;
-        try {
-            size = source.size();
-        }
-        catch (Exception e){
-
-        }
-        outChannel = new FileOutputStream(fullName).getChannel();
     }
 
     // gets the extension of the selected file for comparison with valid types in clickChooseFile
@@ -184,5 +190,25 @@ public class FileChooser_Controller extends AbstractController
     {
         String fileName = f.getName();
         return fileName.substring(fileName.indexOf(".") + 1, f.getName().length());
+    }
+
+    private boolean filesAreSame(String source, String output) throws MalformedURLException{
+        char[] correctedOutput = (System.getProperty("user.dir").toString() +"/" + output).toCharArray();
+        char[] correctedSource = source.toCharArray();
+        if(correctedOutput.length != correctedSource.length){
+            return false;
+        }
+        for(int i = 0; i < correctedSource.length; i++){
+            if(correctedOutput[i] == '/'){
+                correctedOutput[i] = '\\';
+            }
+            if(correctedSource[i] == '/'){
+                correctedSource[i] = '\\';
+            }
+            if(correctedOutput[i] != correctedSource[i]){
+                return false;
+            }
+        }
+        return true;
     }
 }

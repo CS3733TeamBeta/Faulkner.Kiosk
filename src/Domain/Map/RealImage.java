@@ -50,7 +50,7 @@ public class RealImage implements Image {
             System.out.println("Loading " + fileName); // Let us know we're loading
             try {
                 System.out.println("Trying to load " + fileName);
-                img = ImageIO.read(new File("resources/FloorMaps/" + fileName));
+                img = ImageIO.read(new File(fileName));
             } catch (IOException e) {
                 System.out.println("Error Loading " + fileName);
                 e.printStackTrace();
