@@ -174,7 +174,7 @@ public class MapEditorController extends AbstractController {
 			addDragDetection(icn);
 			icn.setType(DragIconType.values()[i]);
 
-			if (icn.getType().equals(DragIconType.connector))
+			if (icn.getType().equals(DragIconType.Connector))
 			{
 				//System.out.println("Adding Connector");
 				icn.setStyle("-fx-background-size: 30 30");
@@ -264,7 +264,7 @@ public class MapEditorController extends AbstractController {
 
 							for(MapNode n: groundFloor.getFloorNodes())
 							{
-								if(n.getIconType()!=DragIconType.connector)
+								if(n.getIconType()!=DragIconType.Connector)
 								{
 									buildingItem.getChildren().add(new TreeItem<String>(n.toString()));
 								}
@@ -485,7 +485,7 @@ public class MapEditorController extends AbstractController {
 	{
 		for(MapNode n: model.getCurrentFloor().getFloorNodes())
 		{
-			if(!n.getIconType().equals(DragIconType.connector)) //treeview checks that floor actually contains
+			if(!n.getIconType().equals(DragIconType.Connector)) //treeview checks that floor actually contains
 			{
 				addToTreeView(n);
 			}

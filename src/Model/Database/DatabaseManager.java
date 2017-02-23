@@ -215,6 +215,8 @@ public class DatabaseManager {
     }
 
     private synchronized void loadHospital(Hospital h) throws SQLException {
+        System.out.println("Started loading hospital from database...");
+
         PreparedStatement floorsPS = conn.prepareStatement("SELECT * from FLOOR where BUILDING_ID = ?");
         PreparedStatement nodesPS = conn.prepareStatement("SELECT * from NODE where FLOOR_ID = ?");
         PreparedStatement edgesPS = conn.prepareStatement("SELECT * from EDGE where FLOOR_ID = ?");
@@ -289,11 +291,9 @@ public class DatabaseManager {
                             mapNodes.put(node_UUID, tempNode);
                         }
 
-                        System.out.println("Added node to " + node_UUID.toString());
                         nodes.put(node_UUID, tempNode);
 
                     }
-                    System.out.println(nodes.values());
 
                     // loading destinations per floor
                     destPS.setString(1, floorRS.getString(1));
@@ -306,14 +306,16 @@ public class DatabaseManager {
                                 changedNode,
                                 destRS.getString(2),
                                 floorRS.getString(1));
+
                         nodes.remove(UUID.fromString(destRS.getString(3)));
-                        System.out.println(nodes.keySet());
                         nodes.put(UUID.fromString(destRS.getString(3)), tempDest);
-                        System.out.println(nodes.keySet());
+
+                        mapNodes.remove(UUID.fromString(destRS.getString(3)));
+                        mapNodes.put(UUID.fromString(destRS.getString(3)), tempDest);
+
                         h.addDestinations(UUID.fromString(destRS.getString(1)), tempDest);
                     }
-                    // print out list of nodes for each floor
-                    System.out.println(nodes.values());
+
 
                     HashMap<Integer, NodeEdge> edges = new HashMap<>();
 
@@ -334,17 +336,12 @@ public class DatabaseManager {
                             tempEdge.setSource(mapNodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
                             tempEdge.setTarget(mapNodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
 
-                            //System.out.println(nodes.get(UUID.fromString(edgeRS.getString(2))).getEdges().contains(tempEdge));
-                            System.out.println("Added Edge to" + floorRS.getString(1));
                             // stores nodeEdges per floor
                             edges.put(edgeRS.getInt(1), tempEdge);
                             //stores all nodeEdges
                             nodeEdges.put(edgeRS.getInt(1), tempEdge);
                         }
                     }
-
-                    System.out.println(edges);
-                    System.out.println(nodeEdges);
 
                     Floor tempFloor = new Floor(floorRS.getInt(3));
                     tempFloor.setImageLocation(floorRS.getString(4));
@@ -393,7 +390,6 @@ public class DatabaseManager {
                     h.getCampusFloor().addEdge(tempEdge);
                 }
 
-                System.out.println(flr);
                 buildings.put(rs.getInt(1),
                         new Building(rs.getString(2)));
                 for (Floor f : flr.values())
@@ -411,9 +407,6 @@ public class DatabaseManager {
         for (Building b : buildings.values()) {
             h.addBuilding(b);
         }
-
-        System.out.println(mapNodes);
-        System.out.println(h.getBuildings());
 
         rs = s.executeQuery("SELECT * from EDGE where COST = 0");
         while(rs.next()) {
@@ -444,7 +437,6 @@ public class DatabaseManager {
 
                 // add office to hospital offices list
                 h.addOffices(offRS.getString(2), tempOff);
-                System.out.println("******************************" + tempOff.getName());
 
                 // add office to list of offices for a suite
                 h.getDestinations().get(UUID.fromString(rs.getString(1))).addOffice(tempOff);
@@ -469,18 +461,13 @@ public class DatabaseManager {
                 h.getDestinations().get(UUID.fromString(results.getString(1))).addDoctor(tempDoc);
                 locations.add(h.getDestinations().get(UUID.fromString(results.getString(1))));
             }
-//            doctors.put(rs.getString(2),
-//                    new Doctor(UUID.fromString(rs.getString(1)),
-//                            rs.getString(2),
-//                            rs.getString(3),
-//                            rs.getString(5),
-//                            locations));
+
             h.addDoctors(rs.getString(2), tempDoc);
 
         }
-        System.out.println(doctors.keySet());
         rs.close();
 
+        System.out.println("Database load finished");
     }
 
     private void saveHospital(Hospital h) throws SQLException {
@@ -621,7 +608,6 @@ public class DatabaseManager {
             edgesCount++;
         }
 
-        System.out.println("Here");
         
         for (Doctor doc : h.getDoctors().values()) {
             try {
@@ -648,7 +634,6 @@ public class DatabaseManager {
                     System.out.println("Error saving suite_doc " + e.getMessage());
                 }
                 conn.commit();
-                System.out.println("Added Suites");
             }
         }
         // saves Offices

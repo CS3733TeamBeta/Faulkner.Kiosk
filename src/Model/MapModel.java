@@ -24,6 +24,8 @@ public class MapModel {
     Hospital hospital;
     Floor currentFloor;
 
+    Building building; //this kiosks building
+
     public MapModel() {
         edgeCompleteHandlers = new LinkedList<EdgeCompleteEventHandler>(); //instantiate empty linked list for handlers;
 
@@ -42,45 +44,40 @@ public class MapModel {
 
         /**@TODO HACKY **/
 
-        Floor arbitraryFloor;
-
         for(Building b : hospital.getBuildings())
+        {
+            if(b.getName().equals("Faulkner")) //@TODO def gonna be a problem someday
+            {
+                building = b;
+            }
+        }
+
+        try
+        {
+            setCurrentFloor(building.getFloor(1));
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public int incrementFloor(int incAmount)
+    {
+        int nextFloorID = getCurrentFloor().getFloorNumber() + incAmount;
+
+        if(nextFloorID<=building.getFloors().size() && nextFloorID >0)
         {
             try
             {
-                arbitraryFloor = b.getFloor(3);
-                setCurrentFloor(arbitraryFloor);
-                break;
+                this.setCurrentFloor(building.getFloor(nextFloorID));
+                return nextFloorID;
             }
             catch (Exception e)
             {
                 e.printStackTrace();
             }
         }
-    }
 
-    public int incrementFloor(int incAmount)
-    {
-        for(Building b: hospital.getBuildings())
-        {
-            if(b.getFloors().contains(getCurrentFloor()))
-            {
-                int nextFloorID = getCurrentFloor().getFloorNumber() + incAmount;
-
-                if(nextFloorID<=b.getFloors().size() && nextFloorID >0)
-                {
-                    try
-                    {
-                        this.setCurrentFloor(b.getFloor(nextFloorID));
-                        return nextFloorID;
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
 
         return -1;
     }
@@ -95,8 +92,23 @@ public class MapModel {
         return incrementFloor(-1);
     }
 
-    public void setCurrentFloor(Floor floor){
-        this.currentFloor = floor;
+    public void setCurrentFloor(Floor floor)
+    {
+        try
+        {
+            if(floor == building.getFloor(1))
+            {
+                this.currentFloor = hospital.getCampusFloor();
+            }
+            else
+            {
+                this.currentFloor = floor;
+            }
+        }
+        catch (Exception e)
+        {
+            this.currentFloor = floor;
+        }
     }
 
     public Floor getCurrentFloor()

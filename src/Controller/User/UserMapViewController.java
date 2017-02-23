@@ -199,7 +199,7 @@ public class UserMapViewController extends AbstractController {
 
         mapNode.setPos(mapNode.getPosX(), mapNode.getPosY());
 
-        if(!mapNode.getIconType().equals(DragIconType.connector)) //treeview checks that floor actually contains
+        if(!mapNode.getIconType().equals(DragIconType.Connector)) //treeview checks that floor actually contains
         {
             //addToTreeView(mapNode); disabled for now.
         }
@@ -222,7 +222,6 @@ public class UserMapViewController extends AbstractController {
             mapItems.getChildren().add(n.getNodeToDisplay()); //add to right panes children
             mapItems.getChildren().add(destLabel);
         }
-
 
 
        // n.setPos(n.getPosX(), n.getPosY());
