@@ -290,8 +290,13 @@ public class DatabaseManager {
                             nodes.get(UUID.fromString(edgeRS.getString(3))),
                             edgeRS.getInt(4));
 
-                    tempEdge.setSource(nodes.get(UUID.fromString(edgeRS.getString(2))));
-                    tempEdge.setTarget(nodes.get(UUID.fromString(edgeRS.getString(3))));
+                    if(tempEdge.getCost()==0)
+                    {
+                        tempEdge = new LinkEdge(tempEdge);
+                    }
+
+                    tempEdge.setSource(nodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
+                    tempEdge.setTarget(nodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
 
                     System.out.println(nodes.get(UUID.fromString(edgeRS.getString(2))).getEdges().contains(tempEdge));
 
