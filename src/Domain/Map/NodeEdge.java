@@ -210,6 +210,19 @@ public class NodeEdge implements DrawableMapEntity
         }
     }
 
+    public boolean equals(Object obj) {
+        if (obj instanceof NodeEdge) {
+            return this.equals((NodeEdge) obj);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean equals(NodeEdge e) {
+        boolean isEqual1 = (this.getSource().equals(e.getSource()) || this.getSource().equals(e.getTarget()));
+        boolean isEqual2 = (this.getTarget().equals(e.getSource()) || this.getTarget().equals(e.getTarget()));
+        return isEqual1 && isEqual2;
+    }
     /**
      * Calculates and returns the center point of a given DragIcon
      * @param dragIcon

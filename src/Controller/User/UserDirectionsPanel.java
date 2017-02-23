@@ -32,8 +32,12 @@ public class UserDirectionsPanel extends AnchorPane
     ImageView MapImage;
     ArrayList<StepChangedEventHandler> stepChangedEventHandlers;
 
-    public UserDirectionsPanel(ImageView mapImage)
+    UserMapViewController cont;
+
+    public UserDirectionsPanel(ImageView mapImage, UserMapViewController cont)
     {
+        this.cont = cont;
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                 "../../User/UserDirectionsPanel.fxml"));
 
@@ -111,8 +115,11 @@ public class UserDirectionsPanel extends AnchorPane
         }
     }
 
-    public void displaySelected() {
+    public void displaySelected(DirectionStep step) {
         System.out.println("print it");
+        System.out.println("directionStep has string " + step.toString() + " and " + step.getStepEdges().size() + " edges.");
+        cont.highlightStep(step);
+
     }
 
     public void fillGuidance(Guidance g)
@@ -142,7 +149,7 @@ public class UserDirectionsPanel extends AnchorPane
             l.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    System.out.println("clicked you bi3tch");
+                    displaySelected(aDirectionStep);
                 }
             });
             directionsListView.getItems().add(l);

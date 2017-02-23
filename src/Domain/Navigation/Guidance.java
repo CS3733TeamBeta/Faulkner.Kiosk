@@ -126,7 +126,7 @@ public class Guidance extends Path {
                 stringDirection = "hard right";
                 break;
             case -4:
-                stringDirection = "U-Turn";
+                stringDirection = "around";
                 break;
             case -3:
                 stringDirection = "hard left";
@@ -150,7 +150,7 @@ public class Guidance extends Path {
                 stringDirection = "hard right";
                 break;
             case 4:
-                stringDirection = "U-Turn";
+                stringDirection = "around";
                 break;
             case 5:
                 stringDirection = "hard left";
