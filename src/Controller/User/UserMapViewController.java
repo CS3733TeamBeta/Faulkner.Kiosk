@@ -35,6 +35,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -132,6 +133,14 @@ public class UserMapViewController extends AbstractController {
 
     @FXML
     ScrollPane scrollPane;
+
+    @FXML
+    Polygon floorUpArrow;
+
+    @FXML
+    Polygon floorDownArrow;
+
+    @FXML private ChoiceBox<String> dropDown;
 
     Stage primaryStage;
 
@@ -232,6 +241,103 @@ public class UserMapViewController extends AbstractController {
     }*/
 
     @FXML
+    private void dropDownResetOpacity(){
+        dropDown.setOpacity(0.85);
+    }
+    @FXML
+    private void dropDownChangeOpacity(){
+        dropDown.setOpacity(1.0);
+    }
+
+    @FXML
+    private void floorDownResetOpacity(){
+        floorDownArrow.setOpacity(0.7);
+    }
+    @FXML
+    private void floorDownChangeOpacity(){
+        floorDownArrow.setOpacity(0.8);
+    }
+
+    @FXML
+    private void floorUpResetOpacity(){
+        floorUpArrow.setOpacity(0.7);
+    }
+    @FXML
+    private void floorUpChangeOpacity(){
+        floorUpArrow.setOpacity(0.8);
+    }
+
+    @FXML
+    private void clickedDownArrow(){
+        int desiredFloor = model.getCurrentFloor().getFloorNumber() - 1;
+        boolean foundFloor = false;
+        for(Building b: model.getHospital().getBuildings()) {
+            try {
+                Floor tempFloor = b.getFloor(desiredFloor);
+                model.setCurrentFloor(tempFloor);
+                foundFloor = true;
+            } catch (Exception e) {
+                System.out.println("Threw funky exception");
+                e.printStackTrace();
+
+            }
+        }
+        if(foundFloor) {
+            System.out.println("Changing floor");
+            renderFloorMap();
+        }else{
+            System.out.println("Error in changing floor");
+        }
+    }
+
+    @FXML
+    private void clickedUpArrow(){
+        int desiredFloor = model.getCurrentFloor().getFloorNumber() + 1;
+        boolean foundFloor = false;
+        for(Building b: model.getHospital().getBuildings()) {
+            try {
+                Floor tempFloor = b.getFloor(desiredFloor);
+                model.setCurrentFloor(tempFloor);
+                foundFloor = true;
+            } catch (Exception e) {
+                System.out.println("Threw funky exception");
+                e.printStackTrace();
+
+            }
+        }
+        if(foundFloor) {
+            System.out.println("Changing floor");
+            renderFloorMap();
+        }else{
+            System.out.println("Error in changing floor");
+        }
+    }
+    @FXML
+    private void dropDownHit(){
+        if(Integer.parseInt(dropDown.getValue()) != model.getCurrentFloor().getFloorNumber()){
+            int desiredFloor = Integer.parseInt(dropDown.getValue());
+            boolean foundFloor = false;
+            for(Building b : model.getHospital().getBuildings()) {
+                if(b.getFloors().contains(model.getCurrentFloor())) {
+                    for(Floor f : b.getFloors()) {
+                        if(f.getFloorNumber() == desiredFloor){
+                            model.setCurrentFloor(f);
+                            dropDown.setValue(Integer.toString(desiredFloor));
+                            foundFloor = true;
+                        }
+                    }
+                }
+            }
+            if(foundFloor) {
+                System.out.println("Changing floor");
+                renderFloorMap();
+            }else{
+                System.out.println("Error in changing floor");
+            }
+        }
+    }
+
+    @FXML
     private void initialize() throws Exception {
         model = new MapModel();
         mapItems = new Group();
@@ -324,6 +430,15 @@ public class UserMapViewController extends AbstractController {
 
         panel.setVisible(false);
         directionPaneView();
+
+        for( Building b : model.getHospital().getBuildings()) {
+            if(b.getFloors().contains(model.getCurrentFloor())) {
+                for(Floor f : b.getFloors()) {
+                    dropDown.getItems().add(Integer.toString(f.getFloorNumber()));
+                }
+            }
+        }
+        dropDown.setValue(Integer.toString(model.getCurrentFloor().getFloorNumber()));
     }
 
     private void panToCenter()
