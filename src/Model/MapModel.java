@@ -82,6 +82,11 @@ public class MapModel {
         return -1;
     }
 
+    public Building getKioskBuilding()
+    {
+        return  building; //@TODO make this return a real kiosk building
+    }
+
     public int chooseNextFloor()
     {
        return incrementFloor(1);

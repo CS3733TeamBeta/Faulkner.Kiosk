@@ -140,8 +140,6 @@ public class UserMapViewController extends AbstractController {
     @FXML
     Polygon floorDownArrow;
 
-    @FXML private ChoiceBox<String> dropDown;
-
     Stage primaryStage;
 
     MapModel model;
@@ -151,6 +149,9 @@ public class UserMapViewController extends AbstractController {
     Group mapItems;
 
     Group zoomGroup;
+
+    @FXML
+    Label curFloorLabel;
 
     public UserMapViewController() throws Exception
     {
@@ -242,76 +243,68 @@ public class UserMapViewController extends AbstractController {
         }
     }*/
 
-    @FXML
-    private void dropDownResetOpacity(){
-        dropDown.setOpacity(0.85);
-    }
-    @FXML
-    private void dropDownChangeOpacity(){
-        dropDown.setOpacity(1.0);
-    }
 
     @FXML
     private void floorDownResetOpacity(){
-        floorDownArrow.setOpacity(0.7);
+        floorDownArrow.setOpacity(0.4);
     }
     @FXML
     private void floorDownChangeOpacity(){
-        floorDownArrow.setOpacity(0.8);
+        floorDownArrow.setOpacity(1);
     }
 
     @FXML
     private void floorUpResetOpacity(){
-        floorUpArrow.setOpacity(0.7);
+        floorUpArrow.setOpacity(0.4);
     }
     @FXML
     private void floorUpChangeOpacity(){
-        floorUpArrow.setOpacity(0.8);
+        floorUpArrow.setOpacity(1);
     }
 
     @FXML
     private void clickedDownArrow()
     {
-        if(model.choosePreviousFloor()!=-1)
+        int newFloorNum = model.choosePreviousFloor();
+
+        if(newFloorNum!=-1)
         {
             renderFloorMap();
+            curFloorLabel.setText("Floor " + newFloorNum);
         }
 
+        if(newFloorNum<=1)
+        {
+            floorDownArrow.setVisible(false);
+        }
+        else
+        {
+            floorDownArrow.setVisible(true);
+            floorUpArrow.setVisible(true);
+        }
     }
 
     @FXML
     private void clickedUpArrow(){
-        if(model.chooseNextFloor()!=-1)
+        int newFloorNum = model.chooseNextFloor();
+
+        if(newFloorNum!=-1)
         {
             renderFloorMap();
+            curFloorLabel.setText("Floor " + newFloorNum);
+        }
+
+        if(newFloorNum>model.getKioskBuilding().getFloors().size()-1)
+        {
+            floorUpArrow.setVisible(false);
+        }
+        else
+        {
+            floorUpArrow.setVisible(true);
+            floorDownArrow.setVisible(true);
         }
     }
 
-    @FXML
-    private void dropDownHit(){
-        if(Integer.parseInt(dropDown.getValue()) != model.getCurrentFloor().getFloorNumber()){
-            int desiredFloor = Integer.parseInt(dropDown.getValue());
-            boolean foundFloor = false;
-
-            for(Building b : model.getHospital().getBuildings()) {
-                if(b.getFloors().contains(model.getCurrentFloor())) {
-                    for(Floor f : b.getFloors()) {
-                        if(f.getFloorNumber() == desiredFloor){
-                            model.setCurrentFloor(f);
-                            dropDown.setValue(Integer.toString(desiredFloor));
-                            foundFloor = true;
-                        }
-                    }
-                }
-            }
-            if(foundFloor) {
-                System.out.println("Changing floor");
-                renderFloorMap();
-            }else{
-                System.out.println("Error in changing floor");
-            }
-        }
-    }
 
     @FXML
     private void initialize() throws Exception {
@@ -405,14 +398,7 @@ public class UserMapViewController extends AbstractController {
         panel.setVisible(false);
         directionPaneView();
 
-        for( Building b : model.getHospital().getBuildings()) {
-            if(b.getFloors().contains(model.getCurrentFloor())) {
-                for(Floor f : b.getFloors()) {
-                    dropDown.getItems().add(Integer.toString(f.getFloorNumber()));
-                }
-            }
-        }
-        dropDown.setValue(Integer.toString(model.getCurrentFloor().getFloorNumber()));
+        curFloorLabel.setText("Floor " + model.getCurrentFloor().getFloorNumber());
     }
 
     private void panToCenter()
