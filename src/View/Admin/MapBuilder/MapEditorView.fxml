@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TabPane?>
@@ -11,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.MapEditorController">
+<AnchorPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Admin.MapEditorController">
    <children>
       <TabPane fx:id="BuildingTabPane" layoutX="839.0" layoutY="48.0" opacity="0.82" prefHeight="527.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="173.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0" />
       <AnchorPane layoutX="969.0" layoutY="618.0" prefHeight="120.0" prefWidth="300.0" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="30.0">
@@ -75,5 +76,6 @@
             </AnchorPane>
         </items>
       </SplitPane>
+      <ChoiceBox fx:id="selectAlgo" layoutX="32.0" layoutY="14.0" prefWidth="150.0" />
    </children>
 </AnchorPane>

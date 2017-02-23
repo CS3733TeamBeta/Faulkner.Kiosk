@@ -3,6 +3,10 @@ package Controller.Admin;
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
+import Domain.Navigation.AStarAlgorithm;
+import Domain.Navigation.BFSAlgorithm;
+import Domain.Navigation.DFSAlgorithm;
+import Domain.Navigation.RandomAlgorithm;
 import Domain.ViewElements.DragContainer;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
@@ -14,6 +18,7 @@ import Model.Database.DatabaseManager;
 import Model.MapEditorModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -40,6 +45,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import static Controller.SceneSwitcher.switchToAddFloor;
+import static Domain.Map.Hospital.chosenAlgo;
 
 public class MapEditorController extends AbstractController {
 
@@ -58,6 +64,8 @@ public class MapEditorController extends AbstractController {
 
 	@FXML
 	private TabPane BuildingTabPane;
+	@FXML
+	private ChoiceBox selectAlgo;
 
 	private DragIcon mDragOverIcon = null;
 
@@ -172,6 +180,10 @@ public class MapEditorController extends AbstractController {
 
 			model.addSideBarIcon(icn);
 			bottom_bar.getChildren().add(icn);
+
+			selectAlgo.setItems(FXCollections.observableArrayList(
+				"AStar", "DFS", "BFS", "Random"
+			));
 		}
 
 		buildDragHandlers();
@@ -969,6 +981,8 @@ public class MapEditorController extends AbstractController {
 
 		DatabaseManager.getInstance().saveData(model.getHospital());
 
+		setAlgo();
+
 		SceneSwitcher.switchToUserMapView(this.getStage());
 	}
 
@@ -976,5 +990,20 @@ public class MapEditorController extends AbstractController {
 	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
 	{
 		SceneSwitcher.switchToModifyDirectoryView(this.getStage());
+	}
+
+	public void setAlgo () {
+		if (selectAlgo.getValue().equals("AStar")){
+			chosenAlgo = new AStarAlgorithm();
+		}
+		if (selectAlgo.getValue().equals("DFS")){
+			chosenAlgo = new DFSAlgorithm();
+		}
+		if (selectAlgo.getValue().equals("BFS")){
+			chosenAlgo = new BFSAlgorithm();
+		}
+		if (selectAlgo.getValue().equals("Random")){
+			chosenAlgo = new RandomAlgorithm();
+		}
 	}
 }

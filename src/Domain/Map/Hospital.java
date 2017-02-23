@@ -1,6 +1,9 @@
 package Domain.Map;
 
 
+import Domain.Navigation.AStarAlgorithm;
+import Domain.Navigation.PathfindingAlgorithm;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +18,7 @@ public class Hospital {
     private HashMap<String, Doctor> doctors;
     private HashMap<UUID, Destination> destinations;
     private HashMap<String, Office> offices;
+    public static PathfindingAlgorithm chosenAlgo = new AStarAlgorithm();
 
     public Hospital() {
         buildings = new HashSet<Building>();
