@@ -62,7 +62,4 @@ public class Path{
     public LinkedList<MapNode> getPathNodes(){
         return this.pathNodes;
     }
-
-
-
 }
