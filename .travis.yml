@@ -6,7 +6,7 @@ addons:
     packages:
       - oracle-java8-installer
 notifications:
-  slack:
-    cs3733teambeta:eRY9Hz4DnBDDEqIhEAapJl5
-    on_success: always
-    on_failure: always
+    slack:
+      rooms:
+        - cs3733teambeta:fu1hh0sKNiepY7dT8yEPX22v#general
+        - cs3733teambeta:fu1hh0sKNiepY7dT8yEPX22v#git
