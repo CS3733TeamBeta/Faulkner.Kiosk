@@ -394,6 +394,8 @@ public class MapEditorController extends AbstractController {
 			mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
 		}
 
+		System.out.println("Importing: " + mapNode.getType());
+
 		addEventHandlersToNode(mapNode);
 
 		if(!mapNode.getIconType().equals(DragIconType.connector)) //treeview checks that floor actually contains
