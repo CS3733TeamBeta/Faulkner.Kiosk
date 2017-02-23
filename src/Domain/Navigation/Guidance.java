@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.awt.Point;
 
 import Domain.Map.*;
+import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
 import Exceptions.*;
 import javafx.embed.swing.SwingFXUtils;
@@ -42,13 +43,16 @@ public class Guidance extends Path {
 
     public void setImages() {
         try {
-            nodeImg = ImageIO.read(new File("src/View/Admin/MapBuilder/blank2.png"));
-            bathImg = ImageIO.read(new File("src/View/Admin/MapBuilder/bathroom.png"));
-            docImg = ImageIO.read(new File("src/View/Admin/MapBuilder/doctor.png"));
-            elevatorImg = ImageIO.read(new File("src/View/Admin/MapBuilder/elevator.png"));
-            foodImg = ImageIO.read(new File("src/View/Admin/MapBuilder/food.png"));
-            infoImg = ImageIO.read(new File("src/View/Admin/MapBuilder/info.png"));
-            storeImg = ImageIO.read(new File("src/View/Admin/MapBuilder/store.png"));
+
+            int imgRescaleSize = 46;
+
+            nodeImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/blank2.png")), imgRescaleSize/2, imgRescaleSize/2, true);
+            bathImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/bathroom.png")), imgRescaleSize, imgRescaleSize, true);
+            docImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/doctor.png")), imgRescaleSize, imgRescaleSize, true);
+            elevatorImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/elevator.png")), imgRescaleSize, imgRescaleSize, true);
+            foodImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/food.png")), imgRescaleSize, imgRescaleSize, true);
+            infoImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/info.png")), imgRescaleSize, imgRescaleSize, true);
+            storeImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/store.png")), imgRescaleSize, imgRescaleSize, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -348,9 +352,9 @@ public class Guidance extends Path {
                 // paint both images, preserving the alpha channels
                 Graphics2D g = combined.createGraphics();
                 g.drawImage(realBaseImage, 0, 0, null);
-                double constant = 2.173;
+                double constant = 2.175; //2.173
                 //add edges to the map
-                g.setStroke(new BasicStroke(25, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+                g.setStroke(new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
                 g.setColor(Color.RED);
                 int offsetHeight = nodeImg.getHeight() / 2;
                 int offsetWidth = nodeImg.getWidth() / 2;
@@ -362,74 +366,40 @@ public class Guidance extends Path {
                         //get the nodes to draw the lines between
                         MapNode targetNode = e.getTarget();
                         MapNode sourceNode = e.getSource();
-                        //output info to user for debugging
-                        System.out.println("Drawing line between nodes on floor: " + e.getSource().getMyFloor().getFloorNumber());
-                        System.out.println("x1: " + Math.round(targetNode.getPosX() * constant) + " y1: " + Math.round( targetNode.getPosY() * constant) +
-                                " x2: " + Math.round(sourceNode.getPosX() * constant) + " y2: " + Math.round(sourceNode.getPosY() * constant));
+                        //output info to user for debugging NOW DEFUNCT DO NOT RELY ON
+                        //System.out.println("Drawing line between nodes on floor: " + e.getSource().getMyFloor().getFloorNumber());
+                        //System.out.println("x1: " + Math.round(targetNode.getPosX() * constant) + " y1: " + Math.round( targetNode.getPosY() * constant) +
+                        //      " x2: " + Math.round(sourceNode.getPosX() * constant) + " y2: " + Math.round(sourceNode.getPosY() * constant));
                         //draw the line between the two points. apply offset to account
                         //for image being anchored at upper left of picture
-                        g.drawLine((int)Math.round(targetNode.getPosX() * constant) + offsetWidth, (int)Math.round(targetNode.getPosY() * constant) + offsetHeight,
-                                (int)Math.round(sourceNode.getPosX() * constant) + offsetWidth, (int)Math.round(sourceNode.getPosY() * constant) + offsetHeight);
+                        int targetIsConnector = 0;
+                        int sourceIsConnector = 0;
+
+                        if (targetNode.getIconType().toString().equals("connector")) {
+                            targetIsConnector = 12;
+                        }
+                        if (sourceNode.getIconType().toString().equals("connector")) {
+                            sourceIsConnector = 12;
+                        }
+                        g.drawLine((int)Math.round(targetNode.getPosX() * constant) + (targetIsConnector + this.iconToImg(targetNode.getIconType()).getWidth()/2), (int)Math.round(targetNode.getPosY() * constant) + (targetIsConnector + this.iconToImg(targetNode.getIconType()).getHeight()/2),
+                                (int)Math.round(sourceNode.getPosX() * constant) + (sourceIsConnector + this.iconToImg(sourceNode.getIconType()).getWidth()/2), (int)Math.round(sourceNode.getPosY() * constant) + (sourceIsConnector + this.iconToImg(sourceNode.getIconType()).getHeight()/2));
                     }
                 }
 
                 //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
+                    int isConnector = 0;
                     System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
                     String thisIconType = n.getIconType().toString();
                     System.out.println("This is an icon of type: " + thisIconType.toString());
 
-                    BufferedImage currentImage = null;
+                    BufferedImage currentImage = this.iconToImg(n.getIconType());
 
-
-                    BufferedImage nodeImg = null;
-                    BufferedImage bathImg= null;
-                    BufferedImage docImg = null;
-                    BufferedImage elevatorImg = null;
-                    BufferedImage foodImg = null;
-                    BufferedImage infoImg = null;
-                    BufferedImage storeImg = null;
-
-                    switch (thisIconType) {
-                        case "connector":
-                            currentImage = nodeImg;
-                            break;
-                        case "store":
-                            currentImage = storeImg;
-                            break;
-                        case "elevator":
-                            currentImage = elevatorImg;
-                            break;
-                        case "food":
-                            currentImage = foodImg;
-                            break;
-                        case "info":
-                            currentImage = infoImg;
-                            break;
-                        case "department":
-                            currentImage = docImg;
-                            break;
-                        case "bathroom":
-                            textDirection = "NorthEast";
-                            break;
-                        case 7:
-                            textDirection = "East";
-                            break;
-                        case 8:
-                            textDirection = "SouthEast";
-                            break;
-                        case 9:
-                            textDirection = "Up";
-                            break;
-                        case 10:
-                            textDirection = "Down";
-                            break;
-                        default:
-                            textDirection = "Big Error";
-                            break;
+                    if (n.getIconType().toString().equals("connector")) {
+                        isConnector = 12;
                     }
 
-                    g.drawImage(nodeImg, (int) (Math.round(n.getPosX())*constant), (int)(Math.round(n.getPosY())*constant), null);
+                    g.drawImage(currentImage, (int) (Math.round(n.getPosX())*constant + isConnector), (int)(Math.round(n.getPosY())*constant + isConnector), null);
                 }
 
                 // Save as new image
@@ -473,6 +443,38 @@ public class Guidance extends Path {
         }
     }
 
+    public BufferedImage iconToImg(DragIconType t) {
+        BufferedImage currentImage;
+        String typeString = t.toString();
+        switch (typeString) {
+            case "connector":
+                currentImage = nodeImg;
+                break;
+            case "store":
+                currentImage = storeImg;
+                break;
+            case "elevator":
+                currentImage = elevatorImg;
+                break;
+            case "food":
+                currentImage = foodImg;
+                break;
+            case "info":
+                currentImage = infoImg;
+                break;
+            case "department":
+                currentImage = docImg;
+                break;
+            case "bathroom":
+                currentImage = bathImg;
+                break;
+            default:
+                currentImage = null;
+                break;
+        }
+        return currentImage;
+    }
+
     public boolean sendEmailGuidance(String address) {
         String subjectLine;
         String directionLine = "<H2><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H2>" + "<H3>";
@@ -510,7 +512,7 @@ public class Guidance extends Path {
                                     boolean preserveAlpha)
     {
         System.out.println("resizing...");
-        int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+        int imageType = preserveAlpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
         BufferedImage scaledBI = new BufferedImage(scaledWidth, scaledHeight, imageType);
         Graphics2D g = scaledBI.createGraphics();
         if (preserveAlpha) {
