@@ -13,8 +13,6 @@ import java.awt.image.BufferedImage;
 import java.util.Date;
 import java.util.Properties;
 
-//http://www.codejava.net/java-se/graphics/how-to-capture-screenshot-programmatically-in-java
-//use this link AS IS to capture screenshots
 
 public class SendEmail {
 
@@ -77,9 +75,9 @@ public class SendEmail {
             }
 
             if (includeImage) {
-                htmlText = "<img src=\"cid:imageLogo\">" + this.message + imageDirectionsPortion;
+                htmlText = "<center><img src=\"cid:imageLogo\"></center>" + this.message + imageDirectionsPortion;
             } else {
-                htmlText = "<img src=\"cid:imageLogo\">" + this.message;
+                htmlText = "<center><img src=\"cid:imageLogo\"></center>" + this.message;
             }
 
             messageBodyPart.setContent(htmlText, "text/html");
