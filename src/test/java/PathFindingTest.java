@@ -219,7 +219,7 @@ public class PathFindingTest extends TestCase{
 
     public void testRandom() {
         try {
-            p1 = new Path(nodeA, nodeL, true, new RandomAlgorithm(nodeA, nodeB));
+            p1 = new Path(nodeA, nodeL, true, new RandomAlgorithm());
         } catch (Exception e) {
             fail("Threw unexpected exception in testRandom");
         }
