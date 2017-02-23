@@ -352,7 +352,7 @@ public class Guidance extends Path {
                 // paint both images, preserving the alpha channels
                 Graphics2D g = combined.createGraphics();
                 g.drawImage(realBaseImage, 0, 0, null);
-                double constant = 2.175; //2.173
+                double constant = 2.175;
                 //add edges to the map
                 g.setStroke(new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
                 g.setColor(Color.RED);
@@ -370,6 +370,7 @@ public class Guidance extends Path {
                         //System.out.println("Drawing line between nodes on floor: " + e.getSource().getMyFloor().getFloorNumber());
                         //System.out.println("x1: " + Math.round(targetNode.getPosX() * constant) + " y1: " + Math.round( targetNode.getPosY() * constant) +
                         //      " x2: " + Math.round(sourceNode.getPosX() * constant) + " y2: " + Math.round(sourceNode.getPosY() * constant));
+
                         //draw the line between the two points. apply offset to account
                         //for image being anchored at upper left of picture
                         int targetIsConnector = 0;
