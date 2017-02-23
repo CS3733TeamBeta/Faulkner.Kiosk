@@ -70,7 +70,6 @@ public class Hospital {
     }
 
 
-
     public int buildingCount()
     {
         return buildings.size();
