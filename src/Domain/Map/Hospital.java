@@ -17,12 +17,15 @@ public class Hospital {
     private HashMap<UUID, Destination> destinations;
     private HashMap<String, Office> offices;
 
+    CampusFloor CampusFloor;
+
     public Hospital() {
         buildings = new HashSet<Building>();
-
         doctors = new HashMap<>();
         destinations = new HashMap<>();
         offices = new HashMap<>();
+
+        CampusFloor  = new CampusFloor();
     }
 
     public void setMainKioskNode(MapNode n){
@@ -41,6 +44,18 @@ public class Hospital {
         buildings.add(b);
     }
 
+    public CampusFloor getCampusFloor()
+    {
+        CampusFloor.clearBuildings();
+
+        for(Building b: getBuildings())
+        {
+            CampusFloor.importBuilding(b);
+        }
+
+        return CampusFloor;
+    }
+
     //Alter Doctor HashMap: doctors
     public HashMap<String, Doctor> getDoctors() {
         return doctors;
@@ -54,7 +69,6 @@ public class Hospital {
     public void removeDoctors(String s){
         doctors.remove(s);
     }
-
 
     //Alter Suite HashMap: destinations
     public HashMap<UUID, Destination> getDestinations() {

@@ -1,13 +1,16 @@
 package Domain.Map;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
  * Represents a floor in a building. A floor will have nodes, node edges, destinations, more
  */
 public class Floor implements Comparable{
-    LinkedList<MapNode> floorNodes;
-    LinkedList<NodeEdge> floorEdges;
+    HashSet<MapNode> floorNodes;
+    HashSet<NodeEdge> floorEdges;
+
     MapNode kioskNode = null;
     String imageLocation = "../FloorMaps/1_thefirstfloor.png"; //default floor image path
 
@@ -31,21 +34,19 @@ public class Floor implements Comparable{
         return imageInfo;
     }
 
-    public LinkedList<MapNode> getFloorNodes() {
+    public HashSet<MapNode> getFloorNodes() {
         return floorNodes;
     }
 
-    public LinkedList<NodeEdge> getFloorEdges() {
+    public HashSet<NodeEdge> getFloorEdges() {
         return floorEdges;
     }
 
     int floorNumber;
 
-
-
     public Floor(int floorNumber) {
-        floorNodes = new LinkedList<MapNode>();
-        floorEdges = new LinkedList<NodeEdge>();
+        floorNodes = new HashSet<MapNode>();
+        floorEdges = new HashSet<NodeEdge>();
         this.floorNumber = floorNumber;
 
         imageInfo = new ProxyImage(imageLocation);
