@@ -138,8 +138,8 @@ public class PathFindingTest extends TestCase{
         listOfEdges.add(edgeAB);
         Path manPathValid = new Path(listOfEdges, listOfNodes);
         Path manPathInvalid = new Path(listOfEdges, listOfInvalidNodes);
-        assertTrue(manPathValid.isValidPath());
-        assertFalse(manPathInvalid.isValidPath());
+        assertTrue(manPathValid.isValidPath(manPathValid.getPathNodes(), manPathValid.getPathEdges()));
+        assertFalse(manPathInvalid.isValidPath(manPathInvalid.getPathNodes(), manPathInvalid.getPathEdges()));
     }
 
 
@@ -193,9 +193,17 @@ public class PathFindingTest extends TestCase{
         }
     }
 
+    public void testAstar() {
+        try {
+            p1 = new Path(nodeA, nodeL, true, new AStarAlgorithm());
+        } catch (Exception e) {
+            fail("Threw unexpected exception in testAStar");
+        }
+    }
+
     public void testBreadth() {
        try {
-            p1 = new Path(nodeA, nodeL, true, "breadthfirst");
+            p1 = new Path(nodeA, nodeL, true, new BFSAlgorithm());
         } catch (Exception e) {
             fail("Threw unexpected exception in testBreadth");
         }
@@ -203,7 +211,7 @@ public class PathFindingTest extends TestCase{
 
     public void testDepth() {
         try {
-            p1 = new Path(nodeA, nodeL, true, "depthfirst");
+            p1 = new Path(nodeA, nodeL, true, new DFSAlgorithm());
         } catch (Exception e) {
             fail("Threw unexpected exception in testDepth");
         }
@@ -211,21 +219,11 @@ public class PathFindingTest extends TestCase{
 
     public void testRandom() {
         try {
-            p1 = new Path(nodeA, nodeL, true, "random");
+            p1 = new Path(nodeA, nodeL, true, new RandomAlgorithm());
         } catch (Exception e) {
             fail("Threw unexpected exception in testRandom");
         }
     }
 
-    public void testTextDirections(){
-        try {
-            Guidance g1 = new Guidance(nodeA, nodeD, false);
-            g1.printTextDirections();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception");
-        }
-
-    }
 
 }

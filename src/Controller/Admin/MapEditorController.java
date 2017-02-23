@@ -371,7 +371,7 @@ public class MapEditorController extends AbstractController {
 				{
 					mapItems.getChildren().add(e.getEdgeLine());
 				}
-
+				addHandlersToEdge(e);
 				e.updatePosViaNode(n);
 			}
 
@@ -456,10 +456,12 @@ public class MapEditorController extends AbstractController {
 		edge.getNodeToDisplay().setOnMouseClicked(deEvent->{
 			if (edge != null) {
 				if (deEvent.getClickCount() == 2) {
+					System.out.println("edge removed");
 					edge.getSource().getEdges().remove(edge);
 					edge.getTarget().getEdges().remove(edge);
-					mapItems.getChildren().remove(edge.getNodeToDisplay()); //remove from the right pane
+					mapItems.getChildren().remove(edge.getEdgeLine()); //remove from the right pane
 					model.removeMapEdge(edge);
+					model.getCurrentFloor().getFloorEdges().remove(edge);
 				}
 			}
 		});
@@ -820,6 +822,7 @@ public class MapEditorController extends AbstractController {
 			else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
 				if(ev.getClickCount() == 2) // double click
 				{
+					System.out.println("Deleting edge now");
 					onStartEdgeDrawing(mapNode);
 				} //could add code to print location changes here.
 			}
