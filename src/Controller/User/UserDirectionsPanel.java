@@ -24,7 +24,7 @@ public class UserDirectionsPanel extends AnchorPane
 {
 
     Guidance guidance;
-    int stepIndex =0;
+    int stepIndex = 0;
     ImageView MapImage;
     ArrayList<StepChangedEventHandler> stepChangedEventHandlers;
 
@@ -133,7 +133,7 @@ public class UserDirectionsPanel extends AnchorPane
     {
         stepIndex++;
 
-        if(stepIndex<guidance.getSteps().size()-1)
+        if(stepIndex<guidance.getSteps().size())
         {
             fillDirectionsList(guidance.getSteps().get(stepIndex));
             onStepChanged(guidance.getSteps().get(stepIndex));

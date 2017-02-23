@@ -99,25 +99,9 @@ public class MapNode implements DrawableMapEntity {
     }
     */
 
-    public void findDestName() throws SQLException {
-        Hospital hospital = DatabaseManager.getInstance().loadData();
-
-        for (Destination d: hospital.getDestinations().values()) {
-            if ((d.getPosX() == this.getPosX())
-                    && (d.getPosY() == this.getPosY())) {
-                this.destName = d.getName();
-                break;
-            }
-        }
-    }
-
-    public String getLabel() {
-        try {
-            findDestName();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return destName;
+    public String getLabel()
+    {
+        return "";
     }
 
     /**
@@ -168,7 +152,7 @@ public class MapNode implements DrawableMapEntity {
         if(isElevator)
         {
             label = "Elevator";
-            this.setType(DragIconType.elevator);
+            this.setType(DragIconType.Elevator);
         }
     }
 

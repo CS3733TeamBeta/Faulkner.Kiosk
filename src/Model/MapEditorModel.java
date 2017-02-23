@@ -40,7 +40,7 @@ public class MapEditorModel
 
         try
         {
-            hospital = DatabaseManager.getInstance().loadData();
+            hospital = new DatabaseManager().loadData();
         } catch (SQLException e)
         {
             e.printStackTrace();

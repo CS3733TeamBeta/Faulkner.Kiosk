@@ -26,13 +26,6 @@ public class AdminDirectoryEditorMain extends Application {
     }
 
     public static void main(String[] args) {
-        try {
-            DatabaseManager test = DatabaseManager.getInstance();
-        }
-        catch (NullPointerException e){
-            System.out.println(e.getMessage());
-        }
-
         launch(args);
     }
 

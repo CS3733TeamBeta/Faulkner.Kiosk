@@ -75,31 +75,31 @@ public class DragIcon extends AnchorPane{
 		
 		switch (mType) {
 
-			case bathroom:
+			case Restroom:
 				getStyleClass().add("bathroom");
 				break;
 
-			case store:
+			case Store:
 				getStyleClass().add("store");
 				break;
 
-			case elevator:
+			case Elevator:
 				getStyleClass().add("elevator");
 				break;
 
-			case department:
+			case Department:
 				getStyleClass().add("doctor");
 				break;
 
-			case food:
+			case Food:
 				getStyleClass().add("food");
 				break;
 
-			case info:
+			case Info:
 				getStyleClass().add("info");
 				break;
 
-			case connector:
+			case Connector:
 				getStyleClass().add("connector");
 				break;
 
@@ -114,14 +114,14 @@ public class DragIcon extends AnchorPane{
 
 		switch (type)
 		{
-			case elevator:
+			case Elevator:
 			{
 				newNode = new MapNode();
 				newNode.setIsElevator(true);
 				break;
 			}
 
-			case connector:
+			case Connector:
 			{
 				newNode = new MapNode();
 				break;
