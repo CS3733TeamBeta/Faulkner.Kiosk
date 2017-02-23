@@ -55,7 +55,7 @@ public class FileChooser_Controller extends AbstractController
 
     Floor newFloor;
 
-    Hospital theHospital = DatabaseManager.getInstance().loadData();
+    Hospital theHospital = new Hospital();//DatabaseManager.getInstance().loadData();
 
     public FileChooser_Controller() throws SQLException
     {
@@ -64,6 +64,14 @@ public class FileChooser_Controller extends AbstractController
     @FXML
     private void clickGoBack()throws IOException{
         SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
+    }
+
+    public void setTheHospital(Hospital theHospital){
+        this.theHospital = theHospital;
+        for( Building b : theHospital.getBuildings()) {
+            dropDown.getItems().add(b.getName());
+            dropDown.setValue(b.getName());
+        }
     }
 
     @FXML
@@ -120,11 +128,6 @@ public class FileChooser_Controller extends AbstractController
 
     @FXML
     private void initialize(){
-        for( Building b : theHospital.getBuildings()) {
-            dropDown.getItems().add(b.getName());
-            dropDown.setValue(b.getName());
-        }
-
     }
 
     private void addFloorInfo(String name, int floorNum, String building){

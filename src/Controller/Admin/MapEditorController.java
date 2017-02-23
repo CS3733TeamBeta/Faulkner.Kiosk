@@ -373,7 +373,7 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	void onNewFloor(ActionEvent event) throws IOException
 	{
-		SceneSwitcher.switchToAddFloor(this.getStage());
+		SceneSwitcher.switchToAddFloor(this.getStage(), this.model.getHospital());
 
 		TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
 
@@ -405,7 +405,7 @@ public class MapEditorController extends AbstractController {
 			{
 				try
 				{
-					switchToAddFloor(this.getStage());
+					switchToAddFloor(this.getStage(), this.model.getHospital());
 				} catch (IOException e)
 				{
 					System.out.println("Threw an exception in MapEditorController: changeFloorSelection");
