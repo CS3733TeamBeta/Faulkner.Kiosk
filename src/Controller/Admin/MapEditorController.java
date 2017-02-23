@@ -261,6 +261,8 @@ public class MapEditorController extends AbstractController {
 					{
 						try
 						{
+							tV.getRoot().getChildren().clear();
+
 							TreeItem<String> buildingItem = new TreeItem<String>(b.getName());
 
 							Floor groundFloor = b.getFloor(1);
