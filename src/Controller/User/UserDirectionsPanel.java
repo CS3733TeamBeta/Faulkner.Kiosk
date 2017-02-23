@@ -28,7 +28,7 @@ public class UserDirectionsPanel extends AnchorPane
 {
 
     Guidance guidance;
-    int stepIndex =0;
+    int stepIndex = 0;
     ImageView MapImage;
     ArrayList<StepChangedEventHandler> stepChangedEventHandlers;
 
