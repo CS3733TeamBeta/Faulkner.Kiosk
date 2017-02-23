@@ -99,7 +99,7 @@ public class DatabaseManager {
             "DROP TABLE USER1.BUILDING"};
 
 
-    protected DatabaseManager() throws SQLException
+    public DatabaseManager() throws SQLException
     {
 
         String driver = "org.apache.derby.jdbc.EmbeddedDriver";
@@ -178,26 +178,12 @@ public class DatabaseManager {
 
         }
         statements.add(s);
-        loadData();
         //executeStatements(dropTables);
         //executeStatements(createTables);
     }
 
-    public static synchronized DatabaseManager getInstance() {
-        if(instance == null) {
-            try
-            {
-                instance = new DatabaseManager();
-            } catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
-        }
 
-        return instance;
-    }
-
-    public void executeStatements(String[] states) throws SQLException {
+    private void executeStatements(String[] states) throws SQLException {
         Statement state = conn.createStatement();
         for (String s : states) {
             state.executeUpdate(s);
@@ -210,8 +196,6 @@ public class DatabaseManager {
         s = conn.createStatement();
 
         Hospital h = new Hospital();
-        //executeStatements(dropTables);
-        //executeStatements(createTables);
 
         loadHospital(h);
 
@@ -230,7 +214,9 @@ public class DatabaseManager {
         System.out.println("Data Saved Correctly");
     }
 
-    private void loadHospital(Hospital h) throws SQLException {
+    private synchronized void loadHospital(Hospital h) throws SQLException {
+        System.out.println("Started loading hospital from database...");
+
         PreparedStatement floorsPS = conn.prepareStatement("SELECT * from FLOOR where BUILDING_ID = ?");
         PreparedStatement nodesPS = conn.prepareStatement("SELECT * from NODE where FLOOR_ID = ?");
         PreparedStatement edgesPS = conn.prepareStatement("SELECT * from EDGE where FLOOR_ID = ?");
@@ -305,6 +291,8 @@ public class DatabaseManager {
                             mapNodes.put(node_UUID, tempNode);
                         }
 
+                        System.out.println("Added node to " + node_UUID.toString());
+
                         nodes.put(node_UUID, tempNode);
 
                     }
@@ -320,12 +308,16 @@ public class DatabaseManager {
                                 changedNode,
                                 destRS.getString(2),
                                 floorRS.getString(1));
+
                         nodes.remove(UUID.fromString(destRS.getString(3)));
                         nodes.put(UUID.fromString(destRS.getString(3)), tempDest);
+
                         mapNodes.remove(UUID.fromString(destRS.getString(3)));
                         mapNodes.put(UUID.fromString(destRS.getString(3)), tempDest);
+
                         h.addDestinations(UUID.fromString(destRS.getString(1)), tempDest);
                     }
+
 
                     HashMap<Integer, NodeEdge> edges = new HashMap<>();
 
@@ -471,17 +463,13 @@ public class DatabaseManager {
                 h.getDestinations().get(UUID.fromString(results.getString(1))).addDoctor(tempDoc);
                 locations.add(h.getDestinations().get(UUID.fromString(results.getString(1))));
             }
-//            doctors.put(rs.getString(2),
-//                    new Doctor(UUID.fromString(rs.getString(1)),
-//                            rs.getString(2),
-//                            rs.getString(3),
-//                            rs.getString(5),
-//                            locations));
+
             h.addDoctors(rs.getString(2), tempDoc);
 
         }
         rs.close();
 
+        System.out.println("Database load finished");
     }
 
     private void saveHospital(Hospital h) throws SQLException {
@@ -621,6 +609,7 @@ public class DatabaseManager {
             conn.commit();
             edgesCount++;
         }
+
         
         for (Doctor doc : h.getDoctors().values()) {
             try {
