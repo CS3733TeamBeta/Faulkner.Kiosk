@@ -9,4 +9,4 @@ notifications:
     slack:
       rooms:
         - cs3733teambeta:fu1hh0sKNiepY7dT8yEPX22v#git
-        on_success: never
+      on_success: never
