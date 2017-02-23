@@ -7,6 +7,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.layout.AnchorPane;
 import org.controlsfx.control.PopOver;
 
 import java.util.Map;
@@ -17,6 +18,9 @@ import java.util.Map;
 public abstract class AbstractPopupController
 {
     protected PopOver popOver;
+
+    @FXML
+    protected AnchorPane popOverAnchor;
 
     @FXML
     protected JFXButton okayButton;
@@ -35,6 +39,7 @@ public abstract class AbstractPopupController
     @FXML
     public void initialize()
     {
+
         deleteButton.setOnAction(event ->
         {
             nodeToDelete.deleteFromMap();
@@ -52,6 +57,10 @@ public abstract class AbstractPopupController
      */
     public abstract void saveEdits();
 
+    public void hidePopOver () {
+        popOver.hide();
+    }
+
     /**
      * When the okay button is pressed
      * @param event
@@ -65,6 +74,7 @@ public abstract class AbstractPopupController
     public void setPopOver(PopOver popOver)
     {
         this.popOver = popOver;
+
     }
 }
 
