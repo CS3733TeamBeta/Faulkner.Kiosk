@@ -2,6 +2,7 @@ package Domain.Map;
 
 import Controller.Admin.PopUp.DestinationEditController;
 import Domain.ViewElements.DragIconType;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
 

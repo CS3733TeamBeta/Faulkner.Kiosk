@@ -353,11 +353,12 @@ public class DatabaseManager {
             ResultSet offRS = destOff.executeQuery();
             while(offRS.next()) {
                 Office tempOff = new Office(UUID.fromString(rs.getString(1)),
-                        rs.getString(2),
+                        offRS.getString(2),
                         (h.getDestinations().get(UUID.fromString(rs.getString(1)))));
 
                 // add office to hospital offices list
-                h.addOffices(rs.getString(2), tempOff);
+                h.addOffices(offRS.getString(2), tempOff);
+                System.out.println("******************************" + tempOff.getName());
 
                 // add office to list of offices for a suite
                 h.getDestinations().get(UUID.fromString(rs.getString(1))).addOffice(tempOff);
@@ -506,7 +507,7 @@ public class DatabaseManager {
                 insertDoctors.setString(1, doc.getDocID().toString());
                 insertDoctors.setString(2, doc.getName());
                 insertDoctors.setString(3, doc.getDescription());
-                insertDoctors.setString(4, "");
+                insertDoctors.setString(4, doc.getPhoneNum());
                 insertDoctors.setString(5, doc.getHours());
                 insertDoctors.executeUpdate();
             }

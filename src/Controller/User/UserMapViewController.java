@@ -20,6 +20,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.geometry.Point2D;
@@ -35,6 +36,7 @@ import javafx.animation.Timeline;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -42,6 +44,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Collection;
@@ -189,9 +192,16 @@ public class UserMapViewController extends AbstractController {
 
     public void addToMap(MapNode n)
     {
+        Text destLabel = new Text(n.getLabel());
+        destLabel.setStyle("-fx-font-weight: bold");
+        destLabel.setTranslateX(n.getPosX() - (destLabel.getLayoutBounds().getWidth() / 2) + 12);
+        destLabel.setTranslateY((n.getPosY()-5));
+
+
         if(!mapItems.getChildren().contains(n.getNodeToDisplay()))
         {
             mapItems.getChildren().add(n.getNodeToDisplay()); //add to right panes children
+            mapItems.getChildren().add(destLabel);
         }
 
         setupImportedNode(n);
