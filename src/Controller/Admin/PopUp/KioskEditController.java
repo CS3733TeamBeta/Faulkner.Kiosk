@@ -5,6 +5,8 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import org.controlsfx.control.PopOver;
 
+import static Domain.ViewElements.DragIconType.kiosk;
+
 /**
  * Controlled for popup that edits an office map node
  */
@@ -23,6 +25,7 @@ public class KioskEditController extends AbstractPopupController
 
     protected Kiosk nodeUnderEdit;
 
+
     public KioskEditController(Kiosk kiosk)
     {
         super(kiosk);
@@ -30,15 +33,17 @@ public class KioskEditController extends AbstractPopupController
         this.nodeUnderEdit = kiosk;
     }
 
+
+
     @Override
     public void saveEdits()
     {
-        //nothing to save
+        nodeUnderEdit.setName(nameBox.getText());
     }
 
     @Override
     public void fillFields()
     {
-        //nothing to fill
+        nameBox.setText(nodeUnderEdit.getName());
     }
 }

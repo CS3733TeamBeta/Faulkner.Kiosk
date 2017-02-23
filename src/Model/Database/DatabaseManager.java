@@ -254,7 +254,7 @@ public class DatabaseManager {
                             nodeRS.getDouble(3),
                             nodeRS.getInt(5));
                     System.out.println(tempNode.getPosX());
-                    System.out.println("Added node to " + (floorRS.getString(1)));
+                    System.out.println("Added a " + tempNode.getIconType() + " node to " + (floorRS.getString(1)));
                     nodes.put(UUID.fromString(nodeRS.getString(1)), tempNode);
 
                     mapNodes.put(UUID.fromString(nodeRS.getString(1)), tempNode);
