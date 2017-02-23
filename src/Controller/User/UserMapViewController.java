@@ -271,15 +271,15 @@ public class UserMapViewController extends AbstractController {
     private void clickedDownArrow(){
         int desiredFloor = model.getCurrentFloor().getFloorNumber() - 1;
         boolean foundFloor = false;
-        for(Building b : model.getHospital().getBuildings()) {
-            if(b.getFloors().contains(model.getCurrentFloor())) {
-                for(Floor f : b.getFloors()) {
-                    if(f.getFloorNumber() == desiredFloor){
-                        model.setCurrentFloor(f);
-                        dropDown.setValue(Integer.toString(desiredFloor));
-                        foundFloor = true;
-                    }
-                }
+        for(Building b: model.getHospital().getBuildings()) {
+            try {
+                Floor tempFloor = b.getFloor(desiredFloor);
+                model.setCurrentFloor(tempFloor);
+                foundFloor = true;
+            } catch (Exception e) {
+                System.out.println("Threw funky exception");
+                e.printStackTrace();
+
             }
         }
         if(foundFloor) {
@@ -294,15 +294,15 @@ public class UserMapViewController extends AbstractController {
     private void clickedUpArrow(){
         int desiredFloor = model.getCurrentFloor().getFloorNumber() + 1;
         boolean foundFloor = false;
-        for(Building b : model.getHospital().getBuildings()) {
-            if(b.getFloors().contains(model.getCurrentFloor())) {
-                for(Floor f : b.getFloors()) {
-                    if(f.getFloorNumber() == desiredFloor){
-                        model.setCurrentFloor(f);
-                        dropDown.setValue(Integer.toString(desiredFloor));
-                        foundFloor = true;
-                    }
-                }
+        for(Building b: model.getHospital().getBuildings()) {
+            try {
+                Floor tempFloor = b.getFloor(desiredFloor);
+                model.setCurrentFloor(tempFloor);
+                foundFloor = true;
+            } catch (Exception e) {
+                System.out.println("Threw funky exception");
+                e.printStackTrace();
+
             }
         }
         if(foundFloor) {
