@@ -157,6 +157,16 @@ public class MapNode implements DrawableMapEntity {
 
     }
 
+    public NodeEdge getEdgeTo(MapNode n) {
+        for(NodeEdge aEdge: this.edges) {
+            if (aEdge.getOtherNode(this).equals(n)) {
+                return aEdge;
+            }
+        }
+        return null;
+        //@TODO throw exception
+    }
+
     /**
      * Sets whether or not this map node is an elevator
      *@param isElevator true if node is elevator, false otherwise
