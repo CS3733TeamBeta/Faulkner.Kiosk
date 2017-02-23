@@ -150,12 +150,16 @@ public class UserDirectionsPanel extends AnchorPane
     @FXML
     void onNextButtonClicked(MouseEvent event) {
 
-
-
-        if(stepIndex < guidance.getSteps().size()-2) {
+        if(!(stepIndex < guidance.getSteps().size()-2)) {
+            nextButton.setOpacity(0.0);
+        } else if(stepIndex < guidance.getSteps().size()-2) {
+            previousButton.setOpacity(1.0);
             stepIndex++;
             fillDirectionsList(guidance.getSteps().get(stepIndex));
             onStepChanged(guidance.getSteps().get(stepIndex));
+            if(!(stepIndex < guidance.getSteps().size()-2)) {
+                nextButton.setOpacity(0.0);
+            }
         } else {
             System.out.println("NO! Bad dog!");
         }
@@ -163,16 +167,18 @@ public class UserDirectionsPanel extends AnchorPane
 
 
     @FXML
-    void onPreviousButtonClicked(MouseEvent event)
-    {
+    void onPreviousButtonClicked(MouseEvent event) {
 
-
-
-        if(stepIndex >= 1)
-        {
+        if(!(stepIndex >= 1)) {
+            previousButton.setOpacity(0.0);
+        } else if(stepIndex >= 1) {
+            nextButton.setOpacity(1.0);
             stepIndex--;
             fillDirectionsList(guidance.getSteps().get(stepIndex));
             onStepChanged(guidance.getSteps().get(stepIndex));
+            if(!(stepIndex >= 1)) {
+                previousButton.setOpacity(0.0);
+            }
         } else {
             System.out.println("NO! Bad dog!");
         }
