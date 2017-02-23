@@ -262,7 +262,6 @@ public class DatabaseManager {
                         campusNodeRS.getInt(5));
 
               //  for(tempNode)
-
                 mapNodes.put(UUID.fromString(node_UUID), tempNode);
                 h.getCampusFloor().addNode(tempNode);
             }
@@ -332,8 +331,10 @@ public class DatabaseManager {
                     // print out list of nodes for each floor
                     System.out.println(nodes.values());
 
-                    // select all edges that have floorID of current floor we are loading
                     HashMap<Integer, NodeEdge> edges = new HashMap<>();
+
+
+                    // select all edges that have floorID of current floor we are loading
                     edgesPS.setString(1, floorRS.getString(1));
                     ResultSet edgeRS = edgesPS.executeQuery();
 
@@ -377,6 +378,37 @@ public class DatabaseManager {
                         tempFloor.addEdge(e);
                     }
                 }
+
+                //select all campus edges
+                edgesPS.setString(1, CAMPUS_ID);
+                ResultSet edgeRS = edgesPS.executeQuery();
+
+                while(edgeRS.next())
+                {
+                    NodeEdge tempEdge = new NodeEdge();
+                    if (edgeRS.getDouble(4) != 0.0)
+                    {
+                        try
+                        {
+                            tempEdge = new NodeEdge(mapNodes.get(UUID.fromString(edgeRS.getString(2))),
+                                mapNodes.get(UUID.fromString(edgeRS.getString(3))),
+                                edgeRS.getFloat(4));
+
+                            tempEdge.setSource(mapNodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
+                            tempEdge.setTarget(mapNodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+
+                        //stores all nodeEdges
+                        nodeEdges.put(edgeRS.getInt(1), tempEdge);
+                    }
+
+                    h.getCampusFloor().addEdge(tempEdge);
+                }
+
                 System.out.println(flr);
                 buildings.put(rs.getInt(1),
                         new Building(rs.getString(2)));
