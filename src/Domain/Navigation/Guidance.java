@@ -66,7 +66,8 @@ public class Guidance extends Path {
 
         //Declare and initialize directions
         textDirections = new LinkedList<DirectionStep>();
-        createTextDirections(vFlag);
+        TextDirectionsCreator tdc = new TextDirectionsCreator(pathNodes, pathEdges, kioskDirection, vFlag);
+        textDirections = tdc.getDirectionSteps();
 
         if (vFlag) {
             printTextDirections();
@@ -80,7 +81,8 @@ public class Guidance extends Path {
         kioskDirection = Guidance.directionToNum(kioskInputDirection);
 
         textDirections = new LinkedList<DirectionStep>();
-        createTextDirections(false);
+        TextDirectionsCreator tdc = new TextDirectionsCreator(pathNodes, pathEdges, kioskDirection, false);
+        textDirections = tdc.getDirectionSteps();
 
 
     }
@@ -88,173 +90,6 @@ public class Guidance extends Path {
     public LinkedList<DirectionStep> getSteps()
     {
         return textDirections;
-    }
-
-    public void createTextDirections() {
-        createTextDirections(false);
-    }
-
-    public void createTextDirections(boolean vFlag) {
-        LinkedList<String> tempTextDirections = new LinkedList<String>();
-        LinkedList<MapNode> tempMapNodes = new LinkedList<>();
-        int prevDirection = kioskDirection;
-        MapNode fromNode = new MapNode();
-        MapNode toNode = new MapNode();
-
-        int intersectionsPassed = 0;
-
-        //Add the first node to the textual directions
-        if (vFlag) {
-            tempTextDirections.add("Start at the Kiosk. (Node " + pathNodes.get(0).getNodeID() + ")");
-        } else {
-            tempTextDirections.add("Start at the Kiosk.");
-        }
-
-        for (int i = 0; i < this.pathNodes.size() - 1; i++) {
-
-            //For each set of two nodes
-            fromNode = pathNodes.get(i);
-            toNode = pathNodes.get(i+1);
-
-
-            if (vFlag) {
-                System.out.println("");
-                System.out.println("fromNode has ID " + fromNode.getNodeID());
-                System.out.println("toNode has ID " + toNode.getNodeID());
-            }
-
-            //Figure out the direction that is taken between them.
-            int currentDirection = Guidance.nodesToDirection(fromNode, toNode);
-
-            if (vFlag) {
-                System.out.println("Current direction is " + currentDirection);
-                System.out.println("PrevDirection is " + prevDirection);
-            }
-
-            int changeInDirection;
-            //If direction is not in an elevator
-            if (currentDirection < 9) {
-                //change in direction is the difference between directions
-                changeInDirection = prevDirection - currentDirection;
-                prevDirection = currentDirection;
-            } else {
-                //If you're on an elevator, your previous direction doesn't matter
-                changeInDirection = currentDirection;
-                //Presume the elevator passenger faces North
-                prevDirection = 1;
-            }
-
-            //Change the directionChange into a textual string
-            String directionChangeString = Guidance.directionChangeToString(changeInDirection, vFlag);
-
-            if (directionChangeString.equals("Straight")) {
-                System.out.println("Passing an possible intersection");
-                if (fromNode.getEdges().size() > 3) {
-                    System.out.println("Passing a definite intersection");
-                    System.out.println("fromNode has size of edges: " + fromNode.getEdges().size());
-                    intersectionsPassed++;
-                }
-                tempMapNodes.add(fromNode);
-                intersectionsPassed++;
-            } else if (!directionChangeString.equals("Straight") && (!directionChangeString.equals("up")) && (!directionChangeString.equals("down"))) {
-                if(intersectionsPassed  == 0) {
-                    if (vFlag) {
-                        tempTextDirections.add("Turn " + directionChangeString + " at the next intersection; ID: " + fromNode.getNodeID());
-                        tempMapNodes.add(fromNode);
-                    } else {
-                        tempTextDirections.add("Turn " + directionChangeString + " at the next intersection.");
-                        tempMapNodes.add(fromNode);
-
-                    }
-                }
-                else if(intersectionsPassed == 1){
-                    if (vFlag) {
-                        tempTextDirections.add("After passing 1 intersection, turn " + directionChangeString + " at " + fromNode.getNodeID());
-                        tempMapNodes.add(fromNode);
-                    } else {
-                        tempTextDirections.add("After passing 1 intersection, turn " + directionChangeString + ".");
-                        tempMapNodes.add(fromNode);
-                    }
-                }
-                else{
-                    if (vFlag) {
-                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + " at " + fromNode.getNodeID());
-                        tempMapNodes.add(fromNode);
-                    } else {
-                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + ".");
-                        tempMapNodes.add(fromNode);
-
-                    }
-                }
-
-                intersectionsPassed = 0;
-            } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
-                if(intersectionsPassed == 0){
-                    if (vFlag) {
-                        tempTextDirections.add("Take an elevator at the next intersection from " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                        tempMapNodes.add(fromNode);
-                    } else {
-                        tempTextDirections.add("Take an elevator at the next intersection from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                        tempMapNodes.add(fromNode);
-                    }
-                }
-                else if(intersectionsPassed == 1){
-                    if (vFlag) {
-                        tempTextDirections.add("After passing 1 intersection, take an elevator at " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                        tempMapNodes.add(fromNode);
-                    } else {
-                        tempTextDirections.add("After passing 1 intersection, take an elevator from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                        tempMapNodes.add(fromNode);
-                    }
-                }
-                else {
-                    if (vFlag) {
-                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator" + " at " + fromNode.getNodeID() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                        tempMapNodes.add(fromNode);
-                    } else {
-                        tempTextDirections.add("After passing " + intersectionsPassed + " intersections" + ", take the elevator " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                        tempMapNodes.add(fromNode);
-                    }
-                }
-
-                System.out.println("Adding a direction step at 185");
-                this.textDirections.addLast(new DirectionStep(fromNode.getMyFloor(), tempTextDirections, tempMapNodes));
-                //this.textDirections.getLast().setDirections(tempTextDirections);
-                //this.textDirections.getLast().setNodesForThisFloor(tempMapNodes);
-                tempTextDirections = new LinkedList<>();
-                tempMapNodes = new LinkedList<>();
-                intersectionsPassed = 0;
-            }
-        }
-
-        //Add the destination arrival string
-        if (intersectionsPassed >= 2) {
-            if (vFlag) {
-                tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination: node " + toNode.getNodeID());
-            } else {
-                tempTextDirections.add("After passing " + intersectionsPassed + " intersections, arrive at your destination.");
-            }
-        } else if (intersectionsPassed == 1) {
-            if (vFlag) {
-                tempTextDirections.add("After passing 1 intersection, arrive at your destination: node " + toNode.getNodeID());
-            } else {
-                tempTextDirections.add("After passing 1 intersection, arrive at your destination.");
-            }
-        } else {
-            if (vFlag) {
-                tempTextDirections.add("Arrive at your destination: node " + toNode.getNodeID());
-            } else {
-                tempTextDirections.add("Arrive at your destination.");
-            }
-        }
-        tempMapNodes.add(toNode);
-        System.out.println("Adding step to textdirections");
-        this.textDirections.addLast(new DirectionStep(fromNode.getMyFloor(), tempTextDirections, tempMapNodes));
-        //this.textDirections.getLast().setDirections(tempTextDirections);
-        //this.textDirections.getLast().setNodesForThisFloor(tempMapNodes);
-        //tempTextDirections.clear();
-        //tempMapNodes.clear();
-
     }
 
     public void printTextDirections() {
@@ -266,9 +101,6 @@ public class Guidance extends Path {
             for(String s : step.getDirections()) {
                 System.out.println(s);
             }
-            for (MapNode n: step.nodesForThisFloor){
-                System.out.println("X is " + n.getPosX() + ", Y is " + n.getPosY());
-            }
         }
     }
 
@@ -277,34 +109,30 @@ public class Guidance extends Path {
         return Guidance.nodesToDirection(fromNode, toNode, false);
     }
 
-    public static String directionChangeToString(int changeInDirection) {
-        return Guidance.directionChangeToString(changeInDirection, false);
-    }
-
     public static String directionChangeToString(int changeInDirection, boolean vFlag) {
         //If a direction comes out as "Error", somethings wrong
         String stringDirection = "Error";
         switch (changeInDirection) {
             case -7:
-                stringDirection = "slight left";
+                stringDirection = "slight right";
                 break;
             case -6:
-                stringDirection = "left";
+                stringDirection = "right";
                 break;
             case -5:
-                stringDirection = "hard left";
+                stringDirection = "hard right";
                 break;
             case -4:
                 stringDirection = "U-Turn";
                 break;
             case -3:
-                stringDirection = "hard right";
+                stringDirection = "hard left";
                 break;
             case -2:
-                stringDirection = "right";
+                stringDirection = "left";
                 break;
             case -1:
-                stringDirection = "slight right";
+                stringDirection = "slight left";
                 break;
             case 0:
                 stringDirection = "Straight";
@@ -313,22 +141,22 @@ public class Guidance extends Path {
                 stringDirection = "slight right";
                 break;
             case 2:
-                stringDirection = "left";
+                stringDirection = "right";
                 break;
             case 3:
-                stringDirection = "hard left";
+                stringDirection = "hard right";
                 break;
             case 4:
                 stringDirection = "U-Turn";
                 break;
             case 5:
-                stringDirection = "hard right";
+                stringDirection = "hard left";
                 break;
             case 6:
-                stringDirection = "right";
+                stringDirection = "left";
                 break;
             case 7:
-                stringDirection = "slight right";
+                stringDirection = "slight left";
                 break;
             case 9:
                 stringDirection = "up";
@@ -382,7 +210,7 @@ public class Guidance extends Path {
         } else if (angle > -67.5 && angle <= -22.5) {
             direction = 8;
         }
-
+        System.out.println("Direction is " + direction);
         return direction;
     }
 
@@ -393,28 +221,28 @@ public class Guidance extends Path {
                 textDirection = "Error";
                 break;
             case 1:
-                textDirection = "North";
-                break;
-            case 2:
-                textDirection = "NorthEast";
-                break;
-            case 3:
-                textDirection = "East";
-                break;
-            case 4:
-                textDirection = "SouthEast";
-                break;
-            case 5:
                 textDirection = "South";
                 break;
-            case 6:
+            case 2:
                 textDirection = "SouthWest";
                 break;
-            case 7:
+            case 3:
                 textDirection = "West";
                 break;
-            case 8:
+            case 4:
                 textDirection = "NorthWest";
+                break;
+            case 5:
+                textDirection = "North";
+                break;
+            case 6:
+                textDirection = "NorthEast";
+                break;
+            case 7:
+                textDirection = "East";
+                break;
+            case 8:
+                textDirection = "SouthEast";
                 break;
             case 9:
                 textDirection = "Up";
@@ -432,28 +260,28 @@ public class Guidance extends Path {
     public static int directionToNum(String direction) {
         int num;
         switch (direction) {
-            case "North":
+            case "South":
                 num = 1;
                 break;
-            case "NorthEast":
+            case "SouthEast":
                 num = 2;
                 break;
             case "East":
                 num = 3;
                 break;
-            case "SouthEast":
+            case "NorthEast":
                 num = 4;
                 break;
-            case "South":
+            case "North":
                 num = 5;
                 break;
-            case "SouthWest":
+            case "NorthWest":
                 num = 6;
                 break;
             case "West":
                 num = 7;
                 break;
-            case "NorthWest":
+            case "SouthWest":
                 num = 8;
                 break;
             case "Up":
@@ -585,7 +413,7 @@ public class Guidance extends Path {
                 BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthFactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
                 System.out.println("Writing image to combined" + i + ".png");
                 //ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
-                ImageIO.write(combined, "PNG", new File("combined" + i + ".png"));
+                ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
             } catch (Exception e) {
                 System.out.println("threw something very wrong");
                 e.printStackTrace();
@@ -612,7 +440,7 @@ public class Guidance extends Path {
 
         saveStepImages();
 
-        if (Math.random()%100 < 1) {
+        if (Math.random() < .25) {
             System.out.println("Egg called");
             directionLine += "<a href=\"https://youtu.be/dQw4w9WgXcQ\">Some music for your enjoyement, hospital-goer.</a>";
         }

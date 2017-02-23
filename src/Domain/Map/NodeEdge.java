@@ -133,12 +133,9 @@ public class NodeEdge implements DrawableMapEntity
         double offsetX = 12.5;
         double offsetY = 12.5;
 
-        System.out.println("Width: " + offsetX);
-        System.out.println("Height: " + offsetY);
         Point2D newPoint = new Point2D (drawableNode.getLayoutX() + offsetX ,
                                         drawableNode.getLayoutY() + offsetY );
 
-        System.out.println(newPoint.getX());
 
         if (node == target) {
             setEndPoint(newPoint);
