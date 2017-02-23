@@ -2,7 +2,6 @@ package Model.Database;
 
 import Domain.Map.*;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.*;
 
@@ -85,14 +84,10 @@ public class DatabaseManager {
             "CREATE TABLE DEST_DOC (DEST_ID CHAR(36), " +
                     "DOC_ID CHAR(36), " +
                     "CONSTRAINT DESTINATION_DOC_DESTINATION_DESTINATION_ID_FK1 FOREIGN KEY (DEST_ID) REFERENCES DESTINATION (DEST_ID), " +
-                    "CONSTRAINT DESTINATION_DOC_DOCTOR_DOCTOR_ID_FK2 FOREIGN KEY (DOC_ID) REFERENCES DOCTOR (DOC_ID))",
-
-            "CREATE TABLE CAMPUS (NODE_ID CHAR(36), " +
-                    "CONSTRAINT CAMPUS_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID))"
+                    "CONSTRAINT DESTINATION_DOC_DOCTOR_DOCTOR_ID_FK2 FOREIGN KEY (DOC_ID) REFERENCES DOCTOR (DOC_ID))"
     };
 
     public static final String[] dropTables = {
-            "DROP TABLE USER1.CAMPUS",
             "DROP TABLE USER1.DEST_DOC",
             "DROP TABLE USER1.EDGE",
             "DROP TABLE USER1.OFFICES",
@@ -310,11 +305,9 @@ public class DatabaseManager {
                             mapNodes.put(node_UUID, tempNode);
                         }
 
-                        System.out.println("Added node to " + node_UUID.toString());
                         nodes.put(node_UUID, tempNode);
 
                     }
-                    System.out.println(nodes.values());
 
                     // loading destinations per floor
                     destPS.setString(1, floorRS.getString(1));
@@ -328,13 +321,11 @@ public class DatabaseManager {
                                 destRS.getString(2),
                                 floorRS.getString(1));
                         nodes.remove(UUID.fromString(destRS.getString(3)));
-                        System.out.println(nodes.keySet());
                         nodes.put(UUID.fromString(destRS.getString(3)), tempDest);
-                        System.out.println(nodes.keySet());
+                        mapNodes.remove(UUID.fromString(destRS.getString(3)));
+                        mapNodes.put(UUID.fromString(destRS.getString(3)), tempDest);
                         h.addDestinations(UUID.fromString(destRS.getString(1)), tempDest);
                     }
-                    // print out list of nodes for each floor
-                    System.out.println(nodes.values());
 
                     HashMap<Integer, NodeEdge> edges = new HashMap<>();
 
@@ -355,17 +346,12 @@ public class DatabaseManager {
                             tempEdge.setSource(mapNodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
                             tempEdge.setTarget(mapNodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
 
-                            //System.out.println(nodes.get(UUID.fromString(edgeRS.getString(2))).getEdges().contains(tempEdge));
-                            System.out.println("Added Edge to" + floorRS.getString(1));
                             // stores nodeEdges per floor
                             edges.put(edgeRS.getInt(1), tempEdge);
                             //stores all nodeEdges
                             nodeEdges.put(edgeRS.getInt(1), tempEdge);
                         }
                     }
-
-                    System.out.println(edges);
-                    System.out.println(nodeEdges);
 
                     Floor tempFloor = new Floor(floorRS.getInt(3));
                     tempFloor.setImageLocation(floorRS.getString(4));
@@ -414,7 +400,6 @@ public class DatabaseManager {
                     h.getCampusFloor().addEdge(tempEdge);
                 }
 
-                System.out.println(flr);
                 buildings.put(rs.getInt(1),
                         new Building(rs.getString(2)));
                 for (Floor f : flr.values())
@@ -432,9 +417,6 @@ public class DatabaseManager {
         for (Building b : buildings.values()) {
             h.addBuilding(b);
         }
-
-        System.out.println(mapNodes);
-        System.out.println(h.getBuildings());
 
         rs = s.executeQuery("SELECT * from EDGE where COST = 0");
         while(rs.next()) {
@@ -465,7 +447,6 @@ public class DatabaseManager {
 
                 // add office to hospital offices list
                 h.addOffices(offRS.getString(2), tempOff);
-                System.out.println("******************************" + tempOff.getName());
 
                 // add office to list of offices for a suite
                 h.getDestinations().get(UUID.fromString(rs.getString(1))).addOffice(tempOff);
@@ -499,7 +480,6 @@ public class DatabaseManager {
             h.addDoctors(rs.getString(2), tempDoc);
 
         }
-        System.out.println(doctors.keySet());
         rs.close();
 
     }
@@ -641,8 +621,6 @@ public class DatabaseManager {
             conn.commit();
             edgesCount++;
         }
-
-        System.out.println("Here");
         
         for (Doctor doc : h.getDoctors().values()) {
             try {
@@ -666,10 +644,9 @@ public class DatabaseManager {
                     insertAssoc.executeUpdate();
                 }
                 catch (SQLException e) {
-                    System.out.println("Error saving suite_doc " + e.getMessage());
+                    System.out.println("Error saving dest_doc " + e.getMessage());
                 }
                 conn.commit();
-                System.out.println("Added Suites");
             }
         }
         // saves Offices
