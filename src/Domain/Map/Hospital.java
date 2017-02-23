@@ -1,16 +1,16 @@
 package Domain.Map;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 
 /**
   * Created by IanCJ on 1/29/2017.
   */
 public class Hospital {
     HashSet<Building> buildings;
+
+    private LinkedList<MapNode> kioskNodes = new LinkedList<>();
+    MapNode mainKioskNode = null;
 
     private HashMap<String, Doctor> doctors;
     private HashMap<UUID, Destination> destinations;

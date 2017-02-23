@@ -27,6 +27,8 @@ public class MapNode implements DrawableMapEntity {
     double posX;
     double posY;
 
+    boolean isKioskNode = false;
+
     protected DragIcon icon;
 
     final double NODE_HOVER_OPACITY = .65;
@@ -381,6 +383,10 @@ public class MapNode implements DrawableMapEntity {
         NodeEditController controller = new NodeEditController(this);
 
         return getPopOver(controller, popOverEditFXML);
+    }
+
+    public void setKioskNode(boolean state){
+        this.isKioskNode = state;
     }
 
     /**
