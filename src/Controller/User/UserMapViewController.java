@@ -273,8 +273,7 @@ public class UserMapViewController extends AbstractController {
         boolean foundFloor = false;
         for(Building b: model.getHospital().getBuildings()) {
             try {
-                Floor tempFloor = b.getFloor(desiredFloor);
-                model.setCurrentFloor(tempFloor);
+                model.setCurrentFloor(b.getFloor(desiredFloor));
                 foundFloor = true;
             } catch (Exception e) {
                 System.out.println("Threw funky exception");
@@ -296,8 +295,7 @@ public class UserMapViewController extends AbstractController {
         boolean foundFloor = false;
         for(Building b: model.getHospital().getBuildings()) {
             try {
-                Floor tempFloor = b.getFloor(desiredFloor);
-                model.setCurrentFloor(tempFloor);
+                model.setCurrentFloor(b.getFloor(desiredFloor));
                 foundFloor = true;
             } catch (Exception e) {
                 System.out.println("Threw funky exception");
