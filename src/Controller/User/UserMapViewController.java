@@ -242,16 +242,16 @@ public class UserMapViewController extends AbstractController {
 
     @FXML
     private void dropDownResetOpacity(){
-        dropDown.setOpacity(0.5);
+        dropDown.setOpacity(0.85);
     }
     @FXML
     private void dropDownChangeOpacity(){
-        dropDown.setOpacity(0.8);
+        dropDown.setOpacity(1.0);
     }
 
     @FXML
     private void floorDownResetOpacity(){
-        floorDownArrow.setOpacity(0.5);
+        floorDownArrow.setOpacity(0.7);
     }
     @FXML
     private void floorDownChangeOpacity(){
@@ -260,7 +260,7 @@ public class UserMapViewController extends AbstractController {
 
     @FXML
     private void floorUpResetOpacity(){
-        floorUpArrow.setOpacity(0.5);
+        floorUpArrow.setOpacity(0.7);
     }
     @FXML
     private void floorUpChangeOpacity(){
