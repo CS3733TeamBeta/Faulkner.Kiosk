@@ -97,16 +97,6 @@ public abstract class PathfindingAlgorithm {
 
     }
 
-    //Returns true if for every node in pathNodes, it has a path to the next node.
-    public boolean isValidPath() {
-        boolean isValid = true;
-        for(int i = 1; i < pathNodes.size() - 0; i++) {
-            if ( !(pathNodes.get(i-1).hasEdgeTo(pathNodes.get(i))) ) {
-                isValid = false;
-            }
-        }
-        return isValid;
-    }
 
     /**
      * Find the heuristic (aprox. distance) from currentNode to endNode using pythag. theorm from xpos and ypos, and

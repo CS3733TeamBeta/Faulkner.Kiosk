@@ -117,7 +117,7 @@ public class PathFindingTest extends TestCase{
 
         myHospital.addBuilding(myBuilding);
     }
-/*
+
     //Tests that UIDs are working properly
     public void testUID() {
 
@@ -138,8 +138,8 @@ public class PathFindingTest extends TestCase{
         listOfEdges.add(edgeAB);
         Path manPathValid = new Path(listOfEdges, listOfNodes);
         Path manPathInvalid = new Path(listOfEdges, listOfInvalidNodes);
-        assertTrue(manPathValid.isValidPath());
-        assertFalse(manPathInvalid.isValidPath());
+        assertTrue(manPathValid.isValidPath(manPathValid.getPathNodes(), manPathValid.getPathEdges()));
+        assertFalse(manPathInvalid.isValidPath(manPathInvalid.getPathNodes(), manPathInvalid.getPathEdges()));
     }
 
 
@@ -192,7 +192,7 @@ public class PathFindingTest extends TestCase{
             fail("Threw unexpected exception in testGuidance");
         }
     }
-*/
+
     public void testAstar() {
         try {
             p1 = new Path(nodeA, nodeL, true, new AStarAlgorithm());

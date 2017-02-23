@@ -70,7 +70,7 @@ public class DFSAlgorithm extends PathfindingAlgorithm {
             throw new PathFindingNoPathException("No valid path found", this.pathNodes, this.pathEdges);
         }
 
-        if (!this.isValidPath()) {
+        if (!Path.isValidPath(this.getPathNodes(), this.getPathEdges())) {
             throw new PathFindingInvalidPathException("Path generated is invalid", this.pathNodes, this.pathEdges);
         }
     }
