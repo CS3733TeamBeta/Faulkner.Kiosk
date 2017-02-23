@@ -67,6 +67,8 @@ public class MapNode implements DrawableMapEntity {
     Image node = null;
     Floor myFloor;
 
+    String direction = null;
+
     public HashSet<NodeEdge> edges;
 
     boolean isElevator = false;
@@ -111,6 +113,14 @@ public class MapNode implements DrawableMapEntity {
                 break;
             }
         }
+    }
+
+    public String getDirection(){
+        return this.direction;
+    }
+
+    public void setDirection(String direction){
+        this.direction = direction;
     }
 
     public String getLabel() {

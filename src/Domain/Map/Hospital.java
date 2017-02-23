@@ -11,6 +11,7 @@ public class Hospital {
 
     private LinkedList<MapNode> kioskNodes = new LinkedList<>();
     MapNode mainKioskNode = null;
+    String directionOfMainMode = null;
 
     private HashMap<String, Doctor> doctors;
     private HashMap<UUID, Destination> destinations;
@@ -30,6 +31,10 @@ public class Hospital {
 
     public MapNode getMainKioskNode(){
         return this.mainKioskNode;
+    }
+
+    public void setDirectionOfMainNode(String directionOfMainNode){
+        this.directionOfMainMode = directionOfMainNode;
     }
 
     public void addBuilding(Building b) {

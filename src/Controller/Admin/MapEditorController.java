@@ -975,6 +975,7 @@ public class MapEditorController extends AbstractController {
 						System.out.println("Found kiosk node");
 						if(n.getKioskNodeInfo() == true){
 							model.getHospital().setMainKioskNode(n);
+							model.getHospital().setDirectionOfMainNode(n.getDirection());
 						}
 						kioskNodes.add(n);
 					}
@@ -989,6 +990,7 @@ public class MapEditorController extends AbstractController {
 			if(kioskNodes.size() != 0) {
 				System.out.println("ERROR: NO MAIN KIOSK NODE SET. PICKING ONE FROM ALLOCATED KIOSKS");
 				model.getHospital().setMainKioskNode(kioskNodes.getFirst());
+				model.getHospital().setDirectionOfMainNode("N");
 			}
 			else{
 				if(otherNodes.size() > 0){
@@ -996,6 +998,7 @@ public class MapEditorController extends AbstractController {
 					MapNode newKiosk = otherNodes.getFirst();
 					newKiosk.setType(DragIconType.kiosk);
 					model.getHospital().setMainKioskNode(newKiosk);
+					model.getHospital().setDirectionOfMainNode("N");
 				}
 				else{
 					System.out.println("ERROR: NO NODES SET IN ENTIRE HOSPITAL. NO KIOSK SET");
