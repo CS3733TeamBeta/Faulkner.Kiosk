@@ -13,20 +13,19 @@ import java.util.Map;
  */
 public class DirectionFloorStep {
     Floor floorOfTheseDirections;
-    LinkedList<String> directionsForThisFloor;
     LinkedList<MapNode> nodesForThisFloor;
-    LinkedList<LinkedList<NodeEdge>> listOfEdgeSets;
+    LinkedList<DirectionStep> stepsInThisFloor;
 
-    public DirectionFloorStep(Floor floor, LinkedList<String> directionsForThisFloor, LinkedList<MapNode> nodesForThisFloor, LinkedList<LinkedList<NodeEdge>> listOfEdgeSets) {
+    public DirectionFloorStep(Floor floor, LinkedList<MapNode> nodesForThisFloor, LinkedList<DirectionStep> stepsInThisFloor) {
         this.floorOfTheseDirections = floor;
-        this.directionsForThisFloor = directionsForThisFloor;
         this.nodesForThisFloor = nodesForThisFloor;
-        this.listOfEdgeSets = listOfEdgeSets;
+        this.stepsInThisFloor = stepsInThisFloor;
+
     }
 
     public DirectionFloorStep(Floor floor){
         floorOfTheseDirections = floor;
-        directionsForThisFloor = new LinkedList<String>();
+        stepsInThisFloor = new LinkedList<>();
     }
 
     public void setNodesForThisFloor(LinkedList<MapNode> listOfNodes) {
@@ -38,16 +37,10 @@ public class DirectionFloorStep {
     }
 
 
-    public void addDirections(String newDirection){
-        this.directionsForThisFloor.add(newDirection);
+    public void addDirectionStep(DirectionStep step){
+        this.stepsInThisFloor.add(step);
     }
 
-    public void setDirections(LinkedList<String> directions){
-        this.directionsForThisFloor.clear();
-        for(String s : directions){
-            this.directionsForThisFloor.add(s);
-        }
-    }
 
     public void printNodes() {
         if (nodesForThisFloor != null) {
@@ -64,8 +57,8 @@ public class DirectionFloorStep {
         return floorOfTheseDirections;
     }
 
-    public LinkedList<String> getDirections(){
-        return directionsForThisFloor;
+    public LinkedList<DirectionStep> getDirectionSteps(){
+        return stepsInThisFloor;
     }
 
 }
