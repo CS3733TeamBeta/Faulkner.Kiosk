@@ -150,11 +150,14 @@ public class UserDirectionsPanel extends AnchorPane
     @FXML
     void onNextButtonClicked(MouseEvent event) {
 
-        stepIndex++;
 
-        if(stepIndex<guidance.getNumSteps()-1) {
+
+        if(stepIndex < guidance.getSteps().size()-2) {
+            stepIndex++;
             fillDirectionsList(guidance.getSteps().get(stepIndex));
             onStepChanged(guidance.getSteps().get(stepIndex));
+        } else {
+            System.out.println("NO! Bad dog!");
         }
     }
 
@@ -162,22 +165,21 @@ public class UserDirectionsPanel extends AnchorPane
     @FXML
     void onPreviousButtonClicked(MouseEvent event)
     {
-        System.out.println("3");
 
-        stepIndex--;
 
-        if(stepIndex>0)
+
+        if(stepIndex >= 1)
         {
+            stepIndex--;
             fillDirectionsList(guidance.getSteps().get(stepIndex));
             onStepChanged(guidance.getSteps().get(stepIndex));
+        } else {
+            System.out.println("NO! Bad dog!");
         }
     }
 
     @FXML
-    void onSendEmail(ActionEvent event)
-    {
-        System.out.println("2");
-
+    void onSendEmail(ActionEvent event) {
         Runnable sendEmail = () -> {
             if(guidance!=null)
             {
