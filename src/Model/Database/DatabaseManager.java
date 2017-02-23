@@ -286,25 +286,24 @@ public class DatabaseManager {
                 edgesPS.setString(1, floorRS.getString(1));
                 ResultSet edgeRS = edgesPS.executeQuery();
                 while(edgeRS.next()) {
-                    NodeEdge tempEdge = new NodeEdge(nodes.get(UUID.fromString(edgeRS.getString(2))),
-                            nodes.get(UUID.fromString(edgeRS.getString(3))),
-                            edgeRS.getInt(4));
+                    NodeEdge tempEdge = new NodeEdge();
+                    if(edgeRS.getDouble(4) != 0.0) {
+                        tempEdge = new NodeEdge(nodes.get(UUID.fromString(edgeRS.getString(2))),
+                                nodes.get(UUID.fromString(edgeRS.getString(3))),
+                                edgeRS.getFloat(4));
 
-                    if(tempEdge.getCost()==0)
-                    {
-                        tempEdge = new LinkEdge(tempEdge);
+
+                        tempEdge.setSource(nodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
+                        tempEdge.setTarget(nodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
+
+                        System.out.println(nodes.get(UUID.fromString(edgeRS.getString(2))).getEdges().contains(tempEdge));
+
+                        System.out.println("Added Edge to" + floorRS.getString(1));
+                        // stores nodeEdges per floor
+                        edges.put(edgeRS.getInt(1), tempEdge);
+                        //stores all nodeEdges
+                        nodeEdges.put(edgeRS.getInt(1), tempEdge);
                     }
-
-                    tempEdge.setSource(nodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
-                    tempEdge.setTarget(nodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
-
-                    System.out.println(nodes.get(UUID.fromString(edgeRS.getString(2))).getEdges().contains(tempEdge));
-
-                    System.out.println("Added Edge to" + floorRS.getString(1));
-                    // stores nodeEdges per floor
-                    edges.put(edgeRS.getInt(1), tempEdge);
-                    //stores all nodeEdges
-                    nodeEdges.put(edgeRS.getInt(1), tempEdge);
 
                 }
 
@@ -343,6 +342,15 @@ public class DatabaseManager {
 
         System.out.println(mapNodes);
         System.out.println(h.getBuildings());
+
+        rs = s.executeQuery("SELECT * from EDGE where COST = 0");
+        while(rs.next()) {
+            MapNode source = mapNodes.get(UUID.fromString(rs.getString(2)));
+            MapNode target = mapNodes.get(UUID.fromString(rs.getString(3)));
+            LinkEdge tempEdge = new LinkEdge(source, target);
+
+            nodeEdges.put(rs.getInt(1), tempEdge);
+        }
 
         // loading doctors, destinations, and offices to hospital
         HashMap<UUID, Destination> destsID = new HashMap<>();
@@ -511,7 +519,7 @@ public class DatabaseManager {
                 insertDoctors.setString(1, doc.getDocID().toString());
                 insertDoctors.setString(2, doc.getName());
                 insertDoctors.setString(3, doc.getDescription());
-                insertDoctors.setString(4, "");
+                insertDoctors.setString(4, doc.getPhoneNum());
                 insertDoctors.setString(5, doc.getHours ());
                 insertDoctors.executeUpdate();
             }
