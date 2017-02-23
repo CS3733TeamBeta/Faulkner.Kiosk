@@ -16,7 +16,7 @@ import java.util.LinkedList;
  * Path is the path from one Destination to another
  */
 public class Path{
-    PathfindingAlgorithm algorithm;
+    public PathfindingAlgorithm algorithm;
 
     LinkedList<NodeEdge> pathEdges = new LinkedList<>();
     LinkedList<MapNode> pathNodes = new LinkedList<>();
@@ -43,6 +43,44 @@ public class Path{
 
     public Path(MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
         this(start, end, vFlag, new AStarAlgorithm());
+    }
+
+    //Prints out all edges in this path, only used for testing
+    public void printPathEdges(){
+        System.out.println("Printing Edges");
+        for (NodeEdge e: this.pathEdges) {
+            System.out.println("From " + Integer.toString(e.getSource().getType()) + "to " + Integer.toString(e.getTarget().getType()));
+        }
+    }
+
+    //Prints out all nodes in this path, only used for testing
+    public void printPathNodes(){
+        System.out.println("Printing Nodes");
+        for (MapNode n: this.pathNodes) {
+            System.out.println("Node of id " + n.getNodeID());
+        }
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Path) {
+            return this.equals((Path) obj);
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isValidPath(LinkedList<MapNode> listNodes, LinkedList<NodeEdge> listEdges) {
+        boolean isValid = true;
+        for(int i = 1; i < listNodes.size() - 0; i++) {
+            if ( !(listNodes.get(i-1).hasEdgeTo(listNodes.get(i))) ) {
+                isValid = false;
+            }
+        }
+        return isValid;
+    }
+
+    public boolean equals(Path p) {
+        return ((this.pathEdges.equals(p.getPathEdges()) && (this.pathNodes.equals(p.getPathNodes()))));
     }
 
     /**
