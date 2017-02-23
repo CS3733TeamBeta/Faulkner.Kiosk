@@ -136,7 +136,6 @@ public class NodeEdge implements DrawableMapEntity
         Point2D newPoint = new Point2D (drawableNode.getLayoutX() + offsetX ,
                                         drawableNode.getLayoutY() + offsetY );
 
-
         if (node == target) {
             setEndPoint(newPoint);
         } else {

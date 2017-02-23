@@ -170,12 +170,15 @@ public class UserMapViewController extends AbstractController {
 
             for(NodeEdge e : n.getEdges())
             {
-                if(!mapItems.getChildren().contains(e.getEdgeLine()))
+                if(model.getCurrentFloor().getFloorNodes().contains(e.getOtherNode(n)))
                 {
-                    mapItems.getChildren().add(e.getEdgeLine());
-                }
+                    if (!mapItems.getChildren().contains(e.getEdgeLine()))
+                    {
+                        mapItems.getChildren().add(e.getEdgeLine());
+                    }
 
-                e.updatePosViaNode(n);
+                    e.updatePosViaNode(n);
+                }
             }
 
             n.getNodeToDisplay().toFront();
@@ -417,10 +420,8 @@ public class UserMapViewController extends AbstractController {
         panel.toFront();
         panel.relocate(mainPane.getPrefWidth()-5, 0);
 
-
         panel.setCloseHandler(event->
         {
-            ///DEVONNNN
             hideDirections();
             // Ben, you might want to consider reset the direction panel here
             panel.setVisible(false);
@@ -568,14 +569,14 @@ public class UserMapViewController extends AbstractController {
         MapNode startPoint = model.getCurrentFloor().getKioskNode();
         if(startPoint == null){
             System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
-            startPoint = model.getCurrentFloor().getFloorNodes().getFirst();
+            startPoint = model.getCurrentFloor().getFloorNodes().iterator().next();
         }
         if (endPoint == startPoint) {
             System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
             return;//TODO add error message of some kind
         }
         try {
-            newRoute = new Guidance(startPoint, endPoint, "North");
+            newRoute = new Guidance(startPoint, endPoint,"North");
         } catch (PathFindingException e) {
             return;//TODO add error message throw
         }
