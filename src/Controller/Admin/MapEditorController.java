@@ -1,15 +1,11 @@
 package Controller.Admin;
 
-import java.awt.*;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.*;
-
 import Controller.AbstractController;
-import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
-import Domain.ViewElements.*;
+import Domain.ViewElements.DragContainer;
+import Domain.ViewElements.DragIcon;
+import Domain.ViewElements.DragIconType;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.DataSourceClasses.MapTreeItem;
@@ -21,13 +17,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -35,8 +29,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import jfxtras.labs.util.event.MouseControlUtil;
-import javafx.scene.input.KeyCode;
 import org.controlsfx.control.PopOver;
+
+import java.awt.*;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+
 import static Controller.SceneSwitcher.switchToAddFloor;
 
 public class MapEditorController extends AbstractController {
@@ -476,14 +478,23 @@ public class MapEditorController extends AbstractController {
 	{
 		if(model.getCurrentFloor()!=null)
 		{
-			for (MapNode n : model.getCurrentFloor().getFloorNodes())
-			{
-				DragIcon icon = (DragIcon) n.getNodeToDisplay();
+			for(Building b: model.getHospital().getBuildings()) {
+				for (Floor f: b.getFloors()) {
+					for(MapNode n: f.getFloorNodes()) {
+						DragIcon icon = (DragIcon) n.getNodeToDisplay();
 
-				Point2D newPoint = new Point2D(icon.getLayoutX(),
-						icon.getLayoutY());
+						Point2D newPoint = new Point2D(icon.getLayoutX(),
+								icon.getLayoutY());
 
-				n.setPos(newPoint.getX(), newPoint.getY());
+						n.setPos(newPoint.getX(), newPoint.getY());
+
+						for(NodeEdge edge: n.getEdges())
+						{
+							edge.updatePosViaNode(n);
+							edge.updateCost();
+						}
+					}
+				}
 			}
 		}
 	}
@@ -551,6 +562,7 @@ public class MapEditorController extends AbstractController {
 					for (NodeEdge edge : n.getEdges())
 					{
 						edge.updatePosViaNode(n);
+						edge.updateCost();
 					}
 
 					//System.out.println("Node " + n.getIconType().name() + " moved to (X: "+ event.getSceneX() + ", Y: " + event.getSceneY() + ")");
