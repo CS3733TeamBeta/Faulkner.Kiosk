@@ -6,4 +6,5 @@ package Model.Database;
 public class CustomFilePath
 {
     public final static String myFilePath = "jdbc:derby:/";
+
 }
