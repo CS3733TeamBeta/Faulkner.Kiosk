@@ -117,7 +117,7 @@ public class PathFindingTest extends TestCase{
 
         myHospital.addBuilding(myBuilding);
     }
-
+/*
     //Tests that UIDs are working properly
     public void testUID() {
 
@@ -192,7 +192,7 @@ public class PathFindingTest extends TestCase{
             fail("Threw unexpected exception in testGuidance");
         }
     }
-
+*/
     public void testAstar() {
         try {
             p1 = new Path(nodeA, nodeL, true, new AStarAlgorithm(nodeA, nodeB));
