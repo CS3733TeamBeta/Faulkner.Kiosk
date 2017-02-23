@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 
 
 import java.io.*;
+import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 
@@ -65,38 +66,71 @@ public class FileChooser_Controller extends AbstractController
 
     @FXML
     private void clickSaveFile() throws IOException{
-        try
-        {
-            source.transferTo(0, size, outChannel);
-        }
-        catch(Exception e){}
+        File userFile = new File(strFilePath);
+        String filename = userFile.getName();
+        fullName = "resources/FloorMaps/" + filename;
 
-
-        outChannel.force(true);
-        source.force(true);
-        outChannel.close();
-        source.close();
-
-        System.out.println("Loading image to: " + fullName);
-
-        int floorNum;
-
-        try{
-            floorNum = Integer.parseInt(inputFloorNumber.getText());
+        if(checkSameFile(strFilePath, System.getProperty("user.dir") + "/" + fullName)){
+            System.out.println("File is already in directory");
+            System.out.println("Loading file now");
+            int floorNum = Integer.parseInt(inputFloorNumber.getText());
             building = dropDown.getValue();
             if(fullName != null) {
-                outChannel.close();
-                source.close();
-                addFloorInfo(fullName, floorNum, building);
+                for(Building b : theHospital.getBuildings()){
+                    if(b.getName().equals(building)){
+                        for(Floor f : b.getFloors()){
+                            if(f.getFloorNumber() == floorNum){
+                                f.setImageLocation(fullName);
+                            }
+                        }
+                    }
+                }
                 SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
             }
-            else{
-                System.out.println("ERROR: No image selected");
-            }
-        }catch(NumberFormatException e){
-            System.out.println("ERROR: Input non-int value");
-
         }
+        else {
+            source = new FileInputStream(strFilePath).getChannel();
+
+            size = 0;
+            try {
+                size = source.size();
+            }
+            catch (Exception e){
+
+            }
+            outChannel = new FileOutputStream(fullName).getChannel();
+            System.out.println("Trying to copy");
+            try {
+                source.transferTo(0, size, outChannel);
+            } catch (Exception e) {
+                System.out.println("ERROR in copying file");
+            }
+            outChannel.force(true);
+            source.force(true);
+            outChannel.close();
+            source.close();
+
+            System.out.println("Loading image to: " + fullName);
+
+            int floorNum;
+
+            try{
+                floorNum = Integer.parseInt(inputFloorNumber.getText());
+                building = dropDown.getValue();
+                if(fullName != null) {
+                    addFloorInfo(fullName, floorNum, building);
+                    SceneSwitcher.switchToScene(this.getStage(), "../Admin/MapBuilder/MapEditorView.fxml");
+                }
+                else{
+                    System.out.println("ERROR: No image selected");
+                }
+            }catch(NumberFormatException e){
+                System.out.println("ERROR: Input non-int value");
+
+            }
+        }
+
+
 
     }
 
@@ -164,19 +198,6 @@ public class FileChooser_Controller extends AbstractController
             DialogPane message = new DialogPane();
             alert.showAndWait();
         }
-        File userFile = new File(strFilePath);
-        String filename = userFile.getName();
-        fullName = "resources/FloorMaps/" + filename;
-        source = new FileInputStream(strFilePath).getChannel();
-
-        size = 0;
-        try {
-            size = source.size();
-        }
-        catch (Exception e){
-
-        }
-        outChannel = new FileOutputStream(fullName).getChannel();
     }
 
     // gets the extension of the selected file for comparison with valid types in clickChooseFile
@@ -184,5 +205,32 @@ public class FileChooser_Controller extends AbstractController
     {
         String fileName = f.getName();
         return fileName.substring(fileName.indexOf(".") + 1, f.getName().length());
+    }
+
+    private boolean checkSameFile(String one, String two){
+        char charArray[] = one.toCharArray();
+        char charArrayTwo[] = two.toCharArray();
+        if(charArray.length != charArrayTwo.length){
+            return false;
+        }
+        else {
+            for (int i = 0; i < charArray.length; i++) {
+                if (charArray[i] == '\\') {
+                    charArray[i] = '/';
+                }
+                if (charArrayTwo[i] == '\\') {
+                    charArrayTwo[i] = '/';
+                }
+            }
+            for (int i = 0; i < charArray.length; i++) {
+                if(charArray[i] != charArrayTwo[i]){
+                    return false;
+                }
+            }
+            System.out.println(charArray);
+            System.out.println(charArrayTwo);
+            return true;
+        }
+
     }
 }
