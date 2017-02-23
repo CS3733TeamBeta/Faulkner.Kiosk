@@ -130,6 +130,8 @@ public class UserMapViewController extends AbstractController {
     @FXML
     ScrollPane scrollPane;
 
+    @FXML private ChoiceBox<String> dropDown;
+
     Stage primaryStage;
 
     MapModel model;
@@ -220,6 +222,52 @@ public class UserMapViewController extends AbstractController {
             groupBounds = group.getLayoutBounds();
         }
     }*/
+
+    @FXML
+    private void clickedDownArrow(){
+        int desiredFloor = model.getCurrentFloor().getFloorNumber() - 1;
+        boolean foundFloor = false;
+        for(Building b : model.getHospital().getBuildings()) {
+            if(b.getFloors().contains(model.getCurrentFloor())) {
+                for(Floor f : b.getFloors()) {
+                    if(f.getFloorNumber() == desiredFloor){
+                        model.setCurrentFloor(f);
+                        dropDown.setValue(Integer.toString(desiredFloor));
+                        foundFloor = true;
+                    }
+                }
+            }
+        }
+        if(foundFloor) {
+            System.out.println("Changing floor");
+            renderFloorMap();
+        }else{
+            System.out.println("Error in changing floor");
+        }
+    }
+
+    @FXML
+    private void clickedUpArrow(){
+        int desiredFloor = model.getCurrentFloor().getFloorNumber() + 1;
+        boolean foundFloor = false;
+        for(Building b : model.getHospital().getBuildings()) {
+            if(b.getFloors().contains(model.getCurrentFloor())) {
+                for(Floor f : b.getFloors()) {
+                    if(f.getFloorNumber() == desiredFloor){
+                        model.setCurrentFloor(f);
+                        dropDown.setValue(Integer.toString(desiredFloor));
+                        foundFloor = true;
+                    }
+                }
+            }
+        }
+        if(foundFloor) {
+            System.out.println("Changing floor");
+            renderFloorMap();
+        }else{
+            System.out.println("Error in changing floor");
+        }
+    }
 
     @FXML
     private void initialize() throws Exception {
@@ -314,6 +362,15 @@ public class UserMapViewController extends AbstractController {
 
         panel.setVisible(false);
         directionPaneView();
+
+        for( Building b : model.getHospital().getBuildings()) {
+            if(b.getFloors().contains(model.getCurrentFloor())) {
+                for(Floor f : b.getFloors()) {
+                    dropDown.getItems().add(Integer.toString(f.getFloorNumber()));
+                }
+            }
+        }
+        dropDown.setValue(Integer.toString(model.getCurrentFloor().getFloorNumber()));
     }
 
     private void panToCenter()
