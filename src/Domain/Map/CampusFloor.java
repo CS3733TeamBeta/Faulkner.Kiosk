@@ -12,15 +12,13 @@ public class CampusFloor extends Floor
 
     public CampusFloor()
     {
-        super(-1); //sorta hacky but should do the trick...
+        super(1); //sorta hacky but should do the trick...
         campusNodes = new HashSet<MapNode>();
     }
 
     @Override
     public void addNode(MapNode n)
     {
-        System.out.println("Adding node to floor");
-
         campusNodes.add(n);
         super.addNode(n);
     }
@@ -32,7 +30,6 @@ public class CampusFloor extends Floor
 
         for(MapNode n: campusNodes)
         {
-            System.out.println("Restoring campus node...");
             super.addNode(n);
         }
     }

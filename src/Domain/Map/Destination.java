@@ -106,4 +106,10 @@ public class Destination extends MapNode {
     public void addDoctor(Doctor d) {
         doctors.add(d);
     }
+
+    @Override
+    public String getLabel()
+    {
+        return name;
+    }
 }
