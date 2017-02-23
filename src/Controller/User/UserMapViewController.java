@@ -305,7 +305,6 @@ public class UserMapViewController extends AbstractController {
         }
     }
 
-
     @FXML
     private void initialize() throws Exception {
         model = new MapModel();

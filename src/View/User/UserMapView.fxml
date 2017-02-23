@@ -28,11 +28,6 @@
                         <Image url="@MapViewer/floor3.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="adminLogin" fitHeight="42.0" fitWidth="41.0" layoutX="1128.0" layoutY="21.0" onMouseClicked="#adminLogin" opacity="0.21" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="1128.0" AnchorPane.topAnchor="21.0">
-                     <image>
-                        <Image url="@resources/admin_login.png" />
-                     </image>
-                  </ImageView>
                </children>
             </AnchorPane>
         </content>
@@ -181,5 +176,10 @@
             <Double fx:value="-60.0" />
          </points>
       </Polygon>
+      <ImageView fx:id="adminLogin" fitHeight="42.0" fitWidth="41.0" onMouseClicked="#adminLogin" opacity="0.21" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+         <image>
+            <Image url="@resources/admin_login.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
