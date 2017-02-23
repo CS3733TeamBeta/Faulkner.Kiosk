@@ -99,7 +99,7 @@ public class DatabaseManager {
             "DROP TABLE USER1.BUILDING"};
 
 
-    protected DatabaseManager() throws SQLException
+    public DatabaseManager() throws SQLException
     {
 
         String driver = "org.apache.derby.jdbc.EmbeddedDriver";
@@ -178,26 +178,12 @@ public class DatabaseManager {
 
         }
         statements.add(s);
-        loadData();
         //executeStatements(dropTables);
         //executeStatements(createTables);
     }
 
-    public static synchronized DatabaseManager getInstance() {
-        if(instance == null) {
-            try
-            {
-                instance = new DatabaseManager();
-            } catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
-        }
 
-        return instance;
-    }
-
-    public void executeStatements(String[] states) throws SQLException {
+    private void executeStatements(String[] states) throws SQLException {
         Statement state = conn.createStatement();
         for (String s : states) {
             state.executeUpdate(s);
@@ -210,8 +196,6 @@ public class DatabaseManager {
         s = conn.createStatement();
 
         Hospital h = new Hospital();
-        //executeStatements(dropTables);
-        //executeStatements(createTables);
 
         loadHospital(h);
 
@@ -230,7 +214,7 @@ public class DatabaseManager {
         System.out.println("Data Saved Correctly");
     }
 
-    private void loadHospital(Hospital h) throws SQLException {
+    private synchronized void loadHospital(Hospital h) throws SQLException {
         PreparedStatement floorsPS = conn.prepareStatement("SELECT * from FLOOR where BUILDING_ID = ?");
         PreparedStatement nodesPS = conn.prepareStatement("SELECT * from NODE where FLOOR_ID = ?");
         PreparedStatement edgesPS = conn.prepareStatement("SELECT * from EDGE where FLOOR_ID = ?");

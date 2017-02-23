@@ -34,7 +34,7 @@ public class MapModel {
 
         try
         {
-            hospital = DatabaseManager.getInstance().loadData();
+            hospital = new DatabaseManager().loadData();
         } catch (SQLException e)
         {
             e.printStackTrace();
@@ -57,6 +57,42 @@ public class MapModel {
                 e.printStackTrace();
             }
         }
+    }
+
+    public int incrementFloor(int incAmount)
+    {
+        for(Building b: hospital.getBuildings())
+        {
+            if(b.getFloors().contains(getCurrentFloor()))
+            {
+                int nextFloorID = getCurrentFloor().getFloorNumber() + incAmount;
+
+                if(nextFloorID<=b.getFloors().size() && nextFloorID >0)
+                {
+                    try
+                    {
+                        this.setCurrentFloor(b.getFloor(nextFloorID));
+                        return nextFloorID;
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    public int chooseNextFloor()
+    {
+       return incrementFloor(1);
+    }
+
+    public int choosePreviousFloor()
+    {
+        return incrementFloor(-1);
     }
 
     public void setCurrentFloor(Floor floor){

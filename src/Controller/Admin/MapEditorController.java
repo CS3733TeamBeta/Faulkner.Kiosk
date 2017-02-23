@@ -1075,7 +1075,7 @@ public class MapEditorController extends AbstractController {
 		//removeHandlers();
 		//updateEdgeWeights();
 
-		DatabaseManager.getInstance().saveData(model.getHospital());
+		new DatabaseManager().saveData(model.getHospital());
 
 		SceneSwitcher.switchToUserMapView(this.getStage());
 	}
@@ -1083,6 +1083,6 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
 	{
-		SceneSwitcher.switchToModifyDirectoryView(this.getStage());
+		SceneSwitcher.switchToModifyDirectoryView(this.getStage(), model.getHospital());
 	}
 }
