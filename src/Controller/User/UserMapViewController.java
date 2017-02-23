@@ -20,6 +20,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.geometry.Point2D;
@@ -34,7 +35,9 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -42,6 +45,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Collection;
@@ -130,6 +134,14 @@ public class UserMapViewController extends AbstractController {
     @FXML
     ScrollPane scrollPane;
 
+    @FXML
+    Polygon floorUpArrow;
+
+    @FXML
+    Polygon floorDownArrow;
+
+    @FXML private ChoiceBox<String> dropDown;
+
     Stage primaryStage;
 
     MapModel model;
@@ -157,12 +169,15 @@ public class UserMapViewController extends AbstractController {
 
             for(NodeEdge e : n.getEdges())
             {
-                if(!mapItems.getChildren().contains(e.getEdgeLine()))
+                if(model.getCurrentFloor().getFloorNodes().contains(e.getOtherNode(n)))
                 {
-                    mapItems.getChildren().add(e.getEdgeLine());
-                }
+                    if (!mapItems.getChildren().contains(e.getEdgeLine()))
+                    {
+                        mapItems.getChildren().add(e.getEdgeLine());
+                    }
 
-                e.updatePosViaNode(n);
+                    e.updatePosViaNode(n);
+                }
             }
 
             n.getNodeToDisplay().toFront();
@@ -191,9 +206,16 @@ public class UserMapViewController extends AbstractController {
 
     public void addToMap(MapNode n)
     {
+        Text destLabel = new Text(n.getLabel());
+        destLabel.setStyle("-fx-font-weight: bold");
+        destLabel.setTranslateX(n.getPosX() - (destLabel.getLayoutBounds().getWidth() / 2) + 12);
+        destLabel.setTranslateY((n.getPosY()-5));
+
+
         if(!mapItems.getChildren().contains(n.getNodeToDisplay()))
         {
             mapItems.getChildren().add(n.getNodeToDisplay()); //add to right panes children
+            mapItems.getChildren().add(destLabel);
         }
 
         setupImportedNode(n);
@@ -220,6 +242,103 @@ public class UserMapViewController extends AbstractController {
             groupBounds = group.getLayoutBounds();
         }
     }*/
+
+    @FXML
+    private void dropDownResetOpacity(){
+        dropDown.setOpacity(0.85);
+    }
+    @FXML
+    private void dropDownChangeOpacity(){
+        dropDown.setOpacity(1.0);
+    }
+
+    @FXML
+    private void floorDownResetOpacity(){
+        floorDownArrow.setOpacity(0.7);
+    }
+    @FXML
+    private void floorDownChangeOpacity(){
+        floorDownArrow.setOpacity(0.8);
+    }
+
+    @FXML
+    private void floorUpResetOpacity(){
+        floorUpArrow.setOpacity(0.7);
+    }
+    @FXML
+    private void floorUpChangeOpacity(){
+        floorUpArrow.setOpacity(0.8);
+    }
+
+    @FXML
+    private void clickedDownArrow(){
+        int desiredFloor = model.getCurrentFloor().getFloorNumber() - 1;
+        boolean foundFloor = false;
+        for(Building b: model.getHospital().getBuildings()) {
+            try {
+                Floor tempFloor = b.getFloor(desiredFloor);
+                model.setCurrentFloor(tempFloor);
+                foundFloor = true;
+            } catch (Exception e) {
+                System.out.println("Threw funky exception");
+                e.printStackTrace();
+
+            }
+        }
+        if(foundFloor) {
+            System.out.println("Changing floor");
+            renderFloorMap();
+        }else{
+            System.out.println("Error in changing floor");
+        }
+    }
+
+    @FXML
+    private void clickedUpArrow(){
+        int desiredFloor = model.getCurrentFloor().getFloorNumber() + 1;
+        boolean foundFloor = false;
+        for(Building b: model.getHospital().getBuildings()) {
+            try {
+                Floor tempFloor = b.getFloor(desiredFloor);
+                model.setCurrentFloor(tempFloor);
+                foundFloor = true;
+            } catch (Exception e) {
+                System.out.println("Threw funky exception");
+                e.printStackTrace();
+
+            }
+        }
+        if(foundFloor) {
+            System.out.println("Changing floor");
+            renderFloorMap();
+        }else{
+            System.out.println("Error in changing floor");
+        }
+    }
+    @FXML
+    private void dropDownHit(){
+        if(Integer.parseInt(dropDown.getValue()) != model.getCurrentFloor().getFloorNumber()){
+            int desiredFloor = Integer.parseInt(dropDown.getValue());
+            boolean foundFloor = false;
+            for(Building b : model.getHospital().getBuildings()) {
+                if(b.getFloors().contains(model.getCurrentFloor())) {
+                    for(Floor f : b.getFloors()) {
+                        if(f.getFloorNumber() == desiredFloor){
+                            model.setCurrentFloor(f);
+                            dropDown.setValue(Integer.toString(desiredFloor));
+                            foundFloor = true;
+                        }
+                    }
+                }
+            }
+            if(foundFloor) {
+                System.out.println("Changing floor");
+                renderFloorMap();
+            }else{
+                System.out.println("Error in changing floor");
+            }
+        }
+    }
 
     @FXML
     private void initialize() throws Exception {
@@ -300,10 +419,8 @@ public class UserMapViewController extends AbstractController {
         panel.toFront();
         panel.relocate(mainPane.getPrefWidth()-5, 0);
 
-
         panel.setCloseHandler(event->
         {
-            ///DEVONNNN
             hideDirections();
             // Ben, you might want to consider reset the direction panel here
             panel.setVisible(false);
@@ -314,6 +431,15 @@ public class UserMapViewController extends AbstractController {
 
         panel.setVisible(false);
         directionPaneView();
+
+        for( Building b : model.getHospital().getBuildings()) {
+            if(b.getFloors().contains(model.getCurrentFloor())) {
+                for(Floor f : b.getFloors()) {
+                    dropDown.getItems().add(Integer.toString(f.getFloorNumber()));
+                }
+            }
+        }
+        dropDown.setValue(Integer.toString(model.getCurrentFloor().getFloorNumber()));
     }
 
     private void panToCenter()
@@ -442,14 +568,14 @@ public class UserMapViewController extends AbstractController {
         MapNode startPoint = model.getCurrentFloor().getKioskNode();
         if(startPoint == null){
             System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
-            startPoint = model.getCurrentFloor().getFloorNodes().getFirst();
+            startPoint = model.getCurrentFloor().getFloorNodes().iterator().next();
         }
         if (endPoint == startPoint) {
             System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
             return;//TODO add error message of some kind
         }
         try {
-            newRoute = new Guidance(startPoint, endPoint, "North");
+            newRoute = new Guidance(startPoint, endPoint,"North");
         } catch (PathFindingException e) {
             return;//TODO add error message throw
         }

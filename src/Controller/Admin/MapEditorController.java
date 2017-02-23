@@ -113,6 +113,7 @@ public class MapEditorController extends AbstractController {
 	public void initNodes()
 	{
 		Group initGroup = new Group();
+		model.getHospital().getCampusFloor().clearBuildings();
 
 		for(Building b: model.getHospital().getBuildings())
 		{
@@ -124,6 +125,14 @@ public class MapEditorController extends AbstractController {
 					n.setPos(n.getPosX(), n.getPosY());
 				}
 			}
+
+			model.getHospital().getCampusFloor().importBuilding(b);
+		}
+
+		for(MapNode n: model.getHospital().getCampusFloor().getCampusNodes())
+		{
+			initGroup.getChildren().add(n.getNodeToDisplay());
+			n.setPos(n.getPosX(), n.getPosY());
 		}
 	}
 
@@ -132,6 +141,7 @@ public class MapEditorController extends AbstractController {
 	 */
 	@FXML
 	private void initialize() {
+		System.out.println("Here");
 
 		initNodes();
 
@@ -178,7 +188,7 @@ public class MapEditorController extends AbstractController {
 
 		loadBuildingsToTabPane(model.getHospital().getBuildings());
 
-		getCurrentTreeView().getSelectionModel().select(0); //selects first floor
+		//getCurrentTreeView().getSelectionModel().select(0); //selects first floor
 	}
 
 	/**
@@ -221,6 +231,60 @@ public class MapEditorController extends AbstractController {
 
 			model.addBuilding(b, t); //adds to building tab map
 		}
+
+		createCampusTab();
+	}
+
+
+	public void createCampusTab()
+	{
+		final Label label = new Label("Campus");
+		final Tab tab = new Tab();
+		tab.setGraphic(label);
+
+		TreeView tV = new TreeView<>();
+
+		tV.setRoot(new TreeItem<MapTreeItem>(null));
+		tV.setShowRoot(false);
+
+		label.setOnMouseClicked(e->
+				{
+					Floor campusFloor = model.getHospital().getCampusFloor();
+
+					//changeFloorSelection(campusFloor);
+					tV.getRoot().getChildren().clear();
+
+					for(Building b: model.getHospital().getBuildings())
+					{
+						try
+						{
+							TreeItem<String> buildingItem = new TreeItem<String>(b.getName());
+
+							Floor groundFloor = b.getFloor(1);
+
+							for(MapNode n: groundFloor.getFloorNodes())
+							{
+								if(n.getIconType()!=DragIconType.connector)
+								{
+									buildingItem.getChildren().add(new TreeItem<String>(n.toString()));
+								}
+							}
+
+							tV.getRoot().getChildren().add(buildingItem);
+
+						} catch (Exception e1)
+						{
+						}
+					}
+
+					model.setCurrentFloor(campusFloor);
+					renderFloorMap(campusFloor);
+				}
+		);
+
+		tab.setContent(tV);
+
+		BuildingTabPane.getTabs().add(tab);
 	}
 	/**
 	 * Adds a building to the tab pane/model
@@ -307,13 +371,17 @@ public class MapEditorController extends AbstractController {
 	 * @param event from button click
 	 */
 	@FXML
-	void onNewFloor(ActionEvent event)
+	void onNewFloor(ActionEvent event) throws IOException
 	{
+		SceneSwitcher.switchToAddFloor(this.getStage());
+
 		TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
 
 		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
 
 		Floor f = b.newFloor(); //makes new floor
+
+		//b.addFloor();
 
 		treeView.getRoot().getChildren().add(makeTreeItem(f));
 	}
@@ -352,33 +420,44 @@ public class MapEditorController extends AbstractController {
 		}
 	}
 
-	protected void renderFloorMap()
+	protected void renderFloorMap(Floor f)
 	{
 		mapItems = new Group();
 		mapPane.getChildren().clear();
 		mapPane.getChildren().add(mapItems);
 
-		mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
+		mapImage.setImage(f.getImageInfo().getFXImage());
 		mapItems.getChildren().add(mapImage);
 
-		for(MapNode n: model.getCurrentFloor().getFloorNodes())
+		for(MapNode n: f.getFloorNodes())
 		{
 			importNode(n);
 
 			for(NodeEdge e : n.getEdges())
 			{
-				if(!mapItems.getChildren().contains(e.getEdgeLine()))
+				if(f.getFloorNodes().contains(e.getOtherNode(n)))
 				{
-					mapItems.getChildren().add(e.getEdgeLine());
-				}
+					if (!mapItems.getChildren().contains(e.getEdgeLine()))
+					{
+						mapItems.getChildren().add(e.getEdgeLine());
+					}
 
-				e.updatePosViaNode(n);
+					addHandlersToEdge(e);
+
+					e.updatePosViaNode(n);
+				}
 			}
 
 			n.getNodeToDisplay().toFront();
 		}
 
 		mapImage.toBack();
+	}
+
+	protected void renderFloorMap()
+	{
+		renderFloorMap(model.getCurrentFloor());
+		loadFloorTreeView();
 	}
 
 	/**
@@ -396,14 +475,22 @@ public class MapEditorController extends AbstractController {
 
 		addEventHandlersToNode(mapNode);
 
-		if(!mapNode.getIconType().equals(DragIconType.connector)) //treeview checks that floor actually contains
-		{
-			//addToTreeView(mapNode); disabled for now.
-		}
-
 		mapNode.toFront(); //send the node to the front
 	}
 
+	/**
+	 * Loads the tree view for a specific floor
+	 */
+	protected void loadFloorTreeView()
+	{
+		for(MapNode n: model.getCurrentFloor().getFloorNodes())
+		{
+			if(!n.getIconType().equals(DragIconType.connector)) //treeview checks that floor actually contains
+			{
+				addToTreeView(n);
+			}
+		}
+	}
 	/**
 	 * Refreshes the node positions so they're up to date from latest drags/changes
 	 *
@@ -429,6 +516,21 @@ public class MapEditorController extends AbstractController {
 							edge.updateCost();
 						}
 					}
+				}
+			}
+
+			for(MapNode n: model.getHospital().getCampusFloor().getCampusNodes()) {
+				DragIcon icon = (DragIcon) n.getNodeToDisplay();
+
+				Point2D newPoint = new Point2D(icon.getLayoutX(),
+						icon.getLayoutY());
+
+				n.setPos(newPoint.getX(), newPoint.getY());
+
+				for(NodeEdge edge: n.getEdges())
+				{
+					edge.updatePosViaNode(n);
+					edge.updateCost();
 				}
 			}
 		}
@@ -763,12 +865,11 @@ public class MapEditorController extends AbstractController {
 		{
 			System.out.println("Node " + mapNode.getIconType().name() + " added to: " + mapNode.getPosX() + " " + mapNode.getPosY());
 			mapNode.setFloor(model.getCurrentFloor());
-			model.getCurrentFloor().getFloorNodes().add(mapNode);
+			model.getCurrentFloor().addNode(mapNode);
 		}
 
 		importNode(mapNode); //must occur after adding node to model floor
 	}
-
 
 	/**
 	 *
@@ -809,7 +910,10 @@ public class MapEditorController extends AbstractController {
 
 				/***If the name is set, at it to the tree*/
 				popOver.setOnHiding(event -> {
-					getCurrentTreeView().refresh(); //refresh the treeview once the popup editor closes
+					if(!model.getCurrentFloor().equals(model.getHospital().getCampusFloor()))
+					{
+						getCurrentTreeView().refresh(); //refresh the treeview once the popup editor closes
+					}
 				});
 
 				popOver.show(mapNode.getNodeToDisplay(),
@@ -947,9 +1051,16 @@ public class MapEditorController extends AbstractController {
 	}
 
 	public void updateEdgeWeights(){
-		for(NodeEdge e : model.getCurrentFloor().getFloorEdges()){
-			e.updateCost();
-		}
+		/*for(Building b: model.getHospital().getBuildings())
+		{
+			for(Floor f: b.getFloors())
+			{
+				for (NodeEdge e : f.getFloorEdges())
+				{
+					e.updateCost();
+				}
+			}
+		}*/
 	}
 
 	/**Handles saving out all of the map info
@@ -962,7 +1073,7 @@ public class MapEditorController extends AbstractController {
 	{
 		refreshNodePositions();
 		//removeHandlers();
-		updateEdgeWeights();
+		//updateEdgeWeights();
 
 		DatabaseManager.getInstance().saveData(model.getHospital());
 
