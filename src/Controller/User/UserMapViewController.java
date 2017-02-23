@@ -35,6 +35,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -132,6 +133,12 @@ public class UserMapViewController extends AbstractController {
 
     @FXML
     ScrollPane scrollPane;
+
+    @FXML
+    Polygon floorUpArrow;
+
+    @FXML
+    Polygon floorDownArrow;
 
     @FXML private ChoiceBox<String> dropDown;
 
@@ -234,6 +241,33 @@ public class UserMapViewController extends AbstractController {
     }*/
 
     @FXML
+    private void dropDownResetOpacity(){
+        dropDown.setOpacity(0.5);
+    }
+    @FXML
+    private void dropDownChangeOpacity(){
+        dropDown.setOpacity(0.8);
+    }
+
+    @FXML
+    private void floorDownResetOpacity(){
+        floorDownArrow.setOpacity(0.5);
+    }
+    @FXML
+    private void floorDownChangeOpacity(){
+        floorDownArrow.setOpacity(0.8);
+    }
+
+    @FXML
+    private void floorUpResetOpacity(){
+        floorUpArrow.setOpacity(0.5);
+    }
+    @FXML
+    private void floorUpChangeOpacity(){
+        floorUpArrow.setOpacity(0.8);
+    }
+
+    @FXML
     private void clickedDownArrow(){
         int desiredFloor = model.getCurrentFloor().getFloorNumber() - 1;
         boolean foundFloor = false;
@@ -276,6 +310,30 @@ public class UserMapViewController extends AbstractController {
             renderFloorMap();
         }else{
             System.out.println("Error in changing floor");
+        }
+    }
+    @FXML
+    private void dropDownHit(){
+        if(Integer.parseInt(dropDown.getValue()) != model.getCurrentFloor().getFloorNumber()){
+            int desiredFloor = Integer.parseInt(dropDown.getValue());
+            boolean foundFloor = false;
+            for(Building b : model.getHospital().getBuildings()) {
+                if(b.getFloors().contains(model.getCurrentFloor())) {
+                    for(Floor f : b.getFloors()) {
+                        if(f.getFloorNumber() == desiredFloor){
+                            model.setCurrentFloor(f);
+                            dropDown.setValue(Integer.toString(desiredFloor));
+                            foundFloor = true;
+                        }
+                    }
+                }
+            }
+            if(foundFloor) {
+                System.out.println("Changing floor");
+                renderFloorMap();
+            }else{
+                System.out.println("Error in changing floor");
+            }
         }
     }
 

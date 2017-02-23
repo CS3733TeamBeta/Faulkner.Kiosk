@@ -160,12 +160,12 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <ImageView fx:id="adminLogin" fitHeight="42.0" fitWidth="41.0" layoutX="900.0" layoutY="89.0" onMouseClicked="#adminLogin" opacity="0.21" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="120.0">
+      <ImageView fx:id="adminLogin" fitHeight="42.0" fitWidth="41.0" layoutX="900.0" layoutY="89.0" onMouseClicked="#adminLogin" opacity="0.21" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
          <image>
             <Image url="@resources/admin_login.png" />
          </image>
       </ImageView>
-      <Polygon id="floorUpArrow" fx:id="floorUpArrow" fill="DODGERBLUE" layoutX="33.0" layoutY="37.0" onMouseClicked="#clickedUpArrow" opacity="0.75" scaleX="0.25" scaleY="0.25" stroke="BLACK" strokeType="INSIDE">
+      <Polygon id="floorUpArrow" fx:id="floorUpArrow" onMouseEntered="#floorUpChangeOpacity" onMouseExited="#floorUpResetOpacity" fill="DODGERBLUE" layoutX="33.0" layoutY="77.0" onMouseClicked="#clickedUpArrow" opacity="0.5" scaleX="0.25" scaleY="0.25" stroke="BLACK" strokeType="INSIDE">
          <points>
             <Double fx:value="-50.0" />
             <Double fx:value="40.0" />
@@ -175,7 +175,7 @@
             <Double fx:value="-60.0" />
          </points>
       </Polygon>
-      <Polygon id="floorDownArrow" fx:id="floorDownArrow" fill="DODGERBLUE" layoutX="33.0" layoutY="100.0" onMouseClicked="#clickedDownArrow" opacity="0.75" rotate="180.0" scaleX="0.25" scaleY="0.25" stroke="BLACK" strokeType="INSIDE">
+      <Polygon id="floorDownArrow" onMouseEntered="#floorDownChangeOpacity" onMouseExited="#floorDownResetOpacity" fx:id="floorDownArrow" fill="DODGERBLUE" layoutX="33.0" layoutY="140.0" onMouseClicked="#clickedDownArrow" opacity="0.5" rotate="180.0" scaleX="0.25" scaleY="0.25" stroke="BLACK" strokeType="INSIDE">
          <points>
             <Double fx:value="-50.0" />
             <Double fx:value="40.0" />
@@ -185,6 +185,6 @@
             <Double fx:value="-60.0" />
          </points>
       </Polygon>
-      <ChoiceBox fx:id="dropDown" layoutX="13.0" layoutY="42.0" prefHeight="31.0" prefWidth="40.0" />
+      <ChoiceBox fx:id="dropDown" onMouseEntered="#dropDownChangeOpacity" onMouseExited="#dropDownResetOpacity" opacity="0.5" onAction="#dropDownHit" layoutX="13.0" layoutY="82.0" prefHeight="31.0" prefWidth="40.0" />
    </children>
 </AnchorPane>

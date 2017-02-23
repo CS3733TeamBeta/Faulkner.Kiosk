@@ -7,5 +7,6 @@ public enum DragIconType {
 	food,
 	info,
 	department,
-	bathroom
+	bathroom,
+	kiosk
 }
