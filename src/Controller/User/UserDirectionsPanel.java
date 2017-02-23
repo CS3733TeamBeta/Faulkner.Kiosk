@@ -1,6 +1,7 @@
 package Controller.User;
 
 import Domain.Navigation.DirectionFloorStep;
+import Domain.Navigation.DirectionStep;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.Events.StepChangedEvent;
 import Domain.ViewElements.Events.StepChangedEventHandler;
@@ -115,9 +116,8 @@ public class UserDirectionsPanel extends AnchorPane
     {
         directionsListView.getItems().clear();
 
-        for(String s: step.getDirections())
-        {
-            Label l = new Label(s);
+        for(DirectionStep aDirectionStep: step.getDirectionSteps()) {
+            Label l = new Label(aDirectionStep.getInstruction());
             directionsListView.getItems().add(l);
         }
     }
