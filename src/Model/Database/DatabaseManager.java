@@ -2,6 +2,7 @@ package Model.Database;
 
 import Domain.Map.*;
 
+import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.*;
 
@@ -21,6 +22,8 @@ public class DatabaseManager {
     private ResultSet rs = null;
     private String username = "user1";
     private String uname = username.toUpperCase();
+
+    private static String CAMPUS_ID = "CAMPUS";
 
     public static HashMap<UUID, MapNode> mapNodes = new HashMap<>();
     public static HashMap<Integer, NodeEdge> edges = new HashMap<>();
@@ -78,9 +81,14 @@ public class DatabaseManager {
             "CREATE TABLE DEST_DOC (DEST_ID CHAR(36), " +
                     "DOC_ID CHAR(36), " +
                     "CONSTRAINT DESTINATION_DOC_DESTINATION_DESTINATION_ID_FK1 FOREIGN KEY (DEST_ID) REFERENCES DESTINATION (DEST_ID), " +
-                    "CONSTRAINT DESTINATION_DOC_DOCTOR_DOCTOR_ID_FK2 FOREIGN KEY (DOC_ID) REFERENCES DOCTOR (DOC_ID))"};
+                    "CONSTRAINT DESTINATION_DOC_DOCTOR_DOCTOR_ID_FK2 FOREIGN KEY (DOC_ID) REFERENCES DOCTOR (DOC_ID))",
+
+            "CREATE TABLE CAMPUS (NODE_ID CHAR(36), " +
+                    "CONSTRAINT CAMPUS_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID))"
+    };
 
     public static final String[] dropTables = {
+            "DROP TABLE USER1.CAMPUS",
             "DROP TABLE USER1.DEST_DOC",
             "DROP TABLE USER1.EDGE",
             "DROP TABLE USER1.OFFICES",
@@ -227,112 +235,192 @@ public class DatabaseManager {
         PreparedStatement nodesPS = conn.prepareStatement("SELECT * from NODE where FLOOR_ID = ?");
         PreparedStatement edgesPS = conn.prepareStatement("SELECT * from EDGE where FLOOR_ID = ?");
         PreparedStatement destPS = conn.prepareStatement("SELECT * from DESTINATION where FLOOR_ID = ?");
+
+        PreparedStatement campusNodePS = conn.prepareStatement("SELECT * FROM NODE WHERE NODE_ID = ?");
         s = conn.createStatement();
 
         HashMap<Integer, Building> buildings = new HashMap<>();
         HashMap<UUID, MapNode> mapNodes = new HashMap<>();
         HashMap<Integer, NodeEdge> nodeEdges = new HashMap<>();
 
-        ResultSet rs = s.executeQuery("select * from BUILDING ORDER BY NAME DESC");
+        ResultSet rs = s.executeQuery("SELECT * FROM USER1.CAMPUS");
+
+        final int NODE_ID_COL = 1;
+
+        while(rs.next())
+        {
+            String node_UUID = rs.getString(1);
+            campusNodePS.setString(1, node_UUID);
+
+            ResultSet campusNodeRS = campusNodePS.executeQuery();
+
+            while(campusNodeRS.next())
+            {
+                MapNode tempNode = new MapNode(UUID.fromString(campusNodeRS.getString(1)),
+                        campusNodeRS.getDouble(2),
+                        campusNodeRS.getDouble(3),
+                        campusNodeRS.getInt(5));
+
+              //  for(tempNode)
+                mapNodes.put(UUID.fromString(node_UUID), tempNode);
+                h.getCampusFloor().addNode(tempNode);
+            }
+        }
+
+        rs = s.executeQuery("select * from BUILDING ORDER BY NAME DESC");
 
         // load both buildingds in
-        while (rs.next()) {
+        while (rs.next())
+        {
+            if (!rs.getString(2).equals(CAMPUS_ID))
+            {
+                // load floors per building
+                HashMap<String, Floor> flr = new HashMap();
+                floorsPS.setInt(1, rs.getInt(1));
+                ResultSet floorRS = floorsPS.executeQuery();
+                while (floorRS.next())
+                {
+                    // load nodes per floor
+                    HashMap<UUID, MapNode> nodes = new HashMap<>(); // create new nodes hashmap for each floor
+                    nodesPS.setString(1, floorRS.getString(1)); // set query for specific floor
+                    ResultSet nodeRS = nodesPS.executeQuery();
 
-            // load floors per building
-            HashMap<String, Floor> flr = new HashMap();
-            floorsPS.setInt(1,rs.getInt(1));
-            ResultSet floorRS = floorsPS.executeQuery();
-            while(floorRS.next()) {
+                    while (nodeRS.next())
+                    {
+                        UUID node_UUID = UUID.fromString(nodeRS.getString(1));
 
-                // load nodes per floor
-                HashMap<UUID, MapNode> nodes = new HashMap<>(); // create new nodes hashmap for each floor
-                nodesPS.setString(1, floorRS.getString(1)); // set query for specific floor
-                ResultSet nodeRS = nodesPS.executeQuery();
-                while(nodeRS.next()) {
-                    MapNode tempNode = new MapNode(UUID.fromString(nodeRS.getString(1)),
-                            nodeRS.getDouble(2),
-                            nodeRS.getDouble(3),
-                            nodeRS.getInt(5));
-                    System.out.println(tempNode.getPosX());
-                    System.out.println("Added node to " + (floorRS.getString(1)));
-                    nodes.put(UUID.fromString(nodeRS.getString(1)), tempNode);
+                        MapNode tempNode;
 
-                    mapNodes.put(UUID.fromString(nodeRS.getString(1)), tempNode);
+                        if (mapNodes.containsKey(node_UUID))
+                        {
+                            tempNode = mapNodes.get(node_UUID);
+                        }
+                        else
+                        {
+                            tempNode = new MapNode(node_UUID,
+                                    nodeRS.getDouble(2),
+                                    nodeRS.getDouble(3),
+                                    nodeRS.getInt(5));
 
+                            mapNodes.put(node_UUID, tempNode);
+                        }
+
+                        System.out.println("Added node to " + node_UUID.toString());
+                        nodes.put(node_UUID, tempNode);
+
+                    }
+                    System.out.println(nodes.values());
+
+                    // loading destinations per floor
+                    destPS.setString(1, floorRS.getString(1));
+                    ResultSet destRS = destPS.executeQuery();
+
+                    while (destRS.next())
+                    {
+                        MapNode changedNode = nodes.get(UUID.fromString(destRS.getString(3)));
+                        Destination tempDest = new Destination(UUID.fromString(destRS.getString(1)),
+                                changedNode,
+                                destRS.getString(2),
+                                floorRS.getString(1));
+                        nodes.remove(UUID.fromString(destRS.getString(3)));
+                        System.out.println(nodes.keySet());
+                        nodes.put(UUID.fromString(destRS.getString(3)), tempDest);
+                        System.out.println(nodes.keySet());
+                        h.addDestinations(UUID.fromString(destRS.getString(1)), tempDest);
+                    }
+                    // print out list of nodes for each floor
+                    System.out.println(nodes.values());
+
+                    HashMap<Integer, NodeEdge> edges = new HashMap<>();
+
+
+                    // select all edges that have floorID of current floor we are loading
+                    edgesPS.setString(1, floorRS.getString(1));
+                    ResultSet edgeRS = edgesPS.executeQuery();
+
+                    while (edgeRS.next())
+                    {
+                        NodeEdge tempEdge = new NodeEdge();
+                        if (edgeRS.getDouble(4) != 0.0)
+                        {
+                            tempEdge = new NodeEdge(mapNodes.get(UUID.fromString(edgeRS.getString(2))),
+                                    mapNodes.get(UUID.fromString(edgeRS.getString(3))),
+                                    edgeRS.getFloat(4));
+
+                            tempEdge.setSource(mapNodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
+                            tempEdge.setTarget(mapNodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
+
+                            //System.out.println(nodes.get(UUID.fromString(edgeRS.getString(2))).getEdges().contains(tempEdge));
+                            System.out.println("Added Edge to" + floorRS.getString(1));
+                            // stores nodeEdges per floor
+                            edges.put(edgeRS.getInt(1), tempEdge);
+                            //stores all nodeEdges
+                            nodeEdges.put(edgeRS.getInt(1), tempEdge);
+                        }
+                    }
+
+                    System.out.println(edges);
+                    System.out.println(nodeEdges);
+
+                    Floor tempFloor = new Floor(floorRS.getInt(3));
+                    tempFloor.setImageLocation(floorRS.getString(4));
+                    // add floor to list of floors for current building
+                    flr.put(floorRS.getString(1), tempFloor);
+
+                    // add correct mapNodes to their respective floor
+                    for (MapNode n : nodes.values())
+                    {
+                        tempFloor.addNode(n);
+                    }
+                    // add correct nodeEdges to their respective floor
+                    for (NodeEdge e : edges.values())
+                    {
+                        tempFloor.addEdge(e);
+                    }
                 }
-                System.out.println(nodes.values());
 
-                // loading destinations per floor
-                destPS.setString(1, floorRS.getString(1));
-                ResultSet destRS = destPS.executeQuery();
-
-                while(destRS.next()) {
-                    MapNode changedNode = nodes.get(UUID.fromString(destRS.getString(3)));
-                    Destination tempDest = new Destination(UUID.fromString(destRS.getString(1)),
-                            changedNode,
-                            destRS.getString(2),
-                            floorRS.getString(1));
-                    nodes.remove(UUID.fromString(destRS.getString(3)));
-                    System.out.println(nodes.keySet());
-                    nodes.put(UUID.fromString(destRS.getString(3)), tempDest);
-                    System.out.println(nodes.keySet());
-                    h.addDestinations(UUID.fromString(destRS.getString(1)), tempDest);
-                }
-                // print out list of nodes for each floor
-                System.out.println(nodes.values());
-
-                // select all edges that have floorID of current floor we are loading
-                HashMap<Integer, NodeEdge> edges = new HashMap<>();
-                edgesPS.setString(1, floorRS.getString(1));
+                //select all campus edges
+                edgesPS.setString(1, CAMPUS_ID);
                 ResultSet edgeRS = edgesPS.executeQuery();
-                while(edgeRS.next()) {
+
+                while(edgeRS.next())
+                {
                     NodeEdge tempEdge = new NodeEdge();
-                    if(edgeRS.getDouble(4) != 0.0) {
-                        tempEdge = new NodeEdge(nodes.get(UUID.fromString(edgeRS.getString(2))),
-                                nodes.get(UUID.fromString(edgeRS.getString(3))),
+                    if (edgeRS.getDouble(4) != 0.0)
+                    {
+                        try
+                        {
+                            tempEdge = new NodeEdge(mapNodes.get(UUID.fromString(edgeRS.getString(2))),
+                                mapNodes.get(UUID.fromString(edgeRS.getString(3))),
                                 edgeRS.getFloat(4));
 
+                            tempEdge.setSource(mapNodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
+                            tempEdge.setTarget(mapNodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
+                        }
+                        catch (Exception e)
+                        {
 
-                        tempEdge.setSource(nodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
-                        tempEdge.setTarget(nodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
+                        }
 
-                        System.out.println(nodes.get(UUID.fromString(edgeRS.getString(2))).getEdges().contains(tempEdge));
-
-                        System.out.println("Added Edge to" + floorRS.getString(1));
-                        // stores nodeEdges per floor
-                        edges.put(edgeRS.getInt(1), tempEdge);
                         //stores all nodeEdges
                         nodeEdges.put(edgeRS.getInt(1), tempEdge);
                     }
 
+                    h.getCampusFloor().addEdge(tempEdge);
                 }
 
-                System.out.println(edges);
-                System.out.println(nodeEdges);
-
-                Floor tempFloor = new Floor(floorRS.getInt(3));
-                tempFloor.setImageLocation(floorRS.getString(4));
-                // add floor to list of floors for current building
-                flr.put(floorRS.getString(1), tempFloor);
-
-                // add correct mapNodes to their respective floor
-                for (MapNode n : nodes.values()) {
-                    tempFloor.addNode(n);
-                }
-                // add correct nodeEdges to their respective floor
-                for (NodeEdge e : edges.values()) {
-                    tempFloor.addEdge(e);
-                }
-
-            }
-            System.out.println(flr);
-            buildings.put(rs.getInt(1),
-                    new Building(rs.getString(2)));
-            for (Floor f : flr.values()) {
-                try {
-                    buildings.get(rs.getInt(1)).addFloor(f);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                System.out.println(flr);
+                buildings.put(rs.getInt(1),
+                        new Building(rs.getString(2)));
+                for (Floor f : flr.values())
+                {
+                    try
+                    {
+                        buildings.get(rs.getInt(1)).addFloor(f);
+                    } catch (Exception e)
+                    {
+                        System.out.println(e.getMessage());
+                    }
                 }
             }
         }
@@ -421,9 +509,45 @@ public class DatabaseManager {
         PreparedStatement insertAssoc = conn.prepareStatement("INSERT INTO USER1.DEST_DOC (DEST_ID, DOC_ID) VALUES (?, ?)");
         PreparedStatement insertOffices = conn.prepareStatement("INSERT INTO USER1.OFFICES (OFFICE_ID, NAME, DEST_ID) VALUES (?, ?, ?)");
 
+        PreparedStatement insertCampusNodes = conn.prepareStatement("INSERT INTO USER1.CAMPUS (NODE_ID) VALUES ?");
+
         int counter = 1;
 
         HashMap<NodeEdge, String> collectedEdges = new HashMap<>();
+
+        for(MapNode n: h.getCampusFloor().getCampusNodes())
+        {
+            insertBuildings.setInt(1, counter);
+            insertBuildings.setString(2, CAMPUS_ID);
+            insertBuildings.executeUpdate();
+
+            insertFloors.setString(1, CAMPUS_ID);
+            insertFloors.setInt(2, counter);
+            insertFloors.setInt(3, 1);
+            insertFloors.setString(4, h.getCampusFloor().getImageLocation());
+            insertFloors.executeUpdate();
+
+            insertNodes.setString(1, n.getNodeID().toString());
+            insertNodes.setDouble(2, n.getPosX());
+            insertNodes.setDouble(3, n.getPosY());
+            insertNodes.setString(4, CAMPUS_ID);
+            insertNodes.setInt(5, n.getType());
+            insertNodes.executeUpdate();
+
+            insertCampusNodes.setString(1, n.getNodeID().toString());
+            insertCampusNodes.executeUpdate();
+            conn.commit();
+
+            for(NodeEdge edge: n.getEdges())
+            {
+                if(!collectedEdges.containsKey(edge)) //if current collection of edges doesn't contain this edge,
+                {                                   //add it. (Will load ot db later)
+                    collectedEdges.put(edge, CAMPUS_ID);
+                }
+            }
+        }
+
+        counter++;
 
         // insert buildings into database
         for (Building b : h.getBuildings()) {
