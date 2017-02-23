@@ -117,7 +117,7 @@ public class PathFindingTest extends TestCase{
 
         myHospital.addBuilding(myBuilding);
     }
-
+/*
     //Tests that UIDs are working properly
     public void testUID() {
 
@@ -192,10 +192,18 @@ public class PathFindingTest extends TestCase{
             fail("Threw unexpected exception in testGuidance");
         }
     }
+*/
+    public void testAstar() {
+        try {
+            p1 = new Path(nodeA, nodeL, true, new AStarAlgorithm(nodeA, nodeB));
+        } catch (Exception e) {
+            fail("Threw unexpected exception in testAStar");
+        }
+    }
 
     public void testBreadth() {
        try {
-            p1 = new Path(nodeA, nodeL, true, "breadthfirst");
+            p1 = new Path(nodeA, nodeL, true, new BFSAlgorithm(nodeA, nodeB));
         } catch (Exception e) {
             fail("Threw unexpected exception in testBreadth");
         }
@@ -203,7 +211,7 @@ public class PathFindingTest extends TestCase{
 
     public void testDepth() {
         try {
-            p1 = new Path(nodeA, nodeL, true, "depthfirst");
+            p1 = new Path(nodeA, nodeL, true, new DFSAlgorithm(nodeA, nodeB));
         } catch (Exception e) {
             fail("Threw unexpected exception in testDepth");
         }
@@ -211,10 +219,11 @@ public class PathFindingTest extends TestCase{
 
     public void testRandom() {
         try {
-            p1 = new Path(nodeA, nodeL, true, "random");
+            p1 = new Path(nodeA, nodeL, true, new RandomAlgorithm(nodeA, nodeB));
         } catch (Exception e) {
             fail("Threw unexpected exception in testRandom");
         }
     }
+
 
 }
