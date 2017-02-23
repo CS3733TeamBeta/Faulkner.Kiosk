@@ -1,13 +1,9 @@
 package test.java;
 
 import Domain.Map.*;
-import Domain.Navigation.DirectionStep;
 import Domain.Navigation.Guidance;
 import Domain.Navigation.Path;
-import Exceptions.PathFindingNoPathException;
 import junit.framework.TestCase;
-
-import java.util.LinkedList;
 
 
 /**

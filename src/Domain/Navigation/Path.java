@@ -15,13 +15,13 @@ import java.util.LinkedList;
  */
 public class Path implements Iterable {
 
-    LinkedList<NodeEdge> pathEdges;
-    LinkedList<MapNode> pathNodes;
+    protected LinkedList<NodeEdge> pathEdges;
+    protected LinkedList<MapNode> pathNodes;
 
     //Set to true for verbose debugging
-    public boolean vFlag;
+    protected  boolean vFlag;
 
-    private static final double FLOOR_HEIGHT_CONSTANT = 1.812;
+    protected static final double FLOOR_HEIGHT_CONSTANT = 1.812;
 
     public Path() {
         System.out.println("Path constuctor must be called with fields");

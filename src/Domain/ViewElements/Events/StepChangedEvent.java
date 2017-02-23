@@ -1,21 +1,20 @@
 package Domain.ViewElements.Events;
 
-import Domain.Map.MapNode;
-import Domain.Navigation.DirectionStep;
+import Domain.Navigation.DirectionFloorStep;
 
 /**
  * Created by benjaminhylak on 2/9/17.
  */
 public class StepChangedEvent
 {
-    protected DirectionStep source;
+    protected DirectionFloorStep source;
 
-    public StepChangedEvent(DirectionStep source)
+    public StepChangedEvent(DirectionFloorStep source)
     {
         this.source = source;
     }
 
-    public DirectionStep getSource()
+    public DirectionFloorStep getSource()
     {
         return source;
     }

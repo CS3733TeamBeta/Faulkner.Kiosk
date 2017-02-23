@@ -1,5 +1,6 @@
 package Controller.User;
 
+import Domain.Navigation.DirectionFloorStep;
 import Domain.Navigation.DirectionStep;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.Events.StepChangedEvent;
@@ -11,11 +12,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,8 +32,12 @@ public class UserDirectionsPanel extends AnchorPane
     ImageView MapImage;
     ArrayList<StepChangedEventHandler> stepChangedEventHandlers;
 
-    public UserDirectionsPanel(ImageView mapImage)
+    UserMapViewController cont;
+
+    public UserDirectionsPanel(ImageView mapImage, UserMapViewController cont)
     {
+        this.cont = cont;
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                 "../../User/UserDirectionsPanel.fxml"));
 
@@ -45,6 +53,7 @@ public class UserDirectionsPanel extends AnchorPane
         }
 
         this.MapImage = mapImage;
+        System.out.println("1");
     }
 
     @FXML
@@ -79,23 +88,29 @@ public class UserDirectionsPanel extends AnchorPane
         closeButton.setOnMouseClicked(e);
     }
 
-    public void setGuidance(Guidance g)
-    {
+    public void setGuidance(Guidance g) {
         stepIndex = 0;
         guidance = g; //@TODO Make GUIDANCE ITERABLE
+
     }
 
-    public void addOnStepChangedHandler(StepChangedEventHandler h)
-    {
+    public void addOnStepChangedHandler(StepChangedEventHandler h) {
+
         stepChangedEventHandlers.add(h);
+
     }
 
-    public void onStepChanged(DirectionStep step)
-    {
-        for(StepChangedEventHandler stepChangedEventHandler: stepChangedEventHandlers)
-        {
+    public void onStepChanged(DirectionFloorStep step) {
+        for(StepChangedEventHandler stepChangedEventHandler: stepChangedEventHandlers) {
             stepChangedEventHandler.handle(new StepChangedEvent(step));
         }
+    }
+
+    public void displaySelected(DirectionStep step) {
+        System.out.println("print it");
+        System.out.println("directionStep has string " + step.toString() + " and " + step.getStepEdges().size() + " edges.");
+        cont.highlightStep(step);
+
     }
 
     public void fillGuidance(Guidance g)
@@ -104,58 +119,72 @@ public class UserDirectionsPanel extends AnchorPane
         stepIndex = 0;
 
         fillDirectionsList(stepIndex);
+
     }
 
-    public void fillDirectionsList(int index)
-    {
+    public void fillDirectionsList(int index) {
         fillDirectionsList(guidance.getSteps().get(index));
     }
 
-    public void fillDirectionsList(DirectionStep step)
-    {
+    public void fillDirectionsList(DirectionFloorStep step) {
+
         directionsListView.getItems().clear();
-        for(DirectionStep s : guidance.getSteps()) {
-            for (String string : s.getDirections()) {
-                Label l = new Label(string);
-                directionsListView.getItems().add(l);
+
+        for(DirectionStep aDirectionStep: step.getDirectionSteps()) {
+            Label l = new Label(aDirectionStep.getInstruction());
+            l.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    displaySelected(aDirectionStep);
+                }
+            });
+            directionsListView.getItems().add(l);
+        }
+    }
+
+    @FXML
+    void onCloseButtonClicked(MouseEvent event) {
+
+    }
+
+    @FXML
+    void onNextButtonClicked(MouseEvent event) {
+        if(!(stepIndex < guidance.getSteps().size()-2)) {
+            nextButton.setOpacity(0.0);
+        } else if(stepIndex < guidance.getSteps().size()-2) {
+            previousButton.setOpacity(1.0);
+            stepIndex++;
+            fillDirectionsList(guidance.getSteps().get(stepIndex));
+            onStepChanged(guidance.getSteps().get(stepIndex));
+            if(!(stepIndex < guidance.getSteps().size()-2)) {
+                nextButton.setOpacity(0.0);
             }
+        } else {
+            System.out.println("NO! Bad dog!");
         }
     }
 
-    @FXML
-    void onCloseButtonClicked(MouseEvent event)
-    {
-
-    }
 
     @FXML
-    void onNextButtonClicked(MouseEvent event)
-    {
-        stepIndex++;
+    void onPreviousButtonClicked(MouseEvent event) {
 
-        if(stepIndex<guidance.getSteps().size())
-        {
+        if(!(stepIndex >= 1)) {
+            previousButton.setOpacity(0.0);
+        } else if(stepIndex >= 1) {
+            nextButton.setOpacity(1.0);
+            stepIndex--;
             fillDirectionsList(guidance.getSteps().get(stepIndex));
             onStepChanged(guidance.getSteps().get(stepIndex));
-        }
-    }
-
-
-    @FXML
-    void onPreviousButtonClicked(MouseEvent event)
-    {
-        stepIndex--;
-
-        if(stepIndex>0)
-        {
-            fillDirectionsList(guidance.getSteps().get(stepIndex));
-            onStepChanged(guidance.getSteps().get(stepIndex));
+            if(!(stepIndex >= 1)) {
+                previousButton.setOpacity(0.0);
+            }
+        } else {
+            System.out.println("NO! Bad dog!");
         }
     }
 
     @FXML
-    void onSendEmail(ActionEvent event)
-    {
+    void onSendEmail(ActionEvent event) {
         Runnable sendEmail = () -> {
             if(guidance!=null)
             {

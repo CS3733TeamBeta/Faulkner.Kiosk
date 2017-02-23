@@ -3,13 +3,10 @@ package test.java;
 import Domain.Map.*;
 import Domain.Navigation.Guidance;
 import Domain.Navigation.Path;
-import Domain.Navigation.*;
 import Exceptions.PathFindingNoPathException;
 import junit.framework.TestCase;
 
-import java.rmi.server.UID;
 import java.util.LinkedList;
-import java.util.UUID;
 
 
 /**
@@ -186,7 +183,7 @@ public class PathFindingTest extends TestCase{
             g2.printTextDirections();
             System.out.println("line break");
             System.out.println("Nodes in first step are: ");
-            g2.getTextDirections().getFirst();
+            g2.getListOfFloorSteps().getFirst();
             assertTrue(true);
        } catch(Exception e) {
             fail("Threw unexpected exception in testGuidance");

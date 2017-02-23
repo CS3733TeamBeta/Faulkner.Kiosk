@@ -1,69 +1,40 @@
 package Domain.Navigation;
 
-import Domain.Map.Floor;
-import Domain.Map.MapNode;
 import Domain.Map.NodeEdge;
 
-import javax.xml.soap.Node;
 import java.util.LinkedList;
-import java.util.Map;
 
 /**
- * Created by Pattop on 2/16/2017.
+ * Created by IanCJ on 2/23/2017.
  */
 public class DirectionStep {
-    Floor floorOfTheseDirections;
-    LinkedList<String> directionsForThisFloor;
-    LinkedList<MapNode> nodesForThisFloor;
+    LinkedList<NodeEdge> stepEdges;
+    String instruction;
 
-    public DirectionStep(Floor floor, LinkedList<String> directionsForThisFloor, LinkedList<MapNode> nodesForThisFloor) {
-        this.floorOfTheseDirections = floor;
-        this.directionsForThisFloor = directionsForThisFloor;
-        this.nodesForThisFloor = nodesForThisFloor;
+    public DirectionStep(String instruction){
+        this.instruction = instruction;
+        this.stepEdges = new LinkedList<>();
     }
 
-    public DirectionStep(Floor floor){
-        floorOfTheseDirections = floor;
-        directionsForThisFloor = new LinkedList<String>();
+    public DirectionStep(String instruction, LinkedList<NodeEdge> stepEdges) {
+        this.instruction = instruction;
+        this.stepEdges = stepEdges;
     }
 
-    public void setNodesForThisFloor(LinkedList<MapNode> listOfNodes) {
-        this.nodesForThisFloor = listOfNodes;
+    public void setInstruction(String instruction) {
+        this.instruction = instruction;
+    }
+    public String getInstruction() {
+        return this.instruction;
+    }
+    public void setStepEdges(LinkedList<NodeEdge> stepEdges) {
+        this.stepEdges = stepEdges;
+    }
+    public LinkedList<NodeEdge> getStepEdges() {
+        return this.stepEdges;
     }
 
-    public void addNode(MapNode n) {
-        this.nodesForThisFloor.add(n);
+    public String toString() {
+        return this.instruction;
     }
-
-
-    public void addDirections(String newDirection){
-        this.directionsForThisFloor.add(newDirection);
-    }
-
-    public void setDirections(LinkedList<String> directions){
-        this.directionsForThisFloor.clear();
-        for(String s : directions){
-            this.directionsForThisFloor.add(s);
-        }
-    }
-
-    public void printNodes() {
-        if (nodesForThisFloor != null) {
-            System.out.println("Printing Nodes:");
-            for (MapNode n : nodesForThisFloor) {
-                System.out.println("ID is: " + n.getNodeID());
-            }
-        } else {
-            System.out.println("Nodes were null");
-        }
-    }
-    public Floor getFloor()
-    {
-        return floorOfTheseDirections;
-    }
-
-    public LinkedList<String> getDirections(){
-        return directionsForThisFloor;
-    }
-
 }
