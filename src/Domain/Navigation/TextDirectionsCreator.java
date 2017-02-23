@@ -136,9 +136,8 @@ public class TextDirectionsCreator {
                             System.out.println("good current dir");
                             //change in direction is the difference between directions
                             tempChangeInDirection = tempPrevDirection - tempCurrentDirection;
-                            tempPrevDirection = tempCurrentDirection;
                         }
-                        if (Math.abs(tempChangeInDirection) < 8) {
+                        if ((Math.abs(tempChangeInDirection) < 8) && !(Guidance.directionChangeToString(tempChangeInDirection, false).equals("Straight"))){
                             System.out.println("good change");
                             String tempDirectionChangeString = Guidance.directionChangeToString(tempChangeInDirection, vFlag);
                             tempTextDirection += ", then immediately turn " + tempDirectionChangeString;
