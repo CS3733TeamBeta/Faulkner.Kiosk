@@ -310,9 +310,7 @@ public class Guidance extends Path {
             d.getFloor().initImage();
             try {
 
-                // BEGIN AREA WITH ERROR
 
-                //BufferedImage buffImg = d.getFloor().getImageInfo().getBufferedImage();
                 d.getFloor().getImageInfo().display();
                 BufferedImage realBaseImage = d.getFloor().getImageInfo().getBufferedImage();
                 System.out.println("Width of image: " + realBaseImage.getWidth());
@@ -340,7 +338,6 @@ public class Guidance extends Path {
                     throw new Exception();
                 }
 
-                // END AREA WITH ERROR
 
                 // create the new image, canvas size is the max. of both image sizes
                 int w = realBaseImage.getWidth();
@@ -378,6 +375,7 @@ public class Guidance extends Path {
                 //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
                     System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
+                   //DragIconTypen.getIconType()
                     g.drawImage(nodeImg, (int) (Math.round(n.getPosX())*constant), (int)(Math.round(n.getPosY())*constant), null);
                 }
 
