@@ -221,6 +221,75 @@ public class MapEditorController extends AbstractController {
 
 			model.addBuilding(b, t); //adds to building tab map
 		}
+
+		createCampusTab();
+	}
+
+	public Floor createCampusFloor()
+	{
+		Floor campusFloor = new Floor(1);
+
+		for(Building b: model.getHospital().getBuildings())
+		{
+			for (Floor f :b.getFloors())
+			{
+				for(MapNode n: f.getFloorNodes())
+				{
+					campusFloor.addNode(n);
+				}
+			}
+		}
+
+		return campusFloor;
+	}
+
+	public void createCampusTab()
+	{
+		final Label label = new Label("Campus");
+		final Tab tab = new Tab();
+		tab.setGraphic(label);
+
+		TreeView tV = new TreeView<>();
+
+		tV.setRoot(new TreeItem<MapTreeItem>(null));
+		tV.setShowRoot(false);
+
+		label.setOnMouseClicked(e->
+				{
+					Floor campusFloor = createCampusFloor();
+					//changeFloorSelection(campusFloor);
+					tV.getRoot().getChildren().clear();
+
+					for(Building b: model.getHospital().getBuildings())
+					{
+						try
+						{
+							TreeItem<String> buildingItem = new TreeItem<String>(b.getName());
+
+							Floor groundFloor = b.getFloor(1);
+
+							for(MapNode n: groundFloor.getFloorNodes())
+							{
+								if(n.getIconType()!=DragIconType.connector)
+								{
+									buildingItem.getChildren().add(new TreeItem<String>(n.toString()));
+								}
+							}
+
+							tV.getRoot().getChildren().add(buildingItem);
+
+						} catch (Exception e1)
+						{
+						}
+					}
+
+
+				}
+		);
+
+		tab.setContent(tV);
+
+		BuildingTabPane.getTabs().add(tab);
 	}
 	/**
 	 * Adds a building to the tab pane/model
@@ -352,16 +421,16 @@ public class MapEditorController extends AbstractController {
 		}
 	}
 
-	protected void renderFloorMap()
+	protected void renderFloorMap(Floor f)
 	{
 		mapItems = new Group();
 		mapPane.getChildren().clear();
 		mapPane.getChildren().add(mapItems);
 
-		mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
+		mapImage.setImage(f.getImageInfo().getFXImage());
 		mapItems.getChildren().add(mapImage);
 
-		for(MapNode n: model.getCurrentFloor().getFloorNodes())
+		for(MapNode n: f.getFloorNodes())
 		{
 			importNode(n);
 
@@ -381,6 +450,11 @@ public class MapEditorController extends AbstractController {
 		mapImage.toBack();
 	}
 
+	protected void renderFloorMap()
+	{
+		renderFloorMap(model.getCurrentFloor());
+	}
+
 	/**
 	 *
 	 * Imports map node without adding it to model
@@ -398,7 +472,7 @@ public class MapEditorController extends AbstractController {
 
 		if(!mapNode.getIconType().equals(DragIconType.connector)) //treeview checks that floor actually contains
 		{
-			//addToTreeView(mapNode); disabled for now.
+			addToTreeView(mapNode);
 		}
 
 		mapNode.toFront(); //send the node to the front
