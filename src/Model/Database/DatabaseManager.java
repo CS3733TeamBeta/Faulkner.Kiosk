@@ -290,8 +290,13 @@ public class DatabaseManager {
                             nodes.get(UUID.fromString(edgeRS.getString(3))),
                             edgeRS.getInt(4));
 
-                    tempEdge.setSource(nodes.get(UUID.fromString(edgeRS.getString(2))));
-                    tempEdge.setTarget(nodes.get(UUID.fromString(edgeRS.getString(3))));
+                    if(tempEdge.getCost()==0)
+                    {
+                        tempEdge = new LinkEdge(tempEdge);
+                    }
+
+                    tempEdge.setSource(nodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
+                    tempEdge.setTarget(nodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
 
                     System.out.println(nodes.get(UUID.fromString(edgeRS.getString(2))).getEdges().contains(tempEdge));
 
@@ -302,6 +307,7 @@ public class DatabaseManager {
                     nodeEdges.put(edgeRS.getInt(1), tempEdge);
 
                 }
+
                 System.out.println(edges);
                 System.out.println(nodeEdges);
 
@@ -408,6 +414,8 @@ public class DatabaseManager {
 
         int counter = 1;
 
+        HashMap<NodeEdge, String> collectedEdges = new HashMap<>();
+
         // insert buildings into database
         for (Building b : h.getBuildings()) {
             try {
@@ -464,25 +472,36 @@ public class DatabaseManager {
                         }
                         conn.commit();
                     }
-                }
-                // insert edges into database
-                for (NodeEdge edge : f.getFloorEdges()) {
-                    try {
-                        insertEdges.setInt(1, edgesCount);
-                        insertEdges.setString(2, edge.getSource().getNodeID().toString());
-                        insertEdges.setString(3, edge.getOtherNode(edge.getSource()).getNodeID().toString());
-                        insertEdges.setDouble(4, edge.getCost());
-                        insertEdges.setString(5, floorID);
-                        insertEdges.executeUpdate();
+
+                    for(NodeEdge edge: n.getEdges())
+                    {
+                        if(!collectedEdges.containsKey(edge)) //if current collection of edges doesn't contain this edge,
+                        {                                   //add it. (Will load ot db later)
+                            collectedEdges.put(edge, floorID);
+                        }
                     }
-                    catch (SQLException e) {
-                        System.out.println("Error saving edge " + e.getMessage());
-                    }
-                    conn.commit();
-                    edgesCount = edgesCount + 1;
                 }
             }
             counter = counter + 1;
+        }
+
+        int edgesCount = 1;
+        // insert edges into database
+        for (NodeEdge edge : collectedEdges.keySet()) {
+            try {
+                insertEdges.setInt(1, edgesCount);
+                insertEdges.setString(2, edge.getSource().getNodeID().toString());
+                insertEdges.setString(3, edge.getOtherNode(edge.getSource()).getNodeID().toString());
+                insertEdges.setDouble(4, edge.getCost());
+                insertEdges.setString(5, collectedEdges.get(edge));
+                insertEdges.executeUpdate();
+            }
+            catch (SQLException e) {
+                System.out.println("Error saving edge " + e.getMessage());
+            }
+
+            conn.commit();
+            edgesCount++;
         }
 
         System.out.println("Here");
@@ -493,7 +512,7 @@ public class DatabaseManager {
                 insertDoctors.setString(2, doc.getName());
                 insertDoctors.setString(3, doc.getDescription());
                 insertDoctors.setString(4, "");
-                insertDoctors.setString(5, doc.getHours());
+                insertDoctors.setString(5, doc.getHours ());
                 insertDoctors.executeUpdate();
             }
             catch (SQLException e) {
