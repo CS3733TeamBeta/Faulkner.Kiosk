@@ -51,6 +51,7 @@ public class TextDirectionsCreator {
             fromNode = listNodes.get(i);
             toNode = listNodes.get(i+1);
 
+            double costConstant = 100;
 
             if (vFlag) {
                 System.out.println("");
@@ -98,7 +99,7 @@ public class TextDirectionsCreator {
                         tempTextDirection = ("Turn " + directionChangeString + " at the next intersection; ID: " + fromNode.getNodeID());
                         tempMapNodes.add(fromNode);
                     } else {
-                        tempTextDirection = ("Turn " + directionChangeString + " at the next intersection.");
+                        tempTextDirection = ("Turn " + directionChangeString + " at the next intersection");
                         tempMapNodes.add(fromNode);
                     }
                 }
@@ -107,7 +108,7 @@ public class TextDirectionsCreator {
                         tempTextDirection = ("After passing 1 intersection, turn " + directionChangeString + " at " + fromNode.getNodeID());
                         tempMapNodes.add(fromNode);
                     } else {
-                        tempTextDirection = ("After passing 1 intersection, turn " + directionChangeString + ".");
+                        tempTextDirection = ("After passing 1 intersection, turn " + directionChangeString);
                         tempMapNodes.add(fromNode);
                     }
                 }
@@ -116,9 +117,33 @@ public class TextDirectionsCreator {
                         tempTextDirection = ("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + " at " + fromNode.getNodeID());
                         tempMapNodes.add(fromNode);
                     } else {
-                        tempTextDirection = ("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString + ".");
+                        tempTextDirection = ("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString);
                         tempMapNodes.add(fromNode);
 
+                    }
+                }
+                if(listNodes.size() > i+2) {
+                    System.out.println("It's greater");
+                    MapNode tempFromNode = listNodes.get(i+1);
+                    MapNode tempToNode = listNodes.get(i+2);
+                    int tempPrevDirection = currentDirection;
+                    int tempCurrentDirection = Guidance.nodesToDirection(tempFromNode, tempToNode);
+                    if (tempFromNode.getEdgeTo(tempToNode).getCost() < costConstant) {
+                        System.out.println("good cost");
+                        int tempChangeInDirection = 10;
+                        //If direction is not in an elevator
+                        if (tempCurrentDirection < 9) {
+                            System.out.println("good current dir");
+                            //change in direction is the difference between directions
+                            tempChangeInDirection = tempPrevDirection - tempCurrentDirection;
+                            tempPrevDirection = tempCurrentDirection;
+                        }
+                        if (Math.abs(tempChangeInDirection) < 8) {
+                            System.out.println("good change");
+                            String tempDirectionChangeString = Guidance.directionChangeToString(tempChangeInDirection, vFlag);
+                            tempTextDirection += ", then immediately turn " + tempDirectionChangeString;
+                            i++;
+                        }
                     }
                 }
                 intersectionsPassed = 0;
