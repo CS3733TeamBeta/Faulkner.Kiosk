@@ -10,4 +10,4 @@ notifications:
       rooms:
         - cs3733teambeta:fu1hh0sKNiepY7dT8yEPX22v#git
       on_success: change
-      on_failure: change
+      on_failure: always
