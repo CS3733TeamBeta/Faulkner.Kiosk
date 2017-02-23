@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.awt.Point;
 
 import Domain.Map.*;
+import Domain.ViewElements.DragIconType;
 import Exceptions.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
@@ -375,7 +376,59 @@ public class Guidance extends Path {
                 //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
                     System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
-                   //DragIconTypen.getIconType()
+                    String thisIconType = n.getIconType().toString();
+                    System.out.println("This is an icon of type: " + thisIconType.toString());
+
+                    BufferedImage currentImage = null;
+
+
+                    BufferedImage nodeImg = null;
+                    BufferedImage bathImg= null;
+                    BufferedImage docImg = null;
+                    BufferedImage elevatorImg = null;
+                    BufferedImage foodImg = null;
+                    BufferedImage infoImg = null;
+                    BufferedImage storeImg = null;
+
+                    switch (thisIconType) {
+                        case "connector":
+                            currentImage = nodeImg;
+                            break;
+                        case "store":
+                            currentImage = storeImg;
+                            break;
+                        case "elevator":
+                            currentImage = elevatorImg;
+                            break;
+                        case "food":
+                            currentImage = foodImg;
+                            break;
+                        case "info":
+                            currentImage = infoImg;
+                            break;
+                        case "department":
+                            currentImage = docImg;
+                            break;
+                        case "bathroom":
+                            textDirection = "NorthEast";
+                            break;
+                        case 7:
+                            textDirection = "East";
+                            break;
+                        case 8:
+                            textDirection = "SouthEast";
+                            break;
+                        case 9:
+                            textDirection = "Up";
+                            break;
+                        case 10:
+                            textDirection = "Down";
+                            break;
+                        default:
+                            textDirection = "Big Error";
+                            break;
+                    }
+
                     g.drawImage(nodeImg, (int) (Math.round(n.getPosX())*constant), (int)(Math.round(n.getPosY())*constant), null);
                 }
 
