@@ -2,6 +2,7 @@ package Model;
 
 import Domain.Map.*;
 import Domain.ViewElements.DragIcon;
+import Domain.ViewElements.DragIconType;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.Database.DatabaseManager;
 import javafx.scene.control.Tab;
@@ -28,6 +29,8 @@ public class MapEditorModel
     Hospital hospital;
     Floor currentFloor;
 
+    MapNode kioskNode = null;
+
     public MapEditorModel()
     {
         floorTreeMap = new HashMap<>();
@@ -47,7 +50,6 @@ public class MapEditorModel
         }
 
         /**@TODO HACKY **/
-
 
         buildingTabMap = new HashMap<>();
     }
@@ -123,7 +125,20 @@ public class MapEditorModel
     }
 
     public void setCurrentFloor(Floor floor){
+        //@ TODO THIS IS HACKY
         this.currentFloor = floor;
+
+        if(kioskNode==null)
+        {
+            for(MapNode n: floor.getFloorNodes())
+            {
+                if(n.getIconType().equals(DragIconType.Kiosk))
+                {
+                    kioskNode=n;
+                    break;
+                }
+            }
+        }
     }
 
     public Floor getCurrentFloor()
