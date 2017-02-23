@@ -54,7 +54,6 @@ public class Guidance extends Path {
     public Guidance (MapNode start, MapNode end) throws PathFindingException {
             this(start, end, false);
             setImages();
-            printTextDirections();
     }
 
     public Guidance (MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
@@ -472,6 +471,16 @@ public class Guidance extends Path {
                 break;
         }
         return currentImage;
+    }
+
+    public int getNumSteps() {
+        int totalSteps = 0;
+        for (DirectionFloorStep floorStep: this.listOfFloorSteps) {
+            for (DirectionStep step: floorStep.getDirectionSteps()) {
+                totalSteps++;
+            }
+        }
+        return totalSteps;
     }
 
     public boolean sendEmailGuidance(String address) {

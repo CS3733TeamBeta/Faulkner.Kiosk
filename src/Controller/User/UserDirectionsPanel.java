@@ -12,11 +12,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +49,7 @@ public class UserDirectionsPanel extends AnchorPane
         }
 
         this.MapImage = mapImage;
+        System.out.println("1");
     }
 
     @FXML
@@ -84,19 +88,31 @@ public class UserDirectionsPanel extends AnchorPane
     {
         stepIndex = 0;
         guidance = g; //@TODO Make GUIDANCE ITERABLE
+        System.out.println("1");
+
     }
 
     public void addOnStepChangedHandler(StepChangedEventHandler h)
     {
+        System.out.println("9");
+
         stepChangedEventHandlers.add(h);
+
     }
 
     public void onStepChanged(DirectionFloorStep step)
     {
+        System.out.println("8");
+
+        System.out.println("called step changed");
         for(StepChangedEventHandler stepChangedEventHandler: stepChangedEventHandlers)
         {
             stepChangedEventHandler.handle(new StepChangedEvent(step));
         }
+    }
+
+    public void displaySelected() {
+        System.out.println("print it");
     }
 
     public void fillGuidance(Guidance g)
@@ -105,20 +121,32 @@ public class UserDirectionsPanel extends AnchorPane
         stepIndex = 0;
 
         fillDirectionsList(stepIndex);
+
     }
 
     public void fillDirectionsList(int index)
     {
+        System.out.println("6");
+
         fillDirectionsList(guidance.getSteps().get(index));
     }
 
     public void fillDirectionsList(DirectionFloorStep step)
     {
+        System.out.println("5");
+
         directionsListView.getItems().clear();
 
         for(DirectionStep aDirectionStep: step.getDirectionSteps()) {
             Label l = new Label(aDirectionStep.getInstruction());
+            l.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    System.out.println("clicked you bi3tch");
+                }
+            });
             directionsListView.getItems().add(l);
+            System.out.println("added a thing to the list");
         }
     }
 
@@ -131,9 +159,11 @@ public class UserDirectionsPanel extends AnchorPane
     @FXML
     void onNextButtonClicked(MouseEvent event)
     {
+        System.out.println("4");
+
         stepIndex++;
 
-        if(stepIndex<guidance.getSteps().size()-1)
+        if(stepIndex<guidance.getNumSteps()-1)
         {
             fillDirectionsList(guidance.getSteps().get(stepIndex));
             onStepChanged(guidance.getSteps().get(stepIndex));
@@ -144,6 +174,8 @@ public class UserDirectionsPanel extends AnchorPane
     @FXML
     void onPreviousButtonClicked(MouseEvent event)
     {
+        System.out.println("3");
+
         stepIndex--;
 
         if(stepIndex>0)
@@ -156,6 +188,8 @@ public class UserDirectionsPanel extends AnchorPane
     @FXML
     void onSendEmail(ActionEvent event)
     {
+        System.out.println("2");
+
         Runnable sendEmail = () -> {
             if(guidance!=null)
             {
