@@ -120,7 +120,8 @@ public class SendEmail {
             Transport.send(msg);
             System.out.println("Message sent.");
         } catch (MessagingException e) {
-            System.out.println("Message failed to send; cause:" + e);
+            System.out.println("Message failed to send");
+            e.printStackTrace();
         }
     }
 }
