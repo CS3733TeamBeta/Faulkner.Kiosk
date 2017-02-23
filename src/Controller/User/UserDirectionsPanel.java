@@ -149,7 +149,6 @@ public class UserDirectionsPanel extends AnchorPane
 
     @FXML
     void onNextButtonClicked(MouseEvent event) {
-
         if(!(stepIndex < guidance.getSteps().size()-2)) {
             nextButton.setOpacity(0.0);
         } else if(stepIndex < guidance.getSteps().size()-2) {
