@@ -5,6 +5,8 @@ import Domain.Map.NodeEdge;
 import Exceptions.PathFindingException;
 import Exceptions.PathFindingInvalidPathException;
 import Exceptions.PathFindingNoPathException;
+import javafx.scene.Node;
+import sun.awt.image.ImageWatched;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -51,6 +53,14 @@ public class Path{
     public Path (LinkedList<NodeEdge> pathEdges, LinkedList<MapNode> pathNodes) {
         this.pathEdges = pathEdges;
         this.pathNodes = pathNodes;
+    }
+
+    public LinkedList<NodeEdge> getPathEdges(){
+        return this.pathEdges;
+    }
+
+    public LinkedList<MapNode> getPathNodes(){
+        return this.pathNodes;
     }
 
 
