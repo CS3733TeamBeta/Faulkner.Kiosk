@@ -4,6 +4,7 @@ import Controller.AbstractController;
 import Controller.Main;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
+import Domain.Navigation.DirectionStep;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
@@ -146,7 +147,7 @@ public class UserMapViewController extends AbstractController {
 
     MapModel model;
 
-    UserDirectionsPanel panel = new UserDirectionsPanel(mapImage);
+    UserDirectionsPanel panel = new UserDirectionsPanel(mapImage, this);
 
     Group mapItems;
 
@@ -594,6 +595,22 @@ public class UserMapViewController extends AbstractController {
         newRoute.printTextDirections();
     }
 
+    //@TODO @blhylak make this pretty, however you want to
+
+    public void highlightStep(DirectionStep step) {
+        for (NodeEdge edgeInThis : model.getCurrentFloor().getFloorEdges()) {
+            edgeInThis.changeColor(Color.RED);
+            edgeInThis.changeOpacity(0.1);
+        }
+        for (NodeEdge edgeInStep : step.getStepEdges()) {
+            for (NodeEdge edgeInThis : model.getCurrentFloor().getFloorEdges()) {
+                if (edgeInStep.equals(edgeInThis)) {
+                    edgeInThis.changeColor(Color.PURPLE);
+                    edgeInThis.changeOpacity(1.0);
+                }
+            }
+        }
+    }
     public void setStage(Stage s) {
         primaryStage = s;
     }
