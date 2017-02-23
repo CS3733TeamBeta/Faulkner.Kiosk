@@ -179,6 +179,7 @@ public class UserMapViewController extends AbstractController {
                     if (!mapItems.getChildren().contains(e.getEdgeLine()))
                     {
                         mapItems.getChildren().add(e.getEdgeLine());
+                        e.changeOpacity(0.0);
                     }
 
                     e.updatePosViaNode(n);
@@ -539,13 +540,17 @@ public class UserMapViewController extends AbstractController {
         } catch (PathFindingException e) {
             return;//TODO add error message throw
         }
-        for (NodeEdge edge : model.getCurrentFloor().getFloorEdges()) {
-            if(newRoute.getPathEdges().contains(edge)) {
-                edge.changeOpacity(1.0);
-                edge.changeColor(Color.RED);
-            } else {
-                edge.changeOpacity(0.8);
-                edge.changeColor(Color.BLACK);
+        for(Building b : model.getHospital().getBuildings()) {
+            for(Floor f : b.getFloors()) {
+                for (NodeEdge edge : f.getFloorEdges()) {
+                    if (newRoute.getPathEdges().contains(edge)) {
+                        edge.changeOpacity(1.0);
+                        edge.changeColor(Color.RED);
+                    } else {
+                        edge.changeOpacity(0.0);
+                        edge.changeColor(Color.BLACK);
+                    }
+                }
             }
         }
 
