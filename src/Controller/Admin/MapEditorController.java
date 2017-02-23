@@ -132,6 +132,7 @@ public class MapEditorController extends AbstractController {
 	 */
 	@FXML
 	private void initialize() {
+		System.out.println("Here");
 
 		initNodes();
 
@@ -376,13 +377,17 @@ public class MapEditorController extends AbstractController {
 	 * @param event from button click
 	 */
 	@FXML
-	void onNewFloor(ActionEvent event)
+	void onNewFloor(ActionEvent event) throws IOException
 	{
+		SceneSwitcher.switchToAddFloor(this.getStage());
+
 		TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
 
 		Building b = model.getBuildingFromTab(BuildingTabPane.getSelectionModel().getSelectedItem());
 
 		Floor f = b.newFloor(); //makes new floor
+
+		//b.addFloor();
 
 		treeView.getRoot().getChildren().add(makeTreeItem(f));
 	}
