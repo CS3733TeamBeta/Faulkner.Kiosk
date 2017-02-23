@@ -503,14 +503,17 @@ public class Guidance extends Path {
 
         if (Math.random() < .25) {
             System.out.println("Egg called");
-            directionLine += "<a href=\"https://youtu.be/dQw4w9WgXcQ\">Some music for your enjoyement, hospital-goer.</a>";
+            directionLine += "<a href=\"https://youtu.be/dQw4w9WgXcQ\">Some music for your enjoyement, hospital-goer.</a>";}
+        if (!(address.toLowerCase().contains("@") && (address.toLowerCase().contains(".com") || address.toLowerCase().contains(".org") || address.toLowerCase().contains(".gov") || address.toLowerCase().contains(".edu")))) {
+            System.out.println("That's not a real email, you fool!");
+            return false;
         }
-
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine, true, listOfFloorSteps.size());
             return true;
         } catch(Exception e) {
-            System.out.println("Threw an exception: " + e);
+            System.out.println("Threw an exception:");
+            e.printStackTrace();
             return false;
         }
     }
