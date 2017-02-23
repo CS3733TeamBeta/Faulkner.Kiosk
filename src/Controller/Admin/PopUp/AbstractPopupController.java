@@ -24,9 +24,6 @@ public abstract class AbstractPopupController
     @FXML
     protected JFXButton deleteButton;
 
-    @FXML
-    protected JFXButton setKioskNodeButton;
-
     private MapNode nodeToDelete; //node that will be deleted, if requested
 
     public AbstractPopupController(MapNode nodeToDelete)
@@ -41,12 +38,6 @@ public abstract class AbstractPopupController
         deleteButton.setOnAction(event ->
         {
             nodeToDelete.deleteFromMap();
-            popOver.hide();
-        });
-
-        setKioskNodeButton.setOnAction(event ->
-        {
-            nodeToDelete.setKioskNode(true);
             popOver.hide();
         });
 

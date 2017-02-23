@@ -103,6 +103,10 @@ public class DragIcon extends AnchorPane{
 				getStyleClass().add("connector");
 				break;
 
+			case kiosk:
+				getStyleClass().add("kiosk");
+				break;
+
 			default:
 				break;
 		}
@@ -118,6 +122,14 @@ public class DragIcon extends AnchorPane{
 			{
 				newNode = new MapNode();
 				newNode.setIsElevator(true);
+				break;
+			}
+
+			case kiosk:
+			{
+				newNode = new MapNode();
+				newNode.setType(DragIconType.kiosk);
+				newNode.setKioskNode(true);
 				break;
 			}
 

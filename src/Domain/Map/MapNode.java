@@ -389,6 +389,10 @@ public class MapNode implements DrawableMapEntity {
         this.isKioskNode = state;
     }
 
+    public boolean getKioskNodeInfo(){
+        return this.isKioskNode;
+    }
+
     /**
      * @TODO Make Javadoc for this
      */

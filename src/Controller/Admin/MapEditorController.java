@@ -155,6 +155,7 @@ public class MapEditorController extends AbstractController {
 		//populate left pane with multiple colored icons for testing
 		for (int i = 0; i < DragIconType.values().length; i++)
 		{
+			System.out.println("Adding image: " + i);
 			DragIcon icn = new DragIcon();
 
 			icn.setStyle("-fx-background-size: 64 64");
@@ -167,6 +168,7 @@ public class MapEditorController extends AbstractController {
 				//System.out.println("Adding Connector");
 				icn.setStyle("-fx-background-size: 30 30");
 			}
+
 
 			model.addSideBarIcon(icn);
 			bottom_bar.getChildren().add(icn);
@@ -951,6 +953,16 @@ public class MapEditorController extends AbstractController {
 		refreshNodePositions();
 		//removeHandlers();
 		updateEdgeWeights();
+
+		for(Building b : model.getHospital().getBuildings()){
+			for(Floor f : b.getFloors()){
+				for(MapNode n : f.getFloorNodes()){
+					if(n.getType() == 7){
+						System.out.println("Found kiosk node");
+					}
+				}
+			}
+		}
 
 		DatabaseManager.getInstance().saveData(model.getHospital());
 

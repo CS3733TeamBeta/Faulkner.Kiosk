@@ -66,7 +66,7 @@
                     <content>
                       <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="104.0" prefWidth="909.0">
                            <children>
-                              <HBox fx:id="bottom_bar" layoutX="70.0" layoutY="2.0" prefHeight="100.0" prefWidth="200.0" spacing="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <HBox fx:id="bottom_bar" layoutX="70.0" layoutY="2.0" prefHeight="100.0" prefWidth="200.0" spacing="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
                     </content>
