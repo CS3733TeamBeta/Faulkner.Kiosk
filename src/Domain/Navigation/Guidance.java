@@ -179,7 +179,7 @@ public class Guidance extends Path {
     public static int nodesToDirection(MapNode fromNode, MapNode toNode, boolean vFlag) {
 
         //Initialize and set the angle between the two nodes, regardless of floors
-        doublfe angle;
+        double angle;
         angle = Math.toDegrees(Math.atan2(toNode.getPosX() - fromNode.getPosX(), toNode.getPosY() - fromNode.getPosY()));
 
         if (vFlag) {
