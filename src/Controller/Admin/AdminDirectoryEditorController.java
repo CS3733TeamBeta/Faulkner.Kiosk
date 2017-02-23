@@ -42,7 +42,8 @@ import java.util.function.Predicate;
 
 public class AdminDirectoryEditorController extends AbstractController {
     Boolean deptDirectoryUp = false;
-    Hospital hospital = DatabaseManager.getInstance().loadData();
+
+    Hospital hospital;
     ObservableList<Doctor> existingDoctors;
     ObservableList<Office> existingDepts;
     ObservableList<String> existingLoc = FXCollections.observableArrayList();
@@ -104,6 +105,11 @@ public class AdminDirectoryEditorController extends AbstractController {
 
     public AdminDirectoryEditorController() throws SQLException
     {
+    }
+
+    public void setHospital(Hospital h)
+    {
+        this.hospital = h;
     }
 
     @FXML
@@ -569,7 +575,7 @@ public class AdminDirectoryEditorController extends AbstractController {
 
     private void saveData() {
         try {
-            DatabaseManager.getInstance().saveData(hospital);
+            new DatabaseManager().saveData(hospital);
         } catch (Exception e) {
             e.printStackTrace();
         }

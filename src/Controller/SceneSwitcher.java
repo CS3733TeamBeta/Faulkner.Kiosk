@@ -2,6 +2,7 @@ package Controller;
 
 import Controller.Admin.*;
 import Controller.User.*;
+import Domain.Map.Hospital;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -51,8 +52,9 @@ public class SceneSwitcher
     }
 
 
-    public static void switchToModifyDirectoryView(Stage primaryStage) throws IOException {
+    public static void switchToModifyDirectoryView(Stage primaryStage, Hospital h) throws IOException {
         AdminDirectoryEditorController controller = (AdminDirectoryEditorController) switchToScene(primaryStage, ModifyDirectoryViewPath);
+        controller.setHospital(h);
     }
 
     public static void switchToMapEditorView(Stage primaryStage) throws IOException {
@@ -65,7 +67,7 @@ public class SceneSwitcher
     }
 
     public static void switchToAddFloor(Stage primaryStage) throws IOException{
-        FileChooser_Controller controller = (FileChooser_Controller)switchToScene(primaryStage, "../Admin/MapBuilder/FileChooser_View.fxml");
+       // FileChooser_Controller controller = (FileChooser_Controller)switchToScene(primaryStage, "../Admin/MapBuilder/FileChooser_View.fxml");
     }
 }
 
