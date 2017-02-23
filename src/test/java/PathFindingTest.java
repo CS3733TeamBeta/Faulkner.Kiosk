@@ -193,9 +193,17 @@ public class PathFindingTest extends TestCase{
         }
     }
 
+    public void testAstar() {
+        try {
+            p1 = new Path(nodeA, nodeL, true, new AStarAlgorithm(nodeA, nodeB));
+        } catch (Exception e) {
+            fail("Threw unexpected exception in testAStar");
+        }
+    }
+
     public void testBreadth() {
        try {
-            p1 = new Path(nodeA, nodeL, true, "breadthfirst");
+            p1 = new Path(nodeA, nodeL, true, new BFSAlgorithm(nodeA, nodeB));
         } catch (Exception e) {
             fail("Threw unexpected exception in testBreadth");
         }
@@ -203,12 +211,12 @@ public class PathFindingTest extends TestCase{
 
     public void testDepth() {
         try {
-            p1 = new Path(nodeA, nodeL, true, "depthfirst");
+            p1 = new Path(nodeA, nodeL, true, new DFSAlgorithm(nodeA, nodeB));
         } catch (Exception e) {
             fail("Threw unexpected exception in testDepth");
         }
     }
-
+/*
     public void testRandom() {
         try {
             p1 = new Path(nodeA, nodeL, true, "random");
@@ -216,5 +224,6 @@ public class PathFindingTest extends TestCase{
             fail("Threw unexpected exception in testRandom");
         }
     }
+    */
 
 }
