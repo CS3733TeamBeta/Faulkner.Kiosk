@@ -24,6 +24,14 @@ public class Hospital {
         offices = new HashMap<>();
     }
 
+    public void setMainKioskNode(MapNode n){
+        this.mainKioskNode = n;
+    }
+
+    public MapNode getMainKioskNode(){
+        return this.mainKioskNode;
+    }
+
     public void addBuilding(Building b) {
         buildings.add(b);
     }

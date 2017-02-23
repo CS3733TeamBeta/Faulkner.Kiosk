@@ -1,6 +1,6 @@
 package Controller.Admin.PopUp;
 
-import Domain.Map.Kiosk;
+import Domain.Map.Destination;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import org.controlsfx.control.PopOver;
@@ -12,38 +12,34 @@ import static Domain.ViewElements.DragIconType.kiosk;
  */
 public class KioskEditController extends AbstractPopupController
 {
-    @FXML
-    private JFXTextField nameBox;
-
-    @FXML
-    private JFXTextField deptBox;
-
-    @FXML
-    private JFXTextField phoneBox;
 
     protected PopOver popOver;
 
-    protected Kiosk nodeUnderEdit;
+    protected Destination nodeUnderEdit;
 
 
-    public KioskEditController(Kiosk kiosk)
+    public KioskEditController(Destination destination)
     {
-        super(kiosk);
+        super(destination);
 
-        this.nodeUnderEdit = kiosk;
+        this.nodeUnderEdit = destination;
     }
 
-
+    @FXML
+    public void setPrimaryKiosk(){
+        this.nodeUnderEdit.setKioskNode(true);
+        System.out.println("HERE");
+    }
 
     @Override
     public void saveEdits()
     {
-        nodeUnderEdit.setName(nameBox.getText());
+        //nodeUnderEdit.setName(nameBox.getText());
     }
 
     @Override
     public void fillFields()
     {
-        nameBox.setText(nodeUnderEdit.getName());
+        //nameBox.setText(nodeUnderEdit.getName());
     }
 }

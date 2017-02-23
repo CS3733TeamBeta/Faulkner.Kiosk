@@ -1,6 +1,7 @@
 package Controller.Admin.PopUp;
 
 import Domain.Map.Destination;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import org.controlsfx.control.PopOver;
@@ -20,6 +21,15 @@ public class DestinationEditController extends AbstractPopupController
     private JFXTextField phoneBox;
 
     protected PopOver popOver;
+
+    @FXML
+    private JFXButton okayButton;
+
+    @FXML
+    private JFXButton deleteButtonKiosk;
+
+    @FXML
+    private JFXButton setMainKiosk;
 
     protected Destination destinationUnderEdit;
 

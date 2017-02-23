@@ -34,10 +34,7 @@ import org.controlsfx.control.PopOver;
 import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 
 import static Controller.SceneSwitcher.switchToAddFloor;
 
@@ -968,12 +965,40 @@ public class MapEditorController extends AbstractController {
 		//removeHandlers();
 		updateEdgeWeights();
 
+		LinkedList<MapNode> kioskNodes = new LinkedList<>();
+		LinkedList<MapNode> otherNodes = new LinkedList<>();
+
 		for(Building b : model.getHospital().getBuildings()){
 			for(Floor f : b.getFloors()){
 				for(MapNode n : f.getFloorNodes()){
 					if(n.getType() == 7){
 						System.out.println("Found kiosk node");
+						if(n.getKioskNodeInfo() == true){
+							model.getHospital().setMainKioskNode(n);
+						}
+						kioskNodes.add(n);
 					}
+					else{
+						otherNodes.add(n);
+					}
+				}
+			}
+		}
+
+		if(model.getHospital().getMainKioskNode() == null){
+			if(kioskNodes.size() != 0) {
+				System.out.println("ERROR: NO MAIN KIOSK NODE SET. PICKING ONE FROM ALLOCATED KIOSKS");
+				model.getHospital().setMainKioskNode(kioskNodes.getFirst());
+			}
+			else{
+				if(otherNodes.size() > 0){
+					System.out.println("ERROR: NO KIOSK NODES ALLOCATED. PICKING A RANDOM NODE AS A KIOSK");
+					MapNode newKiosk = otherNodes.getFirst();
+					newKiosk.setType(DragIconType.kiosk);
+					model.getHospital().setMainKioskNode(newKiosk);
+				}
+				else{
+					System.out.println("ERROR: NO NODES SET IN ENTIRE HOSPITAL. NO KIOSK SET");
 				}
 			}
 		}

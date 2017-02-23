@@ -449,7 +449,7 @@ public class UserMapViewController extends AbstractController {
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException {
         System.out.println("In path finding");
-        MapNode startPoint = model.getCurrentFloor().getKioskNode();
+        MapNode startPoint = model.getHospital().getMainKioskNode();
         if(startPoint == null){
             System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
             startPoint = model.getCurrentFloor().getFloorNodes().getFirst();

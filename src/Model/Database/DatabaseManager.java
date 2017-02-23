@@ -143,11 +143,11 @@ public class DatabaseManager {
             conn = DriverManager.getConnection(protocol + dbName, props);
         }
         catch (SQLException se) {
-            System.out.println(se.getMessage());
+//            System.out.println(se.getMessage());
         }
 
         if (conn != null) {
-            System.out.println("Connected to and created database " + dbName);
+//            System.out.println("Connected to and created database " + dbName);
         }
 
         // We want to control transactions manually. Autocommit is on by
@@ -156,7 +156,7 @@ public class DatabaseManager {
             conn.setAutoCommit(false);
         }
         catch (SQLException se) {
-            System.out.println(se.getMessage());
+//            System.out.println(se.getMessage());
 
         }
 
@@ -166,7 +166,7 @@ public class DatabaseManager {
             s = conn.createStatement();
         }
         catch (SQLException se) {
-            System.out.println(se.getMessage());
+//            System.out.println(se.getMessage());
 
         }
         statements.add(s);
@@ -219,7 +219,7 @@ public class DatabaseManager {
         saveHospital(h);
         s.close();
 
-        System.out.println("Data Saved Correctly");
+//        System.out.println("Data Saved Correctly");
     }
 
     private void loadHospital(Hospital h) throws SQLException {
@@ -253,14 +253,14 @@ public class DatabaseManager {
                             nodeRS.getDouble(2),
                             nodeRS.getDouble(3),
                             nodeRS.getInt(5));
-                    System.out.println(tempNode.getPosX());
-                    System.out.println("Added a " + tempNode.getIconType() + " node to " + (floorRS.getString(1)));
+//                    System.out.println(tempNode.getPosX());
+//                    System.out.println("Added a " + tempNode.getIconType() + " node to " + (floorRS.getString(1)));
                     nodes.put(UUID.fromString(nodeRS.getString(1)), tempNode);
 
                     mapNodes.put(UUID.fromString(nodeRS.getString(1)), tempNode);
 
                 }
-                System.out.println(nodes.values());
+//                System.out.println(nodes.values());
 
                 // loading destinations per floor
                 destPS.setString(1, floorRS.getString(1));
@@ -273,13 +273,13 @@ public class DatabaseManager {
                             destRS.getString(2),
                             floorRS.getString(1));
                     nodes.remove(UUID.fromString(destRS.getString(3)));
-                    System.out.println(nodes.keySet());
+//                    System.out.println(nodes.keySet());
                     nodes.put(UUID.fromString(destRS.getString(3)), tempDest);
-                    System.out.println(nodes.keySet());
+//                    System.out.println(nodes.keySet());
                     h.addDestinations(UUID.fromString(destRS.getString(1)), tempDest);
                 }
                 // print out list of nodes for each floor
-                System.out.println(nodes.values());
+//                System.out.println(nodes.values());
 
                 // select all edges that have floorID of current floor we are loading
                 HashMap<Integer, NodeEdge> edges = new HashMap<>();
@@ -296,9 +296,9 @@ public class DatabaseManager {
                         tempEdge.setSource(nodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
                         tempEdge.setTarget(nodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
 
-                        System.out.println(nodes.get(UUID.fromString(edgeRS.getString(2))).getEdges().contains(tempEdge));
+//                        System.out.println(nodes.get(UUID.fromString(edgeRS.getString(2))).getEdges().contains(tempEdge));
 
-                        System.out.println("Added Edge to" + floorRS.getString(1));
+//                        System.out.println("Added Edge to" + floorRS.getString(1));
                         // stores nodeEdges per floor
                         edges.put(edgeRS.getInt(1), tempEdge);
                         //stores all nodeEdges
@@ -307,8 +307,8 @@ public class DatabaseManager {
 
                 }
 
-                System.out.println(edges);
-                System.out.println(nodeEdges);
+//                System.out.println(edges);
+//                System.out.println(nodeEdges);
 
                 Floor tempFloor = new Floor(floorRS.getInt(3));
                 tempFloor.setImageLocation(floorRS.getString(4));
@@ -325,14 +325,14 @@ public class DatabaseManager {
                 }
 
             }
-            System.out.println(flr);
+//            System.out.println(flr);
             buildings.put(rs.getInt(1),
                     new Building(rs.getString(2)));
             for (Floor f : flr.values()) {
                 try {
                     buildings.get(rs.getInt(1)).addFloor(f);
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+//                    System.out.println(e.getMessage());
                 }
             }
         }
@@ -340,8 +340,8 @@ public class DatabaseManager {
             h.addBuilding(b);
         }
 
-        System.out.println(mapNodes);
-        System.out.println(h.getBuildings());
+//        System.out.println(mapNodes);
+//        System.out.println(h.getBuildings());
 
         rs = s.executeQuery("SELECT * from EDGE where COST = 0");
         while(rs.next()) {
@@ -372,7 +372,7 @@ public class DatabaseManager {
 
                 // add office to hospital offices list
                 h.addOffices(offRS.getString(2), tempOff);
-                System.out.println("******************************" + tempOff.getName());
+//                System.out.println("******************************" + tempOff.getName());
 
                 // add office to list of offices for a suite
                 h.getDestinations().get(UUID.fromString(rs.getString(1))).addOffice(tempOff);
@@ -406,7 +406,7 @@ public class DatabaseManager {
             h.addDoctors(rs.getString(2), tempDoc);
 
         }
-        System.out.println(doctors.keySet());
+//        System.out.println(doctors.keySet());
         rs.close();
 
     }
@@ -433,7 +433,7 @@ public class DatabaseManager {
                 insertBuildings.executeUpdate();
             }
             catch (SQLException e) {
-                System.out.println("Error saving building " + e.getMessage());
+//                System.out.println("Error saving building " + e.getMessage());
             }
             conn.commit();
 
@@ -449,7 +449,7 @@ public class DatabaseManager {
                     insertFloors.executeUpdate();
                 }
                 catch (SQLException e) {
-                    System.out.println("Error saving floor " + e.getMessage());
+//                    System.out.println("Error saving floor " + e.getMessage());
                 }
                 conn.commit();
 
@@ -464,7 +464,7 @@ public class DatabaseManager {
                         insertNodes.executeUpdate();
                     }
                     catch (SQLException e) {
-                        System.out.println("Error saving node " + e.getMessage());
+//                        System.out.println("Error saving node " + e.getMessage());
                     }
                     conn.commit();
                     if (n instanceof Destination)
@@ -477,7 +477,7 @@ public class DatabaseManager {
                             insertDestinations.executeUpdate();
                         }
                         catch (SQLException e) {
-                            System.out.println("Error saving suite " + e.getMessage());
+//                            System.out.println("Error saving suite " + e.getMessage());
                         }
                         conn.commit();
                     }
@@ -506,14 +506,14 @@ public class DatabaseManager {
                 insertEdges.executeUpdate();
             }
             catch (SQLException e) {
-                System.out.println("Error saving edge " + e.getMessage());
+//                System.out.println("Error saving edge " + e.getMessage());
             }
 
             conn.commit();
             edgesCount++;
         }
 
-        System.out.println("Here");
+//        System.out.println("Here");
         
         for (Doctor doc : h.getDoctors().values()) {
             try {
@@ -526,7 +526,7 @@ public class DatabaseManager {
                 insertDoctors.executeUpdate();
             }
             catch (SQLException e) {
-                System.out.println("Error saving doctor " + e.getMessage());
+//                System.out.println("Error saving doctor " + e.getMessage());
             }
             conn.commit();
             // saves Suite and Doctor Relationships
@@ -537,10 +537,10 @@ public class DatabaseManager {
                     insertAssoc.executeUpdate();
                 }
                 catch (SQLException e) {
-                    System.out.println("Error saving suite_doc " + e.getMessage());
+//                    System.out.println("Error saving suite_doc " + e.getMessage());
                 }
                 conn.commit();
-                System.out.println("Added Suites");
+//                System.out.println("Added Suites");
             }
         }
         // saves Offices
@@ -552,7 +552,7 @@ public class DatabaseManager {
                 insertOffices.executeUpdate();
             }
             catch (SQLException e) {
-                System.out.println("Error saving edge" + e.getMessage());
+//                System.out.println("Error saving edge" + e.getMessage());
             }
             conn.commit();
         }
@@ -575,14 +575,14 @@ public class DatabaseManager {
             if (( (se.getErrorCode() == 50000)
                     && ("XJ015".equals(se.getSQLState()) ))) {
                 // we got the expected exception
-                System.out.println("Derby shut down normally");
+//                System.out.println("Derby shut down normally");
                 // Note that for single database shutdown, the expected
                 // SQL state is "08006", and the error code is 45000.
             } else {
                 // if the error code or SQLState is different, we have
                 // an unexpected exception (shutdown failed)
                 System.err.println("Derby did not shut down normally");
-                System.out.println(se.getStackTrace());
+//                System.out.println(se.getStackTrace());
             }
         }
     }

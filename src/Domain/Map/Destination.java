@@ -1,6 +1,7 @@
 package Domain.Map;
 
 import Controller.Admin.PopUp.DestinationEditController;
+import Controller.Admin.PopUp.KioskEditController;
 import Domain.ViewElements.DragIconType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -30,7 +31,7 @@ public class Destination extends MapNode {
     HashSet<Doctor> doctors;
     HashSet<Office> offices;
 
-    private final String popOverEditFXML = "/Admin/Popup/DestinationEditPopup.fxml";
+    private String popOverEditFXML = "/Admin/Popup/DestinationEditPopup.fxml";
 
     /**
      *  Creates a new Destination with an new empty info
@@ -67,8 +68,15 @@ public class Destination extends MapNode {
      */
     @Override
     public PopOver getEditPopover() {
-        DestinationEditController controller = new DestinationEditController(this);
-        return getPopOver(controller, popOverEditFXML);
+        if(this.getType() == 7){
+            popOverEditFXML = "/Admin/Popup/KioskEditPopup.fxml";
+            KioskEditController controller = new KioskEditController(this);
+            return getPopOver(controller, popOverEditFXML);
+        }else {
+            popOverEditFXML = "/Admin/Popup/DestinationEditPopup.fxml";
+            DestinationEditController controller = new DestinationEditController(this);
+            return getPopOver(controller, popOverEditFXML);
+        }
     }
 
     @Override
