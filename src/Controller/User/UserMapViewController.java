@@ -165,11 +165,13 @@ public class UserMapViewController extends AbstractController {
 
         mapItems.getChildren().add(mapImage);
 
-       // mapItems.setScaleX(mapItems.getScaleX());
-        //mapItems.setScaleY(mapItems.getScaleY());
-
         for(MapNode n: model.getCurrentFloor().getFloorNodes())
         {
+            if(n.getIconType().equals(DragIconType.Connector))
+            {
+                n.getNodeToDisplay().setVisible(false);
+            }
+
             addToMap(n);
 
             for(NodeEdge e : n.getEdges())
@@ -179,6 +181,7 @@ public class UserMapViewController extends AbstractController {
                     if (!mapItems.getChildren().contains(e.getEdgeLine()))
                     {
                         mapItems.getChildren().add(e.getEdgeLine());
+                        e.changeOpacity(0.0);
                     }
 
                     e.updatePosViaNode(n);
@@ -223,7 +226,6 @@ public class UserMapViewController extends AbstractController {
             mapItems.getChildren().add(n.getNodeToDisplay()); //add to right panes children
             mapItems.getChildren().add(destLabel);
         }
-
 
        // n.setPos(n.getPosX(), n.getPosY());
 
@@ -282,6 +284,15 @@ public class UserMapViewController extends AbstractController {
             floorDownArrow.setVisible(true);
             floorUpArrow.setVisible(true);
         }
+
+        if(newRoute!=null)
+        {
+            for (NodeEdge n : newRoute.getPathEdges())
+            {
+                n.changeOpacity(1.0);
+                n.changeColor(Color.RED);
+            }
+        }
     }
 
     @FXML
@@ -303,8 +314,16 @@ public class UserMapViewController extends AbstractController {
             floorUpArrow.setVisible(true);
             floorDownArrow.setVisible(true);
         }
-    }
 
+        if(newRoute!=null)
+        {
+            for (NodeEdge n : newRoute.getPathEdges())
+            {
+                n.changeOpacity(1.0);
+                n.changeColor(Color.RED);
+            }
+        }
+    }
 
     @FXML
     private void initialize() throws Exception {
@@ -523,6 +542,16 @@ public class UserMapViewController extends AbstractController {
     }
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException {
+
+        if(newRoute!=null) //hide stale path
+        {
+            for (NodeEdge n : newRoute.getPathEdges())
+            {
+                n.changeOpacity(0.0);
+                n.changeColor(Color.BLACK);
+            }
+        }
+
         System.out.println("In path finding");
         MapNode startPoint = model.getHospital().getCampusFloor().getKioskNode();
 
@@ -539,15 +568,26 @@ public class UserMapViewController extends AbstractController {
         } catch (PathFindingException e) {
             return;//TODO add error message throw
         }
-        for (NodeEdge edge : model.getCurrentFloor().getFloorEdges()) {
-            if(newRoute.getPathEdges().contains(edge)) {
-                edge.changeOpacity(1.0);
-                edge.changeColor(Color.RED);
-            } else {
-                edge.changeOpacity(0.8);
-                edge.changeColor(Color.BLACK);
-            }
+
+        for(NodeEdge n: newRoute.getPathEdges())
+        {
+            n.changeOpacity(1.0);
+            n.changeColor(Color.RED);
         }
+        /*
+        for(Building b : model.getHospital().getBuildings()) {
+            for(Floor f : b.getFloors()) {
+                for (NodeEdge edge : f.getFloorEdges()) {
+                    if (newRoute.getPathEdges().contains(edge)) {
+                        edge.changeOpacity(1.0);
+                        edge.changeColor(Color.RED);
+                    } else {
+                        edge.changeOpacity(0.0);
+                        edge.changeColor(Color.BLACK);
+                    }
+                }
+            }
+        }*/
 
         panel.fillGuidance(newRoute);
 

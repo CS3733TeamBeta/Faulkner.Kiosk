@@ -114,11 +114,11 @@ public class UserDirectionsPanel extends AnchorPane
     public void fillDirectionsList(DirectionStep step)
     {
         directionsListView.getItems().clear();
-
-        for(String s: step.getDirections())
-        {
-            Label l = new Label(s);
-            directionsListView.getItems().add(l);
+        for(DirectionStep s : guidance.getSteps()) {
+            for (String string : s.getDirections()) {
+                Label l = new Label(string);
+                directionsListView.getItems().add(l);
+            }
         }
     }
 
