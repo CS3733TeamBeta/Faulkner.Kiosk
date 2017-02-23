@@ -48,6 +48,10 @@ public class DatabaseManager {
                     "TYPE INT, " +
                     "CONSTRAINT NODE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
 
+            "CREATE TABLE USER1.CAMPUS (NODE_ID CHAR(36), " +
+                    "DIRECTION VARCHAR(5), " +
+                    "CONSTRAINT CAMPUS_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID))",
+
             "CREATE TABLE USER1.DESTINATION (DEST_ID CHAR(36) PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(200), " +
                     "NODE_ID CHAR(36), " +
@@ -86,6 +90,7 @@ public class DatabaseManager {
             "DROP TABLE USER1.OFFICES",
             "DROP TABLE USER1.DOCTOR",
             "DROP TABLE USER1.DESTINATION",
+            "DROP TABLE USER1.CAMPUS",
             "DROP TABLE USER1.NODE",
             "DROP TABLE USER1.FLOOR",
             "DROP TABLE USER1.BUILDING"};
