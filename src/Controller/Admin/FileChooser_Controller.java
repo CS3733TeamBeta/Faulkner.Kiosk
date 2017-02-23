@@ -51,6 +51,7 @@ public class FileChooser_Controller extends AbstractController
     String fullName = null;
 
     String building;
+    String savedName;
 
     Floor newFloor;
 
@@ -97,7 +98,7 @@ public class FileChooser_Controller extends AbstractController
             floorNum = Integer.parseInt(inputFloorNumber.getText());
             building = dropDown.getValue();
             if(fullName != null) {
-                addFloorInfo(fullName, floorNum, building);
+                addFloorInfo(savedName, floorNum, building);
                 try {
                     DatabaseManager.getInstance().saveData(theHospital);
                 }
@@ -183,6 +184,7 @@ public class FileChooser_Controller extends AbstractController
         File userFile = new File(strFilePath);
         String filename = userFile.getName();
         fullName = "resources/FloorMaps/" + filename;
+        savedName = filename;
     }
 
     // gets the extension of the selected file for comparison with valid types in clickChooseFile
