@@ -7,6 +7,7 @@ import Domain.ViewElements.DragIconType;
 import Domain.ViewElements.DrawableMapEntity;
 import Domain.ViewElements.Events.DeleteRequestedEvent;
 import Domain.ViewElements.Events.DeleteRequestedHandler;
+import Model.Database.DatabaseManager;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -14,6 +15,7 @@ import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -41,6 +43,7 @@ public class MapNode implements DrawableMapEntity {
     UUID nodeUID;
 
     String label = "";
+    String destName = "";
 
     /**
      * G value of this node, used for pathfinding, defaults to 0
@@ -88,7 +91,33 @@ public class MapNode implements DrawableMapEntity {
      */
     public MapNode(double posX, double posY) {
         this(posX, posY, 0);
+    }
 
+    /*
+    public void setLabel(String name) {
+        destName = name;
+    }
+    */
+
+    public void findDestName() throws SQLException {
+        Hospital hospital = DatabaseManager.getInstance().loadData();
+
+        for (Destination d: hospital.getDestinations().values()) {
+            if ((d.getPosX() == this.getPosX())
+                    && (d.getPosY() == this.getPosY())) {
+                this.destName = d.getName();
+                break;
+            }
+        }
+    }
+
+    public String getLabel() {
+        try {
+            findDestName();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return destName;
     }
 
     /**

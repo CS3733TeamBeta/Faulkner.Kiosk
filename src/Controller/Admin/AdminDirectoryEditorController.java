@@ -44,7 +44,7 @@ public class AdminDirectoryEditorController extends AbstractController {
     Boolean deptDirectoryUp = false;
     Hospital hospital = DatabaseManager.getInstance().loadData();
     ObservableList<Doctor> existingDoctors;
-    ObservableList<Office> existingDepts = FXCollections.observableArrayList(hospital.getOffices().values());;
+    ObservableList<Office> existingDepts;
     ObservableList<String> existingLoc = FXCollections.observableArrayList();
 
     @FXML
@@ -389,6 +389,7 @@ public class AdminDirectoryEditorController extends AbstractController {
     public void initializeDeptDirectory() {
         searchDeptBar.clear();
         searchDeptBar.setStyle("-fx-text-inner-color: white;");
+        deptDataTable.getSelectionModel().clearSelection();
 
         deptNameCol.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
 
@@ -399,8 +400,6 @@ public class AdminDirectoryEditorController extends AbstractController {
         });
 
         existingDepts = FXCollections.observableArrayList(hospital.getOffices().values());
-
-        deptDataTable.setItems(existingDepts);
 
         // Creating list of data to be filtered
         FilteredList<Office> filteredDepts = new FilteredList<>(existingDepts);
@@ -440,6 +439,7 @@ public class AdminDirectoryEditorController extends AbstractController {
         }
 
         TextFields.bindAutoCompletion(assignedLocField, existingLoc);
+
         editDeptFields.setVisible(false);
         editorButton.setText("Add");
         showDeptOptions();
@@ -447,6 +447,7 @@ public class AdminDirectoryEditorController extends AbstractController {
 
     @FXML
     private void changeDirectory() {
+        initializeDeptDirectory();
         Timeline directorySlide = new Timeline();
         KeyFrame keyFrame;
         directorySlide.setCycleCount(1);
@@ -467,7 +468,6 @@ public class AdminDirectoryEditorController extends AbstractController {
 
         directorySlide.getKeyFrames().add(keyFrame);
         directorySlide.play();
-        initializeDeptDirectory();
     }
 
     @FXML
@@ -544,8 +544,7 @@ public class AdminDirectoryEditorController extends AbstractController {
                         o.setSuite(assignedDest);
                     }
 
-                    hospital.getOffices().put(o.getName(), o);
-
+                    existingDepts.removeAll(existingDepts);
                     break;
                 default:
                     break;
