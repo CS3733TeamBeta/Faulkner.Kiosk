@@ -184,6 +184,7 @@ public class MapEditorController extends AbstractController {
 			selectAlgo.setItems(FXCollections.observableArrayList(
 				"AStar", "DFS", "BFS", "Random"
 			));
+			selectAlgo.setValue("AStar");
 		}
 
 		buildDragHandlers();
