@@ -1,6 +1,7 @@
 package Domain.ViewElements;
 
 import Domain.Map.Destination;
+import Domain.Map.Kiosk;
 import Domain.Map.MapNode;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -127,8 +128,9 @@ public class DragIcon extends AnchorPane{
 
 			case kiosk:
 			{
-				newNode = new MapNode();
+				newNode = new Kiosk();
 				newNode.setType(DragIconType.kiosk);
+				((Kiosk)newNode).setName(type.name());
 				newNode.setKioskNode(true);
 				break;
 			}
