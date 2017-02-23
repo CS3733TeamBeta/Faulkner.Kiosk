@@ -258,20 +258,22 @@ public class MapEditorController extends AbstractController {
 				{
 					Floor campusFloor = createCampusFloor();
 					//changeFloorSelection(campusFloor);
+					tV.getRoot().getChildren().clear();
 
 					for(Building b: model.getHospital().getBuildings())
 					{
 						try
 						{
-							tV.getRoot().getChildren().clear();
-
 							TreeItem<String> buildingItem = new TreeItem<String>(b.getName());
 
 							Floor groundFloor = b.getFloor(1);
 
 							for(MapNode n: groundFloor.getFloorNodes())
 							{
-								buildingItem.getChildren().add(new TreeItem<String>(n.toString()));
+								if(n.getIconType()!=DragIconType.connector)
+								{
+									buildingItem.getChildren().add(new TreeItem<String>(n.toString()));
+								}
 							}
 
 							tV.getRoot().getChildren().add(buildingItem);
@@ -280,6 +282,8 @@ public class MapEditorController extends AbstractController {
 						{
 						}
 					}
+
+
 				}
 		);
 
@@ -417,16 +421,16 @@ public class MapEditorController extends AbstractController {
 		}
 	}
 
-	protected void renderFloorMap()
+	protected void renderFloorMap(Floor f)
 	{
 		mapItems = new Group();
 		mapPane.getChildren().clear();
 		mapPane.getChildren().add(mapItems);
 
-		mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
+		mapImage.setImage(f.getImageInfo().getFXImage());
 		mapItems.getChildren().add(mapImage);
 
-		for(MapNode n: model.getCurrentFloor().getFloorNodes())
+		for(MapNode n: f.getFloorNodes())
 		{
 			importNode(n);
 
@@ -444,6 +448,11 @@ public class MapEditorController extends AbstractController {
 		}
 
 		mapImage.toBack();
+	}
+
+	protected void renderFloorMap()
+	{
+		renderFloorMap(model.getCurrentFloor());
 	}
 
 	/**
