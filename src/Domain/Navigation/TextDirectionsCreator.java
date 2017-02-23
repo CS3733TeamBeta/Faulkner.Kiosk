@@ -122,6 +122,8 @@ public class TextDirectionsCreator {
 
                     }
                 }
+                intersectionsPassed = 0;
+                tempNodeEdges.add(fromNode.getEdgeTo(toNode));
                 if(listNodes.size() > i+2) {
                     System.out.println("It's greater");
                     MapNode tempFromNode = listNodes.get(i+1);
@@ -141,12 +143,12 @@ public class TextDirectionsCreator {
                             System.out.println("good change");
                             String tempDirectionChangeString = Guidance.directionChangeToString(tempChangeInDirection, vFlag);
                             tempTextDirection += ", then immediately turn " + tempDirectionChangeString;
+                            tempMapNodes.add(tempFromNode);
+                            tempNodeEdges.add(tempFromNode.getEdgeTo(tempToNode));
                             i++;
                         }
                     }
                 }
-                intersectionsPassed = 0;
-                tempNodeEdges.add(fromNode.getEdgeTo(toNode));
                 tempDirectionSteps.add(new DirectionStep(tempTextDirection, tempNodeEdges));
                 tempNodeEdges = new LinkedList<>();
             } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
