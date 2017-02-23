@@ -167,6 +167,8 @@ public class UserMapViewController extends AbstractController {
 
                 e.updatePosViaNode(n);
             }
+
+            n.getNodeToDisplay().toFront();
         }
 
         mapImage.toBack();
@@ -457,7 +459,7 @@ public class UserMapViewController extends AbstractController {
             return;//TODO add error message of some kind
         }
         try {
-            newRoute = new Guidance(startPoint, endPoint, false);
+            newRoute = new Guidance(startPoint, endPoint, "North");
         } catch (PathFindingException e) {
             return;//TODO add error message throw
         }

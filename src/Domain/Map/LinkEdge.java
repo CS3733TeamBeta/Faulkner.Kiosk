@@ -12,6 +12,14 @@ public class LinkEdge extends NodeEdge
         edgeLine.setVisible(false);
     }
 
+    public LinkEdge(NodeEdge e)
+    {
+        this.setSource(e.getSource());
+        this.setTarget(e.getTarget());
+
+        cost = e.getCost();
+    }
+
 
     @Override
     public void updateCost()
