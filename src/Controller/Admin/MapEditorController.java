@@ -501,9 +501,6 @@ public class MapEditorController extends AbstractController {
 
 		for(EdgeCompleteEventHandler handler : model.getEdgeCompleteHandlers())
 		{
-			if(!model.getCurrentFloor().getFloorEdges().contains(drawingEdge)){
-				model.getCurrentFloor().getFloorEdges().add(drawingEdge);
-			}
 			handler.handle(new EdgeCompleteEvent(drawingEdge));
 		}
 	}
@@ -769,8 +766,8 @@ public class MapEditorController extends AbstractController {
 			else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
 				if(ev.getClickCount() == 2) // double click
 				{
-					//onStartEdgeDrawing(boundary.getMapNode(n));
-					boundary.remove(n);
+					onStartEdgeDrawing(boundary.getMapNode(n));
+					//boundary.remove(n);
 				} //could add code to print location changes here.
 			}
 
@@ -779,11 +776,11 @@ public class MapEditorController extends AbstractController {
 			 * 2. This node was clicked
 			 * 3. This node isn't the source of the edge we are drawing
 			 */
-			/*if (drawingEdge!=null && !drawingEdge.getSource().equals(mapNode))
+			if (drawingEdge!=null && !drawingEdge.getSource().equals(boundary.getMapNode(n)))
 			{
 				//drawingEdge.setTarget(mapNode);
 				onEdgeComplete();
-			}*/
+			}
 		});
 
 		n.setOnMouseEntered(ev->
@@ -805,16 +802,16 @@ public class MapEditorController extends AbstractController {
 	{
 		if(drawingEdge != null) //if currently drawing... handles case of right clicking to start a new node
 		{
-			if(mapItems.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
+			if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
 			{
-				mapItems.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
+				mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
 			}
 		}
 
 		drawingEdge = new NodeEdge();
 		drawingEdge.setSource(mapNode);
 
-		mapItems.getChildren().add(drawingEdge.getNodeToDisplay());
+		mapPane.getChildren().add(drawingEdge.getNodeToDisplay());
 		drawingEdge.toBack();
 		mapImage.toBack();
 
@@ -823,15 +820,13 @@ public class MapEditorController extends AbstractController {
 
 		root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
 			if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
-				if(mapItems.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
+				if(mapPane.getChildren().contains(drawingEdge.getNodeToDisplay())) //and the right pane has the drawing edge as child
 				{
-					mapItems.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
+					mapPane.getChildren().remove(drawingEdge.getNodeToDisplay()); //remove from the right pane
 				}
 				drawingEdge = null;
 
 				mapPane.setOnMouseMoved(null);
-
-				//makeMapNodeDraggable(mapNode);
 			}
 		});
 
