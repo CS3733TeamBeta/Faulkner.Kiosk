@@ -20,7 +20,6 @@ import java.io.IOException;
 
 public class AdminLoginController extends AbstractController
 {
-
     @FXML
     private AnchorPane anchorPane;
 
