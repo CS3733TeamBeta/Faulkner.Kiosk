@@ -22,8 +22,6 @@ public abstract class MapBoundary extends Observable
    // protected ObservableList<Node> mapElements;
     protected ObservableSet<MapNode> mapElements;
 
-    HashMap<Node, Object> hashMap = new HashMap<Node, Object>();
-
     protected Floor currentFloor;
     MapNode kiosk;
     Building b;

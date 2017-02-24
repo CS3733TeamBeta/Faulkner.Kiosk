@@ -7,8 +7,6 @@ import Domain.Map.*;
 import Domain.ViewElements.DragContainer;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
-import Domain.ViewElements.Events.DeleteRequestedEvent;
-import Domain.ViewElements.Events.DeleteRequestedHandler;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 import Model.DataSourceClasses.MapTreeItem;
@@ -19,26 +17,30 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
-import javafx.collections.MapChangeListener;
 import javafx.collections.SetChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Point2D;
+import javafx.geometry.*;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.*;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import jfxtras.labs.util.event.MouseControlUtil;
+import jfxtras.scene.layout.CircularPane;
+import jfxtras.scene.menu.CirclePopupMenu;
 import org.controlsfx.control.PopOver;
 
 import java.awt.*;
@@ -79,20 +81,21 @@ public class MapEditorController extends AbstractController {
 
 	AdminMapBoundary boundary;
 
-	BiMap<DragIcon, MapNode> nodeEntityMap;
+	BiMap<DragIcon, MapNode> iconEntityMap;
 	HashMap<Line, NodeEdge>  edgeEntityMap;
+	CirclePopupMenu menu;
 
 	public MapEditorController() {
 
 		model = new MapEditorModel();
 		boundary = new AdminMapBoundary();
 
-		nodeEntityMap = HashBiMap.create();
+		iconEntityMap = HashBiMap.create();
 		edgeEntityMap = new HashMap<Line, NodeEdge>();
 
 		//Runs once the edge is drawn from one node to another
 		//connects the two, sends sources, positions them etc.
-		model.addEdgeCompleteHandler(event->
+		/*model.addEdgeCompleteHandler(event->
 		{
 			MapNode sourceNode = event.getNodeEdge().getSource();
 			MapNode targetNode = event.getNodeEdge().getTarget();
@@ -101,7 +104,9 @@ public class MapEditorController extends AbstractController {
 
 			mapPane.setOnMouseMoved(null);
 			mapImage.toBack();
-		});
+		});*/
+
+
 	}
 
 	/**
@@ -147,11 +152,7 @@ public class MapEditorController extends AbstractController {
 
 		buildDragHandlers();
 
-		//loadBuildingsToTabPane(model.getHospital().getBuildings());
-
-		//mapPane.getChildren().setAll(boundary.getMapElements());
-
-		boundary.addMapChangeHandler(new SetChangeListener<MapNode>()
+		boundary.addNodeSetChangeHandler(new SetChangeListener<MapNode>()
 		{
 			@Override
 			public void onChanged(Change<? extends MapNode> change)
@@ -160,19 +161,60 @@ public class MapEditorController extends AbstractController {
 				{
 					DragIcon icon = new DragIcon();
 					icon.setType(change.getElementAdded().getIconType());
+					icon.relocate(change.getElementAdded().getPosX()-32,
+							change.getElementAdded().getPosY()-32);
 
 					addEventHandlersToNode(icon);
 
 					mapPane.getChildren().add(icon);
-					nodeEntityMap.put(icon, change.getElementAdded());
+					iconEntityMap.put(icon, change.getElementAdded());
 				}
 				else if(change.wasRemoved())
 				{
-					DragIcon n = nodeEntityMap.inverse().get(change.getElementRemoved());
+					DragIcon n = iconEntityMap.inverse().get(change.getElementRemoved());
+					iconEntityMap.remove(n);
+
 					mapPane.getChildren().remove(n);
 				}
 			}
 		});
+
+		mapPane.setOnMouseClicked(event->
+		{
+
+		});
+
+		menu = new CirclePopupMenu(mapPane, MouseButton.PRIMARY);
+
+		ImageView img1 = new ImageView(new Image(this.getClass().getResourceAsStream("/User/MapViewer/elevator.png")));
+		img1.setFitHeight(30);
+		img1.setFitWidth(30);
+		//AnchorPane pane = new AnchorPane(img1);
+		//pane.setPadding(new Insets(10, 10, 10, 10));
+
+		ImageView img2 = new ImageView(new Image(this.getClass().getResourceAsStream("/User/MapViewer/elevator.png")));
+		img2.setFitHeight(30);
+		img2.setFitWidth(30);
+
+		ImageView img3 = new ImageView(new Image(this.getClass().getResourceAsStream("/User/MapViewer/elevator.png")));
+		img3.setFitHeight(30);
+		img3.setFitWidth(30);
+
+		ImageView img4 = new ImageView(new Image(this.getClass().getResourceAsStream("/User/MapViewer/elevator.png")));
+		img4.setFitHeight(30);
+		img4.setFitWidth(30);
+
+		ImageView img5 = new ImageView(new Image(this.getClass().getResourceAsStream("/User/MapViewer/elevator.png")));
+		img5.setFitHeight(30);
+		img5.setFitWidth(30);
+
+
+		menu.getItems().addAll(new MenuItem("Elevator", img1),
+				new MenuItem("Elevator", img2),
+				new MenuItem("Elevator", img3),
+				new MenuItem("Elevator", img4),
+				new MenuItem("Elevator", img5)
+		);
 	}
 
 	/**
@@ -344,6 +386,9 @@ public class MapEditorController extends AbstractController {
 	@FXML
 	void onNewBuilding(ActionEvent event)
 	{
+		//boundary.newBuilding();
+		//boundary has building observable list
+
 		//Building b = new Building("Building " + (model.getBuildingCount()+1)); //@TODO Hacky fix -BEN
 
 		//new building pane
@@ -489,7 +534,8 @@ public class MapEditorController extends AbstractController {
 
 		edge.setOnMouseClicked(deEvent->{
 			if (edge != null) {
-				if (deEvent.getClickCount() == 2) {
+				if (deEvent.getClickCount() == 2)
+				{
 					//edge.getSource().getEdges().remove(edge);
 					//edge.getTarget().getEdges().remove(edge);
 					//mapItems.getChildren().remove(edge.getNodeToDisplay()); //remove from the right pane
@@ -523,15 +569,7 @@ public class MapEditorController extends AbstractController {
 				event ->
 				{
 					Point2D movedTo = n.getParent().sceneToLocal(event.getSceneX(),event.getSceneY());
-
-					nodeEntityMap.get(n).setPosX(movedTo.getX());
-					nodeEntityMap.get(n).setPosY(movedTo.getY());
-
-					for (NodeEdge edge : nodeEntityMap.get(n).getEdges())
-					{
-						//edge.updatePosViaNode(boundary.getMapNode(n)); //@TODO
-						edge.updateCost();
-					}
+					boundary.moveNode(iconEntityMap.get(n), movedTo);
 
 					//boundary.updateNode()
 					System.out.println("Node moved to (X: "+ n.getParent().sceneToLocal(event.getSceneX(),event.getSceneY()));
@@ -554,7 +592,7 @@ public class MapEditorController extends AbstractController {
 				
 				// get a reference to the clicked DragIcon object
 				DragIcon icn = (DragIcon) event.getSource();
-				
+
 				//begin drag ops
 				mDragOverIcon.setType(icn.getType());
 				mDragOverIcon.relocateToPoint(new Point2D (event.getSceneX(), event.getSceneY()));
@@ -659,9 +697,10 @@ public class MapEditorController extends AbstractController {
 						droppedNode = DragIcon.constructMapNodeFromType((DragIconType.valueOf(container.getValue("type"))));
 
 						Point2D cursorPoint = container.getValue("scene_coords"); //cursor point
+						Point2D movedTo = mapPane.sceneToLocal(cursorPoint);
 
-						droppedNode.setPosX(cursorPoint.getX()-12.5);
-						droppedNode.setPosY(cursorPoint.getY()-12.5);
+						droppedNode.setPosX(movedTo.getX());
+						droppedNode.setPosY(movedTo.getY());
 
 						boundary.addNode(droppedNode);
 					}
@@ -738,7 +777,7 @@ public class MapEditorController extends AbstractController {
 
 			if(ev.getButton() == MouseButton.SECONDARY) //if right click
 			{
-				PopOver popOver = nodeEntityMap.get(n).getEditPopover();
+				PopOver popOver = iconEntityMap.get(n).getEditPopover();
 
 				/***If the name is set, at it to the tree*/
 				popOver.setOnHiding(event -> {
@@ -756,7 +795,7 @@ public class MapEditorController extends AbstractController {
 			else if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
 				if(ev.getClickCount() == 2) // double click
 				{
-					onStartEdgeDrawing(nodeEntityMap.get(n));
+					onStartEdgeDrawing(iconEntityMap.get(n));
 					//boundary.remove(n);
 				} //could add code to print location changes here.
 			}
@@ -766,7 +805,7 @@ public class MapEditorController extends AbstractController {
 			 * 2. This node was clicked
 			 * 3. This node isn't the source of the edge we are drawing
 			 */
-			if (drawingEdge!=null && !drawingEdge.getSource().equals(nodeEntityMap.get(n)))
+			if (drawingEdge!=null && !drawingEdge.getSource().equals(iconEntityMap.get(n)))
 			{
 				//drawingEdge.setTarget(mapNode);
 				onEdgeComplete();
@@ -830,68 +869,6 @@ public class MapEditorController extends AbstractController {
 				drawingEdge.setEndPoint(mouseCoords); //set the end point
 			}
 		});
-	}
-	/*
-	 removes the node from the model
-	 removes the node.getNodeToDisplay() from the map pane
-	 removes the node edges associated with that node from the model
-	 removes the node edge.getNodeToDisplay() associated with from the map pane
-	 */
-	private void removeNode(MapNode node)
-	{
-		for (Iterator<NodeEdge> i = node.getEdges().iterator(); i.hasNext();) {
-			NodeEdge edge = (NodeEdge)i.next();
-			mapItems.getChildren().remove(edge.getNodeToDisplay()); //remove edge from pane
-
-			model.removeMapEdge(edge); //remove edge from model
-
-			i.remove();
-		}
-
-		mapItems.getChildren().remove(node.getNodeToDisplay()); //remove the node
-
-		if(drawingEdge!=null)
-		{
-			drawingEdge.getNodeToDisplay().setVisible(false); //hide the drawing edge if drawing
-			drawingEdge = null; //no longer drawing
-		}
-
-		model.removeMapNodeFromCurrentFloor(node); //remove node from mode
-
-		/*********REALLY SHITTY CODEEEE, should specifically use iterator for removal**************/
-
-		TreeItem<MapTreeItem> toDelete = null;
-
-		for (TreeItem<MapTreeItem> floorItem : getCurrentTreeView().getRoot().getChildren())
-		{
-			for(TreeItem<MapTreeItem>  nodeItem : floorItem.getChildren())
-			{
-				if (nodeItem.getValue().getValue().equals((node)))
-				{
-					toDelete = nodeItem;
-					break;
-				}
-			}
-		}
-
-		if(toDelete != null)
-		{
-			toDelete.getParent().getChildren().remove(toDelete);
-			getCurrentTreeView().refresh();
-		}
-	}
-
-	public void updateEdgeWeights(){
-		/*for(Building b: model.getHospital().getBuildings())
-		{
-			for(Floor f: b.getFloors())
-			{
-				for (NodeEdge e : f.getFloorEdges())
-				{
-					e.updateCost();
-				}
-			}
-		}*/
 	}
 
 	/**Handles saving out all of the map info

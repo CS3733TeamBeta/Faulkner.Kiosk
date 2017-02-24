@@ -2,15 +2,13 @@ package Boundary;
 
 import Domain.Map.*;
 import Domain.ViewElements.DragIconType;
-import Domain.ViewElements.Events.DeleteRequestedEvent;
-import Domain.ViewElements.Events.DeleteRequestedHandler;
 import javafx.collections.*;
-import javafx.scene.Group;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
+
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Observable;
 
 /**
  * Created by benhylak on 2/24/17.
@@ -19,7 +17,7 @@ public class AdminMapBoundary extends MapBoundary
 {
     protected ObservableSet<NodeEdge> edges = FXCollections.observableSet(new HashSet<NodeEdge>());
 
-    public void addMapChangeHandler(SetChangeListener<MapNode> mapChangeListener)
+    public void addNodeSetChangeHandler(SetChangeListener<MapNode> mapChangeListener)
     {
         mapElements.addListener(mapChangeListener);
     }
@@ -69,15 +67,11 @@ public class AdminMapBoundary extends MapBoundary
             {
                 n.setFloor(currentFloor);
                 currentFloor.addNode(n);
-
                 mapElements.add(n);
             }
         }
 
-        n.setOnDeleteRequested(e->
-        {
-            remove(n);
-        });
+        n.setOnDeleteRequested(e-> remove(n));
     }
 
     public void newEdge(MapNode source, MapNode target)
@@ -130,5 +124,19 @@ public class AdminMapBoundary extends MapBoundary
     public void remove(MapNode n)
     {
         mapElements.remove(n);
+    }
+
+    public void moveNode(MapNode n, Point2D movedTo)
+    {
+        n.setPosX(movedTo.getX());
+        n.setPosY(movedTo.getY());
+
+        //update database
+
+        for (NodeEdge edge : n.getEdges())
+        {
+            //edge.updatePosViaNode(boundary.getMapNode(n)); //@TODO
+            edge.updateCost();
+        }
     }
 }
