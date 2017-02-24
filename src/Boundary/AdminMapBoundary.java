@@ -1,6 +1,7 @@
 package Boundary;
 
 import Domain.Map.*;
+import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
 import javafx.collections.*;
 import javafx.geometry.Point2D;
@@ -78,6 +79,19 @@ public class AdminMapBoundary extends MapBoundary
     {
         NodeEdge edge = new NodeEdge(source, target);
         edges.add(edge);
+    }
+
+    public void newNode(DragIconType type, Point2D loc)
+    {
+        MapNode n = new MapNode();
+        n.setType(type);
+
+        n.setPosX(loc.getX());
+        n.setPosY(loc.getY());
+
+        System.out.println(loc.getX());
+
+        mapElements.add(n);
     }
 
     private void addElevator(MapNode n)

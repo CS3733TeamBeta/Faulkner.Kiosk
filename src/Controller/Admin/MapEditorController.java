@@ -186,35 +186,38 @@ public class MapEditorController extends AbstractController {
 
 		menu = new CirclePopupMenu(mapPane, MouseButton.PRIMARY);
 
-		ImageView img1 = new ImageView(new Image(this.getClass().getResourceAsStream("/User/MapViewer/elevator.png")));
-		img1.setFitHeight(30);
-		img1.setFitWidth(30);
-		//AnchorPane pane = new AnchorPane(img1);
-		//pane.setPadding(new Insets(10, 10, 10, 10));
+		for (int i = 0; i < DragIconType.values().length; i++)
+		{
+			DragIcon icn = new DragIcon();
+			icn.setType(DragIconType.values()[i]);
 
-		ImageView img2 = new ImageView(new Image(this.getClass().getResourceAsStream("/User/MapViewer/elevator.png")));
-		img2.setFitHeight(30);
-		img2.setFitWidth(30);
+			if(icn.getType().equals(DragIconType.Connector))
+			{
+				icn.setPrefWidth(20);
+				icn.setPrefHeight(20);
+			}
+			else
+			{
+				icn.setPrefWidth(32);
+				icn.setPrefHeight(32);
 
-		ImageView img3 = new ImageView(new Image(this.getClass().getResourceAsStream("/User/MapViewer/elevator.png")));
-		img3.setFitHeight(30);
-		img3.setFitWidth(30);
+			}
 
-		ImageView img4 = new ImageView(new Image(this.getClass().getResourceAsStream("/User/MapViewer/elevator.png")));
-		img4.setFitHeight(30);
-		img4.setFitWidth(30);
+			model.addSideBarIcon(icn);
+			bottom_bar.getChildren().add(icn);
 
-		ImageView img5 = new ImageView(new Image(this.getClass().getResourceAsStream("/User/MapViewer/elevator.png")));
-		img5.setFitHeight(30);
-		img5.setFitWidth(30);
+			MenuItem item = new MenuItem(DragIconType.values()[i].name(), icn);
 
+			icn.setOnMouseClicked(event -> {
+				Point2D spawnLoc = mapPane.screenToLocal(event.getScreenX(), event.getScreenY());
 
-		menu.getItems().addAll(new MenuItem("Elevator", img1),
-				new MenuItem("Elevator", img2),
-				new MenuItem("Elevator", img3),
-				new MenuItem("Elevator", img4),
-				new MenuItem("Elevator", img5)
-		);
+				//menu.getAnimationInterpolation().interpolate(30, ne);
+
+				boundary.newNode(icn.getType(), spawnLoc);
+			});
+
+			menu.getItems().add(item);
+		}
 	}
 
 	/**
