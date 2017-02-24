@@ -105,6 +105,7 @@ public class AdminDirectoryEditorController extends AbstractController {
 
     public AdminDirectoryEditorController() throws SQLException
     {
+
     }
 
     public void setHospital(Hospital h)

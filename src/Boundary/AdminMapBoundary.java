@@ -2,12 +2,14 @@ package Boundary;
 
 import Domain.Map.*;
 import Domain.ViewElements.DragIconType;
-import javafx.collections.ListChangeListener;
-import javafx.collections.MapChangeListener;
+import Domain.ViewElements.Events.DeleteRequestedEvent;
+import Domain.ViewElements.Events.DeleteRequestedHandler;
+import javafx.collections.*;
 import javafx.scene.Group;
 import javafx.scene.Node;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Observable;
 
 /**
@@ -15,7 +17,9 @@ import java.util.Observable;
  */
 public class AdminMapBoundary extends MapBoundary
 {
-    public void addMapChangeHandler(MapChangeListener<Node, Object> mapChangeListener)
+    protected ObservableSet<NodeEdge> edges = FXCollections.observableSet(new HashSet<NodeEdge>());
+
+    public void addMapChangeHandler(SetChangeListener<MapNode> mapChangeListener)
     {
         mapElements.addListener(mapChangeListener);
     }
@@ -40,12 +44,12 @@ public class AdminMapBoundary extends MapBoundary
             {
                 if(currentFloor.getFloorNodes().contains(e.getOtherNode(n)))
                 {
-                    if (!mapElements.containsKey(e.getEdgeLine()))
+                    /*if (!mapElements.containsKey(e.getEdgeLine()))
                     {
                         mapElements.put(e.getEdgeLine(), e);
                     }
 
-                    e.updatePosViaNode(n);
+                    e.updatePosViaNode(n);*/
                 }
             }
 
@@ -66,26 +70,29 @@ public class AdminMapBoundary extends MapBoundary
                 n.setFloor(currentFloor);
                 currentFloor.addNode(n);
 
-                mapElements.put(n.getNodeToDisplay(), n);
+                mapElements.add(n);
             }
         }
 
-        //n.setPos(n.getPosX(), n.getPosY());
+        n.setOnDeleteRequested(e->
+        {
+            remove(n);
+        });
     }
 
     public void newEdge(MapNode source, MapNode target)
     {
         NodeEdge edge = new NodeEdge(source, target);
-        mapElements.put(edge.getEdgeLine(), edge);
+        edges.add(edge);
     }
 
     private void addElevator(MapNode n)
     {
         ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
 
-        if (!mapElements.containsKey(n.getNodeToDisplay()))
+        if (!mapElements.contains(n))
         {
-            mapElements.put(n.getNodeToDisplay(), n); //add to right panes children
+            mapElements.contains(n); //add to right panes children
         }
 
         MapNode last = null;
@@ -120,7 +127,7 @@ public class AdminMapBoundary extends MapBoundary
         }
     }
 
-    public void remove(Node n)
+    public void remove(MapNode n)
     {
         mapElements.remove(n);
     }

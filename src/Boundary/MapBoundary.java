@@ -6,9 +6,11 @@ import Domain.Map.MapNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.collections.ObservableSet;
 import javafx.scene.Node;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Observable;
 
@@ -18,7 +20,7 @@ import java.util.Observable;
 public abstract class MapBoundary extends Observable
 {
    // protected ObservableList<Node> mapElements;
-    protected ObservableMap<Node, Object> mapElements;
+    protected ObservableSet<MapNode> mapElements;
 
     HashMap<Node, Object> hashMap = new HashMap<Node, Object>();
 
@@ -39,7 +41,7 @@ public abstract class MapBoundary extends Observable
             e.printStackTrace();
         }
 
-        mapElements = FXCollections.observableMap(hashMap);
+        mapElements = FXCollections.observableSet(new HashSet<MapNode>());
 
     }
 
@@ -53,13 +55,9 @@ public abstract class MapBoundary extends Observable
 
     }
 
-    public ObservableMap<Node, Object> getMapElements()
+    public ObservableSet<MapNode> mapElements()
     {
         return mapElements;
     }
 
-    public MapNode getMapNode(Node n)
-    {
-        return (MapNode)mapElements.get(n);
-    }
 }
