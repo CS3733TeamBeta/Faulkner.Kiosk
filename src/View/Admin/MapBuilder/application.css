@@ -36,5 +36,4 @@
 .kiosk
 {
 	-fx-background-image: url("kiosk.png");
-	-fx-background-size: 10 10;
 }

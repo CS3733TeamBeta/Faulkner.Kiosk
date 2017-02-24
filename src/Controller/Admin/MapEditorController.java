@@ -22,7 +22,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.*;
-import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -30,16 +29,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import jfxtras.labs.util.event.MouseControlUtil;
-import jfxtras.scene.layout.CircularPane;
 import jfxtras.scene.menu.CirclePopupMenu;
 import org.controlsfx.control.PopOver;
 
@@ -84,6 +80,11 @@ public class MapEditorController extends AbstractController {
 	BiMap<DragIcon, MapNode> iconEntityMap;
 	HashMap<Line, NodeEdge>  edgeEntityMap;
 	CirclePopupMenu menu;
+
+	Point2D menuOpenLoc = null;
+
+	final ImageView target = new ImageView("@../../crosshair.png");
+
 
 	public MapEditorController() {
 
@@ -179,12 +180,19 @@ public class MapEditorController extends AbstractController {
 			}
 		});
 
+		menu = new CirclePopupMenu(mapPane, null);
+
 		mapPane.setOnMouseClicked(event->
 		{
+			menu.show(event.getScreenX(), event.getScreenY());
 
+			target.setVisible(true);
+
+			target.setX(event.getX()-target.getFitWidth()/2);
+			target.setY(event.getY()-target.getFitHeight()/2);
+
+			menuOpenLoc = new Point2D(event.getX(), event.getY());
 		});
-
-		menu = new CirclePopupMenu(mapPane, MouseButton.PRIMARY);
 
 		for (int i = 0; i < DragIconType.values().length; i++)
 		{
@@ -209,15 +217,17 @@ public class MapEditorController extends AbstractController {
 			MenuItem item = new MenuItem(DragIconType.values()[i].name(), icn);
 
 			icn.setOnMouseClicked(event -> {
-				Point2D spawnLoc = mapPane.screenToLocal(event.getScreenX(), event.getScreenY());
-
-				//menu.getAnimationInterpolation().interpolate(30, ne);
-
-				boundary.newNode(icn.getType(), spawnLoc);
+				boundary.newNode(icn.getType(), menuOpenLoc);
+				target.setVisible(false);
 			});
 
 			menu.getItems().add(item);
 		}
+
+		target.setVisible(false);
+		target.setFitWidth(14);
+		target.setFitHeight(14);
+		mapPane.getChildren().add(target);
 	}
 
 	/**

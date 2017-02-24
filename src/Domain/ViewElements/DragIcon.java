@@ -103,6 +103,10 @@ public class DragIcon extends AnchorPane{
 				getStyleClass().add("connector");
 				break;
 
+			case Kiosk:
+				getStyleClass().add("kiosk");
+				break;
+
 			default:
 				break;
 		}
