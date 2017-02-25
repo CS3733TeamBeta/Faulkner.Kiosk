@@ -117,7 +117,7 @@ public class MapEditorController extends AbstractController {
 	private void initialize() {
 		System.out.println("Here");
 
-		//initNodes();
+		//initNodes()fc
 
 		BuildingTabPane.getTabs().clear();
 
@@ -208,7 +208,6 @@ public class MapEditorController extends AbstractController {
 			{
 				icn.setPrefWidth(32);
 				icn.setPrefHeight(32);
-
 			}
 
 			model.addSideBarIcon(icn);

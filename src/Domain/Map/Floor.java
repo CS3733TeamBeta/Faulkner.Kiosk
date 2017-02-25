@@ -3,11 +3,13 @@ package Domain.Map;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Observable;
 
 /**
  * Represents a floor in a building. A floor will have nodes, node edges, destinations, more
  */
-public class Floor implements Comparable{
+public class Floor extends Observable implements Comparable{
+
     HashSet<MapNode> floorNodes;
     HashSet<NodeEdge> floorEdges;
 
