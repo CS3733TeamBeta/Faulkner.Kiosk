@@ -75,7 +75,7 @@ public class DragDropMain extends Application
 		int boxHeight = 10;
 		VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 200, (floor.getTranslateZ()-boxHeight));
 
-		root.getChildren().add(visualbuilding.getBaseFloor());
+		root.getChildren().add(visualbuilding.getGroup());
 
 
 		final Rectangle rectangle = new Rectangle(400, 400, Color.TRANSPARENT);
