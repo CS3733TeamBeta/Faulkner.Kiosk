@@ -47,6 +47,8 @@ public class SendEmail {
         props.setProperty("mail.smtp.socketFactory.fallback", "false");
         props.setProperty("mail.smtp.port", "465");
         props.setProperty("mail.smtp.socketFactory.port", "465");
+//        props.setProperty("mail.user", "faulknerkioskdirections@gmail.com");
+//        props.setProperty("mail.password","FaulkPassword");
         props.put("mail.smtp.auth", "true");
         props.put("mail.debug", "true");
         props.put("mail.store.protocol", "pop3");
@@ -73,12 +75,10 @@ public class SendEmail {
             String imageDirectionsPortion = "";
 
             for (int i = 1; i <= numDirectionFloors; i++) {
-//                String tempString = "<img src =\"cid:imageDirections" + i + "\">" ;
-                final String tempString = "<tempString>" + "<body> <style>"
-                        + "body{background:#f2f7ff}"
-                        + "body, p{font-weight:400} </style>"
+                String tempString = "<img src =\"cid:imageDirections" + i + "\">" ;
+                tempString = "<tempString>" + "<body> <style>"
+                        + "body{background:#f2f7ff} </style>"
                         + "<p>...</p> </body> </html>";
-//                style="-fx-background-color: #3F51B5;"
                 imageDirectionsPortion = imageDirectionsPortion + tempString;
             }
 
@@ -93,9 +93,7 @@ public class SendEmail {
             multipart.addBodyPart(messageBodyPart);
 
             messageBodyPart = new MimeBodyPart();
-            fds = new FileDataSource(
-                    "BW-logo.png");
-
+            fds = new FileDataSource("BW-logo.png");
 
 
             messageBodyPart.setDataHandler(new DataHandler(fds));
