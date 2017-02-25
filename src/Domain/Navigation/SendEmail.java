@@ -69,10 +69,16 @@ public class SendEmail {
             BodyPart messageBodyPart = new MimeBodyPart();
             String htmlText;
 
+
             String imageDirectionsPortion = "";
 
             for (int i = 1; i <= numDirectionFloors; i++) {
-                String tempString = "<img src =\"cid:imageDirections" + i + "\">";
+//                String tempString = "<img src =\"cid:imageDirections" + i + "\">" ;
+                final String tempString = "<tempString>" + "<body> <style>"
+                        + "body{background:#e5f8ff}"
+                        + "body, p{font-weight:400} </style>"
+                        + "<p>...</p> </body> </html>";
+//                style="-fx-background-color: #3F51B5;"
                 imageDirectionsPortion = imageDirectionsPortion + tempString;
             }
 
@@ -88,7 +94,7 @@ public class SendEmail {
 
             messageBodyPart = new MimeBodyPart();
             fds = new FileDataSource(
-                    "scaled_falkner_banner.png");
+                    "BW-logo.png");
 
 
 
@@ -97,18 +103,18 @@ public class SendEmail {
 
             multipart.addBodyPart(messageBodyPart);
 
-            if (includeImage) {
-                for (int i = 1; i <= numDirectionFloors; i++) {
-                    messageBodyPart = new MimeBodyPart();
-                    fds = new FileDataSource(
-                            "combined" + i + ".png");
-
-                    messageBodyPart.setDataHandler(new DataHandler(fds));
-                    messageBodyPart.setHeader("Content-ID", "<imageDirections" + i + ">");
-
-                    multipart.addBodyPart(messageBodyPart);
-                }
-            }
+//            if (includeImage) {
+//                for (int i = 1; i <= numDirectionFloors; i++) {
+//                    messageBodyPart = new MimeBodyPart();
+//                    fds = new FileDataSource(
+//                            "combined" + i + ".png");
+//
+//                    messageBodyPart.setDataHandler(new DataHandler(fds));
+//                    messageBodyPart.setHeader("Content-ID", "<imageDirections" + i + ">");
+//
+//                    multipart.addBodyPart(messageBodyPart);
+//                }
+//            }
 
 
             msg.setContent(multipart);
@@ -120,7 +126,7 @@ public class SendEmail {
             //msg.setText(message);
             msg.setSentDate(new Date());
             Transport.send(msg);
-            System.out.println("Message sent.");
+            System.out.println("Message sent!");
         } catch (MessagingException e) {
             System.out.println("Message failed to send; cause:" + e);
         }
