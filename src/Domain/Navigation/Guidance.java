@@ -352,7 +352,7 @@ public class Guidance extends Path {
                 // paint both images, preserving the alpha channels
                 Graphics2D g = combined.createGraphics();
                 g.drawImage(realBaseImage, 0, 0, null);
-                double constant = 2.175;
+                double constant = 2.185;
                 //add edges to the map
                 g.setStroke(new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
                 g.setColor(Color.RED);
@@ -382,8 +382,10 @@ public class Guidance extends Path {
                         if (sourceNode.getIconType().toString().equals("connector")) {
                             sourceIsConnector = 12;
                         }
+
                         g.drawLine((int)Math.round(targetNode.getPosX() * constant) + (targetIsConnector + this.iconToImg(targetNode.getIconType()).getWidth()/2), (int)Math.round(targetNode.getPosY() * constant) + (targetIsConnector + this.iconToImg(targetNode.getIconType()).getHeight()/2),
                                 (int)Math.round(sourceNode.getPosX() * constant) + (sourceIsConnector + this.iconToImg(sourceNode.getIconType()).getWidth()/2), (int)Math.round(sourceNode.getPosY() * constant) + (sourceIsConnector + this.iconToImg(sourceNode.getIconType()).getHeight()/2));
+
                     }
                 }
 
@@ -444,34 +446,35 @@ public class Guidance extends Path {
     }
 
     public BufferedImage iconToImg(DragIconType t) {
+        System.out.println("starting conversion to bufferedImage");
         BufferedImage currentImage;
-        String typeString = t.toString();
-        switch (typeString) {
-            case "connector":
-                currentImage = nodeImg;
-                break;
-            case "store":
-                currentImage = storeImg;
-                break;
-            case "elevator":
-                currentImage = elevatorImg;
-                break;
-            case "food":
-                currentImage = foodImg;
-                break;
-            case "info":
-                currentImage = infoImg;
-                break;
-            case "department":
-                currentImage = docImg;
-                break;
-            case "bathroom":
-                currentImage = bathImg;
-                break;
-            default:
-                currentImage = null;
-                break;
+        DragIconType typeOfNode = t;
+        if(t == DragIconType.Connector){
+            currentImage = nodeImg;
         }
+        else if(t == DragIconType.Store){
+            currentImage = storeImg;
+        }
+        else if(t == DragIconType.Elevator){
+            currentImage = elevatorImg;
+        }
+        else if(t == DragIconType.Food){
+            currentImage = foodImg;
+        }
+        else if(t == DragIconType.Info){
+            currentImage = infoImg;
+        }
+        else if(t == DragIconType.Department){
+            currentImage = docImg;
+        }
+        else if(t == DragIconType.Restroom){
+            currentImage = bathImg;
+        }
+        else{
+            System.out.println("ERROR. NO NODE IMAGE SET");
+            currentImage = null;
+        }
+        System.out.println("done converting to bufferedimage");
         return currentImage;
     }
 
