@@ -29,6 +29,8 @@ public class Guidance extends Path {
     //This is the direction that the user of the kiosk starts off facing.
     private int kioskDirection = 3;
     private int scaleFactor = 1;
+    private int desiredWidth = 375;
+    private int desiredHeight = 375;
     private int boarderSize = 100;
 
     BufferedImage nodeImg = null;
@@ -427,14 +429,25 @@ public class Guidance extends Path {
                 if(scaledStartY < 0){
                     scaledStartY = 0;
                 }
-                System.out.println("starting with: " + scaledStartX + " " + scaledStartY);
-                System.out.println("ending with: " + scaledEndX + " " + scaledEndY);
                 BufferedImage croppedImage = cropImage(combined,scaledStartX, scaledStartY, scaledEndX ,scaledEndY );
-                int resizedScaleWidthFactor = croppedImage.getWidth() * scaleFactor / (scaledEndX - scaledStartX);
-                int resizedScaleHeightFactor = croppedImage.getHeight() * scaleFactor / (scaledEndY - scaledStartY);
-                System.out.println("scaled height: " + resizedScaleHeightFactor);
-                System.out.println("scaled width: " + resizedScaleWidthFactor);
-                BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthFactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
+                int newX;
+                int newY;
+                int oldX = (scaledEndX - scaledStartX);
+                int oldY = (scaledEndY - scaledStartY);
+                int R = oldX/oldY;
+                if(R > desiredWidth/desiredHeight){
+                    newX = desiredWidth;
+                    newY = desiredWidth/R;
+                }
+                else if(R < desiredWidth/desiredHeight){
+                    newX = desiredHeight*R;
+                    newY = desiredHeight;
+                }
+                else{
+                    newY = desiredHeight;
+                    newX = desiredWidth;
+                }
+                BufferedImage resizedVersion = createResizedCopy(croppedImage, newX, newY, true);
                 System.out.println("Writing image to combined" + i + ".png");
                 ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
             } catch (Exception e) {
