@@ -75,7 +75,7 @@ public class SendEmail {
             for (int i = 1; i <= numDirectionFloors; i++) {
 //                String tempString = "<img src =\"cid:imageDirections" + i + "\">" ;
                 final String tempString = "<tempString>" + "<body> <style>"
-                        + "body{background:#e5f8ff}"
+                        + "body{background:#f2f7ff}"
                         + "body, p{font-weight:400} </style>"
                         + "<p>...</p> </body> </html>";
 //                style="-fx-background-color: #3F51B5;"
@@ -103,18 +103,18 @@ public class SendEmail {
 
             multipart.addBodyPart(messageBodyPart);
 
-//            if (includeImage) {
-//                for (int i = 1; i <= numDirectionFloors; i++) {
-//                    messageBodyPart = new MimeBodyPart();
-//                    fds = new FileDataSource(
-//                            "combined" + i + ".png");
-//
-//                    messageBodyPart.setDataHandler(new DataHandler(fds));
-//                    messageBodyPart.setHeader("Content-ID", "<imageDirections" + i + ">");
-//
-//                    multipart.addBodyPart(messageBodyPart);
-//                }
-//            }
+            if (includeImage) {
+                for (int i = 1; i <= numDirectionFloors; i++) {
+                    messageBodyPart = new MimeBodyPart();
+                    fds = new FileDataSource(
+                            "combined" + i + ".png");
+
+                    messageBodyPart.setDataHandler(new DataHandler(fds));
+                    messageBodyPart.setHeader("Content-ID", "<imageDirections" + i + ">");
+
+                    multipart.addBodyPart(messageBodyPart);
+                }
+            }
 
 
             msg.setContent(multipart);
