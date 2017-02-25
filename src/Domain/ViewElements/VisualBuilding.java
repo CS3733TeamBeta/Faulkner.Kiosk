@@ -2,6 +2,7 @@ package Domain.ViewElements;
 
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -14,10 +15,12 @@ public class VisualBuilding
 {
     Group group;
     Box baseFloor;
+    ArrayList<Box> floors;
     Box topFloor;
 
     public VisualBuilding(double width, double height, double depth, double startingTranslationX, double startingTranslationY, double startingTranslationZ)
     {
+        floors = new ArrayList<>();
         baseFloor = new Box(width, height, depth);
         group = new Group();
 
@@ -29,6 +32,26 @@ public class VisualBuilding
         setUpFloor(baseFloor);
 
         group.getChildren().add(baseFloor);
+        floors.add(baseFloor);
+
+        MouseControlUtil.makeDraggable(baseFloor);
+
+        // D&D starts
+        baseFloor.setOnDragDetected((MouseEvent event) -> {
+
+            System.out.println("Drag detected");
+
+            baseFloor.setMouseTransparent(true);
+            baseFloor.setCursor(Cursor.MOVE);
+            for (Box f : floors)
+            {
+                System.out.println("moving floor");
+                f.setTranslateX(baseFloor.getLayoutX()); // this is tha broken part
+                f.setTranslateY(baseFloor.getLayoutY()); // devon
+            }
+
+        });
+
         topFloor = baseFloor;
     }
 
@@ -40,31 +63,22 @@ public class VisualBuilding
     public void setUpFloor(Box floor)
     {
 
-        MouseControlUtil.makeDraggable(floor);
-
-        // D&D starts
-        floor.setOnDragDetected((MouseEvent event)-> {
-            floor.setMouseTransparent(true);
-            floor.setCursor(Cursor.MOVE);
-            floor.startFullDrag();
-        });
-
         // D&D ends
         floor.setOnMouseReleased((MouseEvent event)-> {
             floor.setMouseTransparent(false);
             floor.setCursor(Cursor.DEFAULT);
+
+
+
         });
 
         floor.setOnMouseEntered(event->
         {
-            // floor.setMaterial(new PhongMaterial(Color.YELLOW));
+
         });
 
         floor.setOnMouseClicked((MouseEvent event)->{
-            Box newFloor = createNewFloor();
-            group.getChildren().add(newFloor);
-            topFloor = newFloor;
-            setUpFloor(newFloor);
+            createNewFloor();
         });
     }
 
@@ -76,10 +90,13 @@ public class VisualBuilding
 
         floor.setTranslateX(baseFloor.getTranslateX());
         floor.setTranslateY(baseFloor.getTranslateY());
+        floor.setTranslateZ(topFloor.getTranslateZ() - baseFloor.getDepth());
 
-        double offset = topFloor.getTranslateZ() - baseFloor.getDepth();
+        setUpFloor(floor);
+        group.getChildren().add(floor);
+        floors.add(floor);
+        topFloor = floor;
 
-        floor.setTranslateZ(offset);
         return floor;
     }
 
@@ -87,6 +104,7 @@ public class VisualBuilding
     {
         return group;
     }
+
 }
 
 /*

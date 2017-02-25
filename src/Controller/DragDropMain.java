@@ -72,11 +72,12 @@ public class DragDropMain extends Application
 
 		// MouseControlUtil.makeDraggable(floor); // we probably don't wanna move the floor around
 
+
+		// THIS IS THE BUILDING STUFF
 		int boxHeight = 10;
 		VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 200, (floor.getTranslateZ()-boxHeight));
-
 		root.getChildren().add(visualbuilding.getGroup());
-
+		// THIS IS THE BUILDING STUFF
 
 		final Rectangle rectangle = new Rectangle(400, 400, Color.TRANSPARENT);
 		rectangle.setMouseTransparent(true);
