@@ -1,5 +1,6 @@
 package Domain.ViewElements;
 
+import Domain.Map.NodeEdge;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -33,36 +34,27 @@ public class VisualBuilding
 
         group.getChildren().add(baseFloor);
 
-        MouseControlUtil.makeDraggable(baseFloor);
+        MouseControlUtil.makeDraggable(group, //could be used to track node and update line
+                event ->
+                {
+                    group.setMouseTransparent(false);
+                    group.setCursor(Cursor.DEFAULT);
 
-        // D&D starts
-        baseFloor.setOnDragDetected((MouseEvent event) -> {
+                    for (Box floor : floors) {
+                        floor.setTranslateX(baseFloor.getTranslateX() + baseFloor.getLayoutX());
+                        floor.setTranslateY(baseFloor.getTranslateY() + baseFloor.getLayoutY());
+                    }
 
-            for (Box f : floors)
-            {
-                f.setTranslateX(baseFloor.getTranslateX() + baseFloor.getLayoutX()); // this is tha broken part
-                f.setTranslateY(baseFloor.getTranslateY() + baseFloor.getLayoutY()); // devon
-            }
+                },
 
-        });
+                null
+        );
 
         topFloor = baseFloor;
     }
 
     public void setUpFloor(Box floor)
     {
-
-        // D&D ends
-        floor.setOnMouseReleased((MouseEvent event)-> {
-            floor.setMouseTransparent(false);
-            floor.setCursor(Cursor.DEFAULT);
-        });
-
-        floor.setOnMouseEntered(event->
-        {
-
-        });
-
         floor.setOnMouseClicked((MouseEvent event)->{
             createNewFloor();
         });
@@ -81,6 +73,9 @@ public class VisualBuilding
         setUpFloor(floor);
         group.getChildren().add(floor);
         floors.add(floor);
+
+        topFloor.setOnMouseClicked(null);
+
         topFloor = floor;
 
         return floor;
