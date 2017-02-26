@@ -10,10 +10,12 @@ import Controller.Map.ViewElements.Events.EdgeCompleteEvent;
 import Controller.Map.ViewElements.Events.EdgeCompleteEventHandler;
 
 import Model.DataSourceClasses.TreeViewWithItems;
-import Model.DataSourceClasses.Treeable;
 import Model.Database.DataCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.*;
@@ -21,11 +23,14 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.util.Duration;
 import jfxtras.labs.util.event.MouseControlUtil;
 import jfxtras.scene.menu.CirclePopupMenu;
 import org.controlsfx.control.PopOver;
@@ -63,6 +68,8 @@ public class MapEditorController extends MapController
 	ArrayList<EdgeCompleteEventHandler> edgeCompleteHandlers = new ArrayList<>();
 
 	AdminMapBoundary adminBoundary;
+
+	boolean drawingEdgeFrozen = false;
 
 	public MapEditorController()
 	{
@@ -133,7 +140,34 @@ public class MapEditorController extends MapController
 
 		menu.shownProperty().addListener((e, oldValue, newValue)-> //when the menu is closed, hide the target icon
 		{
-			if(!newValue) target.setVisible(false);
+			if(!newValue)
+			{
+				target.setVisible(false);
+				drawingEdgeFrozen = false;
+			}
+			else
+			{
+				drawingEdgeFrozen = true;
+			}
+		});
+
+		root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
+			if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
+				if(drawingEdgeLine.isVisible()) //and the right pane has the drawing edge as child
+				{
+					drawingEdgeLine.setVisible(false);
+				}
+
+				makeIconDraggable(iconEntityMap.inverse().get(drawingEdge.getSource()));
+				drawingEdge = null;
+			}
+			else if(drawingEdge!=null && keyEvent.getCode() == KeyCode.A) //radial menu chain linking
+			{
+				Point2D location= new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
+						MouseInfo.getPointerInfo().getLocation().getY());
+
+				showRadialMenu(mapPane.screenToLocal(location));
+			}
 		});
 
 		mapPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event->
@@ -142,14 +176,18 @@ public class MapEditorController extends MapController
 
 			if(!iconEntityMap.containsKey(clickedNode) && !edgeEntityMap.containsKey(clickedNode))
 			{
-				menu.show(event.getScreenX(), event.getScreenY());
-
-				target.setVisible(true);
-
-				target.setX(event.getX() - target.getFitWidth() / 2);
-				target.setY(event.getY() - target.getFitHeight() / 2);
-
-				menuOpenLoc = new Point2D(event.getX(), event.getY());
+				if(!drawingEdgeLine.isVisible()) //radial menu requested
+				{
+					showRadialMenu(new Point2D(event.getX(), event.getY()));
+				}
+				else //Chain Linking
+				{
+					chainLink(clickedNode, new Point2D(event.getX(), event.getY()));
+				}
+			}
+			else if(edgeEntityMap.containsKey(clickedNode)) //dropped in the middle of a line
+			{
+				dropOnLine(clickedNode, new Point2D(event.getX(), event.getY()));
 			}
 		});
 
@@ -171,6 +209,51 @@ public class MapEditorController extends MapController
 		mapPane.getChildren().add(target); //adds to map pane
 
 		BuildingTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
+	}
+
+	protected void chainLink(Node n, Point2D point)
+	{
+		MapNode mapNode = adminBoundary.newNode(DragIconType.Connector, point);
+		drawingEdge.setTarget(mapNode);
+
+		onEdgeComplete();
+		onStartEdgeDrawing(mapNode);
+	}
+
+	protected void showRadialMenu(Point2D point)
+	{
+		Point2D screenCoords = mapPane.localToScreen(point);
+
+		menu.show(screenCoords.getX(), screenCoords.getY());
+
+		target.setVisible(true);
+
+		target.setX(point.getX() - target.getFitWidth() / 2);
+		target.setY(point.getY() - target.getFitHeight() / 2);
+
+		menuOpenLoc = point;
+	}
+
+	protected void dropOnLine(Node n, Point2D point)
+	{
+		NodeEdge edge = edgeEntityMap.get(n);
+
+		MapNode node = adminBoundary.newNode(DragIconType.Connector, point);
+
+		MapNode source = edge.getSource();
+		MapNode target = edge.getTarget();
+
+		adminBoundary.newEdge(source, node);
+		adminBoundary.newEdge(target, node);
+		adminBoundary.removeEdge(edge);
+
+		if(drawingEdgeLine.isVisible()) //if also drawing to the middle of the line
+		{
+			drawingEdge.setTarget(node);
+			onEdgeComplete();
+		}
+
+		onStartEdgeDrawing(node);
 	}
 
 	/**
@@ -214,7 +297,15 @@ public class MapEditorController extends MapController
 			MenuItem item = new MenuItem(DragIconType.values()[i].name(), icn);
 
 			icn.setOnMouseClicked(event -> {
-				adminBoundary.newNode(icn.getType(), menuOpenLoc);
+				MapNode n = adminBoundary.newNode(icn.getType(), menuOpenLoc);
+
+				if(drawingEdgeLine.isVisible())
+				{
+					drawingEdge.setTarget(n);
+					onEdgeComplete();
+					onStartEdgeDrawing(n);
+				}
+
 				target.setVisible(false);
 			});
 
@@ -264,12 +355,58 @@ public class MapEditorController extends MapController
 		final Tab tab = new Tab();
 		tab.setText(f.toString());
 
-		TreeViewWithItems tV = new TreeViewWithItems<Treeable>();
+		TreeViewWithItems tV = new TreeViewWithItems<MapNode>();
 
-		tV.setRoot(new TreeItem<Floor>(null));
+		tV.setRoot(new TreeItem<MapNode>(null));
 		tV.setShowRoot(false);
 
 		tV.setItems(f.getChildren());
+
+		tV.getSelectionModel().selectedItemProperty().addListener((o, oldSelection, newSelection)->
+		{
+			if(oldSelection!=null)
+			{
+			//	DragIcon oldIcon = iconEntityMap.inverse().get(((TreeItem<Map>)oldSelection).getValue());
+				//oldIcon.setEffect(null);
+			}
+
+			DragIcon icon = iconEntityMap.inverse().get(((TreeItem<MapNode>)newSelection).getValue());
+			final Glow glow = new Glow();
+
+			glow.setLevel(0.0);
+			icon.setEffect(glow);
+
+			final Timeline timeline = new Timeline();
+
+			timeline.setCycleCount(5);
+			timeline.setAutoReverse(true);
+			final KeyValue kvA = new KeyValue(icon.scaleXProperty(), 1.3);
+			final KeyFrame kfA = new KeyFrame(Duration.millis(200), kvA);
+
+			final KeyValue kv1 = new KeyValue(icon.scaleYProperty(), 1.3);
+			final KeyFrame kf1 = new KeyFrame(Duration.millis(200), kv1);
+			timeline.getKeyFrames().add(kfA);
+			timeline.getKeyFrames().add(kf1);
+			timeline.play();
+
+			timeline.setOnFinished(e->
+			{
+				final Timeline shrinkTimeline = new Timeline();
+
+				shrinkTimeline.setCycleCount(1);
+				shrinkTimeline.setAutoReverse(false);
+
+				final KeyValue kvB = new KeyValue(icon.scaleXProperty(), 1);
+				final KeyFrame kfB = new KeyFrame(Duration.millis(200), kvB);
+
+				final KeyValue kvC = new KeyValue(icon.scaleYProperty(), 1);
+				final KeyFrame kfC = new KeyFrame(Duration.millis(200), kvC);
+
+				shrinkTimeline.getKeyFrames().add(kfB);
+				shrinkTimeline.getKeyFrames().add(kfC);
+				shrinkTimeline.play();
+			});
+		});
 
 		tab.setContent(tV);
 
@@ -441,6 +578,7 @@ public class MapEditorController extends MapController
 			{
 				drawingEdge.setTarget(iconEntityMap.get(n));
 				onEdgeComplete();
+				onStartEdgeDrawing(iconEntityMap.get(n));
 			}
 		});
 
@@ -464,6 +602,17 @@ public class MapEditorController extends MapController
 		drawingEdge = new NodeEdge();
 		drawingEdge.setSource(mapNode);
 
+		mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
+
+			if (!drawingEdgeFrozen && drawingEdgeLine.isVisible() && drawingEdge != null)
+			{
+				Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
+				Point2D mouseCoords = drawingEdgeLine.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
+				drawingEdgeLine.setEndX(mouseCoords.getX());
+				drawingEdgeLine.setEndY(mouseCoords.getY());
+			}
+		});
+
 		Point2D startPoint = mapPane.sceneToLocal(mapPane.localToScene(mapNode.getPosX(), mapNode.getPosY()));
 		drawingEdgeLine.setStartY(startPoint.getY());
 		drawingEdgeLine.setStartX(startPoint.getX());
@@ -477,29 +626,6 @@ public class MapEditorController extends MapController
 
 		iconEntityMap.inverse().get(mapNode).setOnMouseDragEntered(null); //sets drag handlers to null so they can't be repositioned during line drawing
 		iconEntityMap.inverse().get(mapNode).setOnMouseDragged(null);
-
-		root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
-			if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
-				if(drawingEdgeLine.isVisible()) //and the right pane has the drawing edge as child
-				{
-					drawingEdgeLine.setVisible(false);
-				}
-
-				drawingEdge = null;
-				mapPane.setOnMouseMoved(null);
-			}
-		});
-
-		mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
-
-			if (drawingEdgeLine.isVisible() && drawingEdge != null)
-			{
-				Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
-				Point2D mouseCoords = drawingEdgeLine.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
-				drawingEdgeLine.setEndX(mouseCoords.getX());
-				drawingEdgeLine.setEndY(mouseCoords.getY());
-			}
-		});
 	}
 
 	/**Handles saving out all of the map info

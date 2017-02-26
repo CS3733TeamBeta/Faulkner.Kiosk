@@ -136,7 +136,7 @@ public class UserMapViewController extends MapController
     public UserMapViewController() throws Exception
     {
         super();
-        boundary=new MapBoundary();
+        boundary = new MapBoundary();
         nodeTextMap = HashBiMap.create();
 
         initBoundary();
@@ -150,8 +150,8 @@ public class UserMapViewController extends MapController
         Text destLabel = new Text(n.getLabel());
         destLabel.setStyle("-fx-font-weight: bold");
 
-        destLabel.setTranslateX(n.getPosX() - (destLabel.getLayoutBounds().getWidth() / 2) -15);
-        destLabel.setTranslateY((n.getPosY()-10));
+        destLabel.setTranslateX(n.getPosX() - (destLabel.getLayoutBounds().getWidth() / 2) - 15);
+        destLabel.setTranslateY((n.getPosY() - 10));
         destLabel.setFont(Font.font(8));
 
         mapItems.getChildren().add(destLabel);
@@ -160,11 +160,15 @@ public class UserMapViewController extends MapController
 
         nodeTextMap.put(n, destLabel);
 
-        icon.setOnMouseClicked(ev -> {
-            if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
-                try{
+        icon.setOnMouseClicked(ev ->
+        {
+            if (ev.getButton() == MouseButton.PRIMARY)
+            { // deal with other types of mouse clicks
+                try
+                {
                     findPathToNode(n);
-                }catch(PathFindingException e){
+                } catch (PathFindingException e)
+                {
                 }
             }
         });
@@ -179,35 +183,42 @@ public class UserMapViewController extends MapController
 
         mapItems.getChildren().remove(nodeTextMap.get(n));
     }
-    /*public void zoomToExtents(Group group)
+
+    public void zoomToExtents(Group group)
     {
         Bounds groupBounds = group.getLayoutBounds();
         final Bounds viewportBounds = scrollPane.getViewportBounds();
 
         while (groupBounds.getWidth() > viewportBounds.getWidth())
         {
-            zoomTarget.setScaleX(.9 * zoomTarget.getScaleX());
-            zoomTarget.setScaleY(.9 * zoomTarget.getScaleY());
+            zoomGroup.setScaleX(.9 * zoomGroup.getScaleX());
+            zoomGroup.setScaleY(.9 * zoomGroup.getScaleY());
             groupBounds = group.getLayoutBounds();
         }
-    }*/
+    }
 
 
     @FXML
-    private void floorDownResetOpacity(){
+    private void floorDownResetOpacity()
+    {
         floorDownArrow.setOpacity(0.4);
     }
+
     @FXML
-    private void floorDownChangeOpacity(){
+    private void floorDownChangeOpacity()
+    {
         floorDownArrow.setOpacity(1);
     }
 
     @FXML
-    private void floorUpResetOpacity(){
+    private void floorUpResetOpacity()
+    {
         floorUpArrow.setOpacity(0.4);
     }
+
     @FXML
-    private void floorUpChangeOpacity(){
+    private void floorUpChangeOpacity()
+    {
         floorUpArrow.setOpacity(1);
     }
 
@@ -216,12 +227,12 @@ public class UserMapViewController extends MapController
     {
         int newFloorNum = boundary.changeToPreviousFloor();
 
-        if(newFloorNum!=-1)
+        if (newFloorNum != -1)
         {
             curFloorLabel.setText("Floor " + newFloorNum);
         }
 
-        if(newFloorNum<=1)
+        if (newFloorNum <= 1)
         {
             floorDownArrow.setVisible(false);
         }
@@ -231,23 +242,24 @@ public class UserMapViewController extends MapController
             floorUpArrow.setVisible(true);
         }
 
-        if(newRoute!=null)
+        if (newRoute != null)
         {
             for (NodeEdge n : newRoute.getPathEdges())
             {
-               // n.changeOpacity(1.0);
-               // n.changeColor(Color.RED);
+                // n.changeOpacity(1.0);
+                // n.changeColor(Color.RED);
             }
         }
     }
 
     @FXML
-    private void clickedUpArrow(){
+    private void clickedUpArrow()
+    {
         int newFloorNum = boundary.changeToNextFloor();
 
-        if(newFloorNum!=-1)
+        if (newFloorNum != -1)
         {
-         //   renderFloorMap();
+            //   renderFloorMap();
             curFloorLabel.setText("Floor " + newFloorNum);
         }
 
@@ -263,28 +275,30 @@ public class UserMapViewController extends MapController
             floorDownArrow.setVisible(true);
         }*/
 
-        if(newRoute!=null)
+        if (newRoute != null)
         {
             for (NodeEdge n : newRoute.getPathEdges())
             {
                 //n.changeOpacity(1.0);
-               // n.changeColor(Color.RED);
+                // n.changeColor(Color.RED);
             }
         }
     }
 
     @FXML
-    private void initialize() throws Exception {
+    private void initialize() throws Exception
+    {
         mapItems.getChildren().add(mapImage);
         zoomGroup = new Group(mapItems);
 
         // stackpane for centering the content, in case the ScrollPane viewport
         // is larget than zoomTarget
         StackPane content = new StackPane(zoomGroup);
-      //  stackPane = content;
+        //  stackPane = content;
 
-        zoomGroup.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
-        // keep it at least as large as the content
+        zoomGroup.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) ->
+        {
+            // keep it at least as large as the content
             content.setMinWidth(newBounds.getWidth());
             content.setMinHeight(newBounds.getHeight());
         });
@@ -297,7 +311,8 @@ public class UserMapViewController extends MapController
 
         scrollPane.setPannable(true);
 
-        scrollPane.viewportBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
+        scrollPane.viewportBoundsProperty().addListener((observable, oldBounds, newBounds) ->
+        {
             // use viewport size, if not too small for zoomTarget
             content.setPrefSize(newBounds.getWidth(), newBounds.getHeight());
         });
@@ -311,7 +326,7 @@ public class UserMapViewController extends MapController
             Bounds groupBounds = zoomGroup.getLayoutBounds();
             final Bounds viewportBounds = scrollPane.getViewportBounds();
 
-            if(groupBounds.getWidth()>viewportBounds.getWidth() || evt.getDeltaY()>0) //if max and trying to scroll out
+            if (groupBounds.getWidth() > viewportBounds.getWidth() || evt.getDeltaY() > 0) //if max and trying to scroll out
             {       //DEVON  also checkout zoom to extents
                 // calculate pixel offsets from [0, 1] range
                 double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
@@ -336,9 +351,10 @@ public class UserMapViewController extends MapController
                 scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
                 scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
             }
-    });
+        });
 
-        panel.addOnStepChangedHandler(event -> { //when the step is changed in the side panel, update this display!
+        panel.addOnStepChangedHandler(event ->
+        { //when the step is changed in the side panel, update this display!
             boundary.changeFloor(event.getSource().getFloor());
         });
 
@@ -348,9 +364,9 @@ public class UserMapViewController extends MapController
 
         mainPane.getChildren().add(panel);
         panel.toFront();
-        panel.relocate(mainPane.getPrefWidth()-5, 0);
+        panel.relocate(mainPane.getPrefWidth() - 5, 0);
 
-        panel.setCloseHandler(event->
+        panel.setCloseHandler(event ->
         {
             hideDirections();
             // Ben, you might want to consider reset the direction panel here
@@ -364,9 +380,12 @@ public class UserMapViewController extends MapController
         boundary.setInitialFloor();
 
         curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
+
+        panToCenter();
     }
 
-    private void directionPaneView() {
+    private void directionPaneView()
+    {
 
         panel.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 e -> showDirections());
@@ -403,38 +422,43 @@ public class UserMapViewController extends MapController
         slideHideDirections.setCycleCount(1);
         slideHideDirections.setAutoReverse(true);
 
-        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), -panel.getWidth()+5);
+        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), -panel.getWidth() + 5);
         keyFrame = new KeyFrame(Duration.millis(600), hideDirections);
 
         slideHideDirections.getKeyFrames().add(keyFrame);
         slideHideDirections.play();
     }
 
-    protected void findPathToNode(MapNode endPoint) throws PathFindingException {
+    protected void findPathToNode(MapNode endPoint) throws PathFindingException
+    {
 
-        if(newRoute!=null) //hide stale path
+        if (newRoute != null) //hide stale path
         {
             for (NodeEdge n : newRoute.getPathEdges())
             {
                 //   n.changeOpacity(0.0);
-              //  n.changeColor(Color.BLACK);
+                //  n.changeColor(Color.BLACK);
             }
         }
 
         System.out.println("In path finding");
         MapNode startPoint = boundary.getHospital().getCampusFloor().getKioskNode();
 
-        if(startPoint == null){
+        if (startPoint == null)
+        {
             System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
             startPoint = boundary.getHospital().getCampusFloor().getFloorNodes().iterator().next();
         }
-        if (endPoint == startPoint) {
+        if (endPoint == startPoint)
+        {
             System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
             return;//TODO add error message of some kind
         }
-        try {
-            newRoute = new Guidance(startPoint, endPoint,"North");
-        } catch (PathFindingException e) {
+        try
+        {
+            newRoute = new Guidance(startPoint, endPoint, "North");
+        } catch (PathFindingException e)
+        {
             return;//TODO add error message throw
         }
 
@@ -464,11 +488,13 @@ public class UserMapViewController extends MapController
         newRoute.printTextDirections();
     }
 
-    public void setStage(Stage s) {
+    public void setStage(Stage s)
+    {
         primaryStage = s;
     }
 
-    public void defaultProperty() {
+    public void defaultProperty()
+    {
         searchMenu.setStyle("-fx-background-color:  #f2f2f2;");
         // Sets the color of the icons to black
         ColorAdjust original = new ColorAdjust();
@@ -487,37 +513,42 @@ public class UserMapViewController extends MapController
         panel.setVisible(false);
     }
 
-    public void searchMenuUp() {
-            Timeline menuSlideDown = new Timeline();
-            KeyFrame keyFrame;
-            menuSlideDown.setCycleCount(1);
-            menuSlideDown.setAutoReverse(true);
-            if (downArrow) { // Navigate down icon -> welcome page down (left with search bar)
-                KeyValue welcomeDown = new KeyValue(searchMenu.translateYProperty(), 180);
-                keyFrame = new KeyFrame(Duration.millis(600), welcomeDown);
-                welcomeGreeting.setVisible(false);
-                downArrow = false; // Changes to up icon
-                searchMenu.setStyle("-fx-background-color: transparent;");
-                panel.setVisible(true);
-            } else { // Navigate up icon -> show welcome page
-                panel.setVisible(false);
-                KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
-                keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
-                // Reset to default
-                //defaultProperty();
-                downArrow = true;
-                numClickDr = -1;
-                numClickFood = -1;
-                numClickBath = -1;
-                numClickHelp = -1;
-                searchBar.clear();
-            }
-            navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
-            menuSlideDown.getKeyFrames().add(keyFrame);
-            menuSlideDown.play();
+    public void searchMenuUp()
+    {
+        Timeline menuSlideDown = new Timeline();
+        KeyFrame keyFrame;
+        menuSlideDown.setCycleCount(1);
+        menuSlideDown.setAutoReverse(true);
+        if (downArrow)
+        { // Navigate down icon -> welcome page down (left with search bar)
+            KeyValue welcomeDown = new KeyValue(searchMenu.translateYProperty(), 180);
+            keyFrame = new KeyFrame(Duration.millis(600), welcomeDown);
+            welcomeGreeting.setVisible(false);
+            downArrow = false; // Changes to up icon
+            searchMenu.setStyle("-fx-background-color: transparent;");
+            panel.setVisible(true);
         }
+        else
+        { // Navigate up icon -> show welcome page
+            panel.setVisible(false);
+            KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
+            keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
+            // Reset to default
+            //defaultProperty();
+            downArrow = true;
+            numClickDr = -1;
+            numClickFood = -1;
+            numClickBath = -1;
+            numClickHelp = -1;
+            searchBar.clear();
+        }
+        navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
+        menuSlideDown.getKeyFrames().add(keyFrame);
+        menuSlideDown.play();
+    }
 
-    public void loadMenu() {
+    public void loadMenu()
+    {
         //defaultProperty();
         Timeline menuSlideUp = new Timeline();
         menuSlideUp.setCycleCount(1);
@@ -528,37 +559,41 @@ public class UserMapViewController extends MapController
         menuSlideUp.play();
     }
 
-    public void doctorSelected() {
+    public void doctorSelected()
+    {
         loadMenu();
-        numClickDr = numClickDr*(-1);
+        numClickDr = numClickDr * (-1);
         numClickHelp = -1;
         numClickBath = -1;
         numClickFood = -1;
         DisplayCorrectTable();
     }
 
-    public void bathroomSelected() {
+    public void bathroomSelected()
+    {
         loadMenu();
         numClickDr = -1;
         numClickHelp = -1;
-        numClickBath = numClickBath*(-1);
+        numClickBath = numClickBath * (-1);
         numClickFood = -1;
         DisplayCorrectTable();
     }
 
-    public void foodSelected() {
+    public void foodSelected()
+    {
         loadMenu();
         numClickDr = -1;
         numClickHelp = -1;
         numClickBath = -1;
-        numClickFood = numClickFood*(-1);
+        numClickFood = numClickFood * (-1);
         DisplayCorrectTable();
     }
 
-    public void helpSelected() {
+    public void helpSelected()
+    {
         loadMenu();
         numClickDr = -1;
-        numClickHelp = numClickHelp*(-1);
+        numClickHelp = numClickHelp * (-1);
         numClickBath = -1;
         numClickFood = -1;
         DisplayCorrectTable();
@@ -570,7 +605,8 @@ public class UserMapViewController extends MapController
         SceneSwitcher.switchToLoginView(primaryStage);
     }
 
-    private void LoadTableData() {
+    private void LoadTableData()
+    {
         docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
         docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
@@ -579,17 +615,26 @@ public class UserMapViewController extends MapController
         ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
         FilteredList<Doctor> filteredDoctor = new FilteredList<>(doctors);
 
-        searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            filteredDoctor.setPredicate((Predicate<? super Doctor>) profile -> {
+        searchBar.textProperty().addListener((observableValue, oldValue, newValue) ->
+        {
+            filteredDoctor.setPredicate((Predicate<? super Doctor>) profile ->
+            {
                 // By default, the entire directory is displayed
-                if (newValue == null || newValue.isEmpty()) { return true; }
+                if (newValue == null || newValue.isEmpty())
+                {
+                    return true;
+                }
                 // Compare the name of the doctor with filter text
                 String lowerCaseFilter = newValue.toLowerCase();
                 // Checks if filter matches
-                if (profile.getName().toLowerCase().contains(lowerCaseFilter)) { return true; }
+                if (profile.getName().toLowerCase().contains(lowerCaseFilter))
+                {
+                    return true;
+                }
                 // Filter does not match
                 return false;
-            });});
+            });
+        });
 
         SortedList<Doctor> sortedDoctor = new SortedList<Doctor>(filteredDoctor);
         sortedDoctor.comparatorProperty().bind(deptTable.comparatorProperty());
@@ -602,25 +647,36 @@ public class UserMapViewController extends MapController
         Collection<Destination> suiteVal = boundary.getHospital().getDestinations().values();
         ObservableList<Destination> suites = FXCollections.observableArrayList(suiteVal);
         FilteredList<Destination> filteredSuite = new FilteredList<>(suites);
-        searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            filteredSuite.setPredicate((Predicate<? super Destination>) profile -> {
+        searchBar.textProperty().addListener((observableValue, oldValue, newValue) ->
+        {
+            filteredSuite.setPredicate((Predicate<? super Destination>) profile ->
+            {
                 // By default, the entire directory is displayed
-                if (newValue == null || newValue.isEmpty()) { return true; }
+                if (newValue == null || newValue.isEmpty())
+                {
+                    return true;
+                }
                 // Compare the name of the doctor with filter text
                 String lowerCaseFilter = newValue.toLowerCase();
                 // Checks if filter matches
-                if (profile.getName().toLowerCase().contains(lowerCaseFilter)) { return true; }
+                if (profile.getName().toLowerCase().contains(lowerCaseFilter))
+                {
+                    return true;
+                }
                 // Filter does not match
                 return false;
-            });});
+            });
+        });
         SortedList<Destination> sortedSuite = new SortedList<Destination>(filteredSuite);
         sortedSuite.comparatorProperty().bind(deptTable.comparatorProperty());
         deptTable.setItems(sortedSuite);
     }
 
-    public void DisplayCorrectTable() {
+    public void DisplayCorrectTable()
+    {
         defaultProperty();
-        if (numClickDr == 1) {
+        if (numClickDr == 1)
+        {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
             doctorIcon.setEffect(clicked);
@@ -628,31 +684,34 @@ public class UserMapViewController extends MapController
             deptTable.setVisible(false);
             doctorTable.setVisible(true);
         }
-        if (numClickBath == 1) {
+        if (numClickBath == 1)
+        {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
             bathroomIcon.setEffect(clicked);
             searchBar.setPromptText("Search for bathrooms");
         }
-        if (numClickFood == 1) {
+        if (numClickFood == 1)
+        {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
             foodIcon.setEffect(clicked);
             searchBar.setPromptText("Search for food");
         }
-        if (numClickHelp == 1) {
+        if (numClickHelp == 1)
+        {
             ColorAdjust clicked = new ColorAdjust();
             clicked.setContrast(-10);
             helpIcon.setEffect(clicked);
             searchBar.setPromptText("Search for help");
         }
-        if((numClickDr == -1)&&(numClickBath == -1)&&(numClickFood == -1)&&(numClickHelp == -1)) {
+        if ((numClickDr == -1) && (numClickBath == -1) && (numClickFood == -1) && (numClickHelp == -1))
+        {
             defaultProperty();
-        }}
-}
+        }
+    }
 
-
-   /* private void panToCenter()
+    private void panToCenter()
     {
         Bounds groupBounds = zoomGroup.getLayoutBounds();
         final Bounds viewportBounds = scrollPane.getViewportBounds();
@@ -665,11 +724,11 @@ public class UserMapViewController extends MapController
 
         // calculate adjustment of scroll position (pixels)
 
-        double scaleX = (scrollPane.getHmax()-scrollPane.getHmin())/mapItems.getBoundsInLocal().getWidth();
-        double scaleY = (scrollPane.getVmax()-scrollPane.getVmin())/mapItems.getBoundsInLocal().getHeight();
+        double scaleX = (scrollPane.getHmax() - scrollPane.getHmin()) / mapItems.getBoundsInLocal().getWidth();
+        double scaleY = (scrollPane.getVmax() - scrollPane.getVmin()) / mapItems.getBoundsInLocal().getHeight();
 
-        double middleX = mapItems.getBoundsInLocal().getWidth()/2;
-        double middleY = mapItems.getBoundsInLocal().getHeight()/2;
+        double middleX = mapItems.getBoundsInLocal().getWidth() / 2;
+        double middleY = mapItems.getBoundsInLocal().getHeight() / 2;
 
         System.out.println("Middle Coordinates-- X: " + middleX + "Y: " + middleY);
 
@@ -678,16 +737,17 @@ public class UserMapViewController extends MapController
         /*Point2D adjustment = new Transform() mapImage.deltaTransform(new Point2D(
                 mapItems.getBoundsInParent().getWidth()/2, mapItems.getBoundsInParent().getHeight()/2));*/
 
-     /*   // refresh ScrollPane scroll positions & content bounds
+        // refresh ScrollPane scroll positions & content bounds
         scrollPane.layout();
 
         // convert back to [0, 1] range
         // (too large/small values are automatically corrected by ScrollPane)
         groupBounds = zoomGroup.getLayoutBounds();
 
-        scrollPane.setHvalue(middleX*scaleX);
-        scrollPane.setVvalue(middleY*scaleY);
-    }*/
+        scrollPane.setHvalue(middleX * scaleX);
+        scrollPane.setVvalue(middleY * scaleY-.1);
+    }
+}
 
 
      /*

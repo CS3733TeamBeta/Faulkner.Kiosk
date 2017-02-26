@@ -21,6 +21,8 @@ public class AdminMapBoundary extends MapBoundary
 
         for(MapNode n: nodesOnMap)
         {
+            n.setOnDeleteRequested(e-> remove(n));
+
             for(NodeEdge edge: n.getEdges())
             {
                 if (!edges.contains(edge) && nodesOnMap.contains(edge.getOtherNode(n)))
@@ -50,7 +52,7 @@ public class AdminMapBoundary extends MapBoundary
         edges.add(edge);
     }
 
-    public void newNode(DragIconType type, Point2D loc)
+    public MapNode newNode(DragIconType type, Point2D loc)
     {
         MapNode n = new MapNode();
         n.setType(type);
@@ -58,11 +60,13 @@ public class AdminMapBoundary extends MapBoundary
         n.setPosX(loc.getX());
         n.setPosY(loc.getY());
 
-        currentFloor.getFloorNodes().add(n);
-
         n.setOnDeleteRequested(e-> remove(n));
 
+        currentFloor.addNode(n);
+
         nodesOnMap.add(n);
+
+        return n;
     }
 
     private void addElevator(MapNode n)
