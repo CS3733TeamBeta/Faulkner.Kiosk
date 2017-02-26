@@ -1,5 +1,6 @@
 package Controller.Map.User;
 
+import Entity.Navigation.DirectionFloorStep;
 import Entity.Navigation.DirectionStep;
 import Entity.Navigation.Guidance;
 import Controller.Map.ViewElements.Events.StepChangedEvent;
@@ -90,7 +91,7 @@ public class UserDirectionsPanel extends AnchorPane
         stepChangedEventHandlers.add(h);
     }
 
-    public void onStepChanged(DirectionStep step)
+    public void onStepChanged(DirectionFloorStep step)
     {
         for(StepChangedEventHandler stepChangedEventHandler: stepChangedEventHandlers)
         {
@@ -111,12 +112,12 @@ public class UserDirectionsPanel extends AnchorPane
         fillDirectionsList(guidance.getSteps().get(index));
     }
 
-    public void fillDirectionsList(DirectionStep step)
+    public void fillDirectionsList(DirectionFloorStep step)
     {
         directionsListView.getItems().clear();
-        for(DirectionStep s : guidance.getSteps()) {
-            for (String string : s.getDirections()) {
-                Label l = new Label(string);
+        for(DirectionFloorStep s : guidance.getSteps()) {
+            for (DirectionStep aStep : s.getDirectionSteps()) {
+                Label l = new Label(aStep.toString());
                 directionsListView.getItems().add(l);
             }
         }
