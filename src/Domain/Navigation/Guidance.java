@@ -311,13 +311,11 @@ public class Guidance extends Path {
     public void saveStepImages() {
         System.out.println("Saving images!");
         System.out.println("There are " + this.textDirections.size() + " directionSteps");
-        for(int i = 1; i <= this.textDirections.size(); i++){
-            DirectionStep d = textDirections.get(i-1);
+        for(int i = 0; i < this.textDirections.size(); i++){
+            DirectionStep d = textDirections.get(i);
             System.out.println("Creating info for floor " + d.getFloor().getFloorNumber());
             d.getFloor().initImage();
             try {
-
-
                 d.getFloor().getImageInfo().display();
                 BufferedImage realBaseImage = d.getFloor().getImageInfo().getBufferedImage();
                 System.out.println("Width of image: " + realBaseImage.getWidth());
@@ -350,10 +348,11 @@ public class Guidance extends Path {
                 int w = realBaseImage.getWidth();
                 int h = realBaseImage.getHeight();
                 BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-
+                System.out.println("ERE");
                 // paint both images, preserving the alpha channels
                 Graphics2D g = combined.createGraphics();
                 g.drawImage(realBaseImage, 0, 0, null);
+                System.out.println("THERE");
                 double constant = 2.185;
                 //add edges to the map
                 g.setStroke(new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
@@ -430,24 +429,32 @@ public class Guidance extends Path {
                     scaledStartY = 0;
                 }
                 BufferedImage croppedImage = cropImage(combined,scaledStartX, scaledStartY, scaledEndX ,scaledEndY );
-                int newX;
-                int newY;
+                float newX;
+                float newY;
                 int oldX = (scaledEndX - scaledStartX);
                 int oldY = (scaledEndY - scaledStartY);
-                int R = oldX/oldY;
+                System.out.println("OLD X: " + oldX);
+                System.out.println("OLD Y: " + oldY);
+                float R = (float)oldX/(float)oldY;
+                System.out.println("R is: " + R);
                 if(R > desiredWidth/desiredHeight){
+                    System.out.println("Height smaller than Width");
                     newX = desiredWidth;
                     newY = desiredWidth/R;
                 }
                 else if(R < desiredWidth/desiredHeight){
+                    System.out.println("Width smaller than Height");
                     newX = desiredHeight*R;
                     newY = desiredHeight;
                 }
                 else{
+                    System.out.println("Height and width are the same");
                     newY = desiredHeight;
                     newX = desiredWidth;
                 }
-                BufferedImage resizedVersion = createResizedCopy(croppedImage, newX, newY, true);
+                System.out.println("NEW X: " + newX);
+                System.out.println("NEW Y: " + newY);
+                BufferedImage resizedVersion = createResizedCopy(croppedImage, (int)newX, (int)newY, true);
                 System.out.println("Writing image to combined" + i + ".png");
                 ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
             } catch (Exception e) {
@@ -459,7 +466,6 @@ public class Guidance extends Path {
     }
 
     public BufferedImage iconToImg(DragIconType t) {
-        System.out.println("starting conversion to bufferedImage");
         BufferedImage currentImage;
         DragIconType typeOfNode = t;
         if(t == DragIconType.Connector){
@@ -487,7 +493,6 @@ public class Guidance extends Path {
             System.out.println("ERROR. NO NODE IMAGE SET");
             currentImage = null;
         }
-        System.out.println("done converting to bufferedimage");
         return currentImage;
     }
 
@@ -524,6 +529,14 @@ public class Guidance extends Path {
                                     boolean preserveAlpha)
     {
         System.out.println("resizing...");
+        if(scaledHeight == 0) {
+            System.out.println("desired height is 0?");
+            scaledHeight = desiredHeight;
+        }
+        if(scaledWidth == 0){
+            System.out.println("desired width is 0?");
+            scaledWidth = desiredWidth;
+        }
         int imageType = preserveAlpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
         BufferedImage scaledBI = new BufferedImage(scaledWidth, scaledHeight, imageType);
         Graphics2D g = scaledBI.createGraphics();
