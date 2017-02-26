@@ -163,13 +163,10 @@ public class MapEditorController extends MapController
 			}
 			else if(drawingEdge!=null && keyEvent.getCode() == KeyCode.A) //radial menu chain linking
 			{
-				menuOpenLoc= new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
+				Point2D location= new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
 						MouseInfo.getPointerInfo().getLocation().getY());
 
-				menuOpenLoc = mapPane.screenToLocal(menuOpenLoc);
-
-				menu.show(MouseInfo.getPointerInfo().getLocation().getX(),
-						MouseInfo.getPointerInfo().getLocation().getY());
+				showRadialMenu(mapPane.screenToLocal(location));
 			}
 		});
 
@@ -181,44 +178,16 @@ public class MapEditorController extends MapController
 			{
 				if(!drawingEdgeLine.isVisible()) //radial menu requested
 				{
-					menu.show(event.getScreenX(), event.getScreenY());
-
-					target.setVisible(true);
-
-					target.setX(event.getX() - target.getFitWidth() / 2);
-					target.setY(event.getY() - target.getFitHeight() / 2);
-
-					menuOpenLoc = new Point2D(event.getX(), event.getY());
+					showRadialMenu(new Point2D(event.getX(), event.getY()));
 				}
 				else //Chain Linking
 				{
-					MapNode n = adminBoundary.newNode(DragIconType.Connector,new Point2D(event.getX(), event.getY()));
-					drawingEdge.setTarget(n);
-
-					onEdgeComplete();
-					onStartEdgeDrawing(n);
+					chainLink(clickedNode, new Point2D(event.getX(), event.getY()));
 				}
 			}
 			else if(edgeEntityMap.containsKey(clickedNode)) //dropped in the middle of a line
 			{
-				NodeEdge edge = edgeEntityMap.get(clickedNode);
-
-				MapNode n = adminBoundary.newNode(DragIconType.Connector,new Point2D(event.getX(), event.getY()));
-
-				MapNode source = edge.getSource();
-				MapNode target = edge.getTarget();
-
-				adminBoundary.newEdge(source, n);
-				adminBoundary.newEdge(target, n);
-				adminBoundary.removeEdge(edge);
-
-				if(drawingEdgeLine.isVisible()) //if also drawing to the middle of the line
-				{
-					drawingEdge.setTarget(n);
-					onEdgeComplete();
-				}
-
-				onStartEdgeDrawing(n);
+				dropOnLine(clickedNode, new Point2D(event.getX(), event.getY()));
 			}
 		});
 
@@ -240,6 +209,51 @@ public class MapEditorController extends MapController
 		mapPane.getChildren().add(target); //adds to map pane
 
 		BuildingTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
+	}
+
+	protected void chainLink(Node n, Point2D point)
+	{
+		MapNode mapNode = adminBoundary.newNode(DragIconType.Connector, point);
+		drawingEdge.setTarget(mapNode);
+
+		onEdgeComplete();
+		onStartEdgeDrawing(mapNode);
+	}
+
+	protected void showRadialMenu(Point2D point)
+	{
+		Point2D screenCoords = mapPane.localToScreen(point);
+
+		menu.show(screenCoords.getX(), screenCoords.getY());
+
+		target.setVisible(true);
+
+		target.setX(point.getX() - target.getFitWidth() / 2);
+		target.setY(point.getY() - target.getFitHeight() / 2);
+
+		menuOpenLoc = point;
+	}
+
+	protected void dropOnLine(Node n, Point2D point)
+	{
+		NodeEdge edge = edgeEntityMap.get(n);
+
+		MapNode node = adminBoundary.newNode(DragIconType.Connector, point);
+
+		MapNode source = edge.getSource();
+		MapNode target = edge.getTarget();
+
+		adminBoundary.newEdge(source, node);
+		adminBoundary.newEdge(target, node);
+		adminBoundary.removeEdge(edge);
+
+		if(drawingEdgeLine.isVisible()) //if also drawing to the middle of the line
+		{
+			drawingEdge.setTarget(node);
+			onEdgeComplete();
+		}
+
+		onStartEdgeDrawing(node);
 	}
 
 	/**
@@ -352,8 +366,8 @@ public class MapEditorController extends MapController
 		{
 			if(oldSelection!=null)
 			{
-				DragIcon oldIcon = iconEntityMap.inverse().get(((TreeItem<Map>)oldSelection).getValue());
-				oldIcon.setEffect(null);
+			//	DragIcon oldIcon = iconEntityMap.inverse().get(((TreeItem<Map>)oldSelection).getValue());
+				//oldIcon.setEffect(null);
 			}
 
 			DragIcon icon = iconEntityMap.inverse().get(((TreeItem<MapNode>)newSelection).getValue());
@@ -363,12 +377,35 @@ public class MapEditorController extends MapController
 			icon.setEffect(glow);
 
 			final Timeline timeline = new Timeline();
-			timeline.setCycleCount(20);
+
+			timeline.setCycleCount(5);
 			timeline.setAutoReverse(true);
-			final KeyValue kv = new KeyValue(glow.levelProperty(), 0.8);
-			final KeyFrame kf = new KeyFrame(Duration.millis(700), kv);
-			timeline.getKeyFrames().add(kf);
+			final KeyValue kvA = new KeyValue(icon.scaleXProperty(), 1.3);
+			final KeyFrame kfA = new KeyFrame(Duration.millis(200), kvA);
+
+			final KeyValue kv1 = new KeyValue(icon.scaleYProperty(), 1.3);
+			final KeyFrame kf1 = new KeyFrame(Duration.millis(200), kv1);
+			timeline.getKeyFrames().add(kfA);
+			timeline.getKeyFrames().add(kf1);
 			timeline.play();
+
+			timeline.setOnFinished(e->
+			{
+				final Timeline shrinkTimeline = new Timeline();
+
+				shrinkTimeline.setCycleCount(1);
+				shrinkTimeline.setAutoReverse(false);
+
+				final KeyValue kvB = new KeyValue(icon.scaleXProperty(), 1);
+				final KeyFrame kfB = new KeyFrame(Duration.millis(200), kvB);
+
+				final KeyValue kvC = new KeyValue(icon.scaleYProperty(), 1);
+				final KeyFrame kfC = new KeyFrame(Duration.millis(200), kvC);
+
+				shrinkTimeline.getKeyFrames().add(kfB);
+				shrinkTimeline.getKeyFrames().add(kfC);
+				shrinkTimeline.play();
+			});
 		});
 
 		tab.setContent(tV);
