@@ -159,7 +159,13 @@ public class UserDirectionsPanel extends AnchorPane
         Runnable sendEmail = () -> {
             if(guidance!=null)
             {
-                guidance.sendEmailGuidance(emailField.getText());
+                if (emailField.getText().contains("@")) {
+                    System.out.println("Sending to an email");
+                    guidance.sendEmailGuidance(emailField.getText());
+                } else if (emailField.getText().toLowerCase().equals(emailField.getText().toUpperCase())) {
+                    System.out.println("sending to a phone");
+                    guidance.sendTextGuidance(emailField.getText());
+                }
             }
         };
 
