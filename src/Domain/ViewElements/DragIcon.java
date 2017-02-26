@@ -33,6 +33,8 @@ public class DragIcon extends AnchorPane{
 		} catch (IOException exception) {
 		    throw new RuntimeException(exception);
 		}
+
+		this.setPrefSize(25, 25);
 	}
 	
 	@FXML
@@ -101,6 +103,7 @@ public class DragIcon extends AnchorPane{
 
 			case Connector:
 				getStyleClass().add("connector");
+				this.setPrefSize(10, 10);
 				break;
 
 			case Kiosk:

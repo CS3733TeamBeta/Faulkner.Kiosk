@@ -3,6 +3,7 @@ package Boundary;
 import Domain.Map.*;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
+import Model.Database.DataCache;
 import javafx.collections.*;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -16,49 +17,14 @@ import java.util.HashSet;
  */
 public class AdminMapBoundary extends MapBoundary
 {
-    protected ObservableSet<NodeEdge> edges = FXCollections.observableSet(new HashSet<NodeEdge>());
-
-    public void addNodeSetChangeHandler(SetChangeListener<MapNode> mapChangeListener)
-    {
-        mapElements.addListener(mapChangeListener);
-    }
-
-    public void selectFloor()
+    public void selectFloor(Floor f)
     {
 
-    }
-
-    public void selectBuilding()
-    {
-
-    }
-
-    public void loadFloorElements()
-    {
-        mapElements.clear();
-
-        for(MapNode n: currentFloor.getFloorNodes())
-        {
-            for(NodeEdge e : n.getEdges())
-            {
-                if(currentFloor.getFloorNodes().contains(e.getOtherNode(n)))
-                {
-                    /*if (!mapElements.containsKey(e.getEdgeLine()))
-                    {
-                        mapElements.put(e.getEdgeLine(), e);
-                    }
-
-                    e.updatePosViaNode(n);*/
-                }
-            }
-
-            n.getNodeToDisplay().toFront();
-        }
     }
 
     public void addNode(MapNode n)
     {
-        if(n.getIconType().equals(DragIconType.Elevator))
+        if(n.getType().equals(DragIconType.Elevator))
         {
             addElevator(n);
         }
@@ -66,13 +32,29 @@ public class AdminMapBoundary extends MapBoundary
         {
             if (!currentFloor.getFloorNodes().contains(n))
             {
-                n.setFloor(currentFloor);
                 currentFloor.addNode(n);
-                mapElements.add(n);
+                nodesOnMap.add(n);
             }
         }
 
         n.setOnDeleteRequested(e-> remove(n));
+    }
+
+    @Override
+    public void changeFloor(Floor f)
+    {
+        super.changeFloor(f);
+
+        for(MapNode n: nodesOnMap)
+        {
+            for(NodeEdge edge: n.getEdges())
+            {
+                if (!edges.contains(edge) && nodesOnMap.contains(edge.getOtherNode(n)))
+                {
+                    edges.add(edge);
+                }
+            }
+        }
     }
 
     public void newEdge(MapNode source, MapNode target)
@@ -89,25 +71,25 @@ public class AdminMapBoundary extends MapBoundary
         n.setPosX(loc.getX());
         n.setPosY(loc.getY());
 
-        System.out.println(loc.getX());
+        currentFloor.getFloorNodes().add(n);
 
-        mapElements.add(n);
+        nodesOnMap.add(n);
     }
 
     private void addElevator(MapNode n)
     {
         ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
 
-        if (!mapElements.contains(n))
+       /* if (!nodesOnMap.contains(n))
         {
-            mapElements.contains(n); //add to right panes children
-        }
+            //mapElements.contains(n); //add to right panes children
+        }*/
 
         MapNode last = null;
 
         MapNode e;
 
-        for (Floor f : b.getFloors())
+        for (Floor f : currentFloor.getBuilding().getFloors())
         {
             if (!f.equals(currentFloor))
             {
@@ -137,7 +119,15 @@ public class AdminMapBoundary extends MapBoundary
 
     public void remove(MapNode n)
     {
-        mapElements.remove(n);
+        nodesOnMap.remove(n);
+    }
+
+    public void removeEdge(NodeEdge edge)
+    {
+        edge.getSource().getEdges().remove(edge);
+        edge.getTarget().getEdges().remove(edge);
+
+        edges.remove(edge);
     }
 
     public void moveNode(MapNode n, Point2D movedTo)

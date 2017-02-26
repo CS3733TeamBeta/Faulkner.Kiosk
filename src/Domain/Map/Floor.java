@@ -1,5 +1,7 @@
 package Domain.Map;
 
+import javafx.scene.image.Image;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -14,10 +16,11 @@ public class Floor extends Observable implements Comparable{
     HashSet<NodeEdge> floorEdges;
 
     MapNode kioskNode = null;
-    String imageLocation = "../FloorMaps/1_thefirstfloor.png"; //default floor image path
+    String imageLocation = "/FloorMaps/1_thefirstfloor.png"; //default floor image path
 
     ProxyImage imageInfo;
 
+    Building building;
 
     public String getImageLocation() {
         return imageLocation;
@@ -32,8 +35,8 @@ public class Floor extends Observable implements Comparable{
         imageInfo = new ProxyImage(imageLocation);
     }
 
-    public ProxyImage getImageInfo(){
-        return imageInfo;
+    public Image getImage(){
+        return imageInfo.getImage();
     }
 
     public HashSet<MapNode> getFloorNodes() {
@@ -101,6 +104,15 @@ public class Floor extends Observable implements Comparable{
         }
     }
 
+    public Building getBuilding()
+    {
+        return building;
+    }
+
+    public void setBuilding(Building b)
+    {
+        building = b;
+    }
 
     @Override
     public String toString()

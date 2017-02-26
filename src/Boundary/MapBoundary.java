@@ -1,12 +1,8 @@
 package Boundary;
 
-import Domain.Map.Building;
-import Domain.Map.Floor;
-import Domain.Map.MapNode;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
+import Domain.Map.*;
+import Model.Database.DataCache;
+import javafx.collections.*;
 import javafx.scene.Node;
 
 import java.util.HashMap;
@@ -17,31 +13,123 @@ import java.util.Observable;
 /**
  * Created by benhylak on 2/24/17.
  */
-public abstract class MapBoundary extends Observable
+public class MapBoundary extends Observable
 {
-   // protected ObservableList<Node> mapElements;
-    protected ObservableSet<MapNode> mapElements;
+    protected ObservableSet<MapNode> nodesOnMap;
+    protected ObservableSet<NodeEdge> edges = FXCollections.observableSet(new HashSet<NodeEdge>());
 
     protected Floor currentFloor;
     MapNode kiosk;
-    Building b;
+
+    protected Hospital h = DataCache.getInstance().getHospital();
+
+    public static enum UpdateType
+    {
+        FloorChange
+    }
+
+    public void addNodeSetChangeHandler(SetChangeListener<MapNode> mapChangeListener)
+    {
+        nodesOnMap.addListener(mapChangeListener);
+    }
+
+    public void addEdgeSetChangeHandler(SetChangeListener<NodeEdge> edgeChangeListener)
+    {
+        edges.addListener(edgeChangeListener);
+    }
 
     public MapBoundary()
     {
-        currentFloor = new Floor(1);
-        Building b = new Building("Test");
 
+        nodesOnMap = FXCollections.observableSet(new HashSet<MapNode>());
+    }
+
+    public void setInitialFloor()
+    {
         try
         {
-            b.addFloor(currentFloor);
-        } catch (Exception e)
+            changeFloor(h.getBuildings().iterator().next().getFloor(1));
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
 
-        mapElements = FXCollections.observableSet(new HashSet<MapNode>());
-
+        setChanged();
+        notifyObservers(UpdateType.FloorChange);
     }
+
+    public void changeFloor(Floor f)
+    {
+        nodesOnMap.clear();
+        currentFloor = f;
+
+        for(MapNode n: currentFloor.getFloorNodes())
+        {
+            /*for(NodeEdge e : n.getEdges())
+            {
+                if(currentFloor.getFloorNodes().contains(e.getOtherNode(n)))
+                {
+                    /*if (!mapElements.containsKey(e.getEdgeLine()))
+                    {
+                        mapElements.put(e.getEdgeLine(), e);
+                    }
+
+                    e.updatePosViaNode(n);*/
+            //  //    }
+            // }
+
+            nodesOnMap.add(n);
+        }
+    }
+
+    public Hospital getHospital()
+    {
+        return h;
+    }
+
+    private int incrementFloor(int incAmount)
+    {
+        int nextFloorID = currentFloor.getFloorNumber() + incAmount;
+
+        if(nextFloorID<=currentFloor.getBuilding().getFloors().size() && nextFloorID >0)
+        {
+            try
+            {
+                this.setCurrentFloor(currentFloor.getBuilding().getFloor(nextFloorID));
+                return nextFloorID;
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Changes to previous floor
+     *
+     * @return New Floor Number
+     */
+    public int changeToPreviousFloor()
+    {
+        int result = incrementFloor(-1);
+        return result;
+    }
+
+    /**
+     * Changes to next floor
+     *
+     * @return New floor number
+     */
+    public int changeToNextFloor()
+    {
+        int result = incrementFloor(-1);
+        return result;
+    }
+
 
     public void switchFloor()
     {
@@ -53,9 +141,19 @@ public abstract class MapBoundary extends Observable
 
     }
 
+    public Floor getCurrentFloor()
+    {
+        return currentFloor;
+    }
+
+    public void setCurrentFloor(Floor f)
+    {
+        currentFloor = f;
+    }
+
     public ObservableSet<MapNode> mapElements()
     {
-        return mapElements;
+        return nodesOnMap;
     }
 
 }

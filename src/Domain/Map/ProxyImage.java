@@ -1,41 +1,33 @@
 package Domain.Map;
 
+import javafx.scene.image.Image;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import Domain.Map.Image;
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Created by Pattop on 2/18/2017.
  */
-public class ProxyImage implements Image {
+public class ProxyImage {
 
-    private RealImage realImage;
     private String fileName;
+
+    Image realImage = null;
 
     public ProxyImage (String fileName)
     {
         this.fileName = fileName;
-        realImage = new RealImage(fileName);
-    }
-
-    public Image getRealImage()
-    {
-        return this.realImage;
-    }
-
-    public javafx.scene.image.Image getFXImage()
-    {
-        return this.realImage.getFXImage();
     }
 
     // Display image from associated file, create object for RealImage if necessary
-    @Override
-    public void display() {
+    public Image getImage()
+    {
         if(realImage == null) {
-            realImage = new RealImage(fileName);
+            realImage = new Image(fileName);
         }
-        realImage.display();
-    }
 
-    public BufferedImage getBufferedImage(){
-        return this.realImage.getImg();
+        return realImage;
     }
 }

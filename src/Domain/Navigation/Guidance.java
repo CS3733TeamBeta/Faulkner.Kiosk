@@ -17,7 +17,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.image.WritableImage;
+import javafx.scene.image.*;
 
 import javax.imageio.ImageIO;
 
@@ -314,16 +314,13 @@ public class Guidance extends Path {
             System.out.println("Creating info for floor " + d.getFloor().getFloorNumber());
             d.getFloor().initImage();
             try {
-
-
-                d.getFloor().getImageInfo().display();
-                BufferedImage realBaseImage = d.getFloor().getImageInfo().getBufferedImage();
+                d.getFloor().getImage();
+                javafx.scene.image.Image realBaseImage = d.getFloor().getImage();
                 System.out.println("Width of image: " + realBaseImage.getWidth());
                 System.out.println("Height of image: " + realBaseImage.getHeight());
 
                 DirectionStep aStep = d;
                 Floor aFloor = d.getFloor();
-                ProxyImage aImageInfo = d.getFloor().getImageInfo();
 
                 if (aStep == null) {
                     System.out.println("It's aStep");
@@ -331,10 +328,6 @@ public class Guidance extends Path {
                 }
                 if (aFloor == null) {
                     System.out.println("It's aFloor");
-                    throw new Exception();
-                }
-                if (aImageInfo == null) {
-                    System.out.println("It's imageInfo");
                     throw new Exception();
                 }
 
@@ -345,13 +338,13 @@ public class Guidance extends Path {
 
 
                 // create the new image, canvas size is the max. of both image sizes
-                int w = realBaseImage.getWidth();
-                int h = realBaseImage.getHeight();
-                BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+                double w = realBaseImage.getWidth();
+                double h = realBaseImage.getHeight();
+                BufferedImage combined = new BufferedImage((int)w, (int)h, BufferedImage.TYPE_INT_ARGB);
 
                 // paint both images, preserving the alpha channels
                 Graphics2D g = combined.createGraphics();
-                g.drawImage(realBaseImage, 0, 0, null);
+                g.drawImage(SwingFXUtils.fromFXImage(realBaseImage, null), 0, 0, null);
                 double constant = 2.175;
                 //add edges to the map
                 g.setStroke(new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
@@ -376,14 +369,14 @@ public class Guidance extends Path {
                         int targetIsConnector = 0;
                         int sourceIsConnector = 0;
 
-                        if (targetNode.getIconType().toString().equals("connector")) {
+                        if (targetNode.getType().toString().equals("connector")) {
                             targetIsConnector = 12;
                         }
-                        if (sourceNode.getIconType().toString().equals("connector")) {
+                        if (sourceNode.getType().toString().equals("connector")) {
                             sourceIsConnector = 12;
                         }
-                        g.drawLine((int)Math.round(targetNode.getPosX() * constant) + (targetIsConnector + this.iconToImg(targetNode.getIconType()).getWidth()/2), (int)Math.round(targetNode.getPosY() * constant) + (targetIsConnector + this.iconToImg(targetNode.getIconType()).getHeight()/2),
-                                (int)Math.round(sourceNode.getPosX() * constant) + (sourceIsConnector + this.iconToImg(sourceNode.getIconType()).getWidth()/2), (int)Math.round(sourceNode.getPosY() * constant) + (sourceIsConnector + this.iconToImg(sourceNode.getIconType()).getHeight()/2));
+                        g.drawLine((int)Math.round(targetNode.getPosX() * constant) + (targetIsConnector + this.iconToImg(targetNode.getType()).getWidth()/2), (int)Math.round(targetNode.getPosY() * constant) + (targetIsConnector + this.iconToImg(targetNode.getType()).getHeight()/2),
+                                (int)Math.round(sourceNode.getPosX() * constant) + (sourceIsConnector + this.iconToImg(sourceNode.getType()).getWidth()/2), (int)Math.round(sourceNode.getPosY() * constant) + (sourceIsConnector + this.iconToImg(sourceNode.getType()).getHeight()/2));
                     }
                 }
 
@@ -391,12 +384,12 @@ public class Guidance extends Path {
                 for (MapNode n: d.nodesForThisFloor) {
                     int isConnector = 0;
                     System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
-                    String thisIconType = n.getIconType().toString();
+                    String thisIconType = n.getType().toString();
                     System.out.println("This is an icon of type: " + thisIconType.toString());
 
-                    BufferedImage currentImage = this.iconToImg(n.getIconType());
+                    BufferedImage currentImage = this.iconToImg(n.getType());
 
-                    if (n.getIconType().toString().equals("connector")) {
+                    if (n.getType().toString().equals("connector")) {
                         isConnector = 12;
                     }
 

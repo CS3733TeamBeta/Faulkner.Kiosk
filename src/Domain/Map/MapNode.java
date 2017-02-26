@@ -2,20 +2,16 @@ package Domain.Map;
 
 import Controller.Admin.PopUp.AbstractPopupController;
 import Controller.Admin.PopUp.NodeEditController;
+import Controller.DragDropMain;
 import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
-import Domain.ViewElements.DrawableMapEntity;
 import Domain.ViewElements.Events.DeleteRequestedEvent;
 import Domain.ViewElements.Events.DeleteRequestedHandler;
-import Model.Database.DatabaseManager;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,14 +21,10 @@ import java.util.UUID;
  * Represents a node in a Map, connected to other nodes by NodeEdges
  */
 
-public class MapNode implements DrawableMapEntity {
+public class MapNode {
     double posX;
     double posY;
 
-    protected DragIcon icon;
-
-    final double NODE_HOVER_OPACITY = .65;
-    final double NODE__NORMAL_OPACITY = 1;
 
     private final String popOverEditFXML = "/Admin/Popup/NodeEditPopup.fxml";
 
@@ -44,7 +36,7 @@ public class MapNode implements DrawableMapEntity {
 
     String label = "";
     String destName = "";
-
+    DragIconType type;
     /**
      * G value of this node, used for pathfinding, defaults to 0
      */
@@ -124,8 +116,6 @@ public class MapNode implements DrawableMapEntity {
         this.posY = posY;
 
         this.edges = new HashSet<NodeEdge>();
-        icon = new DragIcon();
-        icon.setPrefSize(25, 25);
 
         this.setType(DragIconType.values()[type]);
     }
@@ -134,11 +124,6 @@ public class MapNode implements DrawableMapEntity {
     {
         setPosX(posX);
         setPosY(posY);
-
-        ((DragIcon)getNodeToDisplay()).relocateToPoint(this.getNodeToDisplay().parentToLocal(this.
-                getNodeToDisplay().getParent().localToScene(posX, posY)));
-        //changes coordinates relative to drag icon. Really cool shit
-
     }
 
     /**
@@ -305,53 +290,8 @@ public class MapNode implements DrawableMapEntity {
      * @param type (Doctor, bathroom, etc.)
      */
     public void setType (DragIconType type) {
-        icon.setType(type);
+        this.type = type;
         label = type.name();
-        System.out.println(type.name());
-    }
-
-    /**
-     * Get the icon type of the underlying DragIcon
-     *
-     * @return Drag Icon type
-     */
-    public DragIconType getIconType() {
-        return icon.getType();
-    }
-
-    /**
-     * If the node, is being hovered on during map building, slightly change opacity
-     * to indicate it can be dropped on
-     */
-    public void changeToHoverOpacity() {
-        icon.setOpacity(NODE_HOVER_OPACITY);
-    }
-
-    /**
-     * On mouse exit, change opacity back to solid
-     */
-    public void changeToNormalOpacity() {
-        icon.setOpacity(NODE__NORMAL_OPACITY);
-    }
-
-
-    @Override
-    public Node getNodeToDisplay() {
-        return icon;
-    }
-
-    /**
-     * Sends underlying icon to back
-     */
-    public void toBack() {
-        icon.toBack();
-    }
-
-    /**
-     * Sends underlying icon to front
-     */
-    public void toFront() {
-        icon.toFront();
     }
 
     /**
@@ -478,9 +418,9 @@ public class MapNode implements DrawableMapEntity {
         this.parent = null;
     }
 
-    public int getType()
+    public DragIconType getType()
     {
-        return icon.getType().ordinal();
+        return type;
     }
 
 

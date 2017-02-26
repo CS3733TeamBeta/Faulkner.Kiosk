@@ -53,7 +53,7 @@ public class Destination extends MapNode {
         this.setPosX(m.getPosX());
         this.setPosY(m.getPosY());
 
-        this.setType(m.getIconType());
+        this.setType(m.getType());
 
         this.nodeUID = m.getNodeID();
         this.doctors = new HashSet<>();

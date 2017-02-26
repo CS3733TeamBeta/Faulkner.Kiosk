@@ -1,7 +1,9 @@
 package Controller.User;
 
+import Boundary.MapBoundary;
 import Controller.AbstractController;
 import Controller.Main;
+import Controller.MapController;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
 import Domain.Navigation.Guidance;
@@ -21,6 +23,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.geometry.Point2D;
@@ -58,7 +61,8 @@ import static Model.Database.DatabaseManager.destinations;
  * Created by jw97 on 2/16/2017.
  *
  */
-public class UserMapViewController extends AbstractController {
+public class UserMapViewController extends MapController
+{
 
     Boolean downArrow = true; // By default, the navigation arrow is to minimize the welcome page
     ColorAdjust colorAdjust = new ColorAdjust();
@@ -129,9 +133,6 @@ public class UserMapViewController extends AbstractController {
     TableColumn docDepts;
 
     @FXML
-    ImageView mapImage;
-
-    @FXML
     ScrollPane scrollPane;
 
     @FXML
@@ -142,11 +143,8 @@ public class UserMapViewController extends AbstractController {
 
     Stage primaryStage;
 
-    MapModel model;
 
     UserDirectionsPanel panel = new UserDirectionsPanel(mapImage);
-
-    Group mapItems;
 
     Group zoomGroup;
 
@@ -155,65 +153,14 @@ public class UserMapViewController extends AbstractController {
 
     public UserMapViewController() throws Exception
     {
-
-    }
-
-    protected void renderFloorMap()
-    {
-        mapItems.getChildren().clear();
-        mapImage.setImage(model.getCurrentFloor().getImageInfo().getFXImage());
-
-        mapItems.getChildren().add(mapImage);
-
-        for(MapNode n: model.getCurrentFloor().getFloorNodes())
-        {
-            if(n.getIconType().equals(DragIconType.Connector))
-            {
-                n.getNodeToDisplay().setVisible(false);
-            }
-
-            addToMap(n);
-
-            for(NodeEdge e : n.getEdges())
-            {
-                if(!(e instanceof LinkEdge) && model.getCurrentFloor().getFloorNodes().contains(e.getOtherNode(n)))
-                {
-                    if (!mapItems.getChildren().contains(e.getEdgeLine()))
-                    {
-                        mapItems.getChildren().add(e.getEdgeLine());
-                        e.changeOpacity(0.0);
-                    }
-
-                    e.updatePosViaNode(n);
-                }
-            }
-
-            n.getNodeToDisplay().toFront();
-        }
-
-        mapImage.toBack();
-    }
-
-    protected void importNode(MapNode mapNode)
-    {
-        if(!mapItems.getChildren().contains(mapNode.getNodeToDisplay()))
-        {
-            mapItems.getChildren().add(mapNode.getNodeToDisplay()); //add to right panes children
-        }
-
-        mapNode.setPos(mapNode.getPosX(), mapNode.getPosY());
-
-        if(!mapNode.getIconType().equals(DragIconType.Connector)) //treeview checks that floor actually contains
-        {
-            //addToTreeView(mapNode); disabled for now.
-        }
-
-        mapNode.toFront(); //send the node to the front
+        super();
+        boundary=new MapBoundary();
+        initBoundary();
     }
 
     public void addToMap(MapNode n)
     {
-        Text destLabel = new Text(n.getLabel());
+        /*Text destLabel = new Text(n.getLabel());
         destLabel.setStyle("-fx-font-weight: bold");
         destLabel.setTranslateX(n.getPosX() - (destLabel.getLayoutBounds().getWidth() / 2) + 12);
         destLabel.setTranslateY((n.getPosY()-5));
@@ -229,7 +176,7 @@ public class UserMapViewController extends AbstractController {
 
        // n.setPos(n.getPosX(), n.getPosY());
 
-        setupImportedNode(n);
+        setupImportedNode(n);*/
     }
 
     /*public void zoomToExtents(Group group)
@@ -267,11 +214,10 @@ public class UserMapViewController extends AbstractController {
     @FXML
     private void clickedDownArrow()
     {
-        int newFloorNum = model.choosePreviousFloor();
+        int newFloorNum = boundary.changeToPreviousFloor();
 
         if(newFloorNum!=-1)
         {
-            renderFloorMap();
             curFloorLabel.setText("Floor " + newFloorNum);
         }
 
@@ -289,23 +235,25 @@ public class UserMapViewController extends AbstractController {
         {
             for (NodeEdge n : newRoute.getPathEdges())
             {
-                n.changeOpacity(1.0);
-                n.changeColor(Color.RED);
+               // n.changeOpacity(1.0);
+               // n.changeColor(Color.RED);
             }
         }
     }
 
     @FXML
     private void clickedUpArrow(){
-        int newFloorNum = model.chooseNextFloor();
+        int newFloorNum = boundary.changeToNextFloor();
 
         if(newFloorNum!=-1)
         {
-            renderFloorMap();
+         //   renderFloorMap();
             curFloorLabel.setText("Floor " + newFloorNum);
         }
 
-        if(newFloorNum>model.getKioskBuilding().getFloors().size()-1)
+        floorDownArrow.setVisible(true);
+
+       /* if(newFloorNum>boundary.getKioskBuilding().getFloors().size()-1)
         {
             floorUpArrow.setVisible(false);
         }
@@ -313,25 +261,25 @@ public class UserMapViewController extends AbstractController {
         {
             floorUpArrow.setVisible(true);
             floorDownArrow.setVisible(true);
-        }
+        }*/
 
         if(newRoute!=null)
         {
             for (NodeEdge n : newRoute.getPathEdges())
             {
-                n.changeOpacity(1.0);
-                n.changeColor(Color.RED);
+                //n.changeOpacity(1.0);
+               // n.changeColor(Color.RED);
             }
         }
     }
 
     @FXML
     private void initialize() throws Exception {
-        model = new MapModel();
-        mapItems = new Group();
+       // renderFloorMap();
 
-        renderFloorMap();
+        mapItems.getChildren().add(mapImage);
         zoomGroup = new Group(mapItems);
+
 
         // stackpane for centering the content, in case the ScrollPane viewport
         // is larget than zoomTarget
@@ -348,6 +296,7 @@ public class UserMapViewController extends AbstractController {
 
         content.relocate(0, 0);
         mapPane.relocate(0, 0);
+        //mapImage.relocate(0, 0);
 
         scrollPane.setPannable(true);
 
@@ -393,7 +342,7 @@ public class UserMapViewController extends AbstractController {
     });
 
         panel.addOnStepChangedHandler(event -> { //when the step is changed in the side panel, update this display!
-            model.setCurrentFloor(event.getSource().getFloor());
+            boundary.setCurrentFloor(event.getSource().getFloor());
         });
 
         //kioskFloor = DatabaseManager.Faulkner.getBuildings().iterator().next().getFloor(1);
@@ -417,7 +366,8 @@ public class UserMapViewController extends AbstractController {
         panel.setVisible(false);
         directionPaneView();
 
-        curFloorLabel.setText("Floor " + model.getCurrentFloor().getFloorNumber());
+        boundary.setInitialFloor();
+        curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
     }
 
     private void panToCenter()
@@ -510,35 +460,22 @@ public class UserMapViewController extends AbstractController {
         slideHideDirections.play();
     }
 
-    private void setupImportedNode(MapNode nodeToSetup){
+    @Override
+    protected DragIcon importMapNode(MapNode mapNode)
+    {
+        DragIcon icon = super.importMapNode(mapNode);
 
-        //droppedNode.setType(droppedNode.getIconType()); //set the type
-
-        nodeToSetup.getNodeToDisplay().setOnMouseClicked(null);
-        nodeToSetup.getNodeToDisplay().setOnDragDetected(null);
-        nodeToSetup.getNodeToDisplay().setOnMouseDragged(null);
-        nodeToSetup.getNodeToDisplay().setOnMouseEntered(null);
-        nodeToSetup.getNodeToDisplay().setOnMouseExited(null);
-
-        nodeToSetup.getNodeToDisplay().setOnMouseClicked(ev -> {
+        iconEntityMap.inverse().get(mapNode).setOnMouseClicked(ev -> {
             if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
                 try{
-                    findPathToNode(nodeToSetup);
+                    findPathToNode(mapNode);
                 }catch(PathFindingException e){
 
                 }
             }
         });
 
-        /*nodeToSetup.getNodeToDisplay().setOnMouseEntered(ev->
-        {
-            nodeToSetup.getNodeToDisplay().setOpacity(.65);
-        });
-
-        nodeToSetup.getNodeToDisplay().setOnMouseExited(ev->
-        {
-            nodeToSetup.getNodeToDisplay().setOpacity(1);
-        });*/
+        return icon;
     }
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException {
@@ -547,17 +484,17 @@ public class UserMapViewController extends AbstractController {
         {
             for (NodeEdge n : newRoute.getPathEdges())
             {
-                n.changeOpacity(0.0);
-                n.changeColor(Color.BLACK);
+             //   n.changeOpacity(0.0);
+              //  n.changeColor(Color.BLACK);
             }
         }
 
         System.out.println("In path finding");
-        MapNode startPoint = model.getHospital().getCampusFloor().getKioskNode();
+        MapNode startPoint = boundary.getHospital().getCampusFloor().getKioskNode();
 
         if(startPoint == null){
             System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
-            startPoint = model.getHospital().getCampusFloor().getFloorNodes().iterator().next();
+            startPoint = boundary.getHospital().getCampusFloor().getFloorNodes().iterator().next();
         }
         if (endPoint == startPoint) {
             System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
@@ -571,8 +508,8 @@ public class UserMapViewController extends AbstractController {
 
         for(NodeEdge n: newRoute.getPathEdges())
         {
-            n.changeOpacity(1.0);
-            n.changeColor(Color.RED);
+          //  n.changeOpacity(1.0);
+            //n.changeColor(Color.RED);
         }
         /*
         for(Building b : model.getHospital().getBuildings()) {
@@ -722,7 +659,7 @@ public class UserMapViewController extends AbstractController {
         jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
         docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
 
-        Collection<Doctor> doctrine = model.getHospital().getDoctors().values();
+        Collection<Doctor> doctrine = boundary.getHospital().getDoctors().values();
         ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
         FilteredList<Doctor> filteredDoctor = new FilteredList<>(doctors);
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -744,7 +681,7 @@ public class UserMapViewController extends AbstractController {
         deptName.setCellValueFactory(new PropertyValueFactory<Destination, String>("name"));
         deptPhoneNum.setCellValueFactory(new PropertyValueFactory<Destination, String>("phoneNum"));
         deptLocation.setCellValueFactory(new PropertyValueFactory<Destination, String>("location"));
-        Collection<Destination> suiteVal = model.getHospital().getDestinations().values();
+        Collection<Destination> suiteVal = boundary.getHospital().getDestinations().values();
         ObservableList<Destination> suites = FXCollections.observableArrayList(suiteVal);
         FilteredList<Destination> filteredSuite = new FilteredList<>(suites);
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {

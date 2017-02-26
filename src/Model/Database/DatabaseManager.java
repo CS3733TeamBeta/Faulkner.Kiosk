@@ -502,7 +502,7 @@ public class DatabaseManager {
             insertNodes.setDouble(2, n.getPosX());
             insertNodes.setDouble(3, n.getPosY());
             insertNodes.setString(4, CAMPUS_ID);
-            insertNodes.setInt(5, n.getType());
+            insertNodes.setInt(5, n.getType().ordinal());
             insertNodes.executeUpdate();
 
             insertCampusNodes.setString(1, n.getNodeID().toString());
@@ -555,7 +555,7 @@ public class DatabaseManager {
                         insertNodes.setDouble(2, n.getPosX());
                         insertNodes.setDouble(3, n.getPosY());
                         insertNodes.setString(4, floorID);
-                        insertNodes.setInt(5, n.getType());
+                        insertNodes.setInt(5, n.getType().ordinal());
                         insertNodes.executeUpdate();
                     }
                     catch (SQLException e) {

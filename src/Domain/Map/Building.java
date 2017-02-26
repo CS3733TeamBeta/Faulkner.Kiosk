@@ -1,5 +1,8 @@
 package Domain.Map;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
+
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -10,13 +13,12 @@ public class Building {
 
     String name;
 
-    HashSet<Floor> buildingFloors;
-
+    ObservableSet<Floor> buildingFloors;
     /**
      * Creates a building with no floors
      */
     public Building() {
-        this.buildingFloors = new HashSet<>();
+        this.buildingFloors = FXCollections.observableSet(new HashSet<Floor>());
     }
 
 
@@ -61,6 +63,8 @@ public class Building {
         } else {
             throw new Exception("Floor already exists");
         }
+
+        f.setBuilding(this);
     }
 
     /**
