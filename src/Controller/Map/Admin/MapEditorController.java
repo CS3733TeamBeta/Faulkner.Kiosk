@@ -142,14 +142,25 @@ public class MapEditorController extends MapController
 
 			if(!iconEntityMap.containsKey(clickedNode) && !edgeEntityMap.containsKey(clickedNode))
 			{
-				menu.show(event.getScreenX(), event.getScreenY());
+				if(!drawingEdgeLine.isVisible())
+				{
+					menu.show(event.getScreenX(), event.getScreenY());
 
-				target.setVisible(true);
+					target.setVisible(true);
 
-				target.setX(event.getX() - target.getFitWidth() / 2);
-				target.setY(event.getY() - target.getFitHeight() / 2);
+					target.setX(event.getX() - target.getFitWidth() / 2);
+					target.setY(event.getY() - target.getFitHeight() / 2);
 
-				menuOpenLoc = new Point2D(event.getX(), event.getY());
+					menuOpenLoc = new Point2D(event.getX(), event.getY());
+				}
+				else
+				{
+					MapNode n = adminBoundary.newNode(DragIconType.Connector,new Point2D(event.getX(), event.getY()));
+					drawingEdge.setTarget(n);
+
+					onEdgeComplete();
+					onStartEdgeDrawing(n);
+				}
 			}
 		});
 
