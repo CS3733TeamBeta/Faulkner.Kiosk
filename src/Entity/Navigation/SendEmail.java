@@ -382,12 +382,23 @@ public class SendEmail {
         return imageString;
     }
 
+    public SendEmail(String recipient, String subject, String message, boolean includeImage, int numDirectionFloors){
+        this.recipient = recipient;
+        this.subject = subject;
+        this.message = message;
+        this.includeImage = includeImage;
+        this.numDirectionFloors = numDirectionFloors;
+        this.isPhone = false;
+        sendEmail();
+    }
+
     public SendEmail(String recipient, String subject, String message, boolean includeImage, int numDirectionFloors, boolean isPhone){
         this.recipient = recipient;
         this.subject = subject;
         this.message = message;
         this.includeImage = includeImage;
         this.numDirectionFloors = numDirectionFloors;
+        this.isPhone = isPhone;
         sendEmail();
     }
 
@@ -437,8 +448,10 @@ public class SendEmail {
                     encoding = SendEmail.encodeToString(bimg);
                 } catch (Exception e) {
                 }
-                String tempString;
-                tempString = "<img src =\"cid:imageDirections" + i + "\" width = \"" + width + "\" height = \"" + height + "\" border = \"0\" />";
+                String tempString = "";
+                if (!isPhone) {
+                    tempString += "<img src =\"cid:imageDirections" + i + "\" width = \"" + width + "\" height = \"" + height + "\" border = \"0\" />";
+                }
                 tempString += "<img src=\"data:image/jpg;base64," + encoding + "\" />" + htmlText;
                 imageDirectionsPortion = imageDirectionsPortion + tempString;
             }
@@ -449,23 +462,19 @@ public class SendEmail {
                 bimg = ImageIO.read(new File("resources/scaled_falkner_banner.png"));
                 width = bimg.getWidth();
                 height = bimg.getHeight();
-                System.out.println("It's " + bimg.getData().getDataBuffer().toString());
             } catch (Exception e) {
             }
 
+            if (!isPhone) {
+                htmlText = "<img src=\"cid:imageLogo\" width = \"" + width + "\" height = \"" + height + "\" border=\"0\" /> ";
+            }
+            htmlText = htmlText + this.message;
 
             if (includeImage) {
-                htmlText = "<img src=\"cid:imageLogo\" width = \"" + width + "\" height = \"" + height + "\" border=\"0\" /> " + this.message + imageDirectionsPortion;
-            } else {
-                htmlText = "<img src=\"cid:imageLogo\">" + this.message;
+                htmlText += imageDirectionsPortion;
             }
 
             htmlText = "<img src=\"data:image/jpg;base64," + headerImg + "\" />" + htmlText;
-
-
-            //<img src="data:image/jpg;base64,/*base64-data-string here*/" />
-            //htmlText = "<img src=\"googlelogo_color_272x92dp.png\" width=\"272\" height = \"92\" border=\"0\" />" + htmlText;
-
 
             messageBodyPart.setContent(htmlText, "text/html");
 
