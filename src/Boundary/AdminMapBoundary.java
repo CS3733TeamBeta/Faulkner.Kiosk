@@ -1,5 +1,6 @@
 package Boundary;
 
+import Entity.Hospital;
 import Entity.Map.*;
 import Controller.Map.ViewElements.DragIconType;
 import javafx.geometry.Point2D;
@@ -54,13 +55,46 @@ public class AdminMapBoundary extends MapBoundary
 
     public MapNode newNode(DragIconType type, Point2D loc)
     {
-        MapNode n = new MapNode();
+
+        // MapNode n;
+
+        MapNode n = null;
+
+        switch(type)
+        {
+             case Department:
+             case Food:
+             case Info:
+             case Restroom:
+             case Store:
+             {
+                Destination newDestination = new Destination(); //needed for lambda
+                n=newDestination;
+                 n.setOnDeleteRequested(e-> remove(newDestination));
+                 break;
+             }
+             case Kiosk:
+             {
+                 Kiosk newKiosk = new Kiosk();
+                 Hospital.kiosks.add(newKiosk);
+                 n = newKiosk;
+                 n.setOnDeleteRequested(e -> remove(newKiosk));
+                 break;
+             }
+            default:
+            {
+                MapNode newMapNode = new MapNode(); //needed for lambda
+                n = newMapNode;
+                n.setOnDeleteRequested(e->remove(newMapNode));
+                break;
+            }
+        }
         n.setType(type);
 
         n.setPosX(loc.getX());
         n.setPosY(loc.getY());
 
-        n.setOnDeleteRequested(e-> remove(n));
+
 
         currentFloor.addNode(n);
 
@@ -142,4 +176,15 @@ public class AdminMapBoundary extends MapBoundary
             edge.updateCost();
         }
     }
+
+    public void setCurrentKiosk (Kiosk kiosk) {
+        if (Hospital.kiosks.contains(kiosk)) {
+            Hospital.currentKiosk = kiosk;
+        } else {
+            Hospital.kiosks.add(kiosk);
+            Hospital.currentKiosk = kiosk;
+        }
+    }
+
+
 }
