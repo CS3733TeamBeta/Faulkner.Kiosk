@@ -1,7 +1,7 @@
 package Exceptions;
 
-import Domain.Map.MapNode;
-import Domain.Map.NodeEdge;
+import Entity.Map.MapNode;
+import Entity.Map.NodeEdge;
 
 import java.util.LinkedList;
 

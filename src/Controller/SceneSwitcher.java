@@ -1,8 +1,10 @@
 package Controller;
 
-import Controller.Admin.*;
-import Controller.User.*;
-import Domain.Map.Hospital;
+import Controller.Map.Admin.AdminDirectoryEditorController;
+import Controller.Map.Admin.AdminLoginController;
+import Controller.Map.Admin.MapEditorController;
+import Controller.Map.User.UserMapViewController;
+import Entity.Hospital;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
