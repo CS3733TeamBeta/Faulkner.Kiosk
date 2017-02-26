@@ -51,6 +51,12 @@ public class DatabaseManager {
                     "FLOOR_ID VARCHAR(25), " +
                     "TYPE INT, " +
                     "CONSTRAINT NODE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
+            "CREATE TABLE KIOSK" +
+                    "NAME VARCHAR(30)," +
+                    "NODE_ID CHAR(36)," +
+                    "FLAG SMALLINT," +
+                    "CONSTRAINT KIOSK_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID) ON DELETE CASCADE\n" +
+                    ")",
 
             "CREATE TABLE USER1.DESTINATION (DEST_ID CHAR(36) PRIMARY KEY NOT NULL, " +
                     "NAME VARCHAR(200), " +
@@ -95,6 +101,7 @@ public class DatabaseManager {
             "DROP TABLE USER1.OFFICES",
             "DROP TABLE USER1.DOCTOR",
             "DROP TABLE USER1.DESTINATION",
+            "DROP TABLE USER1.KIOSK",
             "DROP TABLE USER1.NODE",
             "DROP TABLE USER1.FLOOR",
             "DROP TABLE USER1.BUILDING"};
