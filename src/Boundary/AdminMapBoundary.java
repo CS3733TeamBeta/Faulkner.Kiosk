@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by benhylak on 2/24/17.
@@ -54,16 +55,47 @@ public class AdminMapBoundary extends MapBoundary
 
     public MapNode newNode(DragIconType type, Point2D loc)
     {
-        MapNode n = new MapNode();
-        n.setType(type);
+       // MapNode n;
+        MapNode n = null;
 
+        switch(type)
+        {
+            case Department:
+            case Food:
+            case Info:
+            case Restroom:
+            case Store:
+            {
+                Destination newDestination = new Destination(); //needed for lambda
+                n=newDestination;
+                n.setOnDeleteRequested(e-> remove(newDestination));
+                break;
+            }
+            case Kiosk:
+            {
+                break;
+            }
+            default:
+            {
+                MapNode newMapNode = new MapNode(); //needed for lambda
+                n = newMapNode;
+                n.setOnDeleteRequested(e->remove(newMapNode));
+
+                break;
+            }
+        }
+
+        n.setType(type);
         n.setPosX(loc.getX());
         n.setPosY(loc.getY());
 
-        n.setOnDeleteRequested(e-> remove(n));
-
-        currentFloor.addNode(n);
-
+        if(type == DragIconType.Elevator){
+            n.setIsElevator(true);
+            addElevator(n);
+        }
+        else {
+            currentFloor.addNode(n);
+        }
         nodesOnMap.add(n);
 
         return n;
@@ -72,8 +104,6 @@ public class AdminMapBoundary extends MapBoundary
     private void addElevator(MapNode n)
     {
         ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
-
-        MapNode last = null;
 
         MapNode e;
 
@@ -93,15 +123,20 @@ public class AdminMapBoundary extends MapBoundary
             else
             {
                 e = n;
-                nodesToAdd.add(n);
+                f.addNode(e);
+                nodesToAdd.add(e);
             }
 
-            if (last != null)
-            {
-                LinkEdge edge = new LinkEdge(last, e);
+            //for all elevators, add all other elevators in this elevator shaft to its edges
+            for(MapNode nextNode : nodesToAdd) {
+                //first make sure that we don't elevators connecting to other elevators on the same floor
+                //and that we're not adding multiple of the same edge
+                if(e.getMyFloor().getFloorNumber() != nextNode.getMyFloor().getFloorNumber() && !e.hasEdgeTo(nextNode)) {
+                    LinkEdge edge = new LinkEdge(nextNode, e);
+                    e.addEdge(edge);
+                }
             }
 
-            last = e;
         }
     }
 

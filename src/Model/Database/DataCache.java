@@ -12,21 +12,13 @@ public class DataCache
     static DataCache dC =null;
     DatabaseManager db;
 
-    Hospital h;
+    Hospital h = null;
 
     protected DataCache()
     {
         try
         {
             db = new DatabaseManager();
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-
-        try
-        {
-            h = db.loadData();
         } catch (SQLException e)
         {
             e.printStackTrace();
@@ -45,6 +37,14 @@ public class DataCache
 
     public Hospital getHospital()
     {
+        try
+        {
+           if(h==null) h = db.loadData();
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
         return h;
     }
 

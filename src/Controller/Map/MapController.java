@@ -18,6 +18,7 @@ public abstract class MapController extends AbstractController
 
     protected Group mapItems = new Group();
     protected MapBoundary boundary;
+
     protected ImageView mapImage;
 
     protected static int mapWidth = 2300;
@@ -63,13 +64,13 @@ public abstract class MapController extends AbstractController
     protected DragIcon importMapNode(MapNode n)
     {
         DragIcon icon = new DragIcon();
+
         icon.setType(n.getType());
         icon.relocate(
                 n.getPosX()-
                         icon.getPrefWidth()/2,
                 n.getPosY()-
                         icon.getPrefHeight()/2);
-
 
         mapItems.getChildren().add(icon);
         iconEntityMap.put(icon, n);
