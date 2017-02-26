@@ -1070,6 +1070,7 @@ public class DatabaseManager {
                     "FLOOR_ID VARCHAR(25), " +
                     "TYPE INT, " +
                     "CONSTRAINT NODE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
+
             "CREATE TABLE KIOSK" +
                     "NAME VARCHAR(30)," +
                     "NODE_ID CHAR(36)," +
