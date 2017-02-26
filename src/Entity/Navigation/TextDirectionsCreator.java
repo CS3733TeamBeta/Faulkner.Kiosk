@@ -161,30 +161,24 @@ public class TextDirectionsCreator {
                 tempNodeEdges = new LinkedList<>();
             } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
                 if(intersectionsPassed == 0){
+                    tempTextDirection = ("Take an elevator at the next intersection from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    tempMapNodes.add(fromNode);
                     if (vFlag) {
-                        tempTextDirection = ("Take an elevator at the next intersection from " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                        tempMapNodes.add(fromNode);
-                    } else {
-                        tempTextDirection = ("Take an elevator at the next intersection from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                        tempMapNodes.add(fromNode);
+                        tempTextDirection += ("ID " + fromNode.getNodeID() + " to " + toNode.getNodeID());
                     }
                 }
                 else if(intersectionsPassed == 1){
+                    tempTextDirection = ("After passing 1 intersection, take an elevator from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    tempMapNodes.add(fromNode);
                     if (vFlag) {
-                        tempTextDirection = ("After passing 1 intersection, take an elevator at " + fromNode.getNodeID() + " on floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                        tempMapNodes.add(fromNode);
-                    } else {
-                        tempTextDirection = ("After passing 1 intersection, take an elevator from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                        tempMapNodes.add(fromNode);
+                        tempTextDirection += ("ID " + fromNode.getNodeID() + " to " + toNode.getNodeID());
                     }
                 }
                 else {
+                    tempTextDirection = ("After passing " + intersectionsPassed + " intersections" + ", take the elevator " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
+                    tempMapNodes.add(fromNode);
                     if (vFlag) {
-                        tempTextDirection = ("After passing " + intersectionsPassed + " intersections" + ", take the elevator" + " at " + fromNode.getNodeID() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                        tempMapNodes.add(fromNode);
-                    } else {
-                        tempTextDirection = ("After passing " + intersectionsPassed + " intersections" + ", take the elevator " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
-                        tempMapNodes.add(fromNode);
+                        tempTextDirection += ("ID " + fromNode.getNodeID() + " to " + toNode.getNodeID());
                     }
                 }
                 tempNodeEdges.add(fromNode.getEdgeTo(toNode));
@@ -199,22 +193,19 @@ public class TextDirectionsCreator {
 
         //Add the destination arrival string
         if (intersectionsPassed >= 2) {
+            tempTextDirection = ("After passing " + intersectionsPassed + " intersections, arrive at your destination.");
             if (vFlag) {
-                tempTextDirection = ("After passing " + intersectionsPassed + " intersections, arrive at your destination: node " + toNode.getNodeID());
-            } else {
-                tempTextDirection = ("After passing " + intersectionsPassed + " intersections, arrive at your destination.");
+                tempTextDirection += ("At ID " + toNode.getNodeID());
             }
         } else if (intersectionsPassed == 1) {
+            tempTextDirection = ("After passing 1 intersection, arrive at your destination.");
             if (vFlag) {
-                tempTextDirection = ("After passing 1 intersection, arrive at your destination: node " + toNode.getNodeID());
-            } else {
-                tempTextDirection = ("After passing 1 intersection, arrive at your destination.");
+                tempTextDirection += ("At ID " + toNode.getNodeID());
             }
         } else {
+            tempTextDirection = ("Arrive at your destination.");
             if (vFlag) {
-                tempTextDirection = ("Arrive at your destination: node " + toNode.getNodeID());
-            } else {
-                tempTextDirection = ("Arrive at your destination.");
+                tempTextDirection += ("At ID " + toNode.getNodeID());
             }
         }
 
