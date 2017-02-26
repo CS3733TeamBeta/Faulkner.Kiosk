@@ -55,7 +55,7 @@ public class TextDirectionsCreator {
             fromNode = listNodes.get(i);
             toNode = listNodes.get(i+1);
 
-            double costConstant = 100;
+            double costConstant = 50; //Should be 25 in final
 
             if (vFlag) {
                 System.out.println("");
@@ -122,7 +122,7 @@ public class TextDirectionsCreator {
                 }
                 intersectionsPassed = 0;
                 tempNodeEdges.add(fromNode.getEdgeTo(toNode));
-                //Adds "near" this or that to the string 
+                //Adds "near" this or that to the string
                 boolean foundNearbyDestination = false;
                 for (NodeEdge e: toNode.getEdges()) {
                     if (e.getOtherNode(toNode) instanceof Destination && !foundNearbyDestination) {
@@ -130,12 +130,14 @@ public class TextDirectionsCreator {
                         tempTextDirection += "near " + ((Destination) e.getOtherNode(toNode)).getName();
                     }
                 }
+                //If there aren nodes after this
                 if(listNodes.size() > i+2) {
                     System.out.println("It's greater");
                     MapNode tempFromNode = listNodes.get(i+1);
                     MapNode tempToNode = listNodes.get(i+2);
                     int tempPrevDirection = currentDirection;
                     int tempCurrentDirection = Guidance.nodesToDirection(tempFromNode, tempToNode);
+                    //If the distance to the next node is small, add it into this string
                     if (tempFromNode.getEdgeTo(tempToNode).getCost() < costConstant) {
                         System.out.println("good cost");
                         int tempChangeInDirection = 10;
