@@ -5,6 +5,7 @@ import javafx.collections.ObservableSet;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * Represents a building with floors
@@ -12,6 +13,8 @@ import java.util.HashSet;
 public class Building {
 
     String name;
+
+    UUID buildID;
 
     ObservableSet<Floor> buildingFloors;
     /**
@@ -25,6 +28,13 @@ public class Building {
     public Building(String name)
     {
         this();
+        this.name = name;
+        this.buildID = UUID.randomUUID();
+    }
+
+    public Building(UUID id, String name) {
+        this();
+        this.buildID = id;
         this.name = name;
     }
 
@@ -101,6 +111,10 @@ public class Building {
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public UUID getBuildID() {
+        return this.buildID;
     }
 
 }

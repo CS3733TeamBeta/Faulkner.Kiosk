@@ -18,6 +18,8 @@ public class Floor extends Observable implements Comparable
 
     ObservableList<MapNode> treeItems;
 
+    UUID floorID;
+
     MapNode kioskNode = null;
     String imageLocation = "/FloorMaps/1_thefirstfloor.png"; //default floor image path
 
@@ -53,6 +55,14 @@ public class Floor extends Observable implements Comparable
         treeItems= FXCollections.observableList(new ArrayList<>());
         floorNodes = new HashSet<MapNode>();
         this.floorNumber = floorNumber;
+        this.floorID = UUID.randomUUID();
+    }
+
+    public Floor(UUID id, int floorNumber) {
+        this.floorID = id;
+        this.floorNumber = floorNumber;
+        floorNodes = new HashSet<>();
+        treeItems = FXCollections.observableList(new ArrayList<>());
     }
 
     public void addNode(MapNode n) {
@@ -130,5 +140,9 @@ public class Floor extends Observable implements Comparable
     public ObservableList<MapNode> getChildren()
     {
         return treeItems;
+    }
+
+    public UUID getFloorID() {
+        return this.floorID;
     }
 }
