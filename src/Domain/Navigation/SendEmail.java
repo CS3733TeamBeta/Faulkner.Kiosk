@@ -93,6 +93,7 @@ public class SendEmail {
             multipart.addBodyPart(messageBodyPart);
 
             messageBodyPart = new MimeBodyPart();
+//            fds = new FileDataSource("<H1>"+"BW-logo.png"+"</H1>");
             fds = new FileDataSource("BW-logo.png");
 
 
@@ -100,7 +101,6 @@ public class SendEmail {
             messageBodyPart.setHeader("Content-ID", "<imageLogo>");
 
             multipart.addBodyPart(messageBodyPart);
-
             if (includeImage) {
                 for (int i = 1; i <= numDirectionFloors; i++) {
                     messageBodyPart = new MimeBodyPart();
@@ -110,12 +110,13 @@ public class SendEmail {
                     messageBodyPart.setDataHandler(new DataHandler(fds));
                     messageBodyPart.setHeader("Content-ID", "<imageDirections" + i + ">");
 
+//                    multipart.addBodyPart("<aside>" + messageBodyPart + "</aside>"); //trying for an inline aside
                     multipart.addBodyPart(messageBodyPart);
                 }
             }
 
-
-            msg.setContent(multipart);
+            msg.setContent(multipart); //if we break apart the contents of the message into two, can we make the one with the photos an aside?
+            // or set text as one part and the photos as an aside for another part?
             // -- Set the FROM and TO fields --
             msg.setFrom(new InternetAddress(username));
             msg.setRecipients(Message.RecipientType.TO,

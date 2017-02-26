@@ -493,7 +493,7 @@ public class Guidance extends Path {
 
     public boolean sendEmailGuidance(String address) {
         String subjectLine;
-        String directionLine = "<H2><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H2>" + "<H3>";
+        String directionLine = "<H1><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H1>" + "<H4>";
         subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
 
         int stepNumber = 1;
@@ -505,14 +505,10 @@ public class Guidance extends Path {
                 stepNumber++;
             }
         }
-        directionLine += "</H3>";
+        directionLine += "</H4>";
 
         saveStepImages();
 
-        if (Math.random() < .25) {
-            System.out.println("Egg called");
-            directionLine += "<a href=\"https://youtu.be/dQw4w9WgXcQ\">Some music for your enjoyement, hospital-goer.</a>";
-        }
 
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine, true, textDirections.size());
