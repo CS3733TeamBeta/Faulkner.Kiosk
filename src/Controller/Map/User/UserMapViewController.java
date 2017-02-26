@@ -431,7 +431,6 @@ public class UserMapViewController extends MapController
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException
     {
-
         if (newRoute != null) //hide stale path
         {
             for (NodeEdge n : newRoute.getPathEdges())
@@ -449,11 +448,13 @@ public class UserMapViewController extends MapController
             System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
             startPoint = boundary.getHospital().getCampusFloor().getFloorNodes().iterator().next();
         }
+
         if (endPoint == startPoint)
         {
             System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
             return;//TODO add error message of some kind
         }
+
         try
         {
             newRoute = new Guidance(startPoint, endPoint, "North");
@@ -481,7 +482,6 @@ public class UserMapViewController extends MapController
                 }
             }
         }*/
-
         panel.fillGuidance(newRoute);
 
         showDirections();

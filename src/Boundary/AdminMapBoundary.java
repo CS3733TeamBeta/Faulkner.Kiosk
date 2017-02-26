@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by benhylak on 2/24/17.
@@ -54,13 +55,39 @@ public class AdminMapBoundary extends MapBoundary
 
     public MapNode newNode(DragIconType type, Point2D loc)
     {
-        MapNode n = new MapNode();
-        n.setType(type);
+       // MapNode n;
+        MapNode n = null;
 
+        switch(type)
+        {
+            case Department:
+            case Food:
+            case Info:
+            case Restroom:
+            case Store:
+            {
+                Destination newDestination = new Destination(); //needed for lambda
+                n=newDestination;
+                n.setOnDeleteRequested(e-> remove(newDestination));
+                break;
+            }
+            case Kiosk:
+            {
+                break;
+            }
+            default:
+            {
+                MapNode newMapNode = new MapNode(); //needed for lambda
+                n = newMapNode;
+                n.setOnDeleteRequested(e->remove(newMapNode));
+
+                break;
+            }
+        }
+
+        n.setType(type);
         n.setPosX(loc.getX());
         n.setPosY(loc.getY());
-
-        n.setOnDeleteRequested(e-> remove(n));
 
         if(type == DragIconType.Elevator){
             n.setIsElevator(true);

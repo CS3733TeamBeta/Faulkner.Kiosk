@@ -18,6 +18,7 @@ public abstract class MapController extends AbstractController
 
     protected Group mapItems = new Group();
     protected MapBoundary boundary;
+
     protected ImageView mapImage;
 
     protected static int mapWidth = 2300;
