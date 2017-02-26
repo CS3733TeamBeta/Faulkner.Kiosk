@@ -10,6 +10,7 @@ import java.sql.SQLException;
 public class DataCache
 {
     static DataCache dC =null;
+    DatabaseManager db;
 
     Hospital h;
 
@@ -17,7 +18,15 @@ public class DataCache
     {
         try
         {
-            h = new DatabaseManager().loadData();
+            db = new DatabaseManager();
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+        {
+            h = db.loadData();
         } catch (SQLException e)
         {
             e.printStackTrace();
@@ -43,7 +52,7 @@ public class DataCache
     {
         try
         {
-            new DatabaseManager().saveData(h);
+            db.saveData(h);
         } catch (SQLException e)
         {
             e.printStackTrace();

@@ -334,6 +334,11 @@ public class MapEditorController extends MapController
 
 				},
 				null);
+
+		mapPane.setOnDragDone(e->{
+			System.out.println("Drag complete");
+				}
+		);
 	}
 
 	public void updateEdgeLinesForNode(MapNode n)
