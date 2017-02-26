@@ -31,7 +31,7 @@ public class UserDirectionsPanel extends AnchorPane
     public UserDirectionsPanel(ImageView mapImage)
     {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                "../../User/UserDirectionsPanel.fxml"));
+                "../../../User/UserDirectionsPanel.fxml"));
 
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
