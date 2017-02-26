@@ -17,7 +17,6 @@ public class Floor extends Treeable implements Comparable
 {
 
     HashSet<MapNode> floorNodes;
-    HashSet<NodeEdge> floorEdges;
 
     ObservableList<Treeable> treeItems;
 
@@ -49,16 +48,12 @@ public class Floor extends Treeable implements Comparable
         return floorNodes;
     }
 
-    public HashSet<NodeEdge> getFloorEdges() {
-        return floorEdges;
-    }
 
     int floorNumber;
 
     public Floor(int floorNumber) {
         treeItems= FXCollections.observableList(new ArrayList<>());
         floorNodes = new HashSet<MapNode>();
-        floorEdges = new HashSet<NodeEdge>();
         this.floorNumber = floorNumber;
     }
 
@@ -85,9 +80,6 @@ public class Floor extends Treeable implements Comparable
         return floorNumber;
     }
 
-    public void addEdge(NodeEdge e) {
-        floorEdges.add(e);
-    }
 
     /**
      * Removes the given node from this floor's list of nodes. If the given node is the kiosknode, set the kiosknode to null and print a warning
@@ -102,12 +94,6 @@ public class Floor extends Treeable implements Comparable
             treeItems.remove(n);
         }
     }
-
-    public void removeEdge(NodeEdge edge)
-    {
-        floorEdges.remove(edge);
-    }
-
 
     /**
      * Sets this floor's KioskNode, which is the node that navigation begins from, to the given MapNode

@@ -1,4 +1,4 @@
-package Controller.Admin;
+package Controller.Map.Admin;
 
 /**
  * Created by Pattop on 2/1/2017.

@@ -1,5 +1,5 @@
 
-package Controller.Admin;
+package Controller.Map.Admin;
 
 import Controller.AbstractController;
 import Controller.SceneSwitcher;

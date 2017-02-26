@@ -1,8 +1,7 @@
 package Domain.Map;
 
-import Controller.Admin.PopUp.DestinationEditController;
+import Controller.Map.Admin.PopUp.DestinationEditController;
 import Domain.ViewElements.DragIconType;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
 
@@ -17,13 +16,7 @@ public class Destination extends MapNode {
 
     UUID destUID; //Thing specific for the destination - brandon
 
-    protected String description;
-    protected String hours;
-
     String name;
-
-    Image icon;
-    Image destinationView;
 
     String floorID;
 

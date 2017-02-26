@@ -26,7 +26,6 @@ public class CampusFloor extends Floor
     public void clearBuildings()
     {
         getFloorNodes().clear();
-        getFloorEdges().clear();
 
         for(MapNode n: campusNodes)
         {

@@ -1,4 +1,4 @@
-package Controller.User;
+package Controller.Map.User;
 
 import Boundary.MapBoundary;
 import Controller.MapController;
@@ -39,7 +39,6 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Map;
 import java.util.function.Predicate;
 /**
  * Created by jw97 on 2/16/2017.
@@ -54,9 +53,6 @@ public class UserMapViewController extends MapController
     int numClickFood = -1;
     int numClickBath = -1;
     int numClickHelp = -1;
-
-    double xNodeScale = 1200/941;
-    double yNodeScale = 700/546;
 
     Floor kioskFloor;
 
@@ -182,16 +178,6 @@ public class UserMapViewController extends MapController
 
         mapItems.getChildren().remove(nodeTextMap.get(n));
     }
-
-    public void addToMap(MapNode n)
-    {
-
-
-       // n.setPos(n.getPosX(), n.getPosY());
-
-       // setupImportedNode(n);
-    }
-
     /*public void zoomToExtents(Group group)
     {
         Bounds groupBounds = group.getLayoutBounds();
@@ -372,8 +358,6 @@ public class UserMapViewController extends MapController
             // Ben, you might want to consider reset the direction panel here
             panel.setVisible(false);
             searchMenuUp();
-
-            //panToCenter();
         });
 
         panel.setVisible(false);
@@ -382,43 +366,6 @@ public class UserMapViewController extends MapController
         boundary.setInitialFloor();
 
         curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
-    }
-
-    private void panToCenter()
-    {
-        Bounds groupBounds = zoomGroup.getLayoutBounds();
-        final Bounds viewportBounds = scrollPane.getViewportBounds();
-
-        double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
-        double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
-
-        // convert content coordinates to zoomTarget coordinates
-        //Point2D posInZoomTarget = mapItems.parentToLocal(mapItems.parentToLocal(new Point2D(evt.getX(), evt.getY())));
-
-        // calculate adjustment of scroll position (pixels)
-
-        double scaleX = (scrollPane.getHmax()-scrollPane.getHmin())/mapItems.getBoundsInLocal().getWidth();
-        double scaleY = (scrollPane.getVmax()-scrollPane.getVmin())/mapItems.getBoundsInLocal().getHeight();
-
-        double middleX = mapItems.getBoundsInLocal().getWidth()/2;
-        double middleY = mapItems.getBoundsInLocal().getHeight()/2;
-
-        System.out.println("Middle Coordinates-- X: " + middleX + "Y: " + middleY);
-
-        System.out.println("Scaling X: " + scaleX);
-
-        /*Point2D adjustment = new Transform() mapImage.deltaTransform(new Point2D(
-                mapItems.getBoundsInParent().getWidth()/2, mapItems.getBoundsInParent().getHeight()/2));*/
-
-        // refresh ScrollPane scroll positions & content bounds
-        scrollPane.layout();
-
-        // convert back to [0, 1] range
-        // (too large/small values are automatically corrected by ScrollPane)
-        groupBounds = zoomGroup.getLayoutBounds();
-
-        scrollPane.setHvalue(middleX*scaleX);
-        scrollPane.setVvalue(middleY*scaleY);
     }
 
     private void directionPaneView() {
@@ -480,7 +427,7 @@ public class UserMapViewController extends MapController
         {
             for (NodeEdge n : newRoute.getPathEdges())
             {
-             //   n.changeOpacity(0.0);
+                //   n.changeOpacity(0.0);
               //  n.changeColor(Color.BLACK);
             }
         }
@@ -502,7 +449,7 @@ public class UserMapViewController extends MapController
             return;//TODO add error message throw
         }
 
-        for(NodeEdge n: newRoute.getPathEdges())
+        /*for(NodeEdge n: newRoute.getPathEdges())
         {
           //  n.changeOpacity(1.0);
             //n.changeColor(Color.RED);
@@ -633,23 +580,7 @@ public class UserMapViewController extends MapController
 
         SceneSwitcher.switchToLoginView(primaryStage);
     }
-/*
-    public void onEmailDirections(ActionEvent actionEvent) {
-        String givenEmail = searchBar.getText().toLowerCase();
-        if (givenEmail.contains("@") && (givenEmail.contains(".com") || givenEmail.contains(".org") || givenEmail.contains(".edu") || givenEmail.contains(".gov"))) {
-            System.out.println("onEmailDirections called");
-            emailButton.setVisible(false);
-            System.out.println(searchBar.getText());
-            System.out.println("end");
-            newRoute.sendEmailGuidance(searchBar.getText(), mainPane);
-            defaultProperty();
-            searchBar.setText("Search Hospital");
-            sendingEmail = false;
-        } else {
-            System.out.println("Not a valid address!");
-            //@TODO Show in ui email was invalid
-        }}
-*/
+
     private void LoadTableData() {
         docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
@@ -658,6 +589,7 @@ public class UserMapViewController extends MapController
         Collection<Doctor> doctrine = boundary.getHospital().getDoctors().values();
         ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
         FilteredList<Doctor> filteredDoctor = new FilteredList<>(doctors);
+
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
             filteredDoctor.setPredicate((Predicate<? super Doctor>) profile -> {
                 // By default, the entire directory is displayed
@@ -669,6 +601,7 @@ public class UserMapViewController extends MapController
                 // Filter does not match
                 return false;
             });});
+
         SortedList<Doctor> sortedDoctor = new SortedList<Doctor>(filteredDoctor);
         sortedDoctor.comparatorProperty().bind(deptTable.comparatorProperty());
         doctorTable.setItems(sortedDoctor);
@@ -728,3 +661,60 @@ public class UserMapViewController extends MapController
             defaultProperty();
         }}
 }
+
+
+   /* private void panToCenter()
+    {
+        Bounds groupBounds = zoomGroup.getLayoutBounds();
+        final Bounds viewportBounds = scrollPane.getViewportBounds();
+
+        double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
+        double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
+
+        // convert content coordinates to zoomTarget coordinates
+        //Point2D posInZoomTarget = mapItems.parentToLocal(mapItems.parentToLocal(new Point2D(evt.getX(), evt.getY())));
+
+        // calculate adjustment of scroll position (pixels)
+
+        double scaleX = (scrollPane.getHmax()-scrollPane.getHmin())/mapItems.getBoundsInLocal().getWidth();
+        double scaleY = (scrollPane.getVmax()-scrollPane.getVmin())/mapItems.getBoundsInLocal().getHeight();
+
+        double middleX = mapItems.getBoundsInLocal().getWidth()/2;
+        double middleY = mapItems.getBoundsInLocal().getHeight()/2;
+
+        System.out.println("Middle Coordinates-- X: " + middleX + "Y: " + middleY);
+
+        System.out.println("Scaling X: " + scaleX);
+
+        /*Point2D adjustment = new Transform() mapImage.deltaTransform(new Point2D(
+                mapItems.getBoundsInParent().getWidth()/2, mapItems.getBoundsInParent().getHeight()/2));*/
+
+     /*   // refresh ScrollPane scroll positions & content bounds
+        scrollPane.layout();
+
+        // convert back to [0, 1] range
+        // (too large/small values are automatically corrected by ScrollPane)
+        groupBounds = zoomGroup.getLayoutBounds();
+
+        scrollPane.setHvalue(middleX*scaleX);
+        scrollPane.setVvalue(middleY*scaleY);
+    }*/
+
+
+     /*
+    public void onEmailDirections(ActionEvent actionEvent) {
+        String givenEmail = searchBar.getText().toLowerCase();
+        if (givenEmail.contains("@") && (givenEmail.contains(".com") || givenEmail.contains(".org") || givenEmail.contains(".edu") || givenEmail.contains(".gov"))) {
+            System.out.println("onEmailDirections called");
+            emailButton.setVisible(false);
+            System.out.println(searchBar.getText());
+            System.out.println("end");
+            newRoute.sendEmailGuidance(searchBar.getText(), mainPane);
+            defaultProperty();
+            searchBar.setText("Search Hospital");
+            sendingEmail = false;
+        } else {
+            System.out.println("Not a valid address!");
+            //@TODO Show in ui email was invalid
+        }}
+*/

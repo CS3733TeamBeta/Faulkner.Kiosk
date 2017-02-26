@@ -1,4 +1,4 @@
-package Controller.Admin.PopUp;
+package Controller.Map.Admin.PopUp;
 
 import Domain.Map.Destination;
 import com.jfoenix.controls.JFXTextField;

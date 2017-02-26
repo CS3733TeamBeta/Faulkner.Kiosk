@@ -17,29 +17,6 @@ import java.util.HashSet;
  */
 public class AdminMapBoundary extends MapBoundary
 {
-    public void selectFloor(Floor f)
-    {
-
-    }
-
-    public void addNode(MapNode n)
-    {
-        if(n.getType().equals(DragIconType.Elevator))
-        {
-            addElevator(n);
-        }
-        else
-        {
-            if (!currentFloor.getFloorNodes().contains(n))
-            {
-                currentFloor.addNode(n);
-                nodesOnMap.add(n);
-            }
-        }
-
-        n.setOnDeleteRequested(e-> remove(n));
-    }
-
     @Override
     public void changeFloor(Floor f)
     {
@@ -61,6 +38,8 @@ public class AdminMapBoundary extends MapBoundary
 
     /**
      * Function returns whether or not the node should be on the map, runs on floor change
+     * In the parent class, this function is used to filter out connector nodes. On the admin side,
+     * of course, we want to see connector nodes, hence the reason we always returns true.
      * @param n
      * @return
      */
@@ -86,17 +65,14 @@ public class AdminMapBoundary extends MapBoundary
 
         currentFloor.getFloorNodes().add(n);
 
+        n.setOnDeleteRequested(e-> remove(n));
+
         nodesOnMap.add(n);
     }
 
     private void addElevator(MapNode n)
     {
         ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
-
-       /* if (!nodesOnMap.contains(n))
-        {
-            //mapElements.contains(n); //add to right panes children
-        }*/
 
         MapNode last = null;
 

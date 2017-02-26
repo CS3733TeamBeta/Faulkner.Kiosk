@@ -1,32 +1,21 @@
 package Controller;
-import Model.MapModel;
-import javafx.animation.*;
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
 import javafx.scene.*;
-import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import jfxtras.labs.util.event.MouseControlUtil;
 
 public class DragDropMain extends Application
 {
-
-
 	int offset = 200;
 	//@TODO  Add code to calculate offset
-
-	public static MapModel mvm = null;
 
 	@Override
 	public void start(Stage primaryStage)

@@ -1,4 +1,4 @@
-package Controller.User;
+package Controller.Map.User;
 
 import Domain.Navigation.DirectionStep;
 import Domain.Navigation.Guidance;

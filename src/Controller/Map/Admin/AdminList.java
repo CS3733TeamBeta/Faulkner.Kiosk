@@ -1,4 +1,4 @@
-package Controller.Admin;
+package Controller.Map.Admin;
 
 import java.util.HashMap;
 

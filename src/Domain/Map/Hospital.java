@@ -53,9 +53,6 @@ public class Hospital {
     public void setDoctors(HashMap<String, Doctor> doctors) {
         this.doctors = doctors;
     }
-    public void removeDoctors(String s){
-        doctors.remove(s);
-    }
 
     //Alter Suite HashMap: destinations
     public HashMap<UUID, Destination> getDestinations() {
@@ -64,16 +61,6 @@ public class Hospital {
     public void addDestinations(UUID uuid, Destination suite) {
         destinations.put(uuid, suite);
     }
-    public void setDestinations(HashMap<UUID, Destination> destinations) {
-        this.destinations = destinations;
-    }
-    public void removeSuites(String s){
-        destinations.remove(s);
-    }
-    public boolean containsBuilding(Building b)
-    {
-        return buildings.contains(b);
-    }
 
     //Alter Office HashMap: offices
     public void addOffices(String s, Office off) {
@@ -81,13 +68,6 @@ public class Hospital {
     }
     public HashMap<String, Office> getOffices() {
         return this.offices;
-    }
-
-
-
-    public int buildingCount()
-    {
-        return buildings.size();
     }
 
     public Collection<Building> getBuildings()

@@ -1,9 +1,7 @@
 package Domain.Map;
 
-import Controller.Admin.PopUp.AbstractPopupController;
-import Controller.Admin.PopUp.NodeEditController;
-import Controller.DragDropMain;
-import Domain.ViewElements.DragIcon;
+import Controller.Map.Admin.PopUp.AbstractPopupController;
+import Controller.Map.Admin.PopUp.NodeEditController;
 import Domain.ViewElements.DragIconType;
 import Domain.ViewElements.Events.DeleteRequestedEvent;
 import Domain.ViewElements.Events.DeleteRequestedHandler;

@@ -353,11 +353,6 @@ public class DatabaseManager {
                     {
                         tempFloor.addNode(n);
                     }
-                    // add correct nodeEdges to their respective floor
-                    for (NodeEdge e : edges.values())
-                    {
-                        tempFloor.addEdge(e);
-                    }
                 }
 
                 //select all campus edges
@@ -387,7 +382,6 @@ public class DatabaseManager {
                         nodeEdges.put(edgeRS.getInt(1), tempEdge);
                     }
 
-                    h.getCampusFloor().addEdge(tempEdge);
                 }
 
                 buildings.put(rs.getInt(1),

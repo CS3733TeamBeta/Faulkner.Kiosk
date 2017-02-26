@@ -1,7 +1,6 @@
-package Controller.Admin;
+package Controller.Map.Admin;
 
 import Boundary.AdminMapBoundary;
-import Controller.AbstractController;
 import Controller.MapController;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
@@ -20,13 +19,11 @@ import javafx.fxml.FXML;
 import javafx.geometry.*;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import jfxtras.labs.util.event.MouseControlUtil;
@@ -38,14 +35,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
-import static Controller.SceneSwitcher.switchToAddFloor;
-
 public class MapEditorController extends MapController
 {
-
-	@FXML SplitPane base_pane;
 	@FXML AnchorPane mapPane;
-	@FXML HBox bottom_bar;
 	@FXML AnchorPane root_pane;
 
 	@FXML
@@ -53,7 +45,6 @@ public class MapEditorController extends MapController
 
 	@FXML
 	Button newFloorButton;
-
 
 	@FXML
 	private TabPane BuildingTabPane;
@@ -126,49 +117,30 @@ public class MapEditorController extends MapController
 
 		adminBoundary.addEdgeSetChangeHandler(change->
 		{
-			System.out.println("Edge list modified");
-
 			if(change.wasAdded())
 			{
-				NodeEdge edge = change.getElementAdded();
-				Line line = new Line();
-				line.setStrokeWidth(5);
-
-				mapPane.getChildren().add(line);
-				line.toBack();
-				mapImage.toBack();
-
-				edgeEntityMap.put(line, change.getElementAdded());
-
-				addHandlersToEdge(line);
-				updateEdgeLine(edge);
+				onEdgeAdded(change.getElementAdded());
 			}
 			else if(change.wasRemoved())
 			{
-				Line l = edgeEntityMap.inverse().get(change.getElementRemoved());
-				mapPane.getChildren().remove(l);
-				edgeEntityMap.remove(l);
+				onEdgeRemoved(change.getElementRemoved());
 			}
 		});
 
 		adminBoundary.setInitialFloor();
 
-		menu = new CirclePopupMenu(mapPane, null);
+		buildRadialMenu(); //instantiates and populates the radial menu
 
-		menu.shownProperty().addListener((e, oldValue, newValue)->
+		menu.shownProperty().addListener((e, oldValue, newValue)-> //when the menu is closed, hide the target icon
 		{
-			if(!newValue)
-			{
-				target.setVisible(false);
-			}
+			if(!newValue) target.setVisible(false);
 		});
 
 		mapPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event->
 		{
 			Node clickedNode = event.getPickResult().getIntersectedNode();
 
-			if(!iconEntityMap.containsKey(clickedNode) &&
-				!edgeEntityMap.containsKey(clickedNode))
+			if(!iconEntityMap.containsKey(clickedNode) && !edgeEntityMap.containsKey(clickedNode))
 			{
 				menu.show(event.getScreenX(), event.getScreenY());
 
@@ -180,6 +152,48 @@ public class MapEditorController extends MapController
 				menuOpenLoc = new Point2D(event.getX(), event.getY());
 			}
 		});
+
+		for(Floor f: boundary.getCurrentFloor().getBuilding().getFloors()) //makes a floor tab for each floor in the building
+		{
+			makeFloorTab(f);
+		}
+
+		BuildingTabPane.getSelectionModel().selectedItemProperty().addListener(
+				(ov, newvalue, oldvalue)->{
+					boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
+
+		});
+
+		target.setVisible(false); //hides target
+		target.setFitWidth(14); //sets width
+		target.setFitHeight(14); //sets height
+
+		mapPane.getChildren().add(target); //adds to map pane
+
+		BuildingTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
+	}
+
+	/**
+	 * Adds new map node to canvas
+	 *
+	 * @param n
+	 * @return
+	 */
+	@Override
+	protected DragIcon importMapNode(MapNode n)
+	{
+		DragIcon icon = super.importMapNode(n);
+		addEventHandlersToNode(icon);
+
+		return icon;
+	}
+
+	/**
+	 * Builds the radial menu used on click
+	 */
+	public void buildRadialMenu()
+	{
+		menu = new CirclePopupMenu(mapPane, null);
 
 		for (int i = 0; i < DragIconType.values().length; i++)
 		{
@@ -206,33 +220,36 @@ public class MapEditorController extends MapController
 
 			menu.getItems().add(item);
 		}
-
-		for(Floor f: boundary.getCurrentFloor().getBuilding().getFloors())
-		{
-			makeFloorTab(f);
-		}
-
-		BuildingTabPane.getSelectionModel().selectedItemProperty().addListener(
-				(ov, newvalue, oldvalue)->{
-					boundary.changeFloor(tabFloorMap.get(oldvalue));
-
-		});
-
-		target.setVisible(false);
-		target.setFitWidth(14);
-		target.setFitHeight(14);
-		mapPane.getChildren().add(target);
-
-		BuildingTabPane.getTabs().sort(Comparator.comparing(Tab::getText));
 	}
 
-	@Override
-	protected DragIcon importMapNode(MapNode n)
+	/**
+	 * Called when a NodeEdge is added to the boundary
+	 * @param edge the edge that was added
+	 */
+	public void onEdgeAdded(NodeEdge edge)
 	{
-		DragIcon icon = super.importMapNode(n);
-		addEventHandlersToNode(icon);
+		Line line = new Line();
+		line.setStrokeWidth(5);
 
-		return icon;
+		mapPane.getChildren().add(line);
+		line.toBack();
+		mapImage.toBack();
+
+		edgeEntityMap.put(line, edge);
+
+		addHandlersToEdge(line);
+		updateEdgeLine(edge);
+	}
+
+	/**
+	 * Called when an edge is removed
+	 * @param edge The edge to remove
+	 */
+	public void onEdgeRemoved(NodeEdge edge)
+	{
+		Line l = edgeEntityMap.inverse().get(edge);
+		mapPane.getChildren().remove(l);
+		edgeEntityMap.remove(l);
 	}
 
 	/**
@@ -302,6 +319,9 @@ public class MapEditorController extends MapController
 		});
 	}
 
+	/**Called when edge drawing is complete
+	 *
+	 */
 	public void onEdgeComplete()
 	{
 		for(EdgeCompleteEventHandler handler : edgeCompleteHandlers)
@@ -341,6 +361,10 @@ public class MapEditorController extends MapController
 		);
 	}
 
+	/**
+	 * Updates all of the edge lines in a node with the new position
+	 * @param n
+	 */
 	public void updateEdgeLinesForNode(MapNode n)
 	{
 		for(NodeEdge edge : n.getEdges())
@@ -352,6 +376,10 @@ public class MapEditorController extends MapController
 		}
 	}
 
+	/**
+	 * Updates an edge line with the new location o f anode
+	 * @param edge
+	 */
 	public void updateEdgeLine(NodeEdge edge)
 	{
 		Line l = edgeEntityMap.inverse().get(edge);
@@ -379,10 +407,6 @@ public class MapEditorController extends MapController
 	    makeIconDraggable(n); //make it draggable
 
 		MapNode mapNode = iconEntityMap.get(n);
-		/***Handles deletion from a popup menu**/
-		mapNode.setOnDeleteRequested(event -> {
-			adminBoundary.remove(mapNode);
-		});
 
 		/**Handles when the node is clicked
 		 *
@@ -447,8 +471,6 @@ public class MapEditorController extends MapController
 		drawingEdgeLine.setEndY(startPoint.getY());
 
 		drawingEdgeLine.setVisible(true);
-
-		System.out.println("Set source to " + mapNode.getPosX());
 
 		drawingEdgeLine.toBack();
 		mapImage.toBack();

@@ -41,7 +41,6 @@ public class MapBoundary extends Observable
 
     public MapBoundary()
     {
-
         nodesOnMap = FXCollections.observableSet(new HashSet<MapNode>());
     }
 
@@ -126,7 +125,6 @@ public class MapBoundary extends Observable
         int result = incrementFloor(-1);
         return result;
     }
-
 
     public void switchFloor()
     {
