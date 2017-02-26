@@ -86,7 +86,7 @@ public class SendEmail {
 
             messageBodyPart = new MimeBodyPart();
             fds = new FileDataSource(
-                    "scaled_falkner_banner.png");
+                    "resources/scaled_falkner_banner.png");
 
 
 
