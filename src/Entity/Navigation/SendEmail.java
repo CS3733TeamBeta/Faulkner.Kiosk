@@ -362,6 +362,8 @@ public class SendEmail {
 
     boolean includeImage;
 
+    boolean isPhone;
+
     public static String encodeToString(BufferedImage image) {
         String imageString = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -380,7 +382,7 @@ public class SendEmail {
         return imageString;
     }
 
-    public SendEmail(String recipient, String subject, String message, boolean includeImage, int numDirectionFloors){
+    public SendEmail(String recipient, String subject, String message, boolean includeImage, int numDirectionFloors, boolean isPhone){
         this.recipient = recipient;
         this.subject = subject;
         this.message = message;
@@ -420,9 +422,10 @@ public class SendEmail {
             int width = 0;
             int height = 0;
             BufferedImage bimg;
+            String encoding = "";
 
             BodyPart messageBodyPart = new MimeBodyPart();
-            String htmlText;
+            String htmlText = "";
 
             String imageDirectionsPortion = "";
 
@@ -431,9 +434,12 @@ public class SendEmail {
                     bimg = ImageIO.read(new File("combined" + i + ".png"));
                     width = bimg.getWidth();
                     height = bimg.getHeight();
+                    encoding = SendEmail.encodeToString(bimg);
                 } catch (Exception e) {
                 }
-                String tempString = "<img src =\"cid:imageDirections" + i + "\" width = \"" + width + "\" height = \"" + height + "\" border = \"0\" />";
+                String tempString;
+                tempString = "<img src =\"cid:imageDirections" + i + "\" width = \"" + width + "\" height = \"" + height + "\" border = \"0\" />";
+                tempString += "<img src=\"data:image/jpg;base64," + encoding + "\" />" + htmlText;
                 imageDirectionsPortion = imageDirectionsPortion + tempString;
             }
 
