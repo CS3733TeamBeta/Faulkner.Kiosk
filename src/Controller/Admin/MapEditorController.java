@@ -221,6 +221,8 @@ public class MapEditorController extends MapController
 		target.setFitWidth(14);
 		target.setFitHeight(14);
 		mapPane.getChildren().add(target);
+
+		BuildingTabPane.getTabs().sort(Comparator.comparing(Tab::getText));
 	}
 
 	@Override
@@ -241,9 +243,8 @@ public class MapEditorController extends MapController
 	 */
 	public Tab makeFloorTab(Floor f)
 	{
-		final Label label = new Label(f.toString());
 		final Tab tab = new Tab();
-		tab.setGraphic(label);
+		tab.setText(f.toString());
 
 		TreeViewWithItems tV = new TreeViewWithItems<Treeable>();
 
@@ -270,34 +271,7 @@ public class MapEditorController extends MapController
 	@FXML
 	void onNewFloor(ActionEvent event) throws IOException
 	{
-		//boundary.newFloor()
-
-		//make new floor in building
-		//refresh treeview (observable, not needed)
 	}
-
-	public void changeFloorSelection(Floor f)
-	{
-		if(!f.equals(boundary.getCurrentFloor()))
-		{
-			if (f.getImageLocation() == null)
-			{
-				try
-				{
-					switchToAddFloor(this.getStage());
-				} catch (IOException e)
-				{
-					System.out.println("Threw an exception in MapEditorController: changeFloorSelection");
-					e.printStackTrace();
-				}
-			}
-
-			boundary.changeFloor(f);
-
-			System.out.println("Changed floor to " + f);
-		}
-	}
-
 	/**Adds handlers to handle edge deletion mostly
 	 *
 	 * @param edge to add handlers to

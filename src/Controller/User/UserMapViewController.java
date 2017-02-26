@@ -168,12 +168,9 @@ public class UserMapViewController extends MapController
                 try{
                     findPathToNode(n);
                 }catch(PathFindingException e){
-
                 }
             }
         });
-
-
 
         return icon;
     }
