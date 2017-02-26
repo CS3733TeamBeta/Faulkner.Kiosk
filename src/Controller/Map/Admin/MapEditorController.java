@@ -64,6 +64,8 @@ public class MapEditorController extends MapController
 
 	AdminMapBoundary adminBoundary;
 
+	boolean drawingEdgeFrozen = false;
+
 	public MapEditorController()
 	{
 		super();
@@ -133,7 +135,36 @@ public class MapEditorController extends MapController
 
 		menu.shownProperty().addListener((e, oldValue, newValue)-> //when the menu is closed, hide the target icon
 		{
-			if(!newValue) target.setVisible(false);
+			if(!newValue)
+			{
+				target.setVisible(false);
+				drawingEdgeFrozen = false;
+			}
+			else
+			{
+				drawingEdgeFrozen = true;
+			}
+		});
+
+		root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
+			if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
+				if(drawingEdgeLine.isVisible()) //and the right pane has the drawing edge as child
+				{
+					drawingEdgeLine.setVisible(false);
+				}
+
+				drawingEdge = null;
+			}
+			else if(drawingEdge!=null && keyEvent.getCode() == KeyCode.A)
+			{
+				menuOpenLoc= new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
+						MouseInfo.getPointerInfo().getLocation().getY());
+
+				menuOpenLoc = mapPane.screenToLocal(menuOpenLoc);
+
+				menu.show(MouseInfo.getPointerInfo().getLocation().getX(),
+						MouseInfo.getPointerInfo().getLocation().getY());
+			}
 		});
 
 		mapPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event->
@@ -161,6 +192,24 @@ public class MapEditorController extends MapController
 					onEdgeComplete();
 					onStartEdgeDrawing(n);
 				}
+			}
+			else if(edgeEntityMap.containsKey(clickedNode))
+			{
+				NodeEdge edge = edgeEntityMap.get(clickedNode);
+
+				MapNode n = adminBoundary.newNode(DragIconType.Connector,new Point2D(event.getX(), event.getY()));
+				drawingEdge.setTarget(n);
+				onEdgeComplete();
+
+				adminBoundary.removeEdge(edge);
+
+				MapNode source = edge.getSource();
+				MapNode target = edge.getTarget();
+
+				adminBoundary.newEdge(source, n);
+				adminBoundary.newEdge(target, n);
+
+				onStartEdgeDrawing(n);
 			}
 		});
 
@@ -225,7 +274,15 @@ public class MapEditorController extends MapController
 			MenuItem item = new MenuItem(DragIconType.values()[i].name(), icn);
 
 			icn.setOnMouseClicked(event -> {
-				adminBoundary.newNode(icn.getType(), menuOpenLoc);
+				MapNode n = adminBoundary.newNode(icn.getType(), menuOpenLoc);
+
+				if(drawingEdgeLine.isVisible())
+				{
+					drawingEdge.setTarget(n);
+					onEdgeComplete();
+					onStartEdgeDrawing(n);
+				}
+
 				target.setVisible(false);
 			});
 
@@ -452,6 +509,7 @@ public class MapEditorController extends MapController
 			{
 				drawingEdge.setTarget(iconEntityMap.get(n));
 				onEdgeComplete();
+				onStartEdgeDrawing(iconEntityMap.get(n));
 			}
 		});
 
@@ -475,6 +533,17 @@ public class MapEditorController extends MapController
 		drawingEdge = new NodeEdge();
 		drawingEdge.setSource(mapNode);
 
+		mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
+
+			if (!drawingEdgeFrozen && drawingEdgeLine.isVisible() && drawingEdge != null)
+			{
+				Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
+				Point2D mouseCoords = drawingEdgeLine.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
+				drawingEdgeLine.setEndX(mouseCoords.getX());
+				drawingEdgeLine.setEndY(mouseCoords.getY());
+			}
+		});
+
 		Point2D startPoint = mapPane.sceneToLocal(mapPane.localToScene(mapNode.getPosX(), mapNode.getPosY()));
 		drawingEdgeLine.setStartY(startPoint.getY());
 		drawingEdgeLine.setStartX(startPoint.getX());
@@ -488,29 +557,6 @@ public class MapEditorController extends MapController
 
 		iconEntityMap.inverse().get(mapNode).setOnMouseDragEntered(null); //sets drag handlers to null so they can't be repositioned during line drawing
 		iconEntityMap.inverse().get(mapNode).setOnMouseDragged(null);
-
-		root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
-			if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
-				if(drawingEdgeLine.isVisible()) //and the right pane has the drawing edge as child
-				{
-					drawingEdgeLine.setVisible(false);
-				}
-
-				drawingEdge = null;
-				mapPane.setOnMouseMoved(null);
-			}
-		});
-
-		mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
-
-			if (drawingEdgeLine.isVisible() && drawingEdge != null)
-			{
-				Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
-				Point2D mouseCoords = drawingEdgeLine.screenToLocal(p.x, p.y); // convert coordinates to relative within the window
-				drawingEdgeLine.setEndX(mouseCoords.getX());
-				drawingEdgeLine.setEndY(mouseCoords.getY());
-			}
-		});
 	}
 
 	/**Handles saving out all of the map info
