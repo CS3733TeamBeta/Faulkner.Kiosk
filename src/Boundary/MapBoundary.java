@@ -139,10 +139,8 @@ public class MapBoundary extends Observable
         return currentFloor;
     }
 
-
     public ObservableSet<MapNode> mapElements()
     {
         return nodesOnMap;
     }
-
 }
