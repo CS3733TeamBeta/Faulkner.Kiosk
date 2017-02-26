@@ -226,7 +226,7 @@ public class DatabaseManager {
         PreparedStatement campusNodePS = conn.prepareStatement("SELECT * FROM NODE WHERE NODE_ID = ?");
         s = conn.createStatement();
 
-        HashMap<Integer, Building> buildings = new HashMap<>();
+        HashMap<UUID, Building> buildings = new HashMap<>();
         HashMap<UUID, MapNode> mapNodes = new HashMap<>();
         HashMap<Integer, NodeEdge> nodeEdges = new HashMap<>();
 
@@ -263,7 +263,7 @@ public class DatabaseManager {
             {
                 // load floors per building
                 HashMap<String, Floor> flr = new HashMap();
-                floorsPS.setInt(1, rs.getInt(1));
+                floorsPS.setString(1, rs.getString(1));
                 ResultSet floorRS = floorsPS.executeQuery();
                 while (floorRS.next())
                 {
@@ -385,13 +385,13 @@ public class DatabaseManager {
 
                 }
 
-                buildings.put(rs.getInt(1),
+                buildings.put(UUID.fromString(rs.getString(1)),
                         new Building(rs.getString(2)));
                 for (Floor f : flr.values())
                 {
                     try
                     {
-                        buildings.get(rs.getInt(1)).addFloor(f);
+                        buildings.get(UUID.fromString(rs.getString(1))).addFloor(f);
                     } catch (Exception e)
                     {
                         System.out.println(e.getMessage());
@@ -463,6 +463,185 @@ public class DatabaseManager {
         rs.close();
 
         System.out.println("Database load finished");
+    }
+
+    public void addDocToDB(Doctor d) throws SQLException{
+        PreparedStatement insertDoc = conn.prepareStatement("INSERT INTO DOCTOR (DOC_ID, NAME, DESCRIPTION, NUMBER, HOURS) " +
+                "VALUES (?, ?, ?, ?, ?)");
+        // insert doctor to database
+        insertDoc.setString(1, d.getDocID().toString());
+        insertDoc.setString(2, d.getName());
+        insertDoc.setString(3, d.getDescription());
+        insertDoc.setString(4, d.getPhoneNum());
+        insertDoc.setString(5, d.getHours());
+        insertDoc.executeUpdate();
+        conn.commit();
+    }
+
+    public void updateDoctor(Doctor d) throws SQLException {
+        PreparedStatement upDoc = conn.prepareStatement("UPDATE DOCTOR " +
+                "SET NAME = ?, DESCRIPTION = ?, NUMBER = ?, HOURS = ?" +
+                "WHERE DOC_ID = ?");
+
+        // update Doctor in database with all info in case it changed
+        upDoc.setString(1, d.getName());
+        upDoc.setString(2, d.getDescription());
+        upDoc.setString(3, d.getPhoneNum());
+        upDoc.setString(4, d.getHours());
+        upDoc.setString(5, d.getDocID().toString());
+        upDoc.executeUpdate();
+        conn.commit();
+    }
+
+    public void delDocFromDB(Doctor doctor) throws SQLException{
+        PreparedStatement deleteDoc = conn.prepareStatement("DELETE FROM DOCTOR WHERE DOC_ID = ?");
+
+        String docUUID = doctor.getDocID().toString();
+
+        // delete doctor
+        deleteDoc.setString(1, docUUID);
+        deleteDoc.executeUpdate();
+        conn.commit();
+    }
+
+    public void addDestToDB(Destination dest) throws SQLException {
+        PreparedStatement insertDest = conn.prepareStatement("INSERT INTO DESTINATION (DEST_ID, NAME, NODE_ID, FLOOR_ID) " +
+                "VALUES (?, ?, ?, ?)");
+        // insert destination to database
+        insertDest.setString(1, dest.getDestUID().toString());
+        insertDest.setString(2, dest.getName());
+        insertDest.setString(3, dest.getNodeID().toString());
+        insertDest.setString(4, dest.getFloorID());
+        insertDest.executeUpdate();
+        conn.commit();
+    }
+
+    public void updateDestination(Destination dest) throws SQLException {
+        PreparedStatement upDest = conn.prepareStatement("UPDATE DESTINATION " +
+                "SET NAME = ? " +
+                "WHERE DEST_ID = ?");
+
+        upDest.setString(1, dest.getName());
+        upDest.setString(2, dest.getDestUID().toString());
+        upDest.executeUpdate();
+        conn.commit();
+    }
+
+    public void delDestFromDB(Destination dest) throws SQLException {
+        String destUUID = dest.getDestUID().toString();
+
+        PreparedStatement deleteDest = conn.prepareStatement("DELETE FROM DESTINATION WHERE DEST_ID = ?");
+
+        // delete destination
+        deleteDest.setString(1, destUUID);
+        deleteDest.executeUpdate();
+        conn.commit();
+    }
+
+    public void addDestToDoc(Doctor doc, Destination dest) throws SQLException {
+        PreparedStatement destDoc = conn.prepareStatement("INSERT INTO DEST_DOC (DEST_ID, DOC_ID) " +
+                "VALUES (?, ?)");
+        // adds destination - doctor relationships to database
+        destDoc.setString(1, dest.getDestUID().toString());
+        destDoc.setString(2, doc.getDocID().toString());
+        destDoc.executeUpdate();
+        conn.commit();
+    }
+
+    public void addNodeToDB(MapNode m) throws SQLException {
+        PreparedStatement insertNode = conn.prepareStatement("INSERT INTO NODE (NODE_ID, POSX, POSY, FLOOR_ID, TYPE) " +
+                "VALUES (?, ?, ?, ?, ?)");
+
+        insertNode.setString(1, m.getNodeID().toString());
+        insertNode.setDouble(2, m.getPosX());
+        insertNode.setDouble(3, m.getPosY());
+        insertNode.setString(4, "");
+        insertNode.setInt(5, m.getType().ordinal());
+        insertNode.executeUpdate();
+        conn.commit();
+    }
+
+    public void updateNode(MapNode m) throws SQLException {
+        PreparedStatement upNode = conn.prepareStatement("UPDATE NODE " +
+                "SET POSX = ?, POSY = ?" +
+                "WHERE NODE_ID = ?");
+
+        // update Node in database with new pos X and pos Y
+        upNode.setDouble(1, m.getPosX());
+        upNode.setDouble(2, m.getPosY());
+        upNode.setString(3, m.getNodeID().toString());
+        upNode.executeUpdate();
+        conn.commit();
+    }
+
+    public void delNodeFromDB(MapNode m) throws SQLException {
+        UUID nodeUUID = m.getNodeID();
+
+        PreparedStatement delNode = conn.prepareStatement("DELETE FROM NODE WHERE NODE_ID = ?");
+
+        // delete node with given uuid
+        delNode.setString(1, nodeUUID.toString());
+        delNode.executeUpdate();
+        conn.commit();
+    }
+
+    public void addEdgeToDB(NodeEdge e) throws SQLException {
+        PreparedStatement insertEdge = conn.prepareStatement("INSERT INTO EDGE (EDGE_ID, NODEA, NODEB, COST, FLOOR_ID) " +
+                "VALUES (?, ?, ?, ?, ?)");
+
+        insertEdge.setInt(1, 5);
+        insertEdge.setString(2, e.getSource().getNodeID().toString());
+        insertEdge.setString(3, e.getTarget().getNodeID().toString());
+        insertEdge.setDouble(4, e.getCost());
+        insertEdge.setString(5, "");
+        insertEdge.executeUpdate();
+        conn.commit();
+    }
+
+    public void delEdgeFromDB(UUID uuid) throws SQLException { // TODO change edges to have UUID
+        PreparedStatement delEdge = conn.prepareStatement("DELETE FROM EDGE WHERE NODEA OR NODEB = ?");
+
+        // delete all edges that have given node as source or target
+        delEdge.setString(1, uuid.toString());
+        delEdge.executeUpdate();
+        conn.commit();
+    }
+
+    public void addOfficeToDB(Office o) throws SQLException {
+        PreparedStatement insertOffice = conn.prepareStatement("INSERT INTO OFFICES (OFFICE_ID, NAME, DEST_ID) " +
+                "VALUES (?, ?, ?)");
+        // insert office to database
+        insertOffice.setString(1, o.getId().toString());
+        insertOffice.setString(2, o.getName());
+        insertOffice.setString(3, o.getDestination().getDestUID().toString());
+        insertOffice.executeUpdate();
+        conn.commit();
+    }
+
+    public void updateOffice(Office o) throws SQLException {
+        PreparedStatement upOff = conn.prepareStatement("UPDATE OFFICES " +
+                "SET NAME = ?, DEST_ID = ? " +
+                "WHERE OFFICE_ID = ?");
+        // get office UUID
+        String offUUID = o.getId().toString();
+        // get destination UUID for office
+        String offDest = o.getDestination().getDestUID().toString();
+        // update office info in database
+        upOff.setString(1, o.getName());
+        upOff.setString(2, offDest);
+        upOff.setString(3, offUUID);
+        upOff.executeUpdate();
+        conn.commit();
+    }
+
+    public void delOfficeFromDB(Office o) throws SQLException {
+        PreparedStatement delOffice = conn.prepareStatement("DELETE FROM OFFICES WHERE OFFICE_ID = ?");
+        // get office UUID
+        String offUUID = o.getId().toString();
+        // delete office from database
+        delOffice.setString(1, offUUID);
+        delOffice.executeUpdate();
+        conn.commit();
     }
 
     private void saveHospital(Hospital h) throws SQLException {
