@@ -80,8 +80,8 @@ public class TextDirectionsCreator {
             } else {
                 //If you're on an elevator, your previous direction doesn't matter
                 changeInDirection = currentDirection;
-                //Presume the elevator passenger faces North
-                prevDirection = 1;
+                //Presume the elevator passenger faces opposite the way they come in. Add 4 to previous direction, wraparound with modulo.
+                prevDirection = (prevDirection+4)%8;
             }
 
             //Change the directionChange into a textual string
