@@ -1,7 +1,6 @@
 package Entity;
 
 
-import Entity.Doctor;
 import Entity.Map.Building;
 import Entity.Map.CampusFloor;
 import Entity.Map.Destination;
@@ -26,9 +25,9 @@ public class Hospital {
 
     public Hospital() {
         buildings = new HashSet<Building>();
-        doctors = new HashMap<>();
         destinations = new HashMap<>();
         offices = new HashMap<>();
+        doctors = new HashMap<>();
 
         CampusFloor  = new CampusFloor();
     }
