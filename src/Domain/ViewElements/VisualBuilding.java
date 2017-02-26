@@ -32,32 +32,21 @@ public class VisualBuilding
         setUpFloor(baseFloor);
 
         group.getChildren().add(baseFloor);
-        floors.add(baseFloor);
 
         MouseControlUtil.makeDraggable(baseFloor);
 
         // D&D starts
         baseFloor.setOnDragDetected((MouseEvent event) -> {
 
-            System.out.println("Drag detected");
-
-            baseFloor.setMouseTransparent(true);
-            baseFloor.setCursor(Cursor.MOVE);
             for (Box f : floors)
             {
-                System.out.println("moving floor");
-                f.setTranslateX(baseFloor.getLayoutX()); // this is tha broken part
-                f.setTranslateY(baseFloor.getLayoutY()); // devon
+                f.setTranslateX(baseFloor.getTranslateX() + baseFloor.getLayoutX()); // this is tha broken part
+                f.setTranslateY(baseFloor.getTranslateY() + baseFloor.getLayoutY()); // devon
             }
 
         });
 
         topFloor = baseFloor;
-    }
-
-    public Box getBaseFloor()
-    {
-        return baseFloor;
     }
 
     public void setUpFloor(Box floor)
@@ -67,9 +56,6 @@ public class VisualBuilding
         floor.setOnMouseReleased((MouseEvent event)-> {
             floor.setMouseTransparent(false);
             floor.setCursor(Cursor.DEFAULT);
-
-
-
         });
 
         floor.setOnMouseEntered(event->
@@ -106,29 +92,3 @@ public class VisualBuilding
     }
 
 }
-
-/*
-		ArrayList<Color> colors = new ArrayList<>();
-
-		colors.add(Color.PURPLE);
-		colors.add(Color.BLUE);
-		colors.add(Color.GOLDENROD);
-		colors.add(Color.SADDLEBROWN);
-
-		for (int index = 0; index < colors.size(); index ++)
-		{
-			final Box addedBox = new Box(baseBox.getWidth(), baseBox.getHeight(), baseBox.getDepth());
-
-			addedBox.setTranslateX(baseBox.getTranslateX());
-			addedBox.setTranslateY(baseBox.getTranslateY());
-
-			double offset = floor.getTranslateZ() - ((baseBox.getTranslateZ() + baseBox.getDepth()) - index * baseBox.getDepth());
-
-			addedBox.setTranslateZ(offset);
-
-			addedBox.setMaterial(new PhongMaterial(colors.get(index)));
-			root.getChildren().add(addedBox);
-
-		}
-
- */
