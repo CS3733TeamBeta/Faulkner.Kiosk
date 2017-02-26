@@ -62,8 +62,13 @@ public class AdminMapBoundary extends MapBoundary
 
         n.setOnDeleteRequested(e-> remove(n));
 
-        currentFloor.addNode(n);
-
+        if(type == DragIconType.Elevator){
+            n.setIsElevator(true);
+            addElevator(n);
+        }
+        else {
+            currentFloor.addNode(n);
+        }
         nodesOnMap.add(n);
 
         return n;
@@ -72,8 +77,6 @@ public class AdminMapBoundary extends MapBoundary
     private void addElevator(MapNode n)
     {
         ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
-
-        MapNode last = null;
 
         MapNode e;
 
@@ -93,15 +96,20 @@ public class AdminMapBoundary extends MapBoundary
             else
             {
                 e = n;
-                nodesToAdd.add(n);
+                f.addNode(e);
+                nodesToAdd.add(e);
             }
 
-            if (last != null)
-            {
-                LinkEdge edge = new LinkEdge(last, e);
+            //for all elevators, add all other elevators in this elevator shaft to its edges
+            for(MapNode nextNode : nodesToAdd) {
+                //first make sure that we don't elevators connecting to other elevators on the same floor
+                //and that we're not adding multiple of the same edge
+                if(e.getMyFloor().getFloorNumber() != nextNode.getMyFloor().getFloorNumber() && !e.hasEdgeTo(nextNode)) {
+                    LinkEdge edge = new LinkEdge(nextNode, e);
+                    e.addEdge(edge);
+                }
             }
 
-            last = e;
         }
     }
 
