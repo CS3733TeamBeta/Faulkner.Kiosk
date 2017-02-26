@@ -1,15 +1,13 @@
 package test.java;
 
-import Domain.Map.*;
-import Domain.Navigation.Guidance;
-import Domain.Navigation.Path;
-import Domain.Navigation.*;
+import Entity.Hospital;
+import Entity.Map.*;
+import Entity.Navigation.Guidance;
+import Entity.Navigation.Path;
 import Exceptions.PathFindingNoPathException;
 import junit.framework.TestCase;
 
-import java.rmi.server.UID;
 import java.util.LinkedList;
-import java.util.UUID;
 
 
 /**
