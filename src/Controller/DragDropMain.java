@@ -70,13 +70,16 @@ public class DragDropMain extends Application
 		root.getChildren().add(greenLight);
 		root.getChildren().add(whiteLight);
 
-		// MouseControlUtil.makeDraggable(floor); // we probably don't wanna move the floor around
-
-
 		// THIS IS THE BUILDING STUFF
 		int boxHeight = 10;
 		VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 200, (floor.getTranslateZ()-boxHeight));
 		root.getChildren().add(visualbuilding.getGroup());
+
+
+		VisualBuilding visualbuilding2 = new VisualBuilding(80, 80, 10, 100, 100, (floor.getTranslateZ()-boxHeight));
+		root.getChildren().add(visualbuilding2.getGroup());
+
+
 		// THIS IS THE BUILDING STUFF
 
 		final Rectangle rectangle = new Rectangle(400, 400, Color.TRANSPARENT);

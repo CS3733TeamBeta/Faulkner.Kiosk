@@ -30,11 +30,12 @@ public class VisualBuilding
         baseFloor.setTranslateZ(startingTranslationZ);
 
         baseFloor.setMaterial(new PhongMaterial(Color.RED));
+
         setUpFloor(baseFloor);
 
         group.getChildren().add(baseFloor);
 
-        MouseControlUtil.makeDraggable(group, //could be used to track node and update line
+        MouseControlUtil.makeDraggable(group,
                 event ->
                 {
                     group.setMouseTransparent(false);
