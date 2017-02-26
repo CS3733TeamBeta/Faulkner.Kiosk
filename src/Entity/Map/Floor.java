@@ -4,6 +4,7 @@ import Controller.Map.ViewElements.DragIconType;
 import Entity.ProxyImage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 
 import java.util.*;
@@ -13,10 +14,9 @@ import java.util.*;
  */
 public class Floor extends Observable implements Comparable
 {
-
     HashSet<MapNode> floorNodes;
 
-    ObservableList<MapNode> treeItems;
+    ObservableList<MapNode> tableItems;
 
     MapNode kioskNode = null;
     String imageLocation = "/FloorMaps/1_thefirstfloor.png"; //default floor image path
@@ -50,7 +50,7 @@ public class Floor extends Observable implements Comparable
     int floorNumber;
 
     public Floor(int floorNumber) {
-        treeItems= FXCollections.observableList(new ArrayList<>());
+        tableItems= FXCollections.observableList(new ArrayList<>());
         floorNodes = new HashSet<MapNode>();
         this.floorNumber = floorNumber;
     }
@@ -60,10 +60,18 @@ public class Floor extends Observable implements Comparable
 
         if(!n.getType().equals(DragIconType.Connector))
         {
-            treeItems.add(n);
+            tableItems.add(n);
         }
 
         n.setFloor(this);
+
+        n.addObserver((observer, args)->
+        {
+            int index = tableItems.indexOf(n);
+
+            tableItems.remove(n);
+            tableItems.add(index, n);
+        });
     }
 
     public MapNode getKioskNode(){
@@ -89,7 +97,7 @@ public class Floor extends Observable implements Comparable
 
         if(!n.getType().equals(DragIconType.Connector))
         {
-            treeItems.remove(n);
+            tableItems.remove(n);
         }
     }
 
@@ -129,6 +137,6 @@ public class Floor extends Observable implements Comparable
 
     public ObservableList<MapNode> getChildren()
     {
-        return treeItems;
+        return tableItems;
     }
 }

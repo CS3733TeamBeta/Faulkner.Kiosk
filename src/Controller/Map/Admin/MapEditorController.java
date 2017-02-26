@@ -9,10 +9,10 @@ import Controller.Map.ViewElements.DragIconType;
 import Controller.Map.ViewElements.Events.EdgeCompleteEvent;
 import Controller.Map.ViewElements.Events.EdgeCompleteEventHandler;
 
-import Model.DataSourceClasses.TreeViewWithItems;
 import Model.Database.DataCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.jfoenix.controls.JFXListView;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -185,7 +185,7 @@ public class MapEditorController extends MapController
 					chainLink(clickedNode, new Point2D(event.getX(), event.getY()));
 				}
 			}
-			else if(edgeEntityMap.containsKey(clickedNode)) //dropped in the middle of a line
+			else if(event.getButton() != MouseButton.SECONDARY && edgeEntityMap.containsKey(clickedNode)) //dropped in the middle of a line
 			{
 				dropOnLine(clickedNode, new Point2D(event.getX(), event.getY()));
 			}
@@ -355,14 +355,19 @@ public class MapEditorController extends MapController
 		final Tab tab = new Tab();
 		tab.setText(f.toString());
 
-		TreeViewWithItems tV = new TreeViewWithItems<MapNode>();
+		JFXListView<MapNode> listView = new JFXListView<MapNode>();
 
-		tV.setRoot(new TreeItem<MapNode>(null));
-		tV.setShowRoot(false);
+		f.addObserver((o, args)->
+		{
+			if(args.equals(MapNode.NodeUpdateType.NameUpdate))
+			{
+				//listView.setItems(f.getChildren());
+			}
+		});
 
-		tV.setItems(f.getChildren());
+		listView.setItems(f.getChildren());
 
-		tV.getSelectionModel().selectedItemProperty().addListener((o, oldSelection, newSelection)->
+		listView.getSelectionModel().selectedItemProperty().addListener((o, oldSelection, newSelection)->
 		{
 			if(oldSelection!=null)
 			{
@@ -370,7 +375,7 @@ public class MapEditorController extends MapController
 				//oldIcon.setEffect(null);
 			}
 
-			DragIcon icon = iconEntityMap.inverse().get(((TreeItem<MapNode>)newSelection).getValue());
+			DragIcon icon = iconEntityMap.inverse().get(newSelection);
 			final Glow glow = new Glow();
 
 			glow.setLevel(0.0);
@@ -408,7 +413,7 @@ public class MapEditorController extends MapController
 			});
 		});
 
-		tab.setContent(tV);
+		tab.setContent(listView);
 
 		BuildingTabPane.getTabs().add(tab);
 
@@ -448,7 +453,7 @@ public class MapEditorController extends MapController
 
 		edge.setOnMouseClicked(deEvent->{
 			if (edge != null) {
-				if (deEvent.getClickCount() == 2)
+				if (deEvent.getButton() != MouseButton.SECONDARY)
 				{
 					adminBoundary.removeEdge(edgeEntityMap.get(edge));
 				}

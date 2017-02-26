@@ -1,10 +1,12 @@
 package Entity.Map;
 
+import Boundary.MapBoundary;
 import Controller.Map.Admin.PopUp.DestinationEditController;
 import Controller.Map.ViewElements.DragIconType;
 import Entity.Doctor;
 import org.controlsfx.control.PopOver;
 
+import javax.xml.soap.Node;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -90,6 +92,9 @@ public class Destination extends MapNode {
 
     public void setName(String s) {
         this.name = s;
+
+        setChanged();
+        notifyObservers(NodeUpdateType.NameUpdate);
     }
 
     public String getFloorID() {

@@ -5,7 +5,6 @@ import Controller.Map.Admin.PopUp.NodeEditController;
 import Controller.Map.ViewElements.DragIconType;
 import Controller.Map.ViewElements.Events.DeleteRequestedEvent;
 import Controller.Map.ViewElements.Events.DeleteRequestedHandler;
-import Model.DataSourceClasses.HierarchyData;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
@@ -18,11 +17,10 @@ import java.util.*;
  * Represents a node in a Map, connected to other nodes by NodeEdges
  */
 
-public class MapNode extends Observable implements HierarchyData<MapNode>
+public class MapNode extends Observable
 {
     double posX;
     double posY;
-
 
     private final String popOverEditFXML = "/Admin/Popup/NodeEditPopup.fxml";
 
@@ -35,6 +33,11 @@ public class MapNode extends Observable implements HierarchyData<MapNode>
     String label = "";
     String destName = "";
     DragIconType type;
+
+    public static enum NodeUpdateType
+    {
+        NameUpdate
+    }
     /**
      * G value of this node, used for pathfinding, defaults to 0
      */
@@ -426,11 +429,5 @@ public class MapNode extends Observable implements HierarchyData<MapNode>
     public String toString()
     {
         return label;
-    }
-
-    @Override
-    public ObservableList getChildren()
-    {
-        return null;
     }
 }
