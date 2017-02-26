@@ -1,7 +1,7 @@
 
 
-import Controller.Admin.AdminList;
-import Controller.Admin.AdminProfile;
+import Controller.Map.Admin.AdminList;
+import Controller.Map.Admin.AdminProfile;
 import Exceptions.AddFoundException;
 import Exceptions.RemoveNotFoundException;
 import Model.Directory;

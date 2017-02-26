@@ -1,9 +1,9 @@
 package test.java;
 
-import Domain.Map.*;
-import Domain.Navigation.Guidance;
-import Domain.Navigation.Path;
-import Domain.Navigation.SendEmail;
+import Entity.Hospital;
+import Entity.Map.*;
+import Entity.Navigation.Guidance;
+import Entity.Navigation.Path;
 import junit.framework.TestCase;
 
 

@@ -1,8 +1,9 @@
 package Model.Database;
 
-import Domain.Map.*;
+import Entity.Doctor;
+import Entity.Hospital;
+import Entity.Map.*;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.*;
 
@@ -353,11 +354,6 @@ public class DatabaseManager {
                     {
                         tempFloor.addNode(n);
                     }
-                    // add correct nodeEdges to their respective floor
-                    for (NodeEdge e : edges.values())
-                    {
-                        tempFloor.addEdge(e);
-                    }
                 }
 
                 //select all campus edges
@@ -387,7 +383,6 @@ public class DatabaseManager {
                         nodeEdges.put(edgeRS.getInt(1), tempEdge);
                     }
 
-                    h.getCampusFloor().addEdge(tempEdge);
                 }
 
                 buildings.put(rs.getInt(1),
@@ -502,7 +497,7 @@ public class DatabaseManager {
             insertNodes.setDouble(2, n.getPosX());
             insertNodes.setDouble(3, n.getPosY());
             insertNodes.setString(4, CAMPUS_ID);
-            insertNodes.setInt(5, n.getType());
+            insertNodes.setInt(5, n.getType().ordinal());
             insertNodes.executeUpdate();
 
             insertCampusNodes.setString(1, n.getNodeID().toString());
@@ -555,7 +550,7 @@ public class DatabaseManager {
                         insertNodes.setDouble(2, n.getPosX());
                         insertNodes.setDouble(3, n.getPosY());
                         insertNodes.setString(4, floorID);
-                        insertNodes.setInt(5, n.getType());
+                        insertNodes.setInt(5, n.getType().ordinal());
                         insertNodes.executeUpdate();
                     }
                     catch (SQLException e) {
