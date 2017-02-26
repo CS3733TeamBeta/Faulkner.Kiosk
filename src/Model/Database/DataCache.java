@@ -38,4 +38,15 @@ public class DataCache
     {
         return h;
     }
+
+    public void save()
+    {
+        try
+        {
+            new DatabaseManager().saveData(h);
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }

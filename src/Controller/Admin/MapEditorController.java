@@ -12,6 +12,7 @@ import Domain.ViewElements.Events.EdgeCompleteEventHandler;
 
 import Model.DataSourceClasses.TreeViewWithItems;
 import Model.DataSourceClasses.Treeable;
+import Model.Database.DataCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import javafx.event.ActionEvent;
@@ -482,7 +483,7 @@ public class MapEditorController extends MapController
 	@FXML
 	public void saveInfoAndExit() throws IOException, SQLException
 	{
-		//new DatabaseManager().saveData(model.getHospital());
+		DataCache.getInstance().save();
 
 		SceneSwitcher.switchToUserMapView(this.getStage());
 	}
