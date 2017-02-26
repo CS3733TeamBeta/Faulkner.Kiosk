@@ -153,9 +153,10 @@ public class MapEditorController extends MapController
 					drawingEdgeLine.setVisible(false);
 				}
 
+				makeIconDraggable(iconEntityMap.inverse().get(drawingEdge.getSource()));
 				drawingEdge = null;
 			}
-			else if(drawingEdge!=null && keyEvent.getCode() == KeyCode.A)
+			else if(drawingEdge!=null && keyEvent.getCode() == KeyCode.A) //radial menu chain linking
 			{
 				menuOpenLoc= new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
 						MouseInfo.getPointerInfo().getLocation().getY());
@@ -173,7 +174,7 @@ public class MapEditorController extends MapController
 
 			if(!iconEntityMap.containsKey(clickedNode) && !edgeEntityMap.containsKey(clickedNode))
 			{
-				if(!drawingEdgeLine.isVisible())
+				if(!drawingEdgeLine.isVisible()) //radial menu requested
 				{
 					menu.show(event.getScreenX(), event.getScreenY());
 
@@ -184,7 +185,7 @@ public class MapEditorController extends MapController
 
 					menuOpenLoc = new Point2D(event.getX(), event.getY());
 				}
-				else
+				else //Chain Linking
 				{
 					MapNode n = adminBoundary.newNode(DragIconType.Connector,new Point2D(event.getX(), event.getY()));
 					drawingEdge.setTarget(n);
@@ -199,6 +200,7 @@ public class MapEditorController extends MapController
 
 				MapNode n = adminBoundary.newNode(DragIconType.Connector,new Point2D(event.getX(), event.getY()));
 				drawingEdge.setTarget(n);
+
 				onEdgeComplete();
 
 				adminBoundary.removeEdge(edge);
