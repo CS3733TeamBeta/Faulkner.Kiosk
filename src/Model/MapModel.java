@@ -25,6 +25,7 @@ public class MapModel {
     Floor currentFloor;
 
     Building building; //this kiosks building
+    MapNode kioskNode;
 
     public MapModel() {
         edgeCompleteHandlers = new LinkedList<EdgeCompleteEventHandler>(); //instantiate empty linked list for handlers;
