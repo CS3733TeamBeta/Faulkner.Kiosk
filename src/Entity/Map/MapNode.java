@@ -5,23 +5,20 @@ import Controller.Map.Admin.PopUp.NodeEditController;
 import Controller.Map.ViewElements.DragIconType;
 import Controller.Map.ViewElements.Events.DeleteRequestedEvent;
 import Controller.Map.ViewElements.Events.DeleteRequestedHandler;
-import Model.DataSourceClasses.Treeable;
+import Model.DataSourceClasses.HierarchyData;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents a node in a Map, connected to other nodes by NodeEdges
  */
 
-public class MapNode extends Treeable
+public class MapNode extends Observable implements HierarchyData<MapNode>
 {
     double posX;
     double posY;

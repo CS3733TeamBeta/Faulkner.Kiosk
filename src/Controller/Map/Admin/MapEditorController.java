@@ -10,10 +10,12 @@ import Controller.Map.ViewElements.Events.EdgeCompleteEvent;
 import Controller.Map.ViewElements.Events.EdgeCompleteEventHandler;
 
 import Model.DataSourceClasses.TreeViewWithItems;
-import Model.DataSourceClasses.Treeable;
 import Model.Database.DataCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.*;
@@ -21,11 +23,14 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.util.Duration;
 import jfxtras.labs.util.event.MouseControlUtil;
 import jfxtras.scene.menu.CirclePopupMenu;
 import org.controlsfx.control.PopOver;
@@ -194,22 +199,24 @@ public class MapEditorController extends MapController
 					onStartEdgeDrawing(n);
 				}
 			}
-			else if(edgeEntityMap.containsKey(clickedNode))
+			else if(edgeEntityMap.containsKey(clickedNode)) //dropped in the middle of a line
 			{
 				NodeEdge edge = edgeEntityMap.get(clickedNode);
 
 				MapNode n = adminBoundary.newNode(DragIconType.Connector,new Point2D(event.getX(), event.getY()));
-				drawingEdge.setTarget(n);
-
-				onEdgeComplete();
-
-				adminBoundary.removeEdge(edge);
 
 				MapNode source = edge.getSource();
 				MapNode target = edge.getTarget();
 
 				adminBoundary.newEdge(source, n);
 				adminBoundary.newEdge(target, n);
+				adminBoundary.removeEdge(edge);
+
+				if(drawingEdgeLine.isVisible()) //if also drawing to the middle of the line
+				{
+					drawingEdge.setTarget(n);
+					onEdgeComplete();
+				}
 
 				onStartEdgeDrawing(n);
 			}
@@ -334,12 +341,35 @@ public class MapEditorController extends MapController
 		final Tab tab = new Tab();
 		tab.setText(f.toString());
 
-		TreeViewWithItems tV = new TreeViewWithItems<Treeable>();
+		TreeViewWithItems tV = new TreeViewWithItems<MapNode>();
 
-		tV.setRoot(new TreeItem<Floor>(null));
+		tV.setRoot(new TreeItem<MapNode>(null));
 		tV.setShowRoot(false);
 
 		tV.setItems(f.getChildren());
+
+		tV.getSelectionModel().selectedItemProperty().addListener((o, oldSelection, newSelection)->
+		{
+			if(oldSelection!=null)
+			{
+				DragIcon oldIcon = iconEntityMap.inverse().get(((TreeItem<Map>)oldSelection).getValue());
+				oldIcon.setEffect(null);
+			}
+
+			DragIcon icon = iconEntityMap.inverse().get(((TreeItem<MapNode>)newSelection).getValue());
+			final Glow glow = new Glow();
+
+			glow.setLevel(0.0);
+			icon.setEffect(glow);
+
+			final Timeline timeline = new Timeline();
+			timeline.setCycleCount(20);
+			timeline.setAutoReverse(true);
+			final KeyValue kv = new KeyValue(glow.levelProperty(), 0.8);
+			final KeyFrame kf = new KeyFrame(Duration.millis(700), kv);
+			timeline.getKeyFrames().add(kf);
+			timeline.play();
+		});
 
 		tab.setContent(tV);
 

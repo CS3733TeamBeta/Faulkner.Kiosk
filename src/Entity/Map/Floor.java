@@ -2,7 +2,6 @@ package Entity.Map;
 
 import Controller.Map.ViewElements.DragIconType;
 import Entity.ProxyImage;
-import Model.DataSourceClasses.Treeable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
@@ -12,12 +11,12 @@ import java.util.*;
 /**
  * Represents a floor in a building. A floor will have nodes, node edges, destinations, more
  */
-public class Floor extends Treeable implements Comparable
+public class Floor extends Observable implements Comparable
 {
 
     HashSet<MapNode> floorNodes;
 
-    ObservableList<Treeable> treeItems;
+    ObservableList<MapNode> treeItems;
 
     MapNode kioskNode = null;
     String imageLocation = "/FloorMaps/1_thefirstfloor.png"; //default floor image path
@@ -128,7 +127,7 @@ public class Floor extends Treeable implements Comparable
         return Integer.compare(this.floorNumber, ((Floor)o).getFloorNumber());
     }
 
-    public ObservableList<Treeable> getChildren()
+    public ObservableList<MapNode> getChildren()
     {
         return treeItems;
     }

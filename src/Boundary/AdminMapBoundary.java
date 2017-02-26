@@ -62,7 +62,7 @@ public class AdminMapBoundary extends MapBoundary
 
         n.setOnDeleteRequested(e-> remove(n));
 
-        currentFloor.getFloorNodes().add(n);
+        currentFloor.addNode(n);
 
         nodesOnMap.add(n);
 
