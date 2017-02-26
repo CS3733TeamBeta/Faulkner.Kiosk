@@ -1,15 +1,10 @@
 package Controller.Map.Admin.PopUp;
 
-import Domain.Map.Destination;
-import Domain.Map.MapNode;
-import Domain.ViewElements.Events.DeleteRequestedHandler;
+import Entity.Map.MapNode;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import org.controlsfx.control.PopOver;
-
-import java.util.Map;
 
 /**
  * Created by benhylak on 2/8/17.

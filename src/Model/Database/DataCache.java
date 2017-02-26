@@ -1,6 +1,6 @@
 package Model.Database;
 
-import Domain.Map.Hospital;
+import Entity.Hospital;
 
 import java.sql.SQLException;
 

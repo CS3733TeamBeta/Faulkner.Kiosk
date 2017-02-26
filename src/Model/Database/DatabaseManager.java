@@ -1,8 +1,9 @@
 package Model.Database;
 
-import Domain.Map.*;
+import Entity.Doctor;
+import Entity.Hospital;
+import Entity.Map.*;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.*;
 

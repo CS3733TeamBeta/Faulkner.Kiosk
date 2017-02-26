@@ -1,14 +1,12 @@
 package Boundary;
 
-import Domain.Map.*;
-import Domain.ViewElements.DragIconType;
+import Entity.Hospital;
+import Entity.Map.*;
+import Controller.Map.ViewElements.DragIconType;
 import Model.Database.DataCache;
 import javafx.collections.*;
-import javafx.scene.Node;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Observable;
 
 /**

@@ -1,9 +1,9 @@
 package Controller.Map.User;
 
-import Domain.Navigation.DirectionStep;
-import Domain.Navigation.Guidance;
-import Domain.ViewElements.Events.StepChangedEvent;
-import Domain.ViewElements.Events.StepChangedEventHandler;
+import Entity.Navigation.DirectionStep;
+import Entity.Navigation.Guidance;
+import Controller.Map.ViewElements.Events.StepChangedEvent;
+import Controller.Map.ViewElements.Events.StepChangedEventHandler;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;

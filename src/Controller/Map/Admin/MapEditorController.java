@@ -1,13 +1,13 @@
 package Controller.Map.Admin;
 
 import Boundary.AdminMapBoundary;
-import Controller.MapController;
+import Controller.Map.MapController;
 import Controller.SceneSwitcher;
-import Domain.Map.*;
-import Domain.ViewElements.DragIcon;
-import Domain.ViewElements.DragIconType;
-import Domain.ViewElements.Events.EdgeCompleteEvent;
-import Domain.ViewElements.Events.EdgeCompleteEventHandler;
+import Entity.Map.*;
+import Controller.Map.ViewElements.DragIcon;
+import Controller.Map.ViewElements.DragIconType;
+import Controller.Map.ViewElements.Events.EdgeCompleteEvent;
+import Controller.Map.ViewElements.Events.EdgeCompleteEventHandler;
 
 import Model.DataSourceClasses.TreeViewWithItems;
 import Model.DataSourceClasses.Treeable;

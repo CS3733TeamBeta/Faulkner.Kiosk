@@ -1,11 +1,12 @@
 package Controller.Map.User;
 
 import Boundary.MapBoundary;
-import Controller.MapController;
+import Controller.Map.MapController;
 import Controller.SceneSwitcher;
-import Domain.Map.*;
-import Domain.Navigation.Guidance;
-import Domain.ViewElements.DragIcon;
+import Entity.Doctor;
+import Entity.Map.*;
+import Entity.Navigation.Guidance;
+import Controller.Map.ViewElements.DragIcon;
 import Exceptions.PathFindingException;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -274,11 +275,8 @@ public class UserMapViewController extends MapController
 
     @FXML
     private void initialize() throws Exception {
-       // renderFloorMap();
-
         mapItems.getChildren().add(mapImage);
         zoomGroup = new Group(mapItems);
-
 
         // stackpane for centering the content, in case the ScrollPane viewport
         // is larget than zoomTarget
@@ -371,20 +369,11 @@ public class UserMapViewController extends MapController
     private void directionPaneView() {
 
         panel.addEventHandler(MouseEvent.MOUSE_ENTERED,
-                new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent e) {
-                        showDirections();
-                    }
-                });
+                e -> showDirections());
 
         panel.addEventHandler(MouseEvent.MOUSE_EXITED,
-                new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent e) {
-                        hideDirections();
-                    }
-                });
+                e -> hideDirections());
+
         numClickDr = -1;
         numClickFood = -1;
         numClickBath = -1;

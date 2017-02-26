@@ -1,6 +1,6 @@
 package Controller.Map.Admin.PopUp;
 
-import Domain.Map.MapNode;
+import Entity.Map.MapNode;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import org.controlsfx.control.PopOver;

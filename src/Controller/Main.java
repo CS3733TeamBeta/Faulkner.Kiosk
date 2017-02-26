@@ -2,7 +2,7 @@
 package Controller;
 
 import Controller.Map.Admin.AdminList;
-import Domain.Map.Doctor;
+import Entity.Doctor;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

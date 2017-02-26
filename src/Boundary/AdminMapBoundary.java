@@ -1,16 +1,11 @@
 package Boundary;
 
-import Domain.Map.*;
-import Domain.ViewElements.DragIcon;
-import Domain.ViewElements.DragIconType;
-import Model.Database.DataCache;
-import javafx.collections.*;
+import Entity.Map.*;
+import Controller.Map.ViewElements.DragIconType;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 /**
  * Created by benhylak on 2/24/17.
