@@ -3,11 +3,14 @@ package Entity.Navigation;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
+import javax.imageio.ImageIO;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Date;
 import java.util.Properties;
 
@@ -73,12 +76,26 @@ public class SendEmail {
                 String tempString = "<img src =\"cid:imageDirections" + i + "\">";
                 imageDirectionsPortion = imageDirectionsPortion + tempString;
             }
+            int width = 0;
+            int height = 0;
+            BufferedImage bimg;
+            try {
+                bimg = ImageIO.read(new File("resources/scaled_falkner_banner.png"));
+                width = bimg.getWidth();
+                height = bimg.getHeight();
+            } catch (Exception e) {
+
+            }
+
 
             if (includeImage) {
-                htmlText = "<img src=\"cid:imageLogo\">" + this.message + imageDirectionsPortion;
+                htmlText = "<img src=\"cid:imageLogo\" width = \"" + width + "\" height = \"" + height + "\" border=\"0\" /> " + this.message + imageDirectionsPortion;
             } else {
                 htmlText = "<img src=\"cid:imageLogo\">" + this.message;
             }
+
+            //htmlText = "<img src=\"googlelogo_color_272x92dp.png\" width=\"272\" height = \"92\" border=\"0\" />" + htmlText;
+
 
             messageBodyPart.setContent(htmlText, "text/html");
 
@@ -86,7 +103,8 @@ public class SendEmail {
 
             messageBodyPart = new MimeBodyPart();
             fds = new FileDataSource(
-                    "resources/scaled_falkner_banner.png");
+                   "resources/scaled_falkner_banner.png");
+
 
 
 
