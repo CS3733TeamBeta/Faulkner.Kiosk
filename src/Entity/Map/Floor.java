@@ -141,4 +141,8 @@ public class Floor extends Observable implements Comparable
     {
         return treeItems;
     }
+
+    public UUID getFloorID() {
+        return this.floorID;
+    }
 }

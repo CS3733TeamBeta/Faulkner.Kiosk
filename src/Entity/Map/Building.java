@@ -113,4 +113,8 @@ public class Building {
         this.name = name;
     }
 
+    public UUID getBuildID() {
+        return this.buildID;
+    }
+
 }

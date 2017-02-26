@@ -27,85 +27,13 @@ public class DatabaseManager {
     private static String CAMPUS_ID = "CAMPUS";
 
     public static HashMap<UUID, MapNode> mapNodes = new HashMap<>();
-    public static HashMap<Integer, NodeEdge> edges = new HashMap<>();
+    public static HashMap<UUID, NodeEdge> edges = new HashMap<>();
     public static HashMap<String, Doctor> doctors = new HashMap<>();
     public static HashMap<String, Floor> floors = new HashMap<>();
     public static HashMap<UUID, Destination> destinations = new HashMap<>();
     public static HashMap<String, Office> offices = new HashMap<>();
 
     public static DatabaseManager instance = null;
-
-    public static final String[] createTables = {
-            "CREATE TABLE USER1.BUILDING (BUILDING_ID INT PRIMARY KEY NOT NULL, " +
-                    "NAME VARCHAR(100))",
-
-            "CREATE TABLE USER1.FLOOR (FLOOR_ID VARCHAR(25) PRIMARY KEY NOT NULL, " +
-                    "BUILDING_ID INT," +
-                    "NUMBER INT, " +
-                    "IMAGE VARCHAR(75), " +
-                    "CONSTRAINT FLOOR_BUILDING_BUILDING_ID_FK FOREIGN KEY (BUILDING_ID) REFERENCES BUILDING (BUILDING_ID))",
-
-            "CREATE TABLE USER1.NODE (NODE_ID CHAR(36) PRIMARY KEY NOT NULL, " +
-                    "POSX DOUBLE, " +
-                    "POSY DOUBLE, " +
-                    "FLOOR_ID VARCHAR(25), " +
-                    "TYPE INT, " +
-                    "CONSTRAINT NODE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
-            "CREATE TABLE KIOSK" +
-                    "NAME VARCHAR(30)," +
-                    "NODE_ID CHAR(36)," +
-                    "FLAG SMALLINT," +
-                    "CONSTRAINT KIOSK_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID) ON DELETE CASCADE\n" +
-                    ")",
-
-            "CREATE TABLE USER1.DESTINATION (DEST_ID CHAR(36) PRIMARY KEY NOT NULL, " +
-                    "NAME VARCHAR(200), " +
-                    "NODE_ID CHAR(36), " +
-                    "FLOOR_ID VARCHAR(25), " +
-                    "CONSTRAINT DESTINATION_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID), " +
-                    "CONSTRAINT DESTINATION_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
-
-            "CREATE TABLE USER1.DOCTOR (DOC_ID CHAR(36) PRIMARY KEY NOT NULL, " +
-                    "NAME VARCHAR(50), " +
-                    "DESCRIPTION VARCHAR(20), " +
-                    "NUMBER VARCHAR(20), " +
-                    "HOURS VARCHAR(20))",
-
-            "CREATE TABLE USER1.OFFICES (OFFICE_ID CHAR(36) PRIMARY KEY NOT NULL, " +
-                    "NAME VARCHAR(200), " +
-                    "DEST_ID CHAR(36), " +
-                    "CONSTRAINT OFFICES_DESTINATION_DESTINATION_ID_FK FOREIGN KEY (DEST_ID) REFERENCES DESTINATION (DEST_ID))",
-
-            "CREATE TABLE USER1.EDGE (EDGE_ID INT PRIMARY KEY NOT NULL," +
-                    "NODEA CHAR(36), " +
-                    "NODEB CHAR(36), " +
-                    "COST DOUBLE, " +
-                    "FLOOR_ID VARCHAR(25), " +
-                    "CONSTRAINT EDGE_NODE_NODE_ID_FKA FOREIGN KEY (NODEA) REFERENCES NODE (NODE_ID), " +
-                    "CONSTRAINT EDGE_NODE_NODE_ID_FKB FOREIGN KEY (NODEB) REFERENCES NODE (NODE_ID), " +
-                    "CONSTRAINT EDGE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
-
-            "CREATE TABLE DEST_DOC (DEST_ID CHAR(36), " +
-                    "DOC_ID CHAR(36), " +
-                    "CONSTRAINT DESTINATION_DOC_DESTINATION_DESTINATION_ID_FK1 FOREIGN KEY (DEST_ID) REFERENCES DESTINATION (DEST_ID), " +
-                    "CONSTRAINT DESTINATION_DOC_DOCTOR_DOCTOR_ID_FK2 FOREIGN KEY (DOC_ID) REFERENCES DOCTOR (DOC_ID))",
-
-            "CREATE TABLE CAMPUS (NODE_ID CHAR(36), " +
-                    "CONSTRAINT CAMPUS_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID))"
-    };
-
-    public static final String[] dropTables = {
-            "DROP TABLE USER1.CAMPUS",
-            "DROP TABLE USER1.DEST_DOC",
-            "DROP TABLE USER1.EDGE",
-            "DROP TABLE USER1.OFFICES",
-            "DROP TABLE USER1.DOCTOR",
-            "DROP TABLE USER1.DESTINATION",
-            "DROP TABLE USER1.KIOSK",
-            "DROP TABLE USER1.NODE",
-            "DROP TABLE USER1.FLOOR",
-            "DROP TABLE USER1.BUILDING"};
-
 
     public DatabaseManager() throws SQLException
     {
@@ -222,20 +150,267 @@ public class DatabaseManager {
         System.out.println("Data Saved Correctly");
     }
 
-    private synchronized void loadHospital(Hospital h) throws SQLException {
-        System.out.println("Started loading hospital from database...");
+//    private synchronized void loadHospital(Hospital h) throws SQLException {
+//        System.out.println("Started loading hospital from database...");
+//
+//        PreparedStatement floorsPS = conn.prepareStatement("SELECT * from FLOOR where BUILDING_ID = ?");
+//        PreparedStatement nodesPS = conn.prepareStatement("SELECT * from NODE where FLOOR_ID = ?");
+//        PreparedStatement destPS = conn.prepareStatement("SELECT * from DESTINATION where FLOOR_ID = ?");
+//
+//        PreparedStatement campusNodePS = conn.prepareStatement("SELECT * FROM NODE WHERE NODE_ID = ?");
+//        s = conn.createStatement();
+//
+//        HashMap<UUID, Building> buildings = new HashMap<>();
+//        HashMap<UUID, MapNode> mapNodes = new HashMap<>();
+//        HashMap<Integer, NodeEdge> nodeEdges = new HashMap<>();
+//
+//        ResultSet rs = s.executeQuery("SELECT * FROM USER1.CAMPUS");
+//
+//        final int NODE_ID_COL = 1;
+//
+//        while(rs.next())
+//        {
+//            String node_UUID = rs.getString(1);
+//            campusNodePS.setString(1, node_UUID);
+//
+//            ResultSet campusNodeRS = campusNodePS.executeQuery();
+//
+//            while(campusNodeRS.next())
+//            {
+//                MapNode tempNode = new MapNode(UUID.fromString(campusNodeRS.getString(1)),
+//                        campusNodeRS.getDouble(2),
+//                        campusNodeRS.getDouble(3),
+//                        campusNodeRS.getInt(5));
+//
+//              //  for(tempNode)
+//                mapNodes.put(UUID.fromString(node_UUID), tempNode);
+//                h.getCampusFloor().addNode(tempNode);
+//            }
+//        }
+//
+//        rs = s.executeQuery("select * from BUILDING ORDER BY NAME DESC");
+//
+//        // load both buildingds in
+//        while (rs.next())
+//        {
+//            if (!rs.getString(2).equals(CAMPUS_ID))
+//            {
+//                // load floors per building
+//                HashMap<String, Floor> flr = new HashMap();
+//                floorsPS.setString(1, rs.getString(1));
+//                ResultSet floorRS = floorsPS.executeQuery();
+//                while (floorRS.next())
+//                {
+//                    // load nodes per floor
+//                    HashMap<UUID, MapNode> nodes = new HashMap<>(); // create new nodes hashmap for each floor
+//                    nodesPS.setString(1, floorRS.getString(1)); // set query for specific floor
+//                    ResultSet nodeRS = nodesPS.executeQuery();
+//
+//                    while (nodeRS.next())
+//                    {
+//                        UUID node_UUID = UUID.fromString(nodeRS.getString(1));
+//
+//                        MapNode tempNode;
+//
+//                        if (mapNodes.containsKey(node_UUID))
+//                        {
+//                            tempNode = mapNodes.get(node_UUID);
+//                        }
+//                        else
+//                        {
+//                            tempNode = new MapNode(node_UUID,
+//                                    nodeRS.getDouble(2),
+//                                    nodeRS.getDouble(3),
+//                                    nodeRS.getInt(5));
+//
+//                            mapNodes.put(node_UUID, tempNode);
+//                        }
+//
+//                        nodes.put(node_UUID, tempNode);
+//
+//                    }
+//
+//                    // loading destinations per floor
+//                    destPS.setString(1, floorRS.getString(1));
+//                    ResultSet destRS = destPS.executeQuery();
+//
+//                    while (destRS.next())
+//                    {
+//                        MapNode changedNode = nodes.get(UUID.fromString(destRS.getString(3)));
+//                        Destination tempDest = new Destination(UUID.fromString(destRS.getString(1)),
+//                                changedNode,
+//                                destRS.getString(2),
+//                                floorRS.getString(1));
+//
+//                        nodes.remove(UUID.fromString(destRS.getString(3)));
+//                        nodes.put(UUID.fromString(destRS.getString(3)), tempDest);
+//
+//                        mapNodes.remove(UUID.fromString(destRS.getString(3)));
+//                        mapNodes.put(UUID.fromString(destRS.getString(3)), tempDest);
+//
+//                        h.addDestinations(UUID.fromString(destRS.getString(1)), tempDest);
+//                    }
+//
+//
+//                    HashMap<Integer, NodeEdge> edges = new HashMap<>();
+//
+//
+//                    // select all edges that have floorID of current floor we are loading
+//                    edgesPS.setString(1, floorRS.getString(1));
+//                    ResultSet edgeRS = edgesPS.executeQuery();
+//
+//                    while (edgeRS.next())
+//                    {
+//                        NodeEdge tempEdge = new NodeEdge();
+//                        if (edgeRS.getDouble(4) != 0.0)
+//                        {
+//                            tempEdge = new NodeEdge(mapNodes.get(UUID.fromString(edgeRS.getString(2))),
+//                                    mapNodes.get(UUID.fromString(edgeRS.getString(3))),
+//                                    edgeRS.getFloat(4));
+//
+//                            tempEdge.setSource(mapNodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
+//                            tempEdge.setTarget(mapNodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
+//
+//                            // stores nodeEdges per floor
+//                            edges.put(edgeRS.getInt(1), tempEdge);
+//                            //stores all nodeEdges
+//                            nodeEdges.put(edgeRS.getInt(1), tempEdge);
+//                        }
+//                    }
+//
+//                    Floor tempFloor = new Floor(floorRS.getInt(3));
+//                    tempFloor.setImageLocation(floorRS.getString(4));
+//                    // add floor to list of floors for current building
+//                    flr.put(floorRS.getString(1), tempFloor);
+//
+//                    // add correct mapNodes to their respective floor
+//                    for (MapNode n : nodes.values())
+//                    {
+//                        tempFloor.addNode(n);
+//                    }
+//                }
+//
+//                //select all campus edges
+//                edgesPS.setString(1, CAMPUS_ID);
+//                ResultSet edgeRS = edgesPS.executeQuery();
+//
+//                while(edgeRS.next())
+//                {
+//                    NodeEdge tempEdge = new NodeEdge();
+//                    if (edgeRS.getDouble(4) != 0.0)
+//                    {
+//                        try
+//                        {
+//                            tempEdge = new NodeEdge(mapNodes.get(UUID.fromString(edgeRS.getString(2))),
+//                                mapNodes.get(UUID.fromString(edgeRS.getString(3))),
+//                                edgeRS.getFloat(4));
+//
+//                            tempEdge.setSource(mapNodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
+//                            tempEdge.setTarget(mapNodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
+//                        }
+//                        catch (Exception e)
+//                        {
+//
+//                        }
+//
+//                        //stores all nodeEdges
+//                        nodeEdges.put(edgeRS.getInt(1), tempEdge);
+//                    }
+//
+//                }
+//
+//                buildings.put(UUID.fromString(rs.getString(1)),
+//                        new Building(rs.getString(2)));
+//                for (Floor f : flr.values())
+//                {
+//                    try
+//                    {
+//                        buildings.get(UUID.fromString(rs.getString(1))).addFloor(f);
+//                    } catch (Exception e)
+//                    {
+//                        System.out.println(e.getMessage());
+//                    }
+//                }
+//            }
+//        }
+//        for (Building b : buildings.values()) {
+//            h.addBuilding(b);
+//        }
+//
+//        rs = s.executeQuery("SELECT * from EDGE where COST = 0");
+//        while(rs.next()) {
+//            MapNode source = mapNodes.get(UUID.fromString(rs.getString(2)));
+//            MapNode target = mapNodes.get(UUID.fromString(rs.getString(3)));
+//            LinkEdge tempEdge = new LinkEdge(source, target);
+//
+//            nodeEdges.put(rs.getInt(1), tempEdge);
+//        }
+//
+//        // loading doctors, destinations, and offices to hospital
+//        HashMap<UUID, Destination> destsID = new HashMap<>();
+//        HashMap<String, Doctor> doctors = new HashMap<>();
+//        HashMap<String, Office> offices = new HashMap<>();
+//        PreparedStatement destDoc = conn.prepareStatement("select DEST_ID from DEST_DOC where doc_id = ?");
+//        PreparedStatement destOff = conn.prepareStatement("select * from OFFICES where DEST_ID = ?");
+//
+//        rs = s.executeQuery("select * from USER1.DESTINATION");
+//        while (rs.next()) {
+//
+//            // add offices to suite
+//            destOff.setString(1, rs.getString(1));
+//            ResultSet offRS = destOff.executeQuery();
+//            while(offRS.next()) {
+//                Office tempOff = new Office(UUID.fromString(rs.getString(1)),
+//                        offRS.getString(2),
+//                        (h.getDestinations().get(UUID.fromString(rs.getString(1)))));
+//
+//                // add office to hospital offices list
+//                h.addOffices(offRS.getString(2), tempOff);
+//
+//                // add office to list of offices for a suite
+//                h.getDestinations().get(UUID.fromString(rs.getString(1))).addOffice(tempOff);
+//            }
+//        }
+//
+//
+//        rs = s.executeQuery("select * from USER1.DOCTOR order by NAME");
+//
+//        while(rs.next()) {
+//            HashSet<Destination> locations = new HashSet<>();
+//
+//            Doctor tempDoc = new Doctor(UUID.fromString(rs.getString(1)),
+//                    rs.getString(2),
+//                    rs.getString(3),
+//                    rs.getString(5),
+//                    locations);
+//
+//            destDoc.setString(1, rs.getString(1));
+//            ResultSet results = destDoc.executeQuery();
+//            while(results.next()) {
+//                h.getDestinations().get(UUID.fromString(results.getString(1))).addDoctor(tempDoc);
+//                locations.add(h.getDestinations().get(UUID.fromString(results.getString(1))));
+//            }
+//
+//            h.addDoctors(rs.getString(2), tempDoc);
+//
+//        }
+//        rs.close();
+//
+//        System.out.println("Database load finished");
+//    }
 
-        PreparedStatement floorsPS = conn.prepareStatement("SELECT * from FLOOR where BUILDING_ID = ?");
-        PreparedStatement nodesPS = conn.prepareStatement("SELECT * from NODE where FLOOR_ID = ?");
-        PreparedStatement edgesPS = conn.prepareStatement("SELECT * from EDGE where FLOOR_ID = ?");
-        PreparedStatement destPS = conn.prepareStatement("SELECT * from DESTINATION where FLOOR_ID = ?");
+    private void loadHospital(Hospital h) throws SQLException {
+        loadCampus(h);
+        loadBuilding(h);
+        loadDestinationOffice(h);
+        loadDoctors(h);
+        loadEdges(h);
+    }
 
+    private void loadCampus(Hospital h) throws SQLException{
         PreparedStatement campusNodePS = conn.prepareStatement("SELECT * FROM NODE WHERE NODE_ID = ?");
-        s = conn.createStatement();
 
-        HashMap<UUID, Building> buildings = new HashMap<>();
         HashMap<UUID, MapNode> mapNodes = new HashMap<>();
-        HashMap<Integer, NodeEdge> nodeEdges = new HashMap<>();
 
         ResultSet rs = s.executeQuery("SELECT * FROM USER1.CAMPUS");
 
@@ -255,202 +430,146 @@ public class DatabaseManager {
                         campusNodeRS.getDouble(3),
                         campusNodeRS.getInt(5));
 
-              //  for(tempNode)
+                //  for(tempNode)
                 mapNodes.put(UUID.fromString(node_UUID), tempNode);
                 h.getCampusFloor().addNode(tempNode);
             }
         }
+    }
 
-        rs = s.executeQuery("select * from BUILDING ORDER BY NAME DESC");
+    private void loadBuilding(Hospital h) throws SQLException
+    {
+        s = conn.createStatement();
+        rs = s.executeQuery("SELECT * FROM BUILDING");
 
-        // load both buildingds in
-        while (rs.next())
-        {
-            if (!rs.getString(2).equals(CAMPUS_ID))
-            {
-                // load floors per building
-                HashMap<String, Floor> flr = new HashMap();
-                floorsPS.setString(1, rs.getString(1));
-                ResultSet floorRS = floorsPS.executeQuery();
-                while (floorRS.next())
-                {
-                    // load nodes per floor
-                    HashMap<UUID, MapNode> nodes = new HashMap<>(); // create new nodes hashmap for each floor
-                    nodesPS.setString(1, floorRS.getString(1)); // set query for specific floor
-                    ResultSet nodeRS = nodesPS.executeQuery();
+        Building b;
 
-                    while (nodeRS.next())
-                    {
-                        UUID node_UUID = UUID.fromString(nodeRS.getString(1));
-
-                        MapNode tempNode;
-
-                        if (mapNodes.containsKey(node_UUID))
-                        {
-                            tempNode = mapNodes.get(node_UUID);
-                        }
-                        else
-                        {
-                            tempNode = new MapNode(node_UUID,
-                                    nodeRS.getDouble(2),
-                                    nodeRS.getDouble(3),
-                                    nodeRS.getInt(5));
-
-                            mapNodes.put(node_UUID, tempNode);
-                        }
-
-                        nodes.put(node_UUID, tempNode);
-
-                    }
-
-                    // loading destinations per floor
-                    destPS.setString(1, floorRS.getString(1));
-                    ResultSet destRS = destPS.executeQuery();
-
-                    while (destRS.next())
-                    {
-                        MapNode changedNode = nodes.get(UUID.fromString(destRS.getString(3)));
-                        Destination tempDest = new Destination(UUID.fromString(destRS.getString(1)),
-                                changedNode,
-                                destRS.getString(2),
-                                floorRS.getString(1));
-
-                        nodes.remove(UUID.fromString(destRS.getString(3)));
-                        nodes.put(UUID.fromString(destRS.getString(3)), tempDest);
-
-                        mapNodes.remove(UUID.fromString(destRS.getString(3)));
-                        mapNodes.put(UUID.fromString(destRS.getString(3)), tempDest);
-
-                        h.addDestinations(UUID.fromString(destRS.getString(1)), tempDest);
-                    }
-
-
-                    HashMap<Integer, NodeEdge> edges = new HashMap<>();
-
-
-                    // select all edges that have floorID of current floor we are loading
-                    edgesPS.setString(1, floorRS.getString(1));
-                    ResultSet edgeRS = edgesPS.executeQuery();
-
-                    while (edgeRS.next())
-                    {
-                        NodeEdge tempEdge = new NodeEdge();
-                        if (edgeRS.getDouble(4) != 0.0)
-                        {
-                            tempEdge = new NodeEdge(mapNodes.get(UUID.fromString(edgeRS.getString(2))),
-                                    mapNodes.get(UUID.fromString(edgeRS.getString(3))),
-                                    edgeRS.getFloat(4));
-
-                            tempEdge.setSource(mapNodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
-                            tempEdge.setTarget(mapNodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
-
-                            // stores nodeEdges per floor
-                            edges.put(edgeRS.getInt(1), tempEdge);
-                            //stores all nodeEdges
-                            nodeEdges.put(edgeRS.getInt(1), tempEdge);
-                        }
-                    }
-
-                    Floor tempFloor = new Floor(floorRS.getInt(3));
-                    tempFloor.setImageLocation(floorRS.getString(4));
-                    // add floor to list of floors for current building
-                    flr.put(floorRS.getString(1), tempFloor);
-
-                    // add correct mapNodes to their respective floor
-                    for (MapNode n : nodes.values())
-                    {
-                        tempFloor.addNode(n);
-                    }
-                }
-
-                //select all campus edges
-                edgesPS.setString(1, CAMPUS_ID);
-                ResultSet edgeRS = edgesPS.executeQuery();
-
-                while(edgeRS.next())
-                {
-                    NodeEdge tempEdge = new NodeEdge();
-                    if (edgeRS.getDouble(4) != 0.0)
-                    {
-                        try
-                        {
-                            tempEdge = new NodeEdge(mapNodes.get(UUID.fromString(edgeRS.getString(2))),
-                                mapNodes.get(UUID.fromString(edgeRS.getString(3))),
-                                edgeRS.getFloat(4));
-
-                            tempEdge.setSource(mapNodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
-                            tempEdge.setTarget(mapNodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
-                        }
-                        catch (Exception e)
-                        {
-
-                        }
-
-                        //stores all nodeEdges
-                        nodeEdges.put(edgeRS.getInt(1), tempEdge);
-                    }
-
-                }
-
-                buildings.put(UUID.fromString(rs.getString(1)),
-                        new Building(rs.getString(2)));
-                for (Floor f : flr.values())
-                {
-                    try
-                    {
-                        buildings.get(UUID.fromString(rs.getString(1))).addFloor(f);
-                    } catch (Exception e)
-                    {
-                        System.out.println(e.getMessage());
-                    }
-                }
-            }
-        }
-        for (Building b : buildings.values()) {
+        while(rs.next()) {
+            b = new Building(UUID.fromString(rs.getString(1)), rs.getString(2));
+            loadFloors(h, b);
             h.addBuilding(b);
         }
+    }
 
-        rs = s.executeQuery("SELECT * from EDGE where COST = 0");
-        while(rs.next()) {
-            MapNode source = mapNodes.get(UUID.fromString(rs.getString(2)));
-            MapNode target = mapNodes.get(UUID.fromString(rs.getString(3)));
-            LinkEdge tempEdge = new LinkEdge(source, target);
+    private void loadFloors(Hospital h, Building b) throws SQLException {
+        PreparedStatement floorsPS = conn.prepareStatement("SELECT * FROM FLOOR WHERE BUILDING_ID = ?");
+        floorsPS.setString(1, b.getBuildID().toString());
+        ResultSet floorRS = floorsPS.executeQuery();
 
-            nodeEdges.put(rs.getInt(1), tempEdge);
-        }
+        //floorsPS.setString(1, uuid.toString());
 
-        // loading doctors, destinations, and offices to hospital
-        HashMap<UUID, Destination> destsID = new HashMap<>();
-        HashMap<String, Doctor> doctors = new HashMap<>();
-        HashMap<String, Office> offices = new HashMap<>();
-        PreparedStatement destDoc = conn.prepareStatement("select DEST_ID from DEST_DOC where doc_id = ?");
-        PreparedStatement destOff = conn.prepareStatement("select * from OFFICES where DEST_ID = ?");
+        UUID floor_id;
+        Floor f;
 
-        rs = s.executeQuery("select * from USER1.DESTINATION");
-        while (rs.next()) {
+        while(floorRS.next()) {
+            floor_id = UUID.fromString(floorRS.getString(1));
+            f = new Floor(floor_id, floorRS.getInt(3));
+            f.setImageLocation(floorRS.getString(4));
 
-            // add offices to suite
-            destOff.setString(1, rs.getString(1));
-            ResultSet offRS = destOff.executeQuery();
-            while(offRS.next()) {
-                Office tempOff = new Office(UUID.fromString(rs.getString(1)),
-                        offRS.getString(2),
-                        (h.getDestinations().get(UUID.fromString(rs.getString(1)))));
-
-                // add office to hospital offices list
-                h.addOffices(offRS.getString(2), tempOff);
-
-                // add office to list of offices for a suite
-                h.getDestinations().get(UUID.fromString(rs.getString(1))).addOffice(tempOff);
+            loadNodes(h, f);
+            try {
+                b.addFloor(f);
+            } catch (Exception e) {
+                e.getMessage();
             }
         }
+    }
 
+    private void loadNodes(Hospital h, Floor f) throws SQLException
+    {
+        PreparedStatement nodesPS = conn.prepareStatement("SELECT * from NODE where FLOOR_ID = ?");
+        PreparedStatement destPS = conn.prepareStatement("SELECT * FROM DESTINATION WHERE FLOOR_ID = ?");
+
+        String floorID = f.getFloorID().toString();
+
+        // load all nodes with floorID
+        nodesPS.setString(1, floorID); // set query for specific floor
+        ResultSet nodeRS = nodesPS.executeQuery();
+
+        UUID nodeid;
+
+        HashMap<UUID, MapNode> nodes = new HashMap<>();
+
+        while(nodeRS.next()) {
+            nodeid = UUID.fromString(nodeRS.getString(1));
+            MapNode tempNode = new MapNode((nodeid),
+                    nodeRS.getDouble(2),
+                    nodeRS.getDouble(3),
+                    nodeRS.getInt(5));
+
+            // keep track of all nodes in hospital
+            mapNodes.put(nodeid, tempNode);
+
+            // nodes per floor
+            nodes.put(nodeid, tempNode);
+        }
+
+        // load all destinations with floorID
+        destPS.setString(1, floorID);
+        ResultSet destRS = destPS.executeQuery();
+
+        while(destRS.next()) {
+            // UUID for node we are dealing with
+            UUID tempNodeID = UUID.fromString(destRS.getString(3));
+            // get node to be replaced by destination
+            MapNode changedNode = mapNodes.get(tempNodeID);
+            // create destination
+            Destination tempDest = new Destination(UUID.fromString(destRS.getString(1)),
+                    changedNode,
+                    destRS.getString(2),
+                    UUID.fromString(floorID));
+
+            // replace regular nodes with destination nodes
+            mapNodes.remove(tempNodeID);
+            mapNodes.put(tempNodeID, tempDest);
+
+            // replace nodes in current floor
+            nodes.remove(tempNodeID);
+            nodes.put(tempNodeID, tempDest);
+
+            // adds destination to hospital list of destinations
+            h.addDestinations(UUID.fromString(destRS.getString(1)), tempDest);
+        }
+
+        // add all nodes to floor
+        for (MapNode n : nodes.values()) {
+            f.addNode(n);
+        }
+    }
+
+    private void loadEdges(Hospital h) throws SQLException
+    {
+        // select all for edges table
+        rs = s.executeQuery("SELECT * FROM EDGE");
+
+
+        while(rs.next()) {
+            // create new edge
+            NodeEdge tempEdge = new NodeEdge(mapNodes.get(UUID.fromString(rs.getString(2))),
+                    mapNodes.get(UUID.fromString(rs.getString(3))),
+                    rs.getFloat(4));
+
+            tempEdge.setSource(mapNodes.get(UUID.fromString(rs.getString(2)))); //should be redundant?
+            tempEdge.setTarget(mapNodes.get(UUID.fromString(rs.getString(3)))); //should be redundant?
+
+            //System.out.println(mapNodes.get(UUID.fromString(rs.getString(2))).getEdges().contains(tempEdge));
+
+            //stores all nodeEdges
+            this.edges.put(UUID.fromString(rs.getString(1)), tempEdge);
+
+        }
+    }
+
+    private void loadDoctors(Hospital h) throws SQLException
+    {
+        PreparedStatement destDoc = conn.prepareStatement("select DEST_ID from DEST_DOC where doc_id = ?");
 
         rs = s.executeQuery("select * from USER1.DOCTOR order by NAME");
 
         while(rs.next()) {
             HashSet<Destination> locations = new HashSet<>();
 
+            // create new Doctor
             Doctor tempDoc = new Doctor(UUID.fromString(rs.getString(1)),
                     rs.getString(2),
                     rs.getString(3),
@@ -459,17 +578,47 @@ public class DatabaseManager {
 
             destDoc.setString(1, rs.getString(1));
             ResultSet results = destDoc.executeQuery();
+            // create doctor - destination relationships within the objects
             while(results.next()) {
                 h.getDestinations().get(UUID.fromString(results.getString(1))).addDoctor(tempDoc);
                 locations.add(h.getDestinations().get(UUID.fromString(results.getString(1))));
             }
-
+//            doctors.put(UUID.fromString(rs.getString(2)),
+//                    new Doctor(UUID.fromString(rs.getString(1)),
+//                            rs.getString(2),
+//                            rs.getString(3),
+//                            rs.getString(5),
+//                            locations));
             h.addDoctors(rs.getString(2), tempDoc);
 
         }
-        rs.close();
+        //System.out.println(doctors.keySet());
+    }
 
-        System.out.println("Database load finished");
+    private void loadDestinationOffice(Hospital h) throws SQLException
+    {
+        PreparedStatement destOff = conn.prepareStatement("select * from OFFICES where DEST_ID = ?");
+
+
+        rs = s.executeQuery("SELECT * FROM USER1.DESTINATION");
+        while (rs.next()) {
+
+            destOff.setString(1, rs.getString(1));
+            // set of offices with particular destination ID foreign key
+            ResultSet offRS = destOff.executeQuery();
+            while(offRS.next()) {
+                Office tempOff = new Office(UUID.fromString(rs.getString(1)),
+                        offRS.getString(2),
+                        (h.getDestinations().get(UUID.fromString(rs.getString(1)))));
+
+                // add office to hospital offices list
+                h.addOffices(offRS.getString(2), tempOff);
+                //System.out.println("******************************" + tempOff.getName());
+
+                // add office to list of offices for a destination
+                h.getDestinations().get(UUID.fromString(rs.getString(1))).addOffice(tempOff);
+            }
+        }
     }
 
     public void addDocToDB(Doctor d) throws SQLException{
@@ -518,7 +667,7 @@ public class DatabaseManager {
         insertDest.setString(1, dest.getDestUID().toString());
         insertDest.setString(2, dest.getName());
         insertDest.setString(3, dest.getNodeID().toString());
-        insertDest.setString(4, dest.getFloorID());
+        insertDest.setString(4, dest.getFloorID().toString());
         insertDest.executeUpdate();
         conn.commit();
     }
@@ -649,6 +798,50 @@ public class DatabaseManager {
         delOffice.setString(1, offUUID);
         delOffice.executeUpdate();
         conn.commit();
+    }
+
+    public void deleteFloor(Floor floor) throws SQLException {
+        PreparedStatement floorsPS = conn.prepareStatement("DELETE FROM FLOOR WHERE FLOOR_ID = ?");
+        s = conn.createStatement();
+
+        s.executeQuery("SELECT * FROM USER1.FLOOR ORDER BY NUMBER DESC ");
+
+        while(rs.next())
+        {
+            floorsPS.setString(1, floor.getFloorID().toString());
+            floorsPS.executeUpdate();
+        }
+    }
+
+    public void addFloor(Floor f, Building b) throws SQLException {
+        PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO FLOOR (FLOOR_ID, BUILDING_ID, NUMBER, IMAGE) VALUES (?, ?, ?, ?)");
+
+        insertFloors.setString(1, f.getFloorID().toString());
+        insertFloors.setString(2, b.getBuildID().toString());
+        insertFloors.setInt(3, f.getFloorNumber());
+        insertFloors.setString(4, f.getImageLocation());
+        insertFloors.executeUpdate();
+    }
+
+    public void deleteBuilding(Building building) throws SQLException {
+        PreparedStatement buildingPS = conn.prepareStatement("DELETE FROM BUILDING WHERE BUILDING_ID = ?");
+        s = conn.createStatement();
+
+        s.executeQuery("SELECT * FROM USER1.BUILDING");
+
+        while(rs.next())
+        {
+            buildingPS.setString(1, building.getBuildID().toString());
+            buildingPS.executeUpdate();
+        }
+    }
+
+    public void addBuilding(Building building) throws SQLException {
+        PreparedStatement insertBuildings = conn.prepareStatement("INSERT INTO BUILDING (BUILDING_ID, NAME) VALUES (?, ?)");
+
+        insertBuildings.setString(1, building.getBuildID().toString());
+        insertBuildings.setString(2, building.getName());
+        insertBuildings.executeUpdate();
     }
 
     private void saveHospital(Hospital h) throws SQLException {
@@ -860,4 +1053,75 @@ public class DatabaseManager {
             }
         }
     }
+
+    public static final String[] createTables = {
+            "CREATE TABLE USER1.BUILDING (BUILDING_ID INT PRIMARY KEY NOT NULL, " +
+                    "NAME VARCHAR(100))",
+
+            "CREATE TABLE USER1.FLOOR (FLOOR_ID VARCHAR(25) PRIMARY KEY NOT NULL, " +
+                    "BUILDING_ID INT," +
+                    "NUMBER INT, " +
+                    "IMAGE VARCHAR(75), " +
+                    "CONSTRAINT FLOOR_BUILDING_BUILDING_ID_FK FOREIGN KEY (BUILDING_ID) REFERENCES BUILDING (BUILDING_ID))",
+
+            "CREATE TABLE USER1.NODE (NODE_ID CHAR(36) PRIMARY KEY NOT NULL, " +
+                    "POSX DOUBLE, " +
+                    "POSY DOUBLE, " +
+                    "FLOOR_ID VARCHAR(25), " +
+                    "TYPE INT, " +
+                    "CONSTRAINT NODE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
+            "CREATE TABLE KIOSK" +
+                    "NAME VARCHAR(30)," +
+                    "NODE_ID CHAR(36)," +
+                    "FLAG SMALLINT," +
+                    "CONSTRAINT KIOSK_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID) ON DELETE CASCADE\n" +
+                    ")",
+
+            "CREATE TABLE USER1.DESTINATION (DEST_ID CHAR(36) PRIMARY KEY NOT NULL, " +
+                    "NAME VARCHAR(200), " +
+                    "NODE_ID CHAR(36), " +
+                    "FLOOR_ID VARCHAR(25), " +
+                    "CONSTRAINT DESTINATION_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID), " +
+                    "CONSTRAINT DESTINATION_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
+
+            "CREATE TABLE USER1.DOCTOR (DOC_ID CHAR(36) PRIMARY KEY NOT NULL, " +
+                    "NAME VARCHAR(50), " +
+                    "DESCRIPTION VARCHAR(20), " +
+                    "NUMBER VARCHAR(20), " +
+                    "HOURS VARCHAR(20))",
+
+            "CREATE TABLE USER1.OFFICES (OFFICE_ID CHAR(36) PRIMARY KEY NOT NULL, " +
+                    "NAME VARCHAR(200), " +
+                    "DEST_ID CHAR(36), " +
+                    "CONSTRAINT OFFICES_DESTINATION_DESTINATION_ID_FK FOREIGN KEY (DEST_ID) REFERENCES DESTINATION (DEST_ID))",
+
+            "CREATE TABLE USER1.EDGE (EDGE_ID INT PRIMARY KEY NOT NULL," +
+                    "NODEA CHAR(36), " +
+                    "NODEB CHAR(36), " +
+                    "COST DOUBLE, " +
+                    "FLOOR_ID VARCHAR(25), " +
+                    "CONSTRAINT EDGE_NODE_NODE_ID_FKA FOREIGN KEY (NODEA) REFERENCES NODE (NODE_ID), " +
+                    "CONSTRAINT EDGE_NODE_NODE_ID_FKB FOREIGN KEY (NODEB) REFERENCES NODE (NODE_ID), " +
+                    "CONSTRAINT EDGE_FLOOR_FLOOR_ID_FK FOREIGN KEY (FLOOR_ID) REFERENCES FLOOR (FLOOR_ID))",
+
+            "CREATE TABLE DEST_DOC (DEST_ID CHAR(36), " +
+                    "DOC_ID CHAR(36), " +
+                    "CONSTRAINT DESTINATION_DOC_DESTINATION_DESTINATION_ID_FK1 FOREIGN KEY (DEST_ID) REFERENCES DESTINATION (DEST_ID), " +
+                    "CONSTRAINT DESTINATION_DOC_DOCTOR_DOCTOR_ID_FK2 FOREIGN KEY (DOC_ID) REFERENCES DOCTOR (DOC_ID))",
+
+            "CREATE TABLE CAMPUS (NODE_ID CHAR(36), " +
+                    "CONSTRAINT CAMPUS_NODE_NODE_ID_FK FOREIGN KEY (NODE_ID) REFERENCES NODE (NODE_ID))"
+    };
+
+    public static final String[] dropTables = {
+            "DROP TABLE USER1.CAMPUS",
+            "DROP TABLE USER1.DEST_DOC",
+            "DROP TABLE USER1.EDGE",
+            "DROP TABLE USER1.OFFICES",
+            "DROP TABLE USER1.DOCTOR",
+            "DROP TABLE USER1.DESTINATION",
+            "DROP TABLE USER1.KIOSK",
+            "DROP TABLE USER1.NODE",
+            "DROP TABLE USER1.FLOOR",
+            "DROP TABLE USER1.BUILDING"};
 }
