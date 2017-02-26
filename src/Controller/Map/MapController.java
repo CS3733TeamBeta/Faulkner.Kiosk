@@ -63,13 +63,13 @@ public abstract class MapController extends AbstractController
     protected DragIcon importMapNode(MapNode n)
     {
         DragIcon icon = new DragIcon();
+
         icon.setType(n.getType());
         icon.relocate(
                 n.getPosX()-
                         icon.getPrefWidth()/2,
                 n.getPosY()-
                         icon.getPrefHeight()/2);
-
 
         mapItems.getChildren().add(icon);
         iconEntityMap.put(icon, n);

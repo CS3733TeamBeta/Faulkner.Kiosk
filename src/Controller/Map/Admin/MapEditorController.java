@@ -380,10 +380,10 @@ public class MapEditorController extends MapController
 
 			timeline.setCycleCount(5);
 			timeline.setAutoReverse(true);
-			final KeyValue kvA = new KeyValue(icon.scaleXProperty(), 1.3);
+			final KeyValue kvA = new KeyValue(icon.scaleXProperty(), 1.7);
 			final KeyFrame kfA = new KeyFrame(Duration.millis(200), kvA);
 
-			final KeyValue kv1 = new KeyValue(icon.scaleYProperty(), 1.3);
+			final KeyValue kv1 = new KeyValue(icon.scaleYProperty(), 1.7);
 			final KeyFrame kf1 = new KeyFrame(Duration.millis(200), kv1);
 			timeline.getKeyFrames().add(kfA);
 			timeline.getKeyFrames().add(kf1);
