@@ -1,35 +1,26 @@
 package Controller.User;
 
 import Boundary.MapBoundary;
-import Controller.AbstractController;
-import Controller.Main;
 import Controller.MapController;
 import Controller.SceneSwitcher;
 import Domain.Map.*;
 import Domain.Navigation.Guidance;
 import Domain.ViewElements.DragIcon;
-import Domain.ViewElements.DragIconType;
 import Exceptions.PathFindingException;
-import Model.Database.DatabaseManager;
-import Model.MapModel;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import javafx.event.EventHandler;
-import com.jfoenix.controls.JFXButton;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TreeTableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -37,26 +28,19 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 
-import javax.swing.*;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.function.Predicate;
-import static Model.Database.DatabaseManager.destinations;
-
-
 /**
  * Created by jw97 on 2/16/2017.
  *
@@ -143,7 +127,6 @@ public class UserMapViewController extends MapController
 
     Stage primaryStage;
 
-
     UserDirectionsPanel panel = new UserDirectionsPanel(mapImage);
 
     Group zoomGroup;
@@ -151,32 +134,65 @@ public class UserMapViewController extends MapController
     @FXML
     Label curFloorLabel;
 
+    BiMap<MapNode, Text> nodeTextMap;
+
     public UserMapViewController() throws Exception
     {
         super();
         boundary=new MapBoundary();
+        nodeTextMap = HashBiMap.create();
+
         initBoundary();
+    }
+
+    @Override
+    public DragIcon importMapNode(MapNode n)
+    {
+        DragIcon icon = super.importMapNode(n);
+
+        Text destLabel = new Text(n.getLabel());
+        destLabel.setStyle("-fx-font-weight: bold");
+
+        destLabel.setTranslateX(n.getPosX() - (destLabel.getLayoutBounds().getWidth() / 2) -15);
+        destLabel.setTranslateY((n.getPosY()-10));
+        destLabel.setFont(Font.font(8));
+
+        mapItems.getChildren().add(destLabel);
+
+        destLabel.toFront();
+
+        nodeTextMap.put(n, destLabel);
+
+        icon.setOnMouseClicked(ev -> {
+            if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
+                try{
+                    findPathToNode(n);
+                }catch(PathFindingException e){
+
+                }
+            }
+        });
+
+
+
+        return icon;
+    }
+
+    @Override
+    public void removeMapNode(MapNode n)
+    {
+        super.removeMapNode(n);
+
+        mapItems.getChildren().remove(nodeTextMap.get(n));
     }
 
     public void addToMap(MapNode n)
     {
-        /*Text destLabel = new Text(n.getLabel());
-        destLabel.setStyle("-fx-font-weight: bold");
-        destLabel.setTranslateX(n.getPosX() - (destLabel.getLayoutBounds().getWidth() / 2) + 12);
-        destLabel.setTranslateY((n.getPosY()-5));
 
-        n.getNodeToDisplay().setLayoutX(n.getPosX());
-        n.getNodeToDisplay().setLayoutY(n.getPosY());
-
-        if(!mapItems.getChildren().contains(n.getNodeToDisplay()))
-        {
-            mapItems.getChildren().add(n.getNodeToDisplay()); //add to right panes children
-            mapItems.getChildren().add(destLabel);
-        }
 
        // n.setPos(n.getPosX(), n.getPosY());
 
-        setupImportedNode(n);*/
+       // setupImportedNode(n);
     }
 
     /*public void zoomToExtents(Group group)
@@ -342,7 +358,7 @@ public class UserMapViewController extends MapController
     });
 
         panel.addOnStepChangedHandler(event -> { //when the step is changed in the side panel, update this display!
-            boundary.setCurrentFloor(event.getSource().getFloor());
+            boundary.changeFloor(event.getSource().getFloor());
         });
 
         //kioskFloor = DatabaseManager.Faulkner.getBuildings().iterator().next().getFloor(1);
@@ -367,6 +383,7 @@ public class UserMapViewController extends MapController
         directionPaneView();
 
         boundary.setInitialFloor();
+
         curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
     }
 
@@ -458,24 +475,6 @@ public class UserMapViewController extends MapController
 
         slideHideDirections.getKeyFrames().add(keyFrame);
         slideHideDirections.play();
-    }
-
-    @Override
-    protected DragIcon importMapNode(MapNode mapNode)
-    {
-        DragIcon icon = super.importMapNode(mapNode);
-
-        iconEntityMap.inverse().get(mapNode).setOnMouseClicked(ev -> {
-            if (ev.getButton() == MouseButton.PRIMARY) { // deal with other types of mouse clicks
-                try{
-                    findPathToNode(mapNode);
-                }catch(PathFindingException e){
-
-                }
-            }
-        });
-
-        return icon;
     }
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException {

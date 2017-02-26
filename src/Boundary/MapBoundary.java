@@ -1,6 +1,7 @@
 package Boundary;
 
 import Domain.Map.*;
+import Domain.ViewElements.DragIconType;
 import Model.Database.DataCache;
 import javafx.collections.*;
 import javafx.scene.Node;
@@ -54,33 +55,29 @@ public class MapBoundary extends Observable
         {
             e.printStackTrace();
         }
+    }
+
+    public void changeFloor(Floor f)
+    {
+        currentFloor = f;
+
+        nodesOnMap.clear();
+
+        for(MapNode n: currentFloor.getFloorNodes())
+        {
+            if(shouldBeOnMap(n))
+            {
+                nodesOnMap.add(n);
+            }
+        }
 
         setChanged();
         notifyObservers(UpdateType.FloorChange);
     }
 
-    public void changeFloor(Floor f)
+    protected boolean shouldBeOnMap(MapNode n)
     {
-        nodesOnMap.clear();
-        currentFloor = f;
-
-        for(MapNode n: currentFloor.getFloorNodes())
-        {
-            /*for(NodeEdge e : n.getEdges())
-            {
-                if(currentFloor.getFloorNodes().contains(e.getOtherNode(n)))
-                {
-                    /*if (!mapElements.containsKey(e.getEdgeLine()))
-                    {
-                        mapElements.put(e.getEdgeLine(), e);
-                    }
-
-                    e.updatePosViaNode(n);*/
-            //  //    }
-            // }
-
-            nodesOnMap.add(n);
-        }
+        return (n.getType()!= DragIconType.Connector);
     }
 
     public Hospital getHospital()
@@ -96,7 +93,7 @@ public class MapBoundary extends Observable
         {
             try
             {
-                this.setCurrentFloor(currentFloor.getBuilding().getFloor(nextFloorID));
+                changeFloor(currentFloor.getBuilding().getFloor(nextFloorID));
                 return nextFloorID;
             }
             catch (Exception e)
@@ -146,10 +143,6 @@ public class MapBoundary extends Observable
         return currentFloor;
     }
 
-    public void setCurrentFloor(Floor f)
-    {
-        currentFloor = f;
-    }
 
     public ObservableSet<MapNode> mapElements()
     {

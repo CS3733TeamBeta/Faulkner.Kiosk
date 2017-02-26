@@ -1,19 +1,25 @@
 package Domain.Map;
 
+import Domain.ViewElements.DragIconType;
+import Model.DataSourceClasses.HierarchyData;
+import Model.DataSourceClasses.Treeable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Observable;
+import javax.transaction.TransactionRequiredException;
+import java.util.*;
 
 /**
  * Represents a floor in a building. A floor will have nodes, node edges, destinations, more
  */
-public class Floor extends Observable implements Comparable{
+public class Floor extends Treeable implements Comparable
+{
 
     HashSet<MapNode> floorNodes;
     HashSet<NodeEdge> floorEdges;
+
+    ObservableList<Treeable> treeItems;
 
     MapNode kioskNode = null;
     String imageLocation = "/FloorMaps/1_thefirstfloor.png"; //default floor image path
@@ -28,7 +34,7 @@ public class Floor extends Observable implements Comparable{
 
     public void setImageLocation(String imageLocation) {
         this.imageLocation = imageLocation;
-        imageInfo = new ProxyImage(imageLocation);
+        imageInfo = new ProxyImage("/FloorMaps/" + imageLocation);
     }
 
     public void initImage(){
@@ -50,15 +56,20 @@ public class Floor extends Observable implements Comparable{
     int floorNumber;
 
     public Floor(int floorNumber) {
+        treeItems= FXCollections.observableList(new ArrayList<>());
         floorNodes = new HashSet<MapNode>();
         floorEdges = new HashSet<NodeEdge>();
         this.floorNumber = floorNumber;
-
-        imageInfo = new ProxyImage(imageLocation);
     }
 
     public void addNode(MapNode n) {
         floorNodes.add(n);
+
+        if(!n.getType().equals(DragIconType.Connector))
+        {
+            treeItems.add(n);
+        }
+
         n.setFloor(this);
     }
 
@@ -82,8 +93,14 @@ public class Floor extends Observable implements Comparable{
      * Removes the given node from this floor's list of nodes. If the given node is the kiosknode, set the kiosknode to null and print a warning
      * @param n the MapNode to be removed.
      */
-    public void removeNode(MapNode n) {
+    public void removeNode(MapNode n)
+    {
         floorNodes.remove(n);
+
+        if(!n.getType().equals(DragIconType.Connector))
+        {
+            treeItems.remove(n);
+        }
     }
 
     public void removeEdge(NodeEdge edge)
@@ -124,5 +141,10 @@ public class Floor extends Observable implements Comparable{
     public int compareTo(Object o)
     {
         return Integer.compare(this.floorNumber, ((Floor)o).getFloorNumber());
+    }
+
+    public ObservableList<Treeable> getChildren()
+    {
+        return treeItems;
     }
 }

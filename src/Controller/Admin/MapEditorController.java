@@ -9,24 +9,19 @@ import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
 import Domain.ViewElements.Events.EdgeCompleteEvent;
 import Domain.ViewElements.Events.EdgeCompleteEventHandler;
-import Model.DataSourceClasses.MapTreeItem;
+
 import Model.DataSourceClasses.TreeViewWithItems;
+import Model.DataSourceClasses.Treeable;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.SetChangeListener;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.*;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -120,6 +115,7 @@ public class MapEditorController extends MapController
 
 		mapPane.getChildren().add(mapImage);
 		mapPane.getChildren().add(mapItems);
+		mapPane.getChildren().add(drawingEdgeLine);
 
 		drawingEdgeLine.setVisible(false);
 
@@ -158,17 +154,31 @@ public class MapEditorController extends MapController
 
 		menu = new CirclePopupMenu(mapPane, null);
 
-		/*mapPane.setOnMouseClicked(event->
+		menu.shownProperty().addListener((e, oldValue, newValue)->
 		{
-			menu.show(event.getScreenX(), event.getScreenY());
+			if(!newValue)
+			{
+				target.setVisible(false);
+			}
+		});
 
-			target.setVisible(true);
+		mapPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event->
+		{
+			Node clickedNode = event.getPickResult().getIntersectedNode();
 
-			target.setX(event.getX()-target.getFitWidth()/2);
-			target.setY(event.getY()-target.getFitHeight()/2);
+			if(!iconEntityMap.containsKey(clickedNode) &&
+				!edgeEntityMap.containsKey(clickedNode))
+			{
+				menu.show(event.getScreenX(), event.getScreenY());
 
-			menuOpenLoc = new Point2D(event.getX(), event.getY());
-		});*/
+				target.setVisible(true);
+
+				target.setX(event.getX() - target.getFitWidth() / 2);
+				target.setY(event.getY() - target.getFitHeight() / 2);
+
+				menuOpenLoc = new Point2D(event.getX(), event.getY());
+			}
+		});
 
 		for (int i = 0; i < DragIconType.values().length; i++)
 		{
@@ -196,6 +206,17 @@ public class MapEditorController extends MapController
 			menu.getItems().add(item);
 		}
 
+		for(Floor f: boundary.getCurrentFloor().getBuilding().getFloors())
+		{
+			makeFloorTab(f);
+		}
+
+		BuildingTabPane.getSelectionModel().selectedItemProperty().addListener(
+				(ov, newvalue, oldvalue)->{
+					boundary.changeFloor(tabFloorMap.get(oldvalue));
+
+		});
+
 		target.setVisible(false);
 		target.setFitWidth(14);
 		target.setFitHeight(14);
@@ -211,141 +232,35 @@ public class MapEditorController extends MapController
 		return icon;
 	}
 
-	/*public void createCampusTab()
-	{
-		final Label label = new Label("Campus");
-		final Tab tab = new Tab();
-		tab.setGraphic(label);
-
-		TreeView tV = new TreeView<>();
-
-		tV.setRoot(new TreeItem<MapTreeItem>(null));
-		tV.setShowRoot(false);
-
-		label.setOnMouseClicked(e->
-				{
-					Floor campusFloor = model.getHospital().getCampusFloor();
-
-					//changeFloorSelection(campusFloor);
-					tV.getRoot().getChildren().clear();
-
-					for(Building b: model.getHospital().getBuildings())
-					{
-						try
-						{
-							TreeItem<String> buildingItem = new TreeItem<String>(b.getName());
-
-							Floor groundFloor = b.getFloor(1);
-
-							for(MapNode n: groundFloor.getFloorNodes())
-							{
-								if(n.getIconType()!=DragIconType.Connector)
-								{
-									buildingItem.getChildren().add(new TreeItem<String>(n.toString()));
-								}
-							}
-
-							tV.getRoot().getChildren().add(buildingItem);
-
-						} catch (Exception e1)
-						{
-						}
-					}
-
-					//model.setCurrentFloor(campusFloor);
-					//renderFloorMap(campusFloor);
-				}
-		);
-
-		tab.setContent(tV);
-
-		//BuildingTabPane.getTabs().add(tab);
-	}
-	*/
-
 	/**
 	 * Adds a building to the tab pane/model
 	 *
 	 * @author Ben Hylak
-	 * @param b Building
+	 * @param f Floor
 	 * @return
 	 */
-	public Tab makeBuildingTab(Building b)
+	public Tab makeFloorTab(Floor f)
 	{
-		final Label label = new Label(b.getName());
+		final Label label = new Label(f.toString());
 		final Tab tab = new Tab();
 		tab.setGraphic(label);
 
-		final TextField textField = new TextField();
+		TreeViewWithItems tV = new TreeViewWithItems<Treeable>();
 
-		label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getClickCount()==2)
-				{
-					textField.setText(label.getText());
-
-					tab.setGraphic(textField);
-					textField.selectAll();
-					textField.requestFocus();
-				}
-				else
-				{
-					//select floor and change map
-				}
-			}
-		});
-
-		textField.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				label.setText(textField.getText());
-				tab.setGraphic(label);
-				b.setName(label.getText());
-			}
-		});
-
-
-		textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable,
-								Boolean oldValue, Boolean newValue) {
-				if (! newValue) {
-					label.setText(textField.getText());
-					tab.setGraphic(label);
-				}
-			}
-		});
-
-		TreeViewWithItems<MapTreeItem> tV = new TreeViewWithItems<MapTreeItem>();
-
-		tV.setRoot(new TreeItem<MapTreeItem>(null));
+		tV.setRoot(new TreeItem<Floor>(null));
 		tV.setShowRoot(false);
+
+		tV.setItems(f.getChildren());
 
 		tab.setContent(tV);
 
 		BuildingTabPane.getTabs().add(tab);
 
+		tabFloorMap.put(tab, f);
+
 		return tab;
 	}
 
-	/**
-	 * Runs when new building button is clicked
-	 *
-	 * @param event
-	 */
-	@FXML
-	void onNewBuilding(ActionEvent event)
-	{
-		//boundary.newBuilding();
-		//boundary has building observable list
-
-		//Building b = new Building("Building " + (model.getBuildingCount()+1)); //@TODO Hacky fix -BEN
-
-		//new building pane
-
-		//model.addBuilding(b, makeBuildingTab(b));
-	}
 
 	/**
 	 * Runs when "New Floor" is clicked
@@ -359,17 +274,6 @@ public class MapEditorController extends MapController
 
 		//make new floor in building
 		//refresh treeview (observable, not needed)
-	}
-
-	public TreeItem<MapTreeItem> makeTreeItem(Object o)
-	{
-		MapTreeItem treeObj = new MapTreeItem(o);
-
-		TreeItem<MapTreeItem> treeItem = new TreeItem<>(treeObj);
-
-		treeItem.setExpanded(true);
-
-		return treeItem;
 	}
 
 	public void changeFloorSelection(Floor f)
@@ -388,7 +292,7 @@ public class MapEditorController extends MapController
 				}
 			}
 
-			boundary.setCurrentFloor(f);
+			boundary.changeFloor(f);
 
 			System.out.println("Changed floor to " + f);
 		}
@@ -482,46 +386,7 @@ public class MapEditorController extends MapController
 		l.setEndY(target.getPosY());
 	}
 
-	public void addToTreeView(MapNode d)
-	{
-		if(!(d.toString().isEmpty()))
-		{
-			TreeViewWithItems<MapTreeItem> treeView = (TreeViewWithItems<MapTreeItem>) BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
 
-			for (TreeItem<MapTreeItem> floorTreeItem : treeView.getRoot().getChildren())
-			{
-				if (floorTreeItem.getValue().getValue() instanceof Floor && ((Floor) floorTreeItem.getValue().getValue()).getFloorNodes().contains(d))
-				{
-					boolean treeContainsNode = false;
-
-					for (TreeItem<MapTreeItem> item : floorTreeItem.getChildren())
-					{
-						if (item.getValue().getValue().equals(d))
-						{
-							treeContainsNode = true;
-						}
-					}
-
-					if (!treeContainsNode)
-					{
-						floorTreeItem.getChildren().add(makeTreeItem(d));
-					}
-				}
-
-				treeView.refresh();
-			}
-		}
-	}
-
-	/**
-	 *
-	 * @return Returns the treeview of the currently selected building
-	 * @author Benjamin Hylak
-	 */
-	public TreeViewWithItems<MapTreeItem> getCurrentTreeView()
-	{
-		return (TreeViewWithItems<MapTreeItem>)BuildingTabPane.getSelectionModel().getSelectedItem().getContent();
-	}
 	/**
 	 * Adds all of the event handlers to handle dragging, edge creation, deletion etc.
 	 * Needs to be called on newly constructed nodes to interact properly with map
@@ -533,10 +398,11 @@ public class MapEditorController extends MapController
 	{
 	    makeIconDraggable(n); //make it draggable
 
+		MapNode mapNode = iconEntityMap.get(n);
 		/***Handles deletion from a popup menu**/
-		/*mapNode.setOnDeleteRequested(event -> {
-			removeNode(event.getSource());
-		});*/
+		mapNode.setOnDeleteRequested(event -> {
+			adminBoundary.remove(mapNode);
+		});
 
 		/**Handles when the node is clicked
 		 *
@@ -548,15 +414,7 @@ public class MapEditorController extends MapController
 
 			if(ev.getButton() == MouseButton.SECONDARY) //if right click
 			{
-				PopOver popOver = iconEntityMap.get(n).getEditPopover();
-
-				/***If the name is set, at it to the tree*/
-				popOver.setOnHiding(event -> {
-					/*if(!model.getCurrentFloor().equals(model.getHospital().getCampusFloor()))
-					{
-						getCurrentTreeView().refresh(); //refresh the treeview once the popup editor closes
-					}*/
-				});
+				PopOver popOver = mapNode.getEditPopover();
 
 				popOver.show(n,
 						ev.getScreenX(),
@@ -632,7 +490,7 @@ public class MapEditorController extends MapController
 
 		mapPane.setOnMouseMoved(mouseEvent->{ //handle mouse movement in the right pane
 
-			if (drawingEdge != null)
+			if (drawingEdgeLine.isVisible() && drawingEdge != null)
 			{
 				Point p = MouseInfo.getPointerInfo().getLocation(); // get the absolute current loc of the mouse on screen
 				Point2D mouseCoords = drawingEdgeLine.screenToLocal(p.x, p.y); // convert coordinates to relative within the window

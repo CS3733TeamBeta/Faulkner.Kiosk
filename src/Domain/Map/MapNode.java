@@ -7,6 +7,8 @@ import Domain.ViewElements.DragIcon;
 import Domain.ViewElements.DragIconType;
 import Domain.ViewElements.Events.DeleteRequestedEvent;
 import Domain.ViewElements.Events.DeleteRequestedHandler;
+import Model.DataSourceClasses.Treeable;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
@@ -21,7 +23,8 @@ import java.util.UUID;
  * Represents a node in a Map, connected to other nodes by NodeEdges
  */
 
-public class MapNode {
+public class MapNode extends Treeable
+{
     double posX;
     double posY;
 
@@ -428,5 +431,11 @@ public class MapNode {
     public String toString()
     {
         return label;
+    }
+
+    @Override
+    public ObservableList getChildren()
+    {
+        return null;
     }
 }

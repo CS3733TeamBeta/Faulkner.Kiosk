@@ -45,6 +45,8 @@ public class AdminMapBoundary extends MapBoundary
     {
         super.changeFloor(f);
 
+        edges.clear();
+
         for(MapNode n: nodesOnMap)
         {
             for(NodeEdge edge: n.getEdges())
@@ -55,6 +57,17 @@ public class AdminMapBoundary extends MapBoundary
                 }
             }
         }
+    }
+
+    /**
+     * Function returns whether or not the node should be on the map, runs on floor change
+     * @param n
+     * @return
+     */
+    @Override
+    protected boolean shouldBeOnMap(MapNode n)
+    {
+        return true;
     }
 
     public void newEdge(MapNode source, MapNode target)
@@ -120,6 +133,17 @@ public class AdminMapBoundary extends MapBoundary
     public void remove(MapNode n)
     {
         nodesOnMap.remove(n);
+        currentFloor.removeNode(n);
+
+        for(NodeEdge edge: n.getEdges())
+        {
+            edge.getOtherNode(n).getEdges().remove(edge);
+
+            if(edges.contains(edge))
+            {
+                edges.remove(edge);
+            }
+        }
     }
 
     public void removeEdge(NodeEdge edge)

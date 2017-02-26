@@ -49,12 +49,17 @@ public abstract class MapController extends AbstractController
             }
             else if(change.wasRemoved())
             {
-                DragIcon n = iconEntityMap.inverse().get(change.getElementRemoved());
-                iconEntityMap.remove(n);
-
-                mapItems.getChildren().remove(n);
+                removeMapNode(change.getElementRemoved());
             }
         });
+    }
+
+    public void removeMapNode(MapNode n)
+    {
+        DragIcon icon = iconEntityMap.inverse().get(n);
+        iconEntityMap.remove(icon);
+
+        mapItems.getChildren().remove(icon);
     }
 
     protected DragIcon importMapNode(MapNode n)
