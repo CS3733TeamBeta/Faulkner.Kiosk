@@ -182,7 +182,6 @@ public class AdminMapBoundary extends MapBoundary
 
         for (NodeEdge edge : n.getEdges())
         {
-            //edge.updatePosViaNode(boundary.getMapNode(n)); //@TODO
             edge.updateCost();
         }
     }
