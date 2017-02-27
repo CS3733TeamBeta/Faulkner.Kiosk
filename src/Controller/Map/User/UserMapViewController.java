@@ -5,11 +5,13 @@ import Controller.Map.MapController;
 import Controller.SceneSwitcher;
 import Entity.Doctor;
 import Entity.Map.*;
+import Entity.Navigation.DirectionStep;
 import Entity.Navigation.Guidance;
 import Controller.Map.ViewElements.DragIcon;
 import Exceptions.PathFindingException;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import javafx.animation.SequentialTransition;
 import javafx.event.EventHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,6 +31,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -39,6 +42,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
+import java.security.Key;
 import java.util.Collection;
 import java.util.function.Predicate;
 /**
@@ -398,6 +402,32 @@ public class UserMapViewController extends MapController
         numClickBath = -1;
         numClickHelp = -1;
         LoadTableData();
+    }
+
+    public void playDirections(Guidance g)
+    {
+        //for(FloorStep floorStep: g.getFloorSteps()
+        //{
+       /* for(DirectionStep step : g.getSteps())
+        {
+            SequentialTransition stepDrawing = new SequentialTransition();
+
+            //for(edge in step)//
+            /*{
+                Timeline tL = new Timeline();
+                Line l = new Line();
+                KeyValue moveLineY = new KeyValue(l.endXProperty(), end_x_of_edge);
+                KeyValue moveLineX = new KeyValue(l.endYProperty(), end_y_of_edge);
+
+                KeyFrame kf = new KeyFrame((Duration.millis(500)), moveLineX, moveLineY);
+
+                tL.getKeyFrames().add(kf);
+                stepDrawing.getChildren().add(tL);
+             }*/
+
+            //stepDrawing.play();
+           ////switch floors
+        //}
     }
 
     private void hideDirections()

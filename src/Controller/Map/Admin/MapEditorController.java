@@ -16,6 +16,8 @@ import com.google.common.collect.HashBiMap;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.*;
@@ -23,13 +25,14 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.Glow;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.effect.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import jfxtras.labs.util.event.MouseControlUtil;
 import jfxtras.scene.menu.CirclePopupMenu;
@@ -39,9 +42,11 @@ import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MapEditorController extends MapController
 {
+	public ScrollPane scroll_pane;
 	@FXML AnchorPane mapPane;
 	@FXML AnchorPane root_pane;
 
@@ -69,11 +74,17 @@ public class MapEditorController extends MapController
 
 	AdminMapBoundary adminBoundary;
 
+	Rectangle selectionRectangle;
+
+	HashSet<DragIcon> selectedIcons;
+
 	boolean drawingEdgeFrozen = false;
 
 	public MapEditorController()
 	{
 		super();
+
+		selectedIcons = new HashSet<>();
 
 		boundary = new AdminMapBoundary();
 		adminBoundary = (AdminMapBoundary)boundary;
@@ -109,6 +120,64 @@ public class MapEditorController extends MapController
 	@FXML
 	private void initialize()
 	{
+		Rectangle selectionRect = new Rectangle();
+		selectionRect.setFill(Color.GREY);
+		selectionRect.setOpacity(.3);
+		selectionRect.setStroke(Color.BLACK);
+
+		ObjectProperty<Point2D> mouseAnchor = new SimpleObjectProperty<>();
+
+		mapPane.setOnMousePressed(e -> {
+			mouseAnchor.set(new Point2D(e.getX(), e.getY()));
+			selectionRect.setX(e.getX());
+			selectionRect.setY(e.getY());
+			selectionRect.setWidth(0);
+			selectionRect.setHeight(0);
+		});
+
+		mapPane.setOnMouseDragged(e -> {
+			selectionRect.setX(Math.min(e.getX(), mouseAnchor.get().getX()));
+			selectionRect.setY(Math.min(e.getY(), mouseAnchor.get().getY()));
+			selectionRect.setWidth(Math.abs(e.getX() - mouseAnchor.get().getX()));
+			selectionRect.setHeight(Math.abs(e.getY() - mouseAnchor.get().getY()));
+		});
+
+		mapPane.setOnMouseReleased(e -> {
+			selectedIcons.clear();
+
+			selectedIcons.addAll(
+					iconEntityMap.keySet().stream()
+							.filter(r -> r.getBoundsInParent().intersects(selectionRect.getBoundsInParent()))
+							.collect(Collectors.toList()));
+
+
+			for(DragIcon icon: selectedIcons)
+			{
+				Glow glow = new Glow();
+				glow.setLevel(.3);
+
+				icon.setEffect(glow);
+			}
+
+			selectionRect.setWidth(0);
+			selectionRect.setHeight(0);
+		});
+
+		mapPane.getChildren().add(selectionRect);
+
+		selectionRectangle = new Rectangle();
+
+		AnchorPane pane = new AnchorPane();
+		pane.setPrefHeight(2000);
+		pane.setPrefWidth(2000);
+		pane.relocate(0, 0);
+
+
+		mapPane.getChildren().add(pane);
+
+		//MouseControlUtil.addSelectionRectangleGesture(pane, selectionRectangle);
+
+
 		drawingEdgeLine = new Line();
 		drawingEdgeLine.setStrokeWidth(5);
 
