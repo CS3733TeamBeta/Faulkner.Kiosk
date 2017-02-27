@@ -1,7 +1,7 @@
 package Map.Entity;
 
 
-import Entity.Doctor;
+import Directory.*;
 import Map.Entity.Building;
 import Map.Entity.CampusFloor;
 import Map.Entity.Destination;

@@ -1,8 +1,8 @@
 package Map.Controller;
 
+import Directory.Doctor;
 import Map.Boundary.MapBoundary;
 import Application.SceneSwitcher;
-import Entity.Doctor;
 import Map.Navigation.Guidance;
 import Application.Exceptions.PathFindingException;
 import Map.Entity.Destination;

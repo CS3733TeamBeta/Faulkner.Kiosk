@@ -1,7 +1,7 @@
 package Map.Entity;
 
 import Map.Controller.Popover.DestinationEditController;
-import Entity.Doctor;
+import Directory.*;
 import org.controlsfx.control.PopOver;
 
 import java.util.HashSet;

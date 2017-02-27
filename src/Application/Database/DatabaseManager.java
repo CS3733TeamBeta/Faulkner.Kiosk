@@ -1,7 +1,7 @@
 package Application.Database;
 
-import Entity.Doctor;
-import Map.Entity.Hospital;
+import Directory.*;
+import Map.Entity.*;
 
 import java.sql.*;
 import java.util.*;
@@ -25,12 +25,12 @@ public class DatabaseManager {
 
     private static String CAMPUS_ID = "CAMPUS";
 
-    public static HashMap<UUID, Map.MapNode> mapNodes = new HashMap<>();
-    public static HashMap<UUID, Map.NodeEdge> edges = new HashMap<>();
+    public static HashMap<UUID, MapNode> mapNodes = new HashMap<>();
+    public static HashMap<UUID, NodeEdge> edges = new HashMap<>();
     public static HashMap<String, Doctor> doctors = new HashMap<>();
-    public static HashMap<String, Map.Floor> floors = new HashMap<>();
-    public static HashMap<UUID, Map.Destination> destinations = new HashMap<>();
-    public static HashMap<String, Map.Office> offices = new HashMap<>();
+    public static HashMap<String, Floor> floors = new HashMap<>();
+    public static HashMap<UUID, Destination> destinations = new HashMap<>();
+    public static HashMap<String, Office> offices = new HashMap<>();
 
     public static DatabaseManager instance = null;
 
@@ -409,7 +409,7 @@ public class DatabaseManager {
     private void loadCampus(Hospital h) throws SQLException{
         PreparedStatement campusNodePS = conn.prepareStatement("SELECT * FROM NODE WHERE NODE_ID = ?");
 
-        HashMap<UUID, Map.MapNode> mapNodes = new HashMap<>();
+        HashMap<UUID, MapNode> mapNodes = new HashMap<>();
 
         ResultSet rs = s.executeQuery("SELECT * FROM USER1.CAMPUS");
 
@@ -424,7 +424,7 @@ public class DatabaseManager {
 
             while(campusNodeRS.next())
             {
-                Map.MapNode tempNode = new Map.MapNode(UUID.fromString(campusNodeRS.getString(1)),
+                MapNode tempNode = new MapNode(UUID.fromString(campusNodeRS.getString(1)),
                         campusNodeRS.getDouble(2),
                         campusNodeRS.getDouble(3),
                         campusNodeRS.getInt(5));
@@ -441,16 +441,16 @@ public class DatabaseManager {
         s = conn.createStatement();
         rs = s.executeQuery("SELECT * FROM BUILDING");
 
-        Map.Building b;
+        Building b;
 
         while(rs.next()) {
-            b = new Map.Building(UUID.fromString(rs.getString(1)), rs.getString(2));
+            b = new Building(UUID.fromString(rs.getString(1)), rs.getString(2));
             loadFloors(h, b);
             h.addBuilding(b);
         }
     }
 
-    private void loadFloors(Hospital h, Map.Building b) throws SQLException {
+    private void loadFloors(Hospital h, Building b) throws SQLException {
         PreparedStatement floorsPS = conn.prepareStatement("SELECT * FROM FLOOR WHERE BUILDING_ID = ?");
         floorsPS.setString(1, b.getBuildID().toString());
         ResultSet floorRS = floorsPS.executeQuery();
@@ -458,11 +458,11 @@ public class DatabaseManager {
         //floorsPS.setString(1, uuid.toString());
 
         UUID floor_id;
-        Map.Floor f;
+        Floor f;
 
         while(floorRS.next()) {
             floor_id = UUID.fromString(floorRS.getString(1));
-            f = new Map.Floor(floor_id, floorRS.getInt(3));
+            f = new Floor(floor_id, floorRS.getInt(3));
             f.setImageLocation(floorRS.getString(4));
 
             loadNodes(h, f);
@@ -474,7 +474,7 @@ public class DatabaseManager {
         }
     }
 
-    private void loadNodes(Hospital h, Map.Floor f) throws SQLException
+    private void loadNodes(Hospital h, Floor f) throws SQLException
     {
         PreparedStatement nodesPS = conn.prepareStatement("SELECT * from NODE where FLOOR_ID = ?");
         PreparedStatement destPS = conn.prepareStatement("SELECT * FROM DESTINATION WHERE FLOOR_ID = ?");
@@ -487,11 +487,11 @@ public class DatabaseManager {
 
         UUID nodeid;
 
-        HashMap<UUID, Map.MapNode> nodes = new HashMap<>();
+        HashMap<UUID, MapNode> nodes = new HashMap<>();
 
         while(nodeRS.next()) {
             nodeid = UUID.fromString(nodeRS.getString(1));
-            Map.MapNode tempNode = new Map.MapNode((nodeid),
+            MapNode tempNode = new MapNode((nodeid),
                     nodeRS.getDouble(2),
                     nodeRS.getDouble(3),
                     nodeRS.getInt(5));
@@ -511,9 +511,9 @@ public class DatabaseManager {
             // UUID for node we are dealing with
             UUID tempNodeID = UUID.fromString(destRS.getString(3));
             // get node to be replaced by destination
-            Map.MapNode changedNode = mapNodes.get(tempNodeID);
+            MapNode changedNode = mapNodes.get(tempNodeID);
             // create destination
-            Map.Destination tempDest = new Map.Destination(UUID.fromString(destRS.getString(1)),
+            Destination tempDest = new Destination(UUID.fromString(destRS.getString(1)),
                     changedNode,
                     destRS.getString(2),
                     UUID.fromString(floorID));
@@ -531,7 +531,7 @@ public class DatabaseManager {
         }
 
         // add all nodes to floor
-        for (Map.MapNode n : nodes.values()) {
+        for (MapNode n : nodes.values()) {
             f.addNode(n);
         }
     }
@@ -544,7 +544,7 @@ public class DatabaseManager {
 
         while(rs.next()) {
             // create new edge
-            Map.NodeEdge tempEdge = new Map.NodeEdge(mapNodes.get(UUID.fromString(rs.getString(2))),
+            NodeEdge tempEdge = new NodeEdge(mapNodes.get(UUID.fromString(rs.getString(2))),
                     mapNodes.get(UUID.fromString(rs.getString(3))),
                     rs.getFloat(4));
 
@@ -566,7 +566,7 @@ public class DatabaseManager {
         rs = s.executeQuery("select * from USER1.DOCTOR order by NAME");
 
         while(rs.next()) {
-            HashSet<Map.Destination> locations = new HashSet<>();
+            HashSet<Destination> locations = new HashSet<>();
 
             // create new Doctor
             Doctor tempDoc = new Doctor(UUID.fromString(rs.getString(1)),
@@ -606,7 +606,7 @@ public class DatabaseManager {
             // set of offices with particular destination ID foreign key
             ResultSet offRS = destOff.executeQuery();
             while(offRS.next()) {
-                Map.Office tempOff = new Map.Office(UUID.fromString(rs.getString(1)),
+                Office tempOff = new Office(UUID.fromString(rs.getString(1)),
                         offRS.getString(2),
                         (h.getDestinations().get(UUID.fromString(rs.getString(1)))));
 
@@ -659,7 +659,7 @@ public class DatabaseManager {
         conn.commit();
     }
 
-    public void addDestToDB(Map.Destination dest) throws SQLException {
+    public void addDestToDB(Destination dest) throws SQLException {
         PreparedStatement insertDest = conn.prepareStatement("INSERT INTO DESTINATION (DEST_ID, NAME, NODE_ID, FLOOR_ID) " +
                 "VALUES (?, ?, ?, ?)");
         // insert destination to database
@@ -671,7 +671,7 @@ public class DatabaseManager {
         conn.commit();
     }
 
-    public void updateDestination(Map.Destination dest) throws SQLException {
+    public void updateDestination(Destination dest) throws SQLException {
         PreparedStatement upDest = conn.prepareStatement("UPDATE DESTINATION " +
                 "SET NAME = ? " +
                 "WHERE DEST_ID = ?");
@@ -682,7 +682,7 @@ public class DatabaseManager {
         conn.commit();
     }
 
-    public void delDestFromDB(Map.Destination dest) throws SQLException {
+    public void delDestFromDB(Destination dest) throws SQLException {
         String destUUID = dest.getDestUID().toString();
 
         PreparedStatement deleteDest = conn.prepareStatement("DELETE FROM DESTINATION WHERE DEST_ID = ?");
@@ -693,7 +693,7 @@ public class DatabaseManager {
         conn.commit();
     }
 
-    public void addDestToDoc(Doctor doc, Map.Destination dest) throws SQLException {
+    public void addDestToDoc(Doctor doc, Destination dest) throws SQLException {
         PreparedStatement destDoc = conn.prepareStatement("INSERT INTO DEST_DOC (DEST_ID, DOC_ID) " +
                 "VALUES (?, ?)");
         // adds destination - doctor relationships to database
@@ -703,7 +703,7 @@ public class DatabaseManager {
         conn.commit();
     }
 
-    public void addNodeToDB(Map.MapNode m) throws SQLException {
+    public void addNodeToDB(MapNode m) throws SQLException {
         PreparedStatement insertNode = conn.prepareStatement("INSERT INTO NODE (NODE_ID, POSX, POSY, FLOOR_ID, TYPE) " +
                 "VALUES (?, ?, ?, ?, ?)");
 
@@ -716,7 +716,7 @@ public class DatabaseManager {
         conn.commit();
     }
 
-    public void updateNode(Map.MapNode m) throws SQLException {
+    public void updateNode(MapNode m) throws SQLException {
         PreparedStatement upNode = conn.prepareStatement("UPDATE NODE " +
                 "SET POSX = ?, POSY = ?" +
                 "WHERE NODE_ID = ?");
@@ -729,7 +729,7 @@ public class DatabaseManager {
         conn.commit();
     }
 
-    public void delNodeFromDB(Map.MapNode m) throws SQLException {
+    public void delNodeFromDB(MapNode m) throws SQLException {
         UUID nodeUUID = m.getNodeID();
 
         PreparedStatement delNode = conn.prepareStatement("DELETE FROM NODE WHERE NODE_ID = ?");
@@ -740,7 +740,7 @@ public class DatabaseManager {
         conn.commit();
     }
 
-    public void addEdgeToDB(Map.NodeEdge e) throws SQLException {
+    public void addEdgeToDB(NodeEdge e) throws SQLException {
         PreparedStatement insertEdge = conn.prepareStatement("INSERT INTO EDGE (EDGE_ID, NODEA, NODEB, COST, FLOOR_ID) " +
                 "VALUES (?, ?, ?, ?, ?)");
 
@@ -762,7 +762,7 @@ public class DatabaseManager {
         conn.commit();
     }
 
-    public void addOfficeToDB(Map.Office o) throws SQLException {
+    public void addOfficeToDB(Office o) throws SQLException {
         PreparedStatement insertOffice = conn.prepareStatement("INSERT INTO OFFICES (OFFICE_ID, NAME, DEST_ID) " +
                 "VALUES (?, ?, ?)");
         // insert office to database
@@ -773,7 +773,7 @@ public class DatabaseManager {
         conn.commit();
     }
 
-    public void updateOffice(Map.Office o) throws SQLException {
+    public void updateOffice(Office o) throws SQLException {
         PreparedStatement upOff = conn.prepareStatement("UPDATE OFFICES " +
                 "SET NAME = ?, DEST_ID = ? " +
                 "WHERE OFFICE_ID = ?");
@@ -789,7 +789,7 @@ public class DatabaseManager {
         conn.commit();
     }
 
-    public void delOfficeFromDB(Map.Office o) throws SQLException {
+    public void delOfficeFromDB(Office o) throws SQLException {
         PreparedStatement delOffice = conn.prepareStatement("DELETE FROM OFFICES WHERE OFFICE_ID = ?");
         // get office UUID
         String offUUID = o.getId().toString();
@@ -799,7 +799,7 @@ public class DatabaseManager {
         conn.commit();
     }
 
-    public void deleteFloor(Map.Floor floor) throws SQLException {
+    public void deleteFloor(Floor floor) throws SQLException {
         PreparedStatement floorsPS = conn.prepareStatement("DELETE FROM FLOOR WHERE FLOOR_ID = ?");
         s = conn.createStatement();
 
@@ -812,7 +812,7 @@ public class DatabaseManager {
         }
     }
 
-    public void addFloor(Map.Floor f, Map.Building b) throws SQLException {
+    public void addFloor(Floor f, Building b) throws SQLException {
         PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO FLOOR (FLOOR_ID, BUILDING_ID, NUMBER, IMAGE) VALUES (?, ?, ?, ?)");
 
         insertFloors.setString(1, f.getFloorID().toString());
@@ -822,7 +822,7 @@ public class DatabaseManager {
         insertFloors.executeUpdate();
     }
 
-    public void deleteBuilding(Map.Building building) throws SQLException {
+    public void deleteBuilding(Building building) throws SQLException {
         PreparedStatement buildingPS = conn.prepareStatement("DELETE FROM BUILDING WHERE BUILDING_ID = ?");
         s = conn.createStatement();
 
@@ -835,7 +835,7 @@ public class DatabaseManager {
         }
     }
 
-    public void addBuilding(Map.Building building) throws SQLException {
+    public void addBuilding(Building building) throws SQLException {
         PreparedStatement insertBuildings = conn.prepareStatement("INSERT INTO BUILDING (BUILDING_ID, NAME) VALUES (?, ?)");
 
         insertBuildings.setString(1, building.getBuildID().toString());
@@ -857,9 +857,9 @@ public class DatabaseManager {
 
         int counter = 1;
 
-        HashMap<Map.NodeEdge, String> collectedEdges = new HashMap<>();
+        HashMap<NodeEdge, String> collectedEdges = new HashMap<>();
 
-        for(Map.MapNode n: h.getCampusFloor().getCampusNodes())
+        for(MapNode n: h.getCampusFloor().getCampusNodes())
         {
             insertBuildings.setInt(1, counter);
             insertBuildings.setString(2, CAMPUS_ID);
@@ -882,7 +882,7 @@ public class DatabaseManager {
             insertCampusNodes.executeUpdate();
             conn.commit();
 
-            for(Map.NodeEdge edge: n.getEdges())
+            for(NodeEdge edge: n.getEdges())
             {
                 if(!collectedEdges.containsKey(edge)) //if current collection of edges doesn't contain this edge,
                 {                                   //add it. (Will load ot db later)
@@ -894,7 +894,7 @@ public class DatabaseManager {
         counter++;
 
         // insert buildings into database
-        for (Map.Building b : h.getBuildings()) {
+        for (Building b : h.getBuildings()) {
             try {
                 insertBuildings.setInt(1, counter);
                 insertBuildings.setString(2, b.getName());
@@ -907,7 +907,7 @@ public class DatabaseManager {
 
             int edgesCount = 1;
             // insert floors into database
-            for (Map.Floor f : b.getFloors()) {
+            for (Floor f : b.getFloors()) {
                 String floorID = "" + b.getName() + Integer.toString(f.getFloorNumber()) + "";
                 try {
                     insertFloors.setString(1, floorID);
@@ -922,7 +922,7 @@ public class DatabaseManager {
                 conn.commit();
 
                 // insert nodes into database
-                for (Map.MapNode n : f.getFloorNodes()) {
+                for (MapNode n : f.getFloorNodes()) {
                     try {
                         insertNodes.setString(1, n.getNodeID().toString());
                         insertNodes.setDouble(2, n.getPosX());
@@ -935,11 +935,11 @@ public class DatabaseManager {
                         System.out.println("Error saving node " + e.getMessage());
                     }
                     conn.commit();
-                    if (n instanceof Map.Destination)
+                    if (n instanceof Destination)
                     {
                         try {
-                            insertDestinations.setString(1, ((Map.Destination)n).getDestUID().toString());
-                            insertDestinations.setString(2, ((Map.Destination)n).getName());
+                            insertDestinations.setString(1, ((Destination)n).getDestUID().toString());
+                            insertDestinations.setString(2, ((Destination)n).getName());
                             insertDestinations.setString(3, n.getNodeID().toString());
                             insertDestinations.setString(4, floorID);
                             insertDestinations.executeUpdate();
@@ -950,7 +950,7 @@ public class DatabaseManager {
                         conn.commit();
                     }
 
-                    for(Map.NodeEdge edge: n.getEdges())
+                    for(NodeEdge edge: n.getEdges())
                     {
                         if(!collectedEdges.containsKey(edge)) //if current collection of edges doesn't contain this edge,
                         {                                   //add it. (Will load ot db later)
@@ -964,7 +964,7 @@ public class DatabaseManager {
 
         int edgesCount = 1;
         // insert edges into database
-        for (Map.NodeEdge edge : collectedEdges.keySet()) {
+        for (NodeEdge edge : collectedEdges.keySet()) {
             try {
                 insertEdges.setInt(1, edgesCount);
                 insertEdges.setString(2, edge.getSource().getNodeID().toString());
@@ -997,7 +997,7 @@ public class DatabaseManager {
             }
             conn.commit();
             // saves Suite and Doctor Relationships
-            for (Map.Destination dest : doc.getDestinations()) {
+            for (Destination dest : doc.getDestinations()) {
                 try {
                     insertAssoc.setString(1, dest.getDestUID().toString());
                     insertAssoc.setString(2, doc.getDocID().toString());
@@ -1010,7 +1010,7 @@ public class DatabaseManager {
             }
         }
         // saves Offices
-        for (Map.Office office : h.getOffices().values()) {
+        for (Office office : h.getOffices().values()) {
             try {
                 insertOffices.setString(1, office.getId().toString());
                 insertOffices.setString(2, office.getName());

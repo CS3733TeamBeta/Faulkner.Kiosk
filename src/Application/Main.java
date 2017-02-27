@@ -2,7 +2,7 @@ package Application;//Testing
 
 //import Entity.Doctor;
 import Application.SceneSwitcher;
-import Entity.Doctor;
+import Directory.*;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
