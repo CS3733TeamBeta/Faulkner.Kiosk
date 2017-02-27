@@ -166,10 +166,10 @@ public class MapEditorController extends MapController
 
 			for(DragIcon icon: selectedIcons)
 			{
-				Glow glow = new Glow();
-				glow.setLevel(.3);
 
-				icon.setEffect(glow);
+				//ColorInput colorInput = new ColorInput();
+				//colorInput.setPaint(Color.RED);
+				//icon.setEffect(colorInput);
 			}
 
 			selectionRect.setWidth(0);
