@@ -165,19 +165,6 @@ public class MapEditorController extends MapController
 
 		mapPane.getChildren().add(selectionRect);
 
-		selectionRectangle = new Rectangle();
-
-		AnchorPane pane = new AnchorPane();
-		pane.setPrefHeight(2000);
-		pane.setPrefWidth(2000);
-		pane.relocate(0, 0);
-
-
-		mapPane.getChildren().add(pane);
-
-		//MouseControlUtil.addSelectionRectangleGesture(pane, selectionRectangle);
-
-
 		drawingEdgeLine = new Line();
 		drawingEdgeLine.setStrokeWidth(5);
 
@@ -561,10 +548,6 @@ public class MapEditorController extends MapController
 				},
 				null);
 
-		mapPane.setOnDragDone(e->{
-			System.out.println("Drag complete");
-				}
-		);
 	}
 
 	/**
