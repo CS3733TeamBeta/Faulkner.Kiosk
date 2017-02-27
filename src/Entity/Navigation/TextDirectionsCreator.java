@@ -131,7 +131,7 @@ public class TextDirectionsCreator {
                     }
                 }
                 //If there are nodes after this
-                if(listNodes.size() > i+2) {
+                if(listNodes.size() > i+4) {
                     System.out.println("It's greater");
                     MapNode tempFromNode = listNodes.get(i+1);
                     MapNode tempToNode = listNodes.get(i+2);
