@@ -1,7 +1,6 @@
 //Testing
 package Controller;
 
-import Controller.Map.Admin.AdminList;
 import Entity.Doctor;
 import javafx.application.Application;
 import javafx.collections.FXCollections;

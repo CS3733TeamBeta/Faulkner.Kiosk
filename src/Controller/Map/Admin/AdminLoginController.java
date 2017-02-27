@@ -3,20 +3,16 @@ package Controller.Map.Admin;
 
 import Controller.AbstractController;
 import Controller.SceneSwitcher;
-import Model.AdminLoginModel;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class AdminLoginController extends AbstractController
 {
@@ -38,13 +34,12 @@ public class AdminLoginController extends AbstractController
     @FXML
     private JFXButton loginButton;
 
-    AdminLoginModel infoForLoggingIn;
+    HashMap<String, String> credentials;
 
     Stage primaryStage;
 
     public AdminLoginController(){
-        infoForLoggingIn = new AdminLoginModel();
-        infoForLoggingIn.admins.devEnabled = true;
+        credentials.put("ADMIN", "ADMIN");
     }
 
     public void setStage(Stage stage)
@@ -57,9 +52,9 @@ public class AdminLoginController extends AbstractController
     {
         System.out.println("Login clicked");
 
-        if(infoForLoggingIn.admins.checkValidity(txtUsername.getText(), txtPassword.getText())) {
+        //if(credentials.get(txtUsername.getText()) txtUsername.getText(), txtPassword.getText())) {
             SceneSwitcher.switchToMapEditorView(primaryStage);
-        }
+       // }
     }
 
     @FXML
