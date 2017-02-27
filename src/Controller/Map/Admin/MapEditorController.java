@@ -74,11 +74,10 @@ public class MapEditorController extends MapController
 
 	AdminMapBoundary adminBoundary;
 
-	Rectangle selectionRectangle;
-
 	HashSet<DragIcon> selectedIcons;
 
 	boolean drawingEdgeFrozen = false;
+	boolean dragInProgress = false;
 
 	public MapEditorController()
 	{
@@ -129,6 +128,7 @@ public class MapEditorController extends MapController
 
 		mapPane.setOnMousePressed(e -> {
 			mouseAnchor.set(new Point2D(e.getX(), e.getY()));
+			selectionRect.toFront();
 			selectionRect.setX(e.getX());
 			selectionRect.setY(e.getY());
 			selectionRect.setWidth(0);
@@ -140,6 +140,10 @@ public class MapEditorController extends MapController
 			selectionRect.setY(Math.min(e.getY(), mouseAnchor.get().getY()));
 			selectionRect.setWidth(Math.abs(e.getX() - mouseAnchor.get().getX()));
 			selectionRect.setHeight(Math.abs(e.getY() - mouseAnchor.get().getY()));
+
+			dragInProgress = true;
+
+			e.consume();
 		});
 
 		mapPane.setOnMouseReleased(e -> {
@@ -161,6 +165,8 @@ public class MapEditorController extends MapController
 
 			selectionRect.setWidth(0);
 			selectionRect.setHeight(0);
+
+			e.consume();
 		});
 
 		mapPane.getChildren().add(selectionRect);
@@ -230,7 +236,7 @@ public class MapEditorController extends MapController
 		{
 			Node clickedNode = event.getPickResult().getIntersectedNode();
 
-			if(!iconEntityMap.containsKey(clickedNode) && !edgeEntityMap.containsKey(clickedNode))
+			if(!dragInProgress && !iconEntityMap.containsKey(clickedNode) && !edgeEntityMap.containsKey(clickedNode))
 			{
 				if(!drawingEdgeLine.isVisible()) //radial menu requested
 				{
@@ -244,6 +250,10 @@ public class MapEditorController extends MapController
 			else if(edgeEntityMap.containsKey(clickedNode)) //dropped in the middle of a line
 			{
 				dropOnLine(clickedNode, new Point2D(event.getX(), event.getY()));
+			}
+			else if(dragInProgress)
+			{
+				dragInProgress = false;
 			}
 		});
 
