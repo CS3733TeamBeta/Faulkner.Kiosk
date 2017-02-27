@@ -1,10 +1,13 @@
 package test.java;
 
-import Entity.Hospital;
-import Entity.Map.*;
-import Entity.Navigation.Guidance;
-import Entity.Navigation.Path;
-import Exceptions.PathFindingNoPathException;
+import Map.Entity.Hospital;
+import Map.Navigation.Guidance;
+import Map.Navigation.Path;
+import Application.Exceptions.PathFindingNoPathException;
+import Map.Entity.Building;
+import Map.Entity.Floor;
+import Map.Entity.MapNode;
+import Map.Entity.NodeEdge;
 import junit.framework.TestCase;
 
 import java.util.LinkedList;
