@@ -6,6 +6,10 @@ import java.sql.SQLException;
 
 /**
  * Created by benhylak on 2/25/17.
+ *
+ * This is where all of the tracking changes and updating database should go. When it
+ * creates the hospital, it should be able to subscribe to all of the changes in all of the floors
+ * and just like ya, everything. If you want to be cool anyway...
  */
 public class DataCache
 {
