@@ -13,6 +13,7 @@ import java.util.Map;
  */
 public class AdminMapBoundary extends MapBoundary
 {
+    /**Changes the floor and adds all of the floor's edges too**/
     @Override
     public void changeFloor(Floor f)
     {
@@ -47,12 +48,25 @@ public class AdminMapBoundary extends MapBoundary
         return true;
     }
 
+    /**
+     * Creates a new edge inbetween two nodes
+     *
+     * @param source {link:MapNode}
+     * @param target {link:MapNode}
+     */
     public void newEdge(MapNode source, MapNode target)
     {
         NodeEdge edge = new NodeEdge(source, target);
         edges.add(edge);
     }
 
+    /**
+     * Creates a new node of specified type at a specified location
+     *
+     * @param type NodeType of the node
+     * @param loc location local to the map image
+     * @return
+     */
     public MapNode newNode(NodeType type, Point2D loc)
     {
         MapNode n = MapNode.nodeFactory(type, loc);
@@ -76,6 +90,12 @@ public class AdminMapBoundary extends MapBoundary
         return n;
     }
 
+    /**
+     * Adds elevator by chainlinking it to every other elevator in line. (Artifact of having edges rather than
+     * neighbors, but whatever)
+     *
+     * @param n Elevator node
+     */
     private void addElevator(MapNode n)
     {
         ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
@@ -115,6 +135,11 @@ public class AdminMapBoundary extends MapBoundary
         }
     }
 
+    /**
+     * Removes a map node on the current floor and removes it from the working set
+     *
+     * @param n MapNode
+     */
     public void remove(MapNode n)
     {
         nodesOnMap.remove(n);
@@ -131,6 +156,10 @@ public class AdminMapBoundary extends MapBoundary
         }
     }
 
+    /**
+     * Deletes an edge completely
+     * @param edge
+     */
     public void removeEdge(NodeEdge edge)
     {
         edge.getSource().getEdges().remove(edge);
@@ -139,6 +168,11 @@ public class AdminMapBoundary extends MapBoundary
         edges.remove(edge);
     }
 
+    /**
+     * Moves a node to a given point
+     * @param n
+     * @param movedTo
+     */
     public void moveNode(MapNode n, Point2D movedTo)
     {
         n.setPosX(movedTo.getX());
@@ -153,6 +187,7 @@ public class AdminMapBoundary extends MapBoundary
         }
     }
 
+    /**Sets the current kiosk being used for this hospital*/
     public void setCurrentKiosk (Kiosk kiosk) {
         if (getHospital().getKiosks().contains(kiosk)) {
             getHospital().setCurrentKiosk(kiosk);
@@ -161,6 +196,4 @@ public class AdminMapBoundary extends MapBoundary
             getHospital().setCurrentKiosk(kiosk);
         }
     }
-
-
 }
