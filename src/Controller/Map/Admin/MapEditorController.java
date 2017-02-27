@@ -127,23 +127,32 @@ public class MapEditorController extends MapController
 		ObjectProperty<Point2D> mouseAnchor = new SimpleObjectProperty<>();
 
 		mapPane.setOnMousePressed(e -> {
-			mouseAnchor.set(new Point2D(e.getX(), e.getY()));
-			selectionRect.toFront();
-			selectionRect.setX(e.getX());
-			selectionRect.setY(e.getY());
-			selectionRect.setWidth(0);
-			selectionRect.setHeight(0);
+			if(!edgeEntityMap.containsKey(e.getPickResult().getIntersectedNode()) && !drawingEdgeLine.isVisible())
+			{
+				mouseAnchor.set(new Point2D(e.getX(), e.getY()));
+				selectionRect.toFront();
+				selectionRect.setX(e.getX());
+				selectionRect.setY(e.getY());
+				selectionRect.setWidth(0);
+				selectionRect.setHeight(0);
+			}
 		});
 
 		mapPane.setOnMouseDragged(e -> {
-			selectionRect.setX(Math.min(e.getX(), mouseAnchor.get().getX()));
-			selectionRect.setY(Math.min(e.getY(), mouseAnchor.get().getY()));
-			selectionRect.setWidth(Math.abs(e.getX() - mouseAnchor.get().getX()));
-			selectionRect.setHeight(Math.abs(e.getY() - mouseAnchor.get().getY()));
+			if(!drawingEdgeLine.isVisible())
+			{
+				selectionRect.setX(Math.min(e.getX(), mouseAnchor.get().getX()));
+				selectionRect.setY(Math.min(e.getY(), mouseAnchor.get().getY()));
+				selectionRect.setWidth(Math.abs(e.getX() - mouseAnchor.get().getX()));
+				selectionRect.setHeight(Math.abs(e.getY() - mouseAnchor.get().getY()));
 
-			dragInProgress = true;
-
-			e.consume();
+				dragInProgress = true;
+			}
+			else
+			{
+				selectionRect.setWidth(0);
+				selectionRect.setHeight(0);
+			}
 		});
 
 		mapPane.setOnMouseReleased(e -> {
@@ -165,8 +174,6 @@ public class MapEditorController extends MapController
 
 			selectionRect.setWidth(0);
 			selectionRect.setHeight(0);
-
-			e.consume();
 		});
 
 		mapPane.getChildren().add(selectionRect);
@@ -236,7 +243,7 @@ public class MapEditorController extends MapController
 		{
 			Node clickedNode = event.getPickResult().getIntersectedNode();
 
-			if(!dragInProgress && !iconEntityMap.containsKey(clickedNode) && !edgeEntityMap.containsKey(clickedNode))
+			if(event.getButton() != MouseButton.SECONDARY && !dragInProgress && !iconEntityMap.containsKey(clickedNode) && !edgeEntityMap.containsKey(clickedNode))
 			{
 				if(!drawingEdgeLine.isVisible()) //radial menu requested
 				{
@@ -247,7 +254,7 @@ public class MapEditorController extends MapController
 					chainLink(clickedNode, new Point2D(event.getX(), event.getY()));
 				}
 			}
-			else if(edgeEntityMap.containsKey(clickedNode)) //dropped in the middle of a line
+			else if(event.getButton() != MouseButton.SECONDARY && edgeEntityMap.containsKey(clickedNode)) //dropped in the middle of a line
 			{
 				dropOnLine(clickedNode, new Point2D(event.getX(), event.getY()));
 			}
@@ -514,10 +521,7 @@ public class MapEditorController extends MapController
 
 		edge.setOnMouseClicked(deEvent->{
 			if (edge != null) {
-				if (deEvent.getClickCount() == 2)
-				{
 					adminBoundary.removeEdge(edgeEntityMap.get(edge));
-				}
 			}
 		});
 	}
