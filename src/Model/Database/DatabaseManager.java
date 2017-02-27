@@ -715,6 +715,7 @@ public class DatabaseManager {
         insertNode.setInt(5, m.getType().ordinal());
         insertNode.executeUpdate();
         conn.commit();
+        System.out.println("Added node to database");
     }
 
     public void updateNode(MapNode m) throws SQLException {

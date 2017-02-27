@@ -1,12 +1,10 @@
 package Boundary;
 
-import Entity.Map.*;
 import Controller.Map.ViewElements.DragIconType;
+import Entity.Map.*;
 import javafx.geometry.Point2D;
 
-
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by benhylak on 2/24/17.
