@@ -96,7 +96,7 @@ public class Guidance extends Path {
         System.out.println("Printing Textual Directions");
         System.out.println("");
         for (DirectionFloorStep step: floorSteps) {
-            System.out.println("Printing a step: ");
+            System.out.println("Printing a floorStep: ");
             for(DirectionStep s : step.getDirectionSteps()) {
                 System.out.println(s);
             }
@@ -368,7 +368,7 @@ public class Guidance extends Path {
                         //get the nodes to draw the lines between
                         MapNode targetNode = e.getTarget();
                         MapNode sourceNode = e.getSource();
-    
+
                         int targetIsConnector = 0;
                         int sourceIsConnector = 0;
 
