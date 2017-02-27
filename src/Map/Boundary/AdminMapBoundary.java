@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by benhylak on 2/24/17.
@@ -54,47 +55,22 @@ public class AdminMapBoundary extends MapBoundary
 
     public MapNode newNode(NodeType type, Point2D loc)
     {
-       // MapNode n;
-        MapNode n = null;
+        MapNode n = MapNode.nodeFactory(type, loc);
 
-        switch(type)
-        {
-            case Department:
-            case Food:
-            case Info:
-            case Restroom:
-            case Store:
-            {
-                Destination newDestination = new Destination(); //needed for lambda
-                n=newDestination;
-                n.setOnDeleteRequested(e-> remove(newDestination));
-                break;
-            }
-            case Kiosk:
-            {
-                break;
-            }
-            default:
-            {
-                MapNode newMapNode = new MapNode(); //needed for lambda
-                n = newMapNode;
-                n.setOnDeleteRequested(e->remove(newMapNode));
-
-                break;
-            }
-        }
-
-        n.setType(type);
-        n.setPosX(loc.getX());
-        n.setPosY(loc.getY());
+        n.setOnDeleteRequested(e->remove(n));
 
         if(type == NodeType.Elevator){
-            n.setIsElevator(true);
             addElevator(n);
         }
         else {
             currentFloor.addNode(n);
         }
+
+        if(n instanceof Kiosk)
+        {
+            getHospital().getKiosks().add((Kiosk)n);
+        }
+
         nodesOnMap.add(n);
 
         return n;
@@ -176,4 +152,15 @@ public class AdminMapBoundary extends MapBoundary
             edge.updateCost();
         }
     }
+
+    public void setCurrentKiosk (Kiosk kiosk) {
+        if (getHospital().getKiosks().contains(kiosk)) {
+            getHospital().setCurrentKiosk(kiosk);
+        } else {
+            getHospital().getKiosks().add(kiosk);
+            getHospital().setCurrentKiosk(kiosk);
+        }
+    }
+
+
 }

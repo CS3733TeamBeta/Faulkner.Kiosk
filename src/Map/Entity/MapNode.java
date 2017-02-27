@@ -5,10 +5,12 @@ import Map.Controller.Popover.NodeEditController;
 import Application.Events.DeleteRequestedEvent;
 import Application.Events.DeleteRequestedHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.*;
 
 /**
@@ -24,18 +26,59 @@ public class MapNode extends Observable
 
     protected ArrayList<DeleteRequestedHandler> deleteEventHandlers = null;
 
-    int nodeID; //Used for a human-identifiable
-
     UUID nodeUID;
 
     String label = "";
     String destName = "";
     NodeType type;
 
+
+    public static MapNode nodeFactory(NodeType type, Point2D location)
+    {
+        MapNode n = null;
+
+        switch(type)
+        {
+            case Department:
+            case Food:
+            case Info:
+            case Restroom:
+            case Store:
+            {
+                n = new Destination(); //needed for lambda
+                break;
+            }
+            case Kiosk:
+            {
+                n = new Kiosk();
+
+                break;
+            }
+            case Elevator:
+            {
+                n= new MapNode();
+                n.setIsElevator(true);
+            }
+            default:
+            {
+                n= new MapNode(); //needed for lambda
+
+                break;
+            }
+        }
+
+        n.setType(type);
+        n.setPosX(location.getX());
+        n.setPosY(location.getY());
+
+        return n;
+    }
+
     public static enum NodeUpdateType
     {
         NameUpdate
     }
+
     /**
      * G value of this node, used for pathfinding, defaults to 0
      */
@@ -51,6 +94,7 @@ public class MapNode extends Observable
     /**
      * Parent of this node, used for pathfinding, defaults to null
      */
+
     NodeEdge parent = null;
 
     Image node = null;

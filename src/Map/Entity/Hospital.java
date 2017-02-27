@@ -7,10 +7,15 @@ import Map.Entity.CampusFloor;
 import Map.Entity.Destination;
 import Map.Entity.Office;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
+
+import static javafx.collections.FXCollections.observableArrayList;
 
 /**
   * Created by IanCJ on 1/29/2017.
@@ -22,7 +27,10 @@ public class Hospital {
     private HashMap<UUID, Destination> destinations;
     private HashMap<String, Office> offices;
 
-    Map.Entity.CampusFloor CampusFloor;
+    CampusFloor CampusFloor;
+
+    private Kiosk currentKiosk = null;
+    protected ObservableList<Kiosk> kiosks;
 
     public Hospital() {
         buildings = new HashSet<Building>();
@@ -31,6 +39,8 @@ public class Hospital {
         doctors = new HashMap<>();
 
         CampusFloor  = new CampusFloor();
+        kiosks = FXCollections.observableArrayList();
+
     }
 
     public void addBuilding(Building b) {
@@ -79,6 +89,17 @@ public class Hospital {
     public Collection<Building> getBuildings()
     {
         return buildings;
+    }
+
+    public ObservableList<Kiosk> getKiosks () { return kiosks; }
+    public Kiosk getCurrentKiosk() { return  currentKiosk; }
+
+    public void addKiosk (Kiosk newKiosk) {
+        kiosks.add(newKiosk);
+    }
+
+    public  void setCurrentKiosk (Kiosk kiosk) {
+        this.currentKiosk = kiosk;
     }
 
 }
