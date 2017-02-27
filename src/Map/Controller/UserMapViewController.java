@@ -1,8 +1,8 @@
 package Map.Controller;
 
+import Application.ApplicationController;
 import Directory.Doctor;
 import Map.Boundary.MapBoundary;
-import Application.SceneSwitcher;
 import Map.Navigation.Guidance;
 import Application.Exceptions.PathFindingException;
 import Map.Entity.Destination;
@@ -136,7 +136,7 @@ public class UserMapViewController extends MapController
     public UserMapViewController() throws Exception
     {
         super();
-        boundary = new MapBoundary();
+        boundary = new MapBoundary(ApplicationController.getHospital());
         nodeTextMap = HashBiMap.create();
 
         initBoundary();
@@ -627,8 +627,7 @@ public class UserMapViewController extends MapController
 
     public void adminLogin() throws IOException
     {
-
-        SceneSwitcher.switchToLoginView(primaryStage);
+        ApplicationController.getController().switchToLoginView();
     }
 
     private void LoadTableData()

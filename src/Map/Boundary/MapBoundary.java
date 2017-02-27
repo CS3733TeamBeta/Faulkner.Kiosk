@@ -22,7 +22,7 @@ public class MapBoundary extends Observable
     protected Floor currentFloor;
     MapNode kiosk;
 
-    protected Hospital h = DataCache.getInstance().getHospital();
+    protected Hospital h;
 
     public static enum UpdateType
     {
@@ -39,8 +39,9 @@ public class MapBoundary extends Observable
         edges.addListener(edgeChangeListener);
     }
 
-    public MapBoundary()
+    public MapBoundary(Hospital h)
     {
+        this.h = h;
         nodesOnMap = FXCollections.observableSet(new HashSet<MapNode>());
     }
 

@@ -1,7 +1,6 @@
 package Map.Controller;
 
 import Map.Boundary.MapBoundary;
-import Application.AbstractController;
 import Map.Entity.MapNode;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -11,8 +10,9 @@ import javafx.scene.image.ImageView;
 /**
  * Created by benhylak on 2/25/17.
  */
-public abstract class MapController extends AbstractController
+public abstract class MapController
 {
+
     protected BiMap<DragIcon, MapNode> iconEntityMap;
 
     protected Group mapItems = new Group();

@@ -13,6 +13,10 @@ import java.util.Map;
  */
 public class AdminMapBoundary extends MapBoundary
 {
+    public AdminMapBoundary(Hospital h)
+    {
+        super(h);
+    }
     /**Changes the floor and adds all of the floor's edges too**/
     @Override
     public void changeFloor(Floor f)

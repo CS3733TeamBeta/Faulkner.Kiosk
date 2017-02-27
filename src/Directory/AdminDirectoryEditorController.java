@@ -1,7 +1,6 @@
 package Directory;
 
-import Application.AbstractController;
-import Application.SceneSwitcher;
+import Application.ApplicationController;
 import Map.Entity.Destination;
 import Map.Entity.Hospital;
 import Map.Entity.Office;
@@ -39,7 +38,7 @@ import java.util.function.Predicate;
  * Created by jw97 on 2/18/2017
  */
 
-public class AdminDirectoryEditorController extends AbstractController
+public class AdminDirectoryEditorController
 {
     Boolean deptDirectoryUp = false;
 
@@ -587,7 +586,7 @@ public class AdminDirectoryEditorController extends AbstractController
     {
         try
         {
-            SceneSwitcher.switchToMapEditorView(this.getStage());
+            ApplicationController.getController().switchToMapEditorView();
         } catch (IOException e)
         {
             e.printStackTrace();

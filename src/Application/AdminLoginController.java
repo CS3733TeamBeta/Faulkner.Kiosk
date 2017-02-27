@@ -1,9 +1,6 @@
 
 package Application;
 
-import Application.AbstractController;
-import Application.SceneSwitcher;
-
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
@@ -14,7 +11,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class AdminLoginController extends AbstractController
+public class AdminLoginController
 {
     @FXML
     private AnchorPane anchorPane;
@@ -50,17 +47,15 @@ public class AdminLoginController extends AbstractController
     @FXML
     private void clickedLogin() throws IOException
     {
-        System.out.println("Login clicked");
-
         //if(credentials.get(txtUsername.getText()) txtUsername.getText(), txtPassword.getText())) {
-            SceneSwitcher.switchToMapEditorView(primaryStage);
+        ApplicationController.getController().switchToMapEditorView();
        // }
     }
 
     @FXML
     private void clickedBack() throws IOException
     {
-        SceneSwitcher.switchToUserMapView(primaryStage);
+        ApplicationController.getController().switchToUserMapView();
     }
 
     @FXML

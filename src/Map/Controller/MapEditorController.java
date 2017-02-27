@@ -1,7 +1,7 @@
 package Map.Controller;
 
+import Application.ApplicationController;
 import Map.Boundary.AdminMapBoundary;
-import Application.SceneSwitcher;
 import Map.Entity.MapNode;
 import Map.Entity.NodeType;
 import Application.Events.EdgeCompleteEvent;
@@ -85,7 +85,7 @@ public class MapEditorController extends MapController
 
 		selectedIcons = new HashSet<>();
 
-		boundary = new AdminMapBoundary();
+		boundary = new AdminMapBoundary(ApplicationController.getHospital());
 		adminBoundary = (AdminMapBoundary)boundary;
 
 		edgeEntityMap = HashBiMap.create();
@@ -709,9 +709,9 @@ public class MapEditorController extends MapController
 	@FXML
 	public void saveInfoAndExit() throws IOException, SQLException
 	{
-		DataCache.getInstance().save();
+		//DataCache.getInstance().save();
 
-		SceneSwitcher.switchToUserMapView(this.getStage());
+		ApplicationController.getController().switchToUserMapView();
 	}
 
 	@FXML
