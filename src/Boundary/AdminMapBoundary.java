@@ -1,5 +1,6 @@
 package Boundary;
 
+import Entity.Hospital;
 import Entity.Map.*;
 import Controller.Map.ViewElements.DragIconType;
 import javafx.geometry.Point2D;
@@ -55,8 +56,10 @@ public class AdminMapBoundary extends MapBoundary
 
     public MapNode newNode(DragIconType type, Point2D loc)
     {
+    
        // MapNode n;
         MapNode n = null;
+
 
         switch(type)
         {
@@ -73,6 +76,11 @@ public class AdminMapBoundary extends MapBoundary
             }
             case Kiosk:
             {
+                Kiosk newKiosk = new Kiosk();
+                getHospital().getKiosks().add(newKiosk);
+                n = newKiosk;
+                n.setOnDeleteRequested(e -> remove(newKiosk));
+                 
                 break;
             }
             default:
@@ -177,4 +185,15 @@ public class AdminMapBoundary extends MapBoundary
             edge.updateCost();
         }
     }
+
+    public void setCurrentKiosk (Kiosk kiosk) {
+        if (getHospital().getKiosks().contains(kiosk)) {
+            getHospital().setCurrentKiosk(kiosk);
+        } else {
+            getHospital().getKiosks().add(kiosk);
+            getHospital().setCurrentKiosk(kiosk);
+        }
+    }
+
+
 }
