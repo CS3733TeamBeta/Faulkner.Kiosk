@@ -23,16 +23,16 @@ public class Hospital {
     private HashMap<UUID, Destination> destinations;
     private HashMap<String, Office> offices;
 
-    Entity.Map.CampusFloor CampusFloor;
+    CampusFloor CampusFloor;
 
     private Kiosk currentKiosk = null;
     protected ObservableList<Kiosk> kiosks;
 
     public Hospital() {
         buildings = new HashSet<Building>();
-        doctors = new HashMap<>();
         destinations = new HashMap<>();
         offices = new HashMap<>();
+        doctors = new HashMap<>();
 
         CampusFloor  = new CampusFloor();
         kiosks = FXCollections.observableArrayList();

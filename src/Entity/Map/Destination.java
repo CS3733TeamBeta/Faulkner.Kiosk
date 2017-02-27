@@ -18,7 +18,7 @@ public class Destination extends MapNode {
 
     String name;
 
-    String floorID;
+    UUID floorID;
 
     HashSet<Doctor> doctors;
     HashSet<Office> offices;
@@ -37,7 +37,7 @@ public class Destination extends MapNode {
     }
 
     //Creates a destination from a map node
-    public Destination(UUID uuid, MapNode m, String name, String floor)
+    public Destination(UUID uuid, MapNode m, String name, UUID floor)
     {
         this.destUID = uuid;
         this.name = name;
@@ -92,7 +92,7 @@ public class Destination extends MapNode {
         this.name = s;
     }
 
-    public String getFloorID() {
+    public UUID getFloorID() {
         return this.floorID;
     }
 
