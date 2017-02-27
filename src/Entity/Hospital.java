@@ -25,8 +25,8 @@ public class Hospital {
 
     Entity.Map.CampusFloor CampusFloor;
 
-    public static Kiosk currentKiosk = null;
-    public static ObservableList<Kiosk> kiosks;
+    private Kiosk currentKiosk = null;
+    protected ObservableList<Kiosk> kiosks;
 
     public Hospital() {
         buildings = new HashSet<Building>();
@@ -92,6 +92,10 @@ public class Hospital {
 
     public void addKiosk (Kiosk newKiosk) {
         kiosks.add(newKiosk);
+    }
+
+    public  void setCurrentKiosk (Kiosk kiosk) {
+        this.currentKiosk = kiosk;
     }
 
 }

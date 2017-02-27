@@ -77,7 +77,7 @@ public class AdminMapBoundary extends MapBoundary
             case Kiosk:
             {
                 Kiosk newKiosk = new Kiosk();
-                Hospital.kiosks.add(newKiosk);
+                getHospital().getKiosks().add(newKiosk);
                 n = newKiosk;
                 n.setOnDeleteRequested(e -> remove(newKiosk));
                  
@@ -179,11 +179,11 @@ public class AdminMapBoundary extends MapBoundary
     }
 
     public void setCurrentKiosk (Kiosk kiosk) {
-        if (Hospital.kiosks.contains(kiosk)) {
-            Hospital.currentKiosk = kiosk;
+        if (getHospital().getKiosks().contains(kiosk)) {
+            getHospital().setCurrentKiosk(kiosk);
         } else {
-            Hospital.kiosks.add(kiosk);
-            Hospital.currentKiosk = kiosk;
+            getHospital().getKiosks().add(kiosk);
+            getHospital().setCurrentKiosk(kiosk);
         }
     }
 
