@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
+import java.awt.Color;
+
 
 //http://www.codejava.net/java-se/graphics/how-to-capture-screenshot-programmatically-in-java
 //use this link AS IS to capture screenshots
@@ -382,6 +384,30 @@ public class SendEmail {
         return imageString;
     }
 
+    public static void convertToJpg(String filePath) {
+        BufferedImage bufferedImage;
+
+        try {
+            //read image file
+            bufferedImage = ImageIO.read(new File(filePath + ".png"));
+
+            // create a blank, RGB, same width and height, and a white background
+            BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(),
+                    bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+            newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null);
+
+            // write to jpeg file
+            ImageIO.write(newBufferedImage, "jpg", new File(filePath + ".jpg"));
+
+            System.out.println("Done");
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
+    }
+
     public SendEmail(String recipient, String subject, String message, boolean includeImage, int numDirectionFloors){
         this.recipient = recipient;
         this.subject = subject;
@@ -443,16 +469,20 @@ public class SendEmail {
             for (int i = 1; i <= numDirectionFloors; i++) {
                 try {
                     bimg = ImageIO.read(new File("combined" + i + ".png"));
+                    convertToJpg("combined" + i);
                     width = bimg.getWidth();
                     height = bimg.getHeight();
+                    bimg = ImageIO.read(new File("combined" + i + ".jpg"));
                     encoding = SendEmail.encodeToString(bimg);
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
                 String tempString = "";
                 if (!isPhone) {
                     tempString += "<img src =\"cid:imageDirections" + i + "\" width = \"" + width + "\" height = \"" + height + "\" border = \"0\" />";
                 }
-                tempString += "<img src=\"data:image/jpg;base64," + encoding + "\" />" + htmlText;
+                //tempString += "<img src=\"data:image/jpg;base64," + encoding + "\" />" + htmlText;
                 imageDirectionsPortion = imageDirectionsPortion + tempString;
             }
 
@@ -480,9 +510,10 @@ public class SendEmail {
 
             multipart.addBodyPart(messageBodyPart);
 
+            convertToJpg("resources/scaled_falkner_banner");
             messageBodyPart = new MimeBodyPart();
             fds = new FileDataSource(
-                   "resources/scaled_falkner_banner.png");
+                   "resources/scaled_falkner_banner.jpg");
 
 
 
@@ -496,7 +527,7 @@ public class SendEmail {
                 for (int i = 1; i <= numDirectionFloors; i++) {
                     messageBodyPart = new MimeBodyPart();
                     fds = new FileDataSource(
-                            "combined" + i + ".png");
+                            "combined" + i + ".jpg");
 
                     messageBodyPart.setDataHandler(new DataHandler(fds));
                     messageBodyPart.setHeader("Content-ID", "<imageDirections" + i + ">");

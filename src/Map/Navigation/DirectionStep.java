@@ -35,6 +35,7 @@ public class DirectionStep {
         return this.stepEdges;
     }
 
+    @Override
     public String toString() {
         return this.instruction;
     }

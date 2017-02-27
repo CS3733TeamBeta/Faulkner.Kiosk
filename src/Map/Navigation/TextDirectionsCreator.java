@@ -18,7 +18,6 @@ public class TextDirectionsCreator {
      */
     boolean vFlag;
 
-    boolean smartassMode = false;
 
     TextDirectionsCreator(LinkedList<MapNode> listNodes, LinkedList<NodeEdge> listEdges, int kioskDirection, boolean vFlag) {
         this.vFlag = vFlag;
@@ -229,7 +228,7 @@ public class TextDirectionsCreator {
     /**
      * Totally necessary
      */
-    private void makeSmartass() {
+    public void makeSmartass() {
         for(DirectionFloorStep floorStep: this.directionFloorSteps) {
             for (DirectionStep step: floorStep.getDirectionSteps()) {
                 String tempString = step.getInstruction() + ", idiot.";
