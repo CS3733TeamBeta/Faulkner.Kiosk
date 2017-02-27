@@ -368,13 +368,7 @@ public class Guidance extends Path {
                         //get the nodes to draw the lines between
                         MapNode targetNode = e.getTarget();
                         MapNode sourceNode = e.getSource();
-                        //output info to user for debugging NOW DEFUNCT DO NOT RELY ON
-                        //System.out.println("Drawing line between nodes on floor: " + e.getSource().getMyFloor().getFloorNumber());
-                        //System.out.println("x1: " + Math.round(targetNode.getPosX() * constant) + " y1: " + Math.round( targetNode.getPosY() * constant) +
-                        //      " x2: " + Math.round(sourceNode.getPosX() * constant) + " y2: " + Math.round(sourceNode.getPosY() * constant));
-
-                        //draw the line between the two points. apply offset to account
-                        //for image being anchored at upper left of picture
+    
                         int targetIsConnector = 0;
                         int sourceIsConnector = 0;
 
