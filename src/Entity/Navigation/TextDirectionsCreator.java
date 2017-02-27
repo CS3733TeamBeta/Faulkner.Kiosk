@@ -127,10 +127,10 @@ public class TextDirectionsCreator {
                 for (NodeEdge e: toNode.getEdges()) {
                     if (e.getOtherNode(toNode) instanceof Destination && !foundNearbyDestination) {
                         foundNearbyDestination = true;
-                        tempTextDirection += "near " + ((Destination) e.getOtherNode(toNode)).getName();
+                        tempTextDirection += " near " + ((Destination) e.getOtherNode(toNode)).getName();
                     }
                 }
-                //If there aren nodes after this
+                //If there are nodes after this
                 if(listNodes.size() > i+2) {
                     System.out.println("It's greater");
                     MapNode tempFromNode = listNodes.get(i+1);
