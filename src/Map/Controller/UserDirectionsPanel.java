@@ -156,6 +156,10 @@ public class UserDirectionsPanel extends AnchorPane
         }
     }
 
+
+    //Test comment, please delete
+
+    
     @FXML
     void onSendEmail(ActionEvent event)
     {
