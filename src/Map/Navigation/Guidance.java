@@ -25,7 +25,7 @@ public class Guidance extends Path {
     //This is the direction that the user of the kiosk starts off facing.
     private int kioskDirection = 3;
     private int scaleFactor = 1;
-    private int boarderSize = 100;
+    private int borderSize = 100;
 
     BufferedImage nodeImg = null;
     BufferedImage bathImg= null;
@@ -127,7 +127,7 @@ public class Guidance extends Path {
 
     public static String directionChangeToString(int changeInDirection, boolean vFlag) {
         //If a direction comes out as "Error", somethings wrong
-        String stringDirection = "Error";
+        String stringDirection;
         switch (changeInDirection) {
             case -7:
                 stringDirection = "slight right";
@@ -406,10 +406,10 @@ public class Guidance extends Path {
                 Point startPoint = startAndEnd.getFirst();
                 Point endPoint = startAndEnd.getLast();
 
-                int scaledStartX = (int)(startPoint.x * constant) - boarderSize + offsetWidth;
-                int scaledStartY = (int)(startPoint.y * constant) - boarderSize + offsetHeight;
-                int scaledEndX = (int)(endPoint.x * constant) + boarderSize + offsetWidth;
-                int scaledEndY = (int)(endPoint.y * constant) + boarderSize + offsetHeight;
+                int scaledStartX = (int)(startPoint.x * constant) - borderSize + offsetWidth;
+                int scaledStartY = (int)(startPoint.y * constant) - borderSize + offsetHeight;
+                int scaledEndX = (int)(endPoint.x * constant) + borderSize + offsetWidth;
+                int scaledEndY = (int)(endPoint.y * constant) + borderSize + offsetHeight;
 
                 if(scaledEndX > combined.getWidth()){
                     scaledEndX = combined.getWidth();
