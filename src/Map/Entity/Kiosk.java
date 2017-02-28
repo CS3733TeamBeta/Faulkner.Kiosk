@@ -19,6 +19,7 @@ public class Kiosk extends MapNode{
 
     public Kiosk () {
         this.kioskID = UUID.randomUUID();
+        this.setName("Kiosk");
         this.direction = "N";
     }
 
@@ -73,7 +74,6 @@ public class Kiosk extends MapNode{
     }
 
     public String getDirection() { return this.direction; }
-
 
     @Override
     public String getLabel()
