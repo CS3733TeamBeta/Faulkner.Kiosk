@@ -30,7 +30,7 @@ public class ApplicationController extends Application
     protected static final String AdminPackage = "../Admin";
     protected static final String UserPackage = "../User";
     protected static final String AdminLoginViewPath = AdminPackage + "/AdminLoginView.fxml";
-    protected static final String ModifyDirectoryViewPath = AdminPackage + "/AdminDirectoryEditor.fxml";
+    protected static final String ModifyDocDirectoryViewPath = AdminPackage + "/AdminDocDirectoryEditor.fxml";
     protected static final String MapEditorViewPath = AdminPackage + "/MapBuilder/MapEditorView.fxml";
     protected static final String UserMapViewerPath = UserPackage + "/UserMapView.fxml";
 
@@ -93,7 +93,7 @@ public class ApplicationController extends Application
 
 
     public void switchToModifyDirectoryView() throws IOException {
-       switchToScene(ModifyDirectoryViewPath);
+       switchToScene(ModifyDocDirectoryViewPath);
     }
 
     public void switchToMapEditorView() throws IOException {

@@ -557,6 +557,8 @@ public class DatabaseManager {
                 // replace nodes in current floor
                 nodes.remove(tempID);
                 nodes.put(tempID, tempKiosk);
+                // adds kiosk to list of hospital's kiosks
+                h.addKiosk(tempKiosk);
             }
         }
 
@@ -752,6 +754,17 @@ public class DatabaseManager {
         insertKiosk.setString(3, k.getDirection());
         insertKiosk.setBoolean(4, false);
         insertKiosk.executeUpdate();
+        conn.commit();
+    }
+
+    public void updateKiosk(Kiosk k) throws SQLException {
+        PreparedStatement upKiosk = conn.prepareStatement("UPDATE KIOSK " +
+                "SET NAME = ? " +
+                "WHERE NODE_ID = ?");
+
+        upKiosk.setString(1, k.getName());
+        upKiosk.setString(2, k.getNodeID().toString());
+        upKiosk.executeUpdate();
         conn.commit();
     }
 

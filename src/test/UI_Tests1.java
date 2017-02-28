@@ -1,12 +1,25 @@
-
-
-import junit.framework.TestCase;
-
-/**
- * Created by Samuel on 2/4/2017.
- */
-public class UI_Tests1 extends TestCase{
-
+//
+//
+//import Directory.AdminProfile;
+//import Application.Exceptions.AddFoundException;
+//import Application.Exceptions.RemoveNotFoundException;
+//import Directory.Directory;
+//import Directory.DoctorProfile;
+//import Directory.RoomInfo;
+//import Directory.RoomList;
+//import javafx.beans.InvalidationListener;
+//import javafx.beans.property.StringProperty;
+//import javafx.beans.value.ChangeListener;
+//import javafx.beans.value.ObservableValue;
+//import junit.framework.TestCase;
+//
+//import java.util.*;
+//
+///**
+// * Created by Samuel on 2/4/2017.
+// */
+//public class UI_Tests1 extends TestCase{
+//
 //   public void UI_Tests () throws AddFoundException, RemoveNotFoundException{
 //        this.test_admin();
 //        this.test_dr();
@@ -207,5 +220,5 @@ public class UI_Tests1 extends TestCase{
 //
 //
 //    }
-
-}
+//
+//}

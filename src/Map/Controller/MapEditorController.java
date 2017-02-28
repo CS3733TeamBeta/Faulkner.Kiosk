@@ -1,12 +1,10 @@
 package Map.Controller;
 
 import Application.ApplicationController;
-import Map.Boundary.AdminMapBoundary;
-import Map.Entity.*;
 import Application.Events.EdgeCompleteEvent;
 import Application.Events.EdgeCompleteEventHandler;
-
-import Application.Database.DataCache;
+import Map.Boundary.AdminMapBoundary;
+import Map.Entity.*;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.jfoenix.controls.JFXComboBox;
@@ -18,15 +16,18 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.*;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.*;
+import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -39,7 +40,9 @@ import org.controlsfx.control.PopOver;
 import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 public class MapEditorController extends MapController
@@ -835,6 +838,6 @@ public class MapEditorController extends MapController
 	@FXML
 	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
 	{
-		//SceneSwitcher.switchToModifyDirectoryView(this.getStage(), model.getHospital());
+		ApplicationController.getController().switchToModifyDirectoryView();
 	}
 }
