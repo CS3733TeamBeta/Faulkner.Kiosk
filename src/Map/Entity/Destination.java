@@ -30,10 +30,12 @@ public class Destination extends MapNode {
      *  Creates a new Destination with an new empty info
      */
     public Destination() {
+        super();
         this.destUID = UUID.randomUUID();
     }
 
     public Destination(String name) {
+        this();
         this.name = name;
     }
 

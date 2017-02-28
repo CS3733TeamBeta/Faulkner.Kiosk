@@ -1,13 +1,18 @@
 package Map.Entity;
 
+
+
+import Application.Database.DatabaseManager;
+
+import java.sql.SQLException;
 import Directory.Entity.Doctor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import static javafx.collections.FXCollections.observableArrayList;
 
 import java.util.Collection;
 import java.util.UUID;
 
-import static javafx.collections.FXCollections.observableArrayList;
 
 /**
   * Created by IanCJ on 1/29/2017.
@@ -31,12 +36,13 @@ public class Hospital {
         doctors = FXCollections.observableArrayList();
 
         CampusFloor  = new CampusFloor();
-        kiosks = FXCollections.observableArrayList();
-
+        kiosks = FXCollections.observableArrayList(new ArrayList<Kiosk>());
     }
 
     public void addBuilding(Building b) {
+
         buildings.add(b);
+        b.setHospital(this);
     }
 
     public CampusFloor getCampusFloor()
@@ -118,7 +124,19 @@ public class Hospital {
     }
 
     public  void setCurrentKiosk (Kiosk kiosk) {
-        this.currentKiosk = kiosk;
-    }
+        if(currentKiosk!=null)
+        {
+            currentKiosk.setType(NodeType.Kiosk);
+        }
 
+        kiosk.setType(NodeType.CurrentKiosk);
+
+        this.currentKiosk = kiosk;
+
+        try {
+            new DatabaseManager().updateCurKiosk(kiosk);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

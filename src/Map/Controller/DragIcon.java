@@ -36,6 +36,7 @@ public class DragIcon extends AnchorPane{
 		}
 
 		this.setPrefSize(25, 25);
+		getStyleClass().add("CurrentKiosk");
 	}
 	
 	@FXML
@@ -111,9 +112,18 @@ public class DragIcon extends AnchorPane{
 				getStyleClass().add("kiosk");
 				break;
 
+			case CurrentKiosk:
+				getStyleClass().add("CurrentKiosk");
+				break;
+
 			default:
 				break;
 		}
+	}
+
+	public void setCurrentKiosk()
+	{
+		getStyleClass().add("CurrentKiosk");
 	}
 
 	public static MapNode constructMapNodeFromType(NodeType type)

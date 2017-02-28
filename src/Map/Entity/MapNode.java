@@ -1,16 +1,15 @@
 package Map.Entity;
 
-import Map.Controller.Popover.AbstractPopupController;
-import Map.Controller.Popover.NodeEditController;
 import Application.Events.DeleteRequestedEvent;
 import Application.Events.DeleteRequestedHandler;
+import Map.Controller.Popover.AbstractPopupController;
+import Map.Controller.Popover.NodeEditController;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.*;
 
 /**
@@ -32,7 +31,6 @@ public class MapNode extends Observable
     String destName = "";
     NodeType type;
 
-
     public static MapNode nodeFactory(NodeType type, Point2D location)
     {
         MapNode n = null;
@@ -45,7 +43,7 @@ public class MapNode extends Observable
             case Restroom:
             case Store:
             {
-                n = new Destination(); //needed for lambda
+                n = new Destination(type.toString()); //needed for lambda
                 break;
             }
             case Kiosk:
@@ -252,6 +250,17 @@ public class MapNode extends Observable
     public Collection<NodeEdge> getEdges() {
         return edges;
     }
+
+    public NodeEdge getEdgeTo(MapNode n) {
+        for (NodeEdge e: this.edges) {
+            if (e.getOtherNode(this).equals(n)) {
+                return e;
+            }
+        }
+        return null;
+        //@TODO Throw exception
+    }
+
 
     /**
      * Determines if this node has a node to another node.

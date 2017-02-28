@@ -1,9 +1,12 @@
 package Map.Controller;
 
+
+import Map.Navigation.DirectionFloorStep;
 import Map.Navigation.DirectionStep;
 import Map.Navigation.Guidance;
 import Application.Events.StepChangedEvent;
 import Application.Events.StepChangedEventHandler;
+
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
@@ -90,7 +93,7 @@ public class UserDirectionsPanel extends AnchorPane
         stepChangedEventHandlers.add(h);
     }
 
-    public void onStepChanged(DirectionStep step)
+    public void onStepChanged(DirectionFloorStep step)
     {
         for(StepChangedEventHandler stepChangedEventHandler: stepChangedEventHandlers)
         {
@@ -111,12 +114,12 @@ public class UserDirectionsPanel extends AnchorPane
         fillDirectionsList(guidance.getSteps().get(index));
     }
 
-    public void fillDirectionsList(DirectionStep step)
+    public void fillDirectionsList(DirectionFloorStep step)
     {
         directionsListView.getItems().clear();
-        for(DirectionStep s : guidance.getSteps()) {
-            for (String string : s.getDirections()) {
-                Label l = new Label(string);
+        for(DirectionFloorStep s : guidance.getSteps()) {
+            for (DirectionStep aStep : s.getDirectionSteps()) {
+                Label l = new Label(aStep.toString());
                 directionsListView.getItems().add(l);
             }
         }
@@ -153,6 +156,10 @@ public class UserDirectionsPanel extends AnchorPane
         }
     }
 
+
+    //Test comment, please delete
+
+    
     @FXML
     void onSendEmail(ActionEvent event)
     {

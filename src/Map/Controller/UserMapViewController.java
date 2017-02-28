@@ -358,8 +358,6 @@ public class UserMapViewController extends MapController
             boundary.changeFloor(event.getSource().getFloor());
         });
 
-        //kioskFloor = DatabaseManager.Faulkner.getBuildings().iterator().next().getFloor(1);
-
         panel.mainPane.setPrefHeight(mainPane.getPrefHeight());
 
         mainPane.getChildren().add(panel);
@@ -467,7 +465,7 @@ public class UserMapViewController extends MapController
         }
 
         System.out.println("In path finding");
-        MapNode startPoint = boundary.getHospital().getCampusFloor().getKioskNode();
+        MapNode startPoint = boundary.getHospital().getCurrentKiosk();
 
         if (startPoint == null)
         {
