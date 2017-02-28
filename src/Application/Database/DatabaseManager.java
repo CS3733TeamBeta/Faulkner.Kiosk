@@ -530,6 +530,34 @@ public class DatabaseManager {
             h.addDestinations(UUID.fromString(destRS.getString(1)), tempDest);
         }
 
+        rs = s.executeQuery("SELECT * FROM KIOSK");
+
+        while(rs.next()){
+            UUID tempID = UUID.fromString(rs.getString(2));
+            if (nodes.containsKey(tempID)) {
+                // node to replace with kiosk
+                MapNode replacedNode = nodes.get(tempID);
+
+                // kiosk to replace node with
+                Kiosk tempKiosk = new Kiosk(replacedNode,
+                        rs.getString(1),
+                        rs.getString(3));
+
+                // if saved as default kiosk, then set as current kiosk
+                if (rs.getBoolean(4)) {
+                    h.setCurrentKiosk(tempKiosk);
+                }
+
+                // replace regular nodes with kiosk nodes
+                mapNodes.remove(tempID);
+                mapNodes.put(tempID, tempKiosk);
+
+                // replace nodes in current floor
+                nodes.remove(tempID);
+                nodes.put(tempID, tempKiosk);
+            }
+        }
+
         // add all nodes to floor
         for (MapNode n : nodes.values()) {
             f.addNode(n);
