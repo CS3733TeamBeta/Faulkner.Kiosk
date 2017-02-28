@@ -1,17 +1,14 @@
 package Map.Entity;
 
 
-
 import Application.Database.DatabaseManager;
-
-import java.sql.SQLException;
 import Directory.Entity.Doctor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import static javafx.collections.FXCollections.observableArrayList;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.UUID;
 
 
 /**
