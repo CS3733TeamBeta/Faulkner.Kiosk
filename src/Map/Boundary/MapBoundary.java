@@ -101,7 +101,11 @@ public class MapBoundary extends Observable
     {
         int nextFloorID = currentFloor.getFloorNumber() + incAmount;
 
-        if(nextFloorID<=kioskFloor.getBuilding().getFloors().size() &&( nextFloorID >0))
+        if(kioskFloor==null)
+        {
+            System.out.println("You have not specififed a kiosk");
+        }
+        else if(nextFloorID<=kioskFloor.getBuilding().getFloors().size() &&( nextFloorID >0))
         {
             try
             {
