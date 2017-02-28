@@ -253,6 +253,17 @@ public class MapNode extends Observable
         return edges;
     }
 
+    public NodeEdge getEdgeTo(MapNode n) {
+        for (NodeEdge e: this.edges) {
+            if (e.getOtherNode(this).equals(n)) {
+                return e;
+            }
+        }
+        return null;
+        //@TODO Throw exception
+    }
+
+
     /**
      * Determines if this node has a node to another node.
      * @param n Other node
