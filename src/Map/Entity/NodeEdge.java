@@ -4,12 +4,16 @@ import Map.Controller.DragIcon;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 
+import java.util.UUID;
+
 /**
  * An edge that connects two nodes and has a cost (edge length)
  */
 public class NodeEdge
 {
     protected double cost;
+
+    UUID edgeID;
 
     protected MapNode source = null;
     protected MapNode target = null;
@@ -18,6 +22,9 @@ public class NodeEdge
      * Creates a new nodeEdge with a line having a default strokewidth of 5.
      */
     public NodeEdge() {
+        if (this.edgeID == null) {
+            this.edgeID = UUID.randomUUID();
+        }
     }
 
     /**
@@ -46,6 +53,12 @@ public class NodeEdge
     public NodeEdge(MapNode source, MapNode nodeB, double cost) {
         this(source, nodeB);
         this.cost = cost;
+    }
+
+    public NodeEdge(UUID id, MapNode source, MapNode nodeB, double cost) {
+        this(source, nodeB);
+        this.cost = cost;
+        this.edgeID = id;
     }
 
     /**
@@ -127,6 +140,10 @@ public class NodeEdge
      */
     public void updateCost() {
         this.cost = Math.pow(Math.pow(source.getPosX() - target.getPosX(), 2) + Math.pow(source.getPosY() - target.getPosY(), 2), .5);
+    }
+
+    public UUID getEdgeID() {
+        return this.edgeID;
     }
 
 }
