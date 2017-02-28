@@ -152,7 +152,7 @@ public class TextDirectionsCreator {
                         if ((Math.abs(tempChangeInDirection) < 8) && !(Guidance.directionChangeToString(tempChangeInDirection, false).equals("Straight"))){
                             System.out.println("good change");
                             String tempDirectionChangeString = Guidance.directionChangeToString(tempChangeInDirection, vFlag);
-                            tempTextDirection += ", then immediately turn " + tempDirectionChangeString;
+                            tempTextDirection += ",\n then immediately turn " + tempDirectionChangeString;
                             tempMapNodes.add(tempFromNode);
                             tempNodeEdges.add(tempFromNode.getEdgeTo(tempToNode));
                             i++;
