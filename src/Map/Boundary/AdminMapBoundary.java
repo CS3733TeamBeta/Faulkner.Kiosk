@@ -1,12 +1,11 @@
 package Map.Boundary;
 
-import Entity.Map.*;
-import Map.Entity.NodeType;
+
+import Application.Database.DatabaseManager;
 import Map.Entity.*;
-import Controller.Map.ViewElements.DragIconType;
-import Entity.Map.*;
 import javafx.geometry.Point2D;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -62,7 +61,13 @@ public class AdminMapBoundary extends MapBoundary
     public void newEdge(MapNode source, MapNode target)
     {
         NodeEdge edge = new NodeEdge(source, target);
+        edge.updateCost();
         edges.add(edge);
+        try {
+            new DatabaseManager().addEdgeToDB(edge);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -83,6 +88,19 @@ public class AdminMapBoundary extends MapBoundary
         }
         else {
             currentFloor.addNode(n);
+            try {
+                new DatabaseManager().addNodeToDB(n);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (n instanceof Destination) {
+            try {
+                new DatabaseManager().addDestToDB((Destination)n);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         if(n instanceof Kiosk)
@@ -126,6 +144,11 @@ public class AdminMapBoundary extends MapBoundary
                 f.addNode(e);
                 nodesToAdd.add(e);
             }
+            try {
+                new DatabaseManager().addNodeToDB(e);
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
 
             //for all elevators, add all other elevators in this elevator shaft to its edges
             for(MapNode nextNode : nodesToAdd) {
@@ -134,6 +157,11 @@ public class AdminMapBoundary extends MapBoundary
                 if(e.getMyFloor().getFloorNumber() != nextNode.getMyFloor().getFloorNumber() && !e.hasEdgeTo(nextNode)) {
                     LinkEdge edge = new LinkEdge(nextNode, e);
                     e.addEdge(edge);
+                    try {
+                        new DatabaseManager().addEdgeToDB(edge);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
 
@@ -149,6 +177,11 @@ public class AdminMapBoundary extends MapBoundary
     {
         nodesOnMap.remove(n);
         currentFloor.removeNode(n);
+        try {
+            new DatabaseManager().delNodeFromDB(n);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         for(NodeEdge edge: n.getEdges())
         {
@@ -171,6 +204,11 @@ public class AdminMapBoundary extends MapBoundary
         edge.getTarget().getEdges().remove(edge);
 
         edges.remove(edge);
+        try {
+            new DatabaseManager().delEdgeFromDB(edge);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -182,12 +220,22 @@ public class AdminMapBoundary extends MapBoundary
     {
         n.setPosX(movedTo.getX());
         n.setPosY(movedTo.getY());
+        try {
+            new DatabaseManager().updateNode(n);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         //update database
 
         for (NodeEdge edge : n.getEdges())
         {
             edge.updateCost();
+            try {
+                new DatabaseManager().updateEdge(edge);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 

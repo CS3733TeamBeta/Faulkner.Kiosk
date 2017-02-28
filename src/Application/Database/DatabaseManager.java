@@ -544,7 +544,8 @@ public class DatabaseManager {
 
         while(rs.next()) {
             // create new edge
-            NodeEdge tempEdge = new NodeEdge(mapNodes.get(UUID.fromString(rs.getString(2))),
+            NodeEdge tempEdge = new NodeEdge(UUID.fromString(rs.getString(1)),
+                    mapNodes.get(UUID.fromString(rs.getString(2))),
                     mapNodes.get(UUID.fromString(rs.getString(3))),
                     rs.getFloat(4));
 
@@ -666,7 +667,7 @@ public class DatabaseManager {
         insertDest.setString(1, dest.getDestUID().toString());
         insertDest.setString(2, dest.getName());
         insertDest.setString(3, dest.getNodeID().toString());
-        insertDest.setString(4, dest.getFloorID().toString());
+        insertDest.setString(4, dest.getMyFloor().getFloorID().toString());
         insertDest.executeUpdate();
         conn.commit();
     }
@@ -710,7 +711,7 @@ public class DatabaseManager {
         insertNode.setString(1, m.getNodeID().toString());
         insertNode.setDouble(2, m.getPosX());
         insertNode.setDouble(3, m.getPosY());
-        insertNode.setString(4, "");
+        insertNode.setString(4, m.getMyFloor().getFloorID().toString());
         insertNode.setInt(5, m.getType().ordinal());
         insertNode.executeUpdate();
         conn.commit();
@@ -742,23 +743,32 @@ public class DatabaseManager {
     }
 
     public void addEdgeToDB(NodeEdge e) throws SQLException {
-        PreparedStatement insertEdge = conn.prepareStatement("INSERT INTO EDGE (EDGE_ID, NODEA, NODEB, COST, FLOOR_ID) " +
-                "VALUES (?, ?, ?, ?, ?)");
+        PreparedStatement insertEdge = conn.prepareStatement("INSERT INTO EDGE (EDGE_ID, NODEA, NODEB, COST) " +
+                "VALUES (?, ?, ?, ?)");
 
-        insertEdge.setInt(1, 5);
+        insertEdge.setString(1, e.getEdgeID().toString());
         insertEdge.setString(2, e.getSource().getNodeID().toString());
         insertEdge.setString(3, e.getTarget().getNodeID().toString());
         insertEdge.setDouble(4, e.getCost());
-        insertEdge.setString(5, "");
         insertEdge.executeUpdate();
         conn.commit();
     }
 
-    public void delEdgeFromDB(UUID uuid) throws SQLException { // TODO change edges to have UUID
-        PreparedStatement delEdge = conn.prepareStatement("DELETE FROM EDGE WHERE NODEA OR NODEB = ?");
+    public void updateEdge(NodeEdge e) throws SQLException {
+        PreparedStatement upEdge = conn.prepareStatement("UPDATE EDGE " +
+                "SET COST = ? " +
+                "WHERE EDGE_ID = ?");
+
+        // update edge in database with new cost
+        upEdge.setDouble(1, e.getCost());
+        upEdge.setString(2, e.getEdgeID().toString());
+    }
+
+    public void delEdgeFromDB(NodeEdge e) throws SQLException { // TODO change edges to have UUID
+        PreparedStatement delEdge = conn.prepareStatement("DELETE FROM EDGE WHERE EDGE_ID = ?");
 
         // delete all edges that have given node as source or target
-        delEdge.setString(1, uuid.toString());
+        delEdge.setString(1, e.getEdgeID().toString());
         delEdge.executeUpdate();
         conn.commit();
     }
