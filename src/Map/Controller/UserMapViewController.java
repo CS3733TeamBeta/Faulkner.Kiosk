@@ -467,7 +467,7 @@ public class UserMapViewController extends MapController
         }
 
         System.out.println("In path finding");
-        MapNode startPoint = boundary.getHospital().getCampusFloor().getKioskNode();
+        MapNode startPoint = boundary.getHospital().getCurrentKiosk();
 
         if (startPoint == null)
         {
