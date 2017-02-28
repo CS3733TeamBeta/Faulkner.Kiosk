@@ -87,7 +87,7 @@ public class Guidance extends Path {
     }
 
     public Guidance (MapNode start, MapNode end, String kioskInputDirection, boolean useStairs) throws PathFindingException{
-        super(start, end, false);
+        super(start, end, false, useStairs);
         setImages();
 
         kioskDirection = Guidance.directionToNum(kioskInputDirection);

@@ -36,7 +36,7 @@ public class Path implements Iterable {
      * @throws PathFindingException
      */
     private void createPathAStar(MapNode start, MapNode end, boolean vFlag, boolean useStairs) throws PathFindingException {
-
+        System.out.println("USE STAIRS: " + useStairs);
         this.vFlag = vFlag;
 
         pathEdges = new LinkedList<NodeEdge>();
@@ -80,10 +80,14 @@ public class Path implements Iterable {
                 //and those edges' nodes.
                 MapNode aNode = aEdge.getOtherNode(currentNode);
 
+                if(!((aNode.getType() == NodeType.Stairs && useStairs) || (aNode.getType() != NodeType.Stairs))){
+                    closedSet.add(aNode);
+                    openSet.remove(aNode);
+
+                }
+
                 //As long as you have not already visited the node, recalculate its heuristic values
-                if (!closedSet.contains(aNode) &&
-                        ((aNode.getType() == NodeType.Stairs && useStairs) || (aNode.getType() != NodeType.Stairs))
-                        ) {
+                if (!closedSet.contains(aNode)) {
 
                     //Calculate what the F value would be
                     //the heuristic is the geometric distance from the next node to the end point
@@ -199,9 +203,13 @@ public class Path implements Iterable {
                 //and those edges' nodes.
                 MapNode aNode = aEdge.getOtherNode(currentNode);
 
+                if(!((aNode.getType() == NodeType.Stairs && useStairs) || (aNode.getType() != NodeType.Stairs))){
+                    closedSet.add(aNode);
+                    openSet.remove(aNode);
+                }
+
                 //As long as you have not already visited the node, recalculate its heuristic values
-                if (!closedSet.contains(aNode) &&
-                        ((aNode.getType() == NodeType.Stairs && useStairs) || (aNode.getType() != NodeType.Stairs))) {
+                if (!closedSet.contains(aNode)) {
 
                     //Calculate what the F value would be
                     //the heuristic is the geometric distance from the next node to the end point
@@ -288,8 +296,12 @@ public class Path implements Iterable {
 
             for (NodeEdge e : newNode.getEdges()) {
                 MapNode neighbor = e.getOtherNode(newNode);
-                if (!openSet.contains(neighbor) && !visitedNodes.contains(neighbor) &&
-                        ((neighbor.getType() == NodeType.Stairs && useStairs) || (neighbor.getType() != NodeType.Stairs))) {
+
+                if(!((neighbor.getType() == NodeType.Stairs && useStairs) || (neighbor.getType() != NodeType.Stairs))){
+                    visitedNodes.add(neighbor);
+                }
+
+                if (!openSet.contains(neighbor) && !visitedNodes.contains(neighbor)) {
                     openSet.add(neighbor);
                     neighbor.setParent(e);
                 }
@@ -353,8 +365,13 @@ public class Path implements Iterable {
 
             for (NodeEdge e : newNode.getEdges()) {
                 MapNode neighbor = e.getOtherNode(newNode);
-                if (!openSet.contains(neighbor) && !visitedNodes.contains(neighbor) &&
-                        ((neighbor.getType() == NodeType.Stairs && useStairs) || (neighbor.getType() != NodeType.Stairs))) {
+
+                if(!((neighbor.getType() == NodeType.Stairs && useStairs) || (neighbor.getType() != NodeType.Stairs))){
+                    visitedNodes.add(neighbor);
+                    openSet.remove(neighbor);
+                }
+
+                if (!openSet.contains(neighbor) && !visitedNodes.contains(neighbor)) {
                     openSet.addFirst(neighbor);
                     neighbor.setParent(e);
                 }

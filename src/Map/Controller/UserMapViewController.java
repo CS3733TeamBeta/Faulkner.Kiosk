@@ -168,6 +168,7 @@ public class UserMapViewController extends MapController
             { // deal with other types of mouse clicks
                 try
                 {
+                    System.out.println("BOX IS " + checkBoxUseStairs.isSelected());
                     findPathToNode(n,checkBoxUseStairs.isSelected());
                 }
                 catch (PathFindingException e)
@@ -487,6 +488,9 @@ public class UserMapViewController extends MapController
 
         try
         {
+            if(useStairs){
+                System.out.println("TRYING TO USE STAIRS");
+            }
             newRoute = new Guidance(startPoint, endPoint, "North", useStairs);
         } catch (PathFindingException e)
         {
