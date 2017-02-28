@@ -25,7 +25,7 @@ public class Guidance extends Path {
     //This is the direction that the user of the kiosk starts off facing.
     private int kioskDirection = 3;
     private int scaleFactor = 1;
-    private int boarderSize = 100;
+    private int borderSize = 100;
 
     BufferedImage nodeImg = null;
     BufferedImage bathImg= null;
@@ -35,7 +35,7 @@ public class Guidance extends Path {
     BufferedImage infoImg = null;
     BufferedImage storeImg = null;
 
-    LinkedList<DirectionStep> textDirections;
+    LinkedList<DirectionFloorStep> floorSteps;
 
     public void setImages() {
         try {
@@ -66,9 +66,9 @@ public class Guidance extends Path {
         setImages();
 
         //Declare and initialize directions
-        textDirections = new LinkedList<DirectionStep>();
+        floorSteps = new LinkedList<DirectionFloorStep>();
         TextDirectionsCreator tdc = new TextDirectionsCreator(pathNodes, pathEdges, kioskDirection, vFlag);
-        textDirections = tdc.getDirectionSteps();
+        floorSteps = tdc.getDirectionFloorSteps();
 
         if (vFlag) {
             printTextDirections();
@@ -81,26 +81,41 @@ public class Guidance extends Path {
 
         kioskDirection = Guidance.directionToNum(kioskInputDirection);
 
-        textDirections = new LinkedList<DirectionStep>();
+        floorSteps = new LinkedList<DirectionFloorStep>();
         TextDirectionsCreator tdc = new TextDirectionsCreator(pathNodes, pathEdges, kioskDirection, false);
-        textDirections = tdc.getDirectionSteps();
+        floorSteps = tdc.getDirectionFloorSteps();
 
 
     }
 
-    public LinkedList<DirectionStep> getSteps()
+    public LinkedList<DirectionFloorStep> getSteps()
     {
-        return textDirections;
+        return floorSteps;
     }
 
     public void printTextDirections() {
         System.out.println("");
         System.out.println("Printing Textual Directions");
         System.out.println("");
-        for (DirectionStep step: textDirections) {
-            System.out.println("Printing a step: ");
-            for(String s : step.getDirections()) {
+        for (DirectionFloorStep step: floorSteps) {
+            System.out.println("Printing a floorStep: ");
+            for(DirectionStep s : step.getDirectionSteps()) {
                 System.out.println(s);
+            }
+        }
+    }
+
+    public void printTextDirections(boolean superVerbose) {
+        System.out.println("");
+        System.out.println("Printing Textual Directions");
+        System.out.println("");
+        for (int i = 0; i < floorSteps.size(); i++ ) {
+            System.out.println("Printing floorstep with index " + i);
+            System.out.println("");
+            for (int k = 0; k < floorSteps.get(i).getDirectionSteps().size(); k++) {
+                System.out.println("Printing directionStep in floorstep " + i + " with index " + k);
+                System.out.println(floorSteps.get(i).getDirectionSteps().get(k).toString());
+                System.out.println("");
             }
         }
     }
@@ -112,7 +127,7 @@ public class Guidance extends Path {
 
     public static String directionChangeToString(int changeInDirection, boolean vFlag) {
         //If a direction comes out as "Error", somethings wrong
-        String stringDirection = "Error";
+        String stringDirection;
         switch (changeInDirection) {
             case -7:
                 stringDirection = "slight right";
@@ -298,15 +313,15 @@ public class Guidance extends Path {
         return num;
     }
 
-    public LinkedList<DirectionStep> getTextDirections() {
-        return textDirections;
+    public LinkedList<DirectionFloorStep> getFloorSteps() {
+        return floorSteps;
     }
 
     public void saveStepImages() {
         System.out.println("Saving images!");
-        System.out.println("There are " + this.textDirections.size() + " directionSteps");
-        for(int i = 1; i <= this.textDirections.size(); i++){
-            DirectionStep d = textDirections.get(i-1);
+        System.out.println("There are " + this.floorSteps.size() + " directionFloorSteps");
+        for(int i = 1; i <= this.floorSteps.size(); i++){
+            DirectionFloorStep d = floorSteps.get(i-1);
             System.out.println("Creating info for floor " + d.getFloor().getFloorNumber());
             d.getFloor().initImage();
             try {
@@ -315,7 +330,7 @@ public class Guidance extends Path {
                 System.out.println("Width of image: " + realBaseImage.getWidth());
                 System.out.println("Height of image: " + realBaseImage.getHeight());
 
-                DirectionStep aStep = d;
+                DirectionFloorStep aStep = d;
                 Floor aFloor = d.getFloor();
 
                 if (aStep == null) {
@@ -355,13 +370,7 @@ public class Guidance extends Path {
                         //get the nodes to draw the lines between
                         MapNode targetNode = e.getTarget();
                         MapNode sourceNode = e.getSource();
-                        //output info to user for debugging NOW DEFUNCT DO NOT RELY ON
-                        //System.out.println("Drawing line between nodes on floor: " + e.getSource().getMyFloor().getFloorNumber());
-                        //System.out.println("x1: " + Math.round(targetNode.getPosX() * constant) + " y1: " + Math.round( targetNode.getPosY() * constant) +
-                        //      " x2: " + Math.round(sourceNode.getPosX() * constant) + " y2: " + Math.round(sourceNode.getPosY() * constant));
 
-                        //draw the line between the two points. apply offset to account
-                        //for image being anchored at upper left of picture
                         int targetIsConnector = 0;
                         int sourceIsConnector = 0;
 
@@ -397,10 +406,10 @@ public class Guidance extends Path {
                 Point startPoint = startAndEnd.getFirst();
                 Point endPoint = startAndEnd.getLast();
 
-                int scaledStartX = (int)(startPoint.x * constant) - boarderSize + offsetWidth;
-                int scaledStartY = (int)(startPoint.y * constant) - boarderSize + offsetHeight;
-                int scaledEndX = (int)(endPoint.x * constant) + boarderSize + offsetWidth;
-                int scaledEndY = (int)(endPoint.y * constant) + boarderSize + offsetHeight;
+                int scaledStartX = (int)(startPoint.x * constant) - borderSize + offsetWidth;
+                int scaledStartY = (int)(startPoint.y * constant) - borderSize + offsetHeight;
+                int scaledEndX = (int)(endPoint.x * constant) + borderSize + offsetWidth;
+                int scaledEndY = (int)(endPoint.y * constant) + borderSize + offsetHeight;
 
                 if(scaledEndX > combined.getWidth()){
                     scaledEndX = combined.getWidth();
@@ -470,8 +479,8 @@ public class Guidance extends Path {
         subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
 
         int stepNumber = 1;
-        for (DirectionStep step: textDirections) {
-            for(String s: step.getDirections()) {
+        for (DirectionFloorStep step: floorSteps) {
+            for(DirectionStep s: step.getDirectionSteps()) {
                 directionLine += "<b>" + stepNumber + ":</b> ";
                 directionLine += s;
                 directionLine += "<br>";
@@ -488,7 +497,7 @@ public class Guidance extends Path {
         }
 
         try {
-            SendEmail e = new SendEmail(address, subjectLine, directionLine, true, textDirections.size());
+            SendEmail e = new SendEmail(address, subjectLine, directionLine, true, floorSteps.size());
             return true;
         } catch(Exception e) {
             System.out.println("Threw an exception: " + e);
@@ -551,9 +560,9 @@ public class Guidance extends Path {
 
     public boolean sendTextGuidance(String address) {
         String textMessagebody = "Your instructions are:\n";
-        for (int i = 0; i < textDirections.size(); i++) {
+        for (int i = 0; i < floorSteps.size(); i++) {
             textMessagebody += ((i+1) + ". ");
-            for (String s: textDirections.get(i).directionsForThisFloor) {
+            for (DirectionStep s: floorSteps.get(i).getDirectionSteps()) {
                 textMessagebody += (s + "\n");
             }
         }
