@@ -115,8 +115,7 @@ public class MapBoundary extends Observable
                 }
                 else
                 {
-                    changeFloor(getHospital().getCurrentKiosk().getMyFloor().
-                            getBuilding().getFloor(nextFloorID));
+                    changeFloor(kioskFloor.getBuilding().getFloor(nextFloorID));
                 }
 
                 return nextFloorID;
