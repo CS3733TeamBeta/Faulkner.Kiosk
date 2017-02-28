@@ -107,8 +107,6 @@ public class MapNode extends Observable
 
     public HashSet<NodeEdge> edges;
 
-    boolean isElevator = false;
-    boolean isStairs = false;
     /**
      * Creates a new MapNode, with no edges, a new UID, and a new Icon
      */
@@ -181,11 +179,8 @@ public class MapNode extends Observable
      */
     public void setIsElevator(boolean isElevator)
     {
-        this.isElevator =isElevator;
-
         if(isElevator)
         {
-            this.isStairs = false;
             label = "Elevator";
             this.setType(NodeType.Elevator);
         }
@@ -193,29 +188,13 @@ public class MapNode extends Observable
 
     public void setIsStairs(boolean isStairs)
     {
-        this.isStairs =isStairs;
-
         if(isStairs)
         {
-            this.isElevator = false;
             label = "Stairs";
             this.setType(NodeType.Stairs);
         }
     }
 
-    /**
-     *
-     * @return whether or not this node is an elevator
-     */
-    public boolean getIsElevator()
-    {
-        return this.isElevator;
-    }
-
-    public boolean getIsStairs()
-    {
-        return this.isStairs;
-    }
 
 
     /**
