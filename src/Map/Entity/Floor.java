@@ -38,6 +38,12 @@ public class Floor extends Observable implements Comparable
     }
 
     public Image getImage(){
+
+        if(imageInfo==null)
+        {
+            imageInfo = new ProxyImage(imageLocation);
+        }
+
         return imageInfo.getImage();
     }
 
