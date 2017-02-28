@@ -68,7 +68,7 @@ public class AdminDocDirectoryEditorController {
 
     public AdminDocDirectoryEditorController() throws SQLException
     {
-
+        docBoundary = new AdminDocDirectoryBoundary(ApplicationController.getHospital());
     }
 
     public void setHospital(Hospital h)

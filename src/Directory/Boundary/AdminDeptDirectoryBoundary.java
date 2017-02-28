@@ -1,6 +1,7 @@
 package Directory.Boundary;
 
 import Map.Entity.Destination;
+import Map.Entity.Hospital;
 import Map.Entity.Office;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -9,30 +10,31 @@ import javafx.collections.transformation.FilteredList;
  * Created by jw97 on 2/25/2017.
  */
 public class AdminDeptDirectoryBoundary extends AbstractDirectoryBoundary {
-    protected ObservableList<Office> departments = h.getOffices();
 
-    public AdminDeptDirectoryBoundary() {}
+    public AdminDeptDirectoryBoundary(Hospital h) {
+        super(h);
+    }
 
     public ObservableList<Office> getDepartments() {
-        return this.departments;
+        return h.getOffices();
     }
 
     public FilteredList<Office> setSearchList(String newValue) {
-        return setSearchList(departments, newValue);
+        return setSearchList(h.getOffices(), newValue);
     }
 
     public void addDept(Office office) {
-        this.departments.add(office);
+        h.addOffice(office);
         save();
     }
 
     public void removeDept(Office office) {
-        this.departments.remove(office);
+        h.removeOffice(office);
         save();
     }
 
     public void editDept(Office office, String name, Destination destination) {
-        if (this.departments.contains(office)) {
+        if (h.containsOffice(office)) {
 
             if (!office.getName().equals(name)) {
                 office.setName(name);

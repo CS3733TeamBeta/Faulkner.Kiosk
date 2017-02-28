@@ -13,9 +13,10 @@ import java.util.function.Predicate;
  * Created by jw97 on 2/26/2017.
  */
 public class AbstractDirectoryBoundary {
-    protected Hospital h = DataCache.getInstance().getHospital();
+    protected Hospital h;
 
-    AbstractDirectoryBoundary() {
+    AbstractDirectoryBoundary(Hospital h) {
+        this.h = h;
     }
 
     public FilteredList setSearchList(ObservableList<?> list, String newValue) {

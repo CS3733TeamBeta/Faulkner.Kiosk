@@ -3,10 +3,10 @@ package Directory.Entity;
 import Map.Entity.Destination;
 import javafx.collections.ObservableList;
 
+import java.util.Observable;
 import java.util.UUID;
 
-public class Doctor
-{
+public class Doctor extends Observable {
 
     UUID docID;
     String phoneNum = "N/A";
@@ -86,8 +86,16 @@ public class Doctor
         return this.destinations;
     }
 
-    public void setDestinations(ObservableList<Destination> suites) {
-        this.destinations = suites;
+    public void setDestinations(ObservableList<Destination> destinations) {
+        this.destinations = destinations;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setHours(String hours) {
+        this.hours = hours;
     }
 
     public String[] splitName() {
