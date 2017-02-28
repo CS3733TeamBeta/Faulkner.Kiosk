@@ -299,6 +299,7 @@ public class Path implements Iterable {
 
                 if(!((neighbor.getType() == NodeType.Stairs && useStairs) || (neighbor.getType() != NodeType.Stairs))){
                     visitedNodes.add(neighbor);
+                    openSet.remove(neighbor);
                 }
 
                 if (!openSet.contains(neighbor) && !visitedNodes.contains(neighbor)) {
