@@ -9,5 +9,6 @@ public enum NodeType
 	Info,
 	Department,
 	Restroom,
-	Kiosk
+	Kiosk,
+	CurrentKiosk
 }

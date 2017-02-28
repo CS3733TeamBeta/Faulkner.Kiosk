@@ -31,7 +31,6 @@ public class MapNode extends Observable
     String destName = "";
     NodeType type;
 
-
     public static MapNode nodeFactory(NodeType type, Point2D location)
     {
         MapNode n = null;
