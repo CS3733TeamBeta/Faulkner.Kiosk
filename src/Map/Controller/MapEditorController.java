@@ -2,16 +2,14 @@ package Map.Controller;
 
 import Application.ApplicationController;
 import Map.Boundary.AdminMapBoundary;
-import Map.Entity.MapNode;
-import Map.Entity.NodeType;
+import Map.Entity.*;
 import Application.Events.EdgeCompleteEvent;
 import Application.Events.EdgeCompleteEventHandler;
 
-import Map.Entity.Floor;
-import Map.Entity.NodeEdge;
 import Application.Database.DataCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -57,7 +55,10 @@ public class MapEditorController extends MapController
 	Button newFloorButton;
 
 	@FXML
-	private TabPane BuildingTabPane;
+	private TabPane FloorTabPane;
+
+	@FXML
+	private JFXComboBox<Kiosk> kioskSelector;
 
 	NodeEdge drawingEdge;
 	Line drawingEdgeLine;
@@ -99,17 +100,30 @@ public class MapEditorController extends MapController
 			MapNode sourceNode = event.getNodeEdge().getSource();
 			MapNode targetNode = event.getNodeEdge().getTarget();
 
-			adminBoundary.newEdge(sourceNode, targetNode);
+			boolean duplicate = false;
 
-			drawingEdgeLine.setVisible(false);
-			drawingEdge = null;
+			for(NodeEdge edge: targetNode.getEdges())
+			{
+				if(edge.getTarget().equals(sourceNode) && edge.getSource().equals(targetNode))
+				{
+					duplicate = true;
+				}
+			}
 
-			mapPane.setOnMouseMoved(null);
-			mapImage.toBack();
+			if(!duplicate)
+			{
+				adminBoundary.newEdge(sourceNode, targetNode);
 
-			makeIconDraggable(iconEntityMap.inverse().get(sourceNode));
+				drawingEdgeLine.setVisible(false);
+				drawingEdge = null;
 
-			System.out.println("Edge complete");
+				mapPane.setOnMouseMoved(null);
+				mapImage.toBack();
+
+				makeIconDraggable(iconEntityMap.inverse().get(sourceNode));
+
+				System.out.println("Edge complete");
+			}
 		});
 	}
 
@@ -119,10 +133,25 @@ public class MapEditorController extends MapController
 	@FXML
 	private void initialize()
 	{
+		kioskSelector.setItems(boundary.getHospital().getKiosks());
+
+		kioskSelector.getSelectionModel().selectedItemProperty().addListener(
+				(o, old, newSelection)->
+		{
+			adminBoundary.setCurrentKiosk(newSelection);
+
+			iconEntityMap.inverse().get(newSelection).setType(newSelection.getType());
+			if(iconEntityMap.inverse().get(old) != null && old.getType() != null) {
+				iconEntityMap.inverse().get(old).setType(old.getType());
+			}
+		});
+
+		int kioskIndex = boundary.getHospital().getKiosks().indexOf(boundary.getHospital().getCurrentKiosk());
+
 		Rectangle selectionRect = new Rectangle();
 		selectionRect.setFill(Color.GREY);
 		selectionRect.setOpacity(.3);
-		selectionRect.setStroke(Color.BLACK);
+		selectionRect.setStroke(Color.WHITE);
 
 		ObjectProperty<Point2D> mouseAnchor = new SimpleObjectProperty<>();
 
@@ -139,7 +168,7 @@ public class MapEditorController extends MapController
 		});
 
 		mapPane.setOnMouseDragged(e -> {
-			selectedIcons.clear();
+			clearSelected();
 
 			if(!drawingEdgeLine.isVisible())
 			{
@@ -163,16 +192,14 @@ public class MapEditorController extends MapController
 							.filter(r -> r.getBoundsInParent().intersects(selectionRect.getBoundsInParent()))
 							.collect(Collectors.toList()));
 
-
-			for(DragIcon icon: selectedIcons)
+			if(selectedIcons.size()>1)
 			{
-
-				//ColorInput colorInput = new ColorInput();
-				//colorInput.setPaint(Color.RED);
-				//icon.setEffect(colorInput);
+				markSelected();
 			}
-
-			System.out.println("Selected: " + selectedIcons.size());
+			else
+			{
+				selectedIcons.clear();
+			}
 
 			selectionRect.setWidth(0);
 			selectionRect.setHeight(0);
@@ -189,7 +216,7 @@ public class MapEditorController extends MapController
 
 		drawingEdgeLine.setVisible(false);
 
-		BuildingTabPane.getTabs().clear();
+		FloorTabPane.getTabs().clear();
 
 		initBoundary();
 
@@ -223,6 +250,22 @@ public class MapEditorController extends MapController
 		});
 
 		root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
+
+			if(keyEvent.getCode() == KeyCode.ESCAPE)
+			{
+				clearSelected();
+			}
+			else if(keyEvent.getCode() == KeyCode.BACK_SPACE)
+			{
+				System.out.println("Delete requested");
+
+				for(DragIcon icon : selectedIcons)
+				{
+					adminBoundary.remove(iconEntityMap.get(icon));
+				}
+				selectedIcons.clear();
+			}
+
 			if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
 				if(drawingEdgeLine.isVisible()) //and the right pane has the drawing edge as child
 				{
@@ -272,7 +315,7 @@ public class MapEditorController extends MapController
 			makeFloorTab(f);
 		}
 
-		BuildingTabPane.getSelectionModel().selectedItemProperty().addListener(
+		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
 				(ov, newvalue, oldvalue)->{
 					boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
 
@@ -284,7 +327,39 @@ public class MapEditorController extends MapController
 
 		mapPane.getChildren().add(target); //adds to map pane
 
-		BuildingTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
+		FloorTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
+		FloorTabPane.getSelectionModel().select(0);
+	}
+
+	protected void markSelected()
+	{
+		for(DragIcon icon: selectedIcons)
+		{
+			DropShadow shadow = new DropShadow();
+			shadow.setHeight(30);
+			shadow.setWidth(30);
+			shadow.setColor(Color.BLACK);;
+
+			icon.setEffect(shadow);
+		}
+	}
+
+	protected void clearSelected()
+	{
+		for(DragIcon n : selectedIcons)
+		{
+			DropShadow shadow = (DropShadow) n.getEffect();
+
+			shadow.setColor(Color.TRANSPARENT);
+
+			if(shadow.getInput()!=null)
+			{
+ 				shadow.setInput(null);
+			}
+		}
+
+		selectedIcons.clear(); //clear selected items
+		mapPane.requestLayout();
 	}
 
 	protected void chainLink(Node n, Point2D point)
@@ -302,6 +377,7 @@ public class MapEditorController extends MapController
 
 		menu.show(screenCoords.getX(), screenCoords.getY());
 
+		target.toFront();
 		target.setVisible(true);
 
 		target.setX(point.getX() - target.getFitWidth() / 2);
@@ -354,7 +430,7 @@ public class MapEditorController extends MapController
 	{
 		menu = new CirclePopupMenu(mapPane, null);
 
-		for (int i = 0; i < NodeType.values().length; i++)
+		for (int i = 0; i < NodeType.values().length-1; i++) //skips currentkiosk type
 		{
 			DragIcon icn = new DragIcon();
 			icn.setType(NodeType.values()[i]);
@@ -445,53 +521,46 @@ public class MapEditorController extends MapController
 
 		listView.getSelectionModel().selectedItemProperty().addListener((o, oldSelection, newSelection)->
 		{
-			if(oldSelection!=null)
-			{
-			//	DragIcon oldIcon = iconEntityMap.inverse().get(((TreeItem<Map>)oldSelection).getValue());
-				//oldIcon.setEffect(null);
-			}
-
 			DragIcon icon = iconEntityMap.inverse().get(newSelection);
-			final Glow glow = new Glow();
 
-			glow.setLevel(0.0);
-			icon.setEffect(glow);
-
-			final Timeline timeline = new Timeline();
-
-			timeline.setCycleCount(5);
-			timeline.setAutoReverse(true);
-			final KeyValue kvA = new KeyValue(icon.scaleXProperty(), 1.7);
-			final KeyFrame kfA = new KeyFrame(Duration.millis(200), kvA);
-
-			final KeyValue kv1 = new KeyValue(icon.scaleYProperty(), 1.7);
-			final KeyFrame kf1 = new KeyFrame(Duration.millis(200), kv1);
-			timeline.getKeyFrames().add(kfA);
-			timeline.getKeyFrames().add(kf1);
-			timeline.play();
-
-			timeline.setOnFinished(e->
+			if(icon!=null)
 			{
-				final Timeline shrinkTimeline = new Timeline();
+				final Timeline timeline = new Timeline();
 
-				shrinkTimeline.setCycleCount(1);
-				shrinkTimeline.setAutoReverse(false);
+				timeline.setCycleCount(5);
+				timeline.setAutoReverse(true);
+				final KeyValue kvA = new KeyValue(icon.scaleXProperty(), 1.7);
+				final KeyFrame kfA = new KeyFrame(Duration.millis(200), kvA);
 
-				final KeyValue kvB = new KeyValue(icon.scaleXProperty(), 1);
-				final KeyFrame kfB = new KeyFrame(Duration.millis(200), kvB);
+				final KeyValue kv1 = new KeyValue(icon.scaleYProperty(), 1.7);
+				final KeyFrame kf1 = new KeyFrame(Duration.millis(200), kv1);
+				timeline.getKeyFrames().add(kfA);
+				timeline.getKeyFrames().add(kf1);
+				timeline.play();
 
-				final KeyValue kvC = new KeyValue(icon.scaleYProperty(), 1);
-				final KeyFrame kfC = new KeyFrame(Duration.millis(200), kvC);
+				timeline.setOnFinished(e->
+				{
+					final Timeline shrinkTimeline = new Timeline();
 
-				shrinkTimeline.getKeyFrames().add(kfB);
-				shrinkTimeline.getKeyFrames().add(kfC);
-				shrinkTimeline.play();
-			});
+					shrinkTimeline.setCycleCount(1);
+					shrinkTimeline.setAutoReverse(false);
+
+					final KeyValue kvB = new KeyValue(icon.scaleXProperty(), 1);
+					final KeyFrame kfB = new KeyFrame(Duration.millis(200), kvB);
+
+					final KeyValue kvC = new KeyValue(icon.scaleYProperty(), 1);
+					final KeyFrame kfC = new KeyFrame(Duration.millis(200), kvC);
+
+					shrinkTimeline.getKeyFrames().add(kfB);
+					shrinkTimeline.getKeyFrames().add(kfC);
+					shrinkTimeline.play();
+				});
+			}
 		});
 
 		tab.setContent(listView);
 
-		BuildingTabPane.getTabs().add(tab);
+		FloorTabPane.getTabs().add(tab);
 
 		tabFloorMap.put(tab, f);
 
@@ -529,8 +598,7 @@ public class MapEditorController extends MapController
 
 		edge.setOnMouseClicked(deEvent->{
 			if (edge != null) {
-			
-					adminBoundary.removeEdge(edgeEntityMap.get(edge));
+				adminBoundary.removeEdge(edgeEntityMap.get(edge));
 			}
 		});
 	}
@@ -574,29 +642,51 @@ public class MapEditorController extends MapController
 
 					if(selectedIcons.contains(n)) //allows selection to be moved around, should be converted to event based like adding + removing
 					{
-						System.out.println("Selection contains node");
-
 						for(DragIcon icon: selectedIcons)
 						{
 							if(!icon.equals(n))
 							{
-								MapNode mapNode = iconEntityMap.get(icon);
-								Point2D relocPoint = new Point2D(mapNode.getPosX() + deltaX,
-										mapNode.getPosY() + deltaY);
-
-								icon.relocate(relocPoint.getX() - icon.getPrefWidth() / 2,
-										relocPoint.getY() - icon.getPrefHeight() / 2);
-
-								adminBoundary.moveNode(mapNode, relocPoint);
+								moveNode(iconEntityMap.get(icon), deltaX, deltaY);
 							}
 						}
 					}
-
-					System.out.println("Node moved to (X: "+ n.getParent().sceneToLocal(event.getSceneX(),event.getSceneY()));
-
 				},
 				null);
 
+	}
+
+	/**
+	 * Moves node by specificed delta y and x
+	 */
+
+	public void moveNode(MapNode mapNode, double deltaX, double deltaY)
+	{
+		relocateNode(mapNode, new Point2D(mapNode.getPosX()+deltaX,
+				mapNode.getPosY()+deltaY));
+	}
+	/**
+	 * Relocates both the entity and the corresponding icon
+	 *
+	 * @param mapNode MapNode
+	 */
+	public void relocateNode(MapNode mapNode, Point2D relocPoint)
+	{
+		adminBoundary.moveNode(mapNode, relocPoint);
+		updateEdgeLinesForNode(mapNode);
+		refreshIconLocation(mapNode);
+	}
+
+	/**
+	 * Sets icon location based off of mapnode.
+	 *
+	 * @param n
+	 */
+	public void refreshIconLocation(MapNode n)
+	{
+		DragIcon icon = iconEntityMap.inverse().get(n);
+
+		icon.relocate(n.getPosX() - icon.getPrefWidth() / 2,
+				n.getPosY() - icon.getPrefHeight() / 2);
 	}
 
 	/**
