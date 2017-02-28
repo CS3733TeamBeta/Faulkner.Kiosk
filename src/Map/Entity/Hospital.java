@@ -1,21 +1,13 @@
 package Map.Entity;
 
 
-import Directory.*;
-import Map.Entity.Building;
-import Map.Entity.CampusFloor;
-import Map.Entity.Destination;
-import Map.Entity.Office;
-
+import Application.Database.DatabaseManager;
+import Directory.Doctor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
-
-import static javafx.collections.FXCollections.observableArrayList;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
   * Created by IanCJ on 1/29/2017.
@@ -39,12 +31,13 @@ public class Hospital {
         doctors = new HashMap<>();
 
         CampusFloor  = new CampusFloor();
-        kiosks = FXCollections.observableArrayList();
-
+        kiosks = FXCollections.observableArrayList(new ArrayList<Kiosk>());
     }
 
     public void addBuilding(Building b) {
+
         buildings.add(b);
+        b.setHospital(this);
     }
 
     public CampusFloor getCampusFloor()
@@ -99,7 +92,19 @@ public class Hospital {
     }
 
     public  void setCurrentKiosk (Kiosk kiosk) {
-        this.currentKiosk = kiosk;
-    }
+        if(currentKiosk!=null)
+        {
+            currentKiosk.setType(NodeType.Kiosk);
+        }
 
+        kiosk.setType(NodeType.CurrentKiosk);
+
+        this.currentKiosk = kiosk;
+
+        try {
+            new DatabaseManager().updateCurKiosk(kiosk);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

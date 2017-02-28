@@ -56,6 +56,14 @@
 	-fx-background-image: url("kiosk.png");
 }
 
+.CurrentKiosk
+{
+	-fx-background-repeat: stretch;
+	-fx-background-size: 25 25;
+	-fx-background-position: center center;
+	-fx-background-image: url("star.png");
+}
+
 .stairs
 {
 	-fx-background-repeat: stretch;
