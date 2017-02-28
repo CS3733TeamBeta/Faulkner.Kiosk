@@ -1,7 +1,7 @@
 package Map.Controller;
 
 import Application.ApplicationController;
-import Directory.Doctor;
+import Directory.Entity.Doctor;
 import Map.Boundary.MapBoundary;
 import Map.Navigation.Guidance;
 import Application.Exceptions.PathFindingException;
@@ -634,7 +634,7 @@ public class UserMapViewController extends MapController
         jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
         docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
 
-        Collection<Doctor> doctrine = boundary.getHospital().getDoctors().values();
+        Collection<Doctor> doctrine = boundary.getHospital().getDoctors();
         ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
         FilteredList<Doctor> filteredDoctor = new FilteredList<>(doctors);
 
@@ -667,7 +667,7 @@ public class UserMapViewController extends MapController
         deptName.setCellValueFactory(new PropertyValueFactory<Destination, String>("name"));
         deptPhoneNum.setCellValueFactory(new PropertyValueFactory<Destination, String>("phoneNum"));
         deptLocation.setCellValueFactory(new PropertyValueFactory<Destination, String>("location"));
-        Collection<Destination> suiteVal = boundary.getHospital().getDestinations().values();
+        Collection<Destination> suiteVal = boundary.getHospital().getDestinations();
         ObservableList<Destination> suites = FXCollections.observableArrayList(suiteVal);
         FilteredList<Destination> filteredSuite = new FilteredList<>(suites);
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) ->
