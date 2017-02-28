@@ -37,6 +37,7 @@ public class Guidance extends Path {
     BufferedImage foodImg = null;
     BufferedImage infoImg = null;
     BufferedImage storeImg = null;
+    BufferedImage currentKioskImg = null;
 
     LinkedList<DirectionFloorStep> floorSteps;
 
@@ -52,6 +53,7 @@ public class Guidance extends Path {
             foodImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/food.png")), imgRescaleSize, imgRescaleSize, true);
             infoImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/info.png")), imgRescaleSize, imgRescaleSize, true);
             storeImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/store.png")), imgRescaleSize, imgRescaleSize, true);
+            currentKioskImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/star.png")), imgRescaleSize, imgRescaleSize, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -499,8 +501,11 @@ public class Guidance extends Path {
         else if(t == NodeType.Restroom){
             currentImage = bathImg;
         }
+        else if(t == NodeType.CurrentKiosk){
+            currentImage = currentKioskImg;
+        }
         else{
-            System.out.println("ERROR. NO NODE IMAGE SET");
+            System.out.println("ERROR. NO NODE IMAGE SET. LOOKING FOR: " + t.toString());
             currentImage = null;
         }
         return currentImage;
