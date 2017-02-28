@@ -716,6 +716,26 @@ public class DatabaseManager {
         conn.commit();
     }
 
+    public void updateCurKiosk(Kiosk k) throws SQLException {
+        PreparedStatement upOldKiosk = conn.prepareStatement("UPDATE KIOSK " +
+                "SET FLAG = ? " +
+                "WHERE FLAG = ?");
+
+        upOldKiosk.setBoolean(1, false);
+        upOldKiosk.setBoolean(2, true);
+        upOldKiosk.executeUpdate();
+        conn.commit();
+
+        PreparedStatement upKiosk = conn.prepareStatement("UPDATE KIOSK " +
+                "SET FLAG = ? " +
+                "WHERE NODE_ID = ?");
+
+        upKiosk.setBoolean(1, true);
+        upKiosk.setString(2, k.getNodeID().toString());
+        upKiosk.executeUpdate();
+        conn.commit();
+    }
+
     public void addNodeToDB(MapNode m) throws SQLException {
         PreparedStatement insertNode = conn.prepareStatement("INSERT INTO NODE (NODE_ID, POSX, POSY, FLOOR_ID, TYPE) " +
                 "VALUES (?, ?, ?, ?, ?)");
