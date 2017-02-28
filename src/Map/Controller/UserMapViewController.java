@@ -358,8 +358,6 @@ public class UserMapViewController extends MapController
             boundary.changeFloor(event.getSource().getFloor());
         });
 
-        //kioskFloor = DatabaseManager.Faulkner.getBuildings().iterator().next().getFloor(1);
-
         panel.mainPane.setPrefHeight(mainPane.getPrefHeight());
 
         mainPane.getChildren().add(panel);
