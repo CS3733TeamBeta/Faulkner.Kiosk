@@ -61,6 +61,8 @@ public class UserMapViewController extends MapController
 
     Guidance newRoute;
 
+    BiMap<Line, NodeEdge>  edgeEntityMap;
+
     @FXML
     AnchorPane mapPane;
 
@@ -140,6 +142,7 @@ public class UserMapViewController extends MapController
         super();
         boundary = new MapBoundary(ApplicationController.getHospital());
         nodeTextMap = HashBiMap.create();
+        edgeEntityMap = HashBiMap.create();
 
         initBoundary();
     }
@@ -384,6 +387,15 @@ public class UserMapViewController extends MapController
         curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
 
         panToCenter();
+
+        for(MapNode n : boundary.getCurrentFloor().getFloorNodes()){
+            for(NodeEdge e : n.getEdges()){
+                if(!edgeEntityMap.values().contains(e)){
+                    addEdge(e);
+                    updateEdgeLine(e, Color.BLACK, 0.2);
+                }
+            }
+        }
     }
 
     private void directionPaneView()
@@ -491,9 +503,16 @@ public class UserMapViewController extends MapController
             return;//TODO add error message throw
         }
 
-        for(NodeEdge n: newRoute.getPathEdges())
+        for(NodeEdge e: newRoute.getPathEdges())
         {
-            addEdge(n);
+            for (NodeEdge edge : edgeEntityMap.values()) {
+                if (newRoute.getPathEdges().contains(edge)) {
+                    updateEdgeLine(edge, Color.RED, 1.0);
+                } else {
+                    updateEdgeLine(edge, Color.BLACK, 0.2);
+                }
+            }
+            //updateEdgeLine(n);
         }
         /*
         for(Building b : model.getHospital().getBuildings()) {
@@ -524,7 +543,7 @@ public class UserMapViewController extends MapController
      * Called when a NodeEdge is added to the boundary
      * @param edge the edge that was added
      */
-    public void addEdge(NodeEdge edge)
+    private void addEdge(NodeEdge edge)
     {
         Line line = new Line();
         line.setStrokeWidth(5);
@@ -533,7 +552,7 @@ public class UserMapViewController extends MapController
         line.toBack();
         mapImage.toBack();
 
-        //edgeEntityMap.put(line, edge);
+        edgeEntityMap.put(line, edge);
 
         line.setStroke(Color.RED);
         MapNode source = edge.getSource();
@@ -544,6 +563,14 @@ public class UserMapViewController extends MapController
 
         line.setEndX(target.getPosX());
         line.setEndY(target.getPosY());
+    }
+
+    private void updateEdgeLine(NodeEdge edge, Color color, double opacity)
+    {
+        Line l = edgeEntityMap.inverse().get(edge);
+
+        l.setStroke(color);
+        l.setOpacity(opacity);
     }
 
     public void defaultProperty()
