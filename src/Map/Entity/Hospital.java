@@ -1,18 +1,15 @@
 package Map.Entity;
 
 
-import Directory.*;
-import Map.Entity.Building;
-import Map.Entity.CampusFloor;
-import Map.Entity.Destination;
-import Map.Entity.Office;
-
+import Application.Database.DatabaseManager;
+import Directory.Doctor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import java.util.*;
-
-import static javafx.collections.FXCollections.observableArrayList;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
 
 /**
   * Created by IanCJ on 1/29/2017.
@@ -106,5 +103,10 @@ public class Hospital {
 
         kiosk.setType(NodeType.CurrentKiosk);
         this.currentKiosk = kiosk;
+        try {
+            new DatabaseManager().updateCurKiosk(kiosk);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
