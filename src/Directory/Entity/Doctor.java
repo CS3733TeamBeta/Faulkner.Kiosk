@@ -1,8 +1,8 @@
-package Directory;
+package Directory.Entity;
 
 import Map.Entity.Destination;
+import javafx.collections.ObservableList;
 
-import java.util.HashSet;
 import java.util.UUID;
 
 public class Doctor
@@ -12,10 +12,9 @@ public class Doctor
     String phoneNum = "N/A";
     private String name;
     private String description;
-    private HashSet<Destination> destinations;
+    private ObservableList<Destination> destinations;
 
     protected String hours;
-    protected String phoneNumber;
 
     /*
     HashSet<String> lstNames;
@@ -24,7 +23,7 @@ public class Doctor
 */
 
 
-    public Doctor(String name, String description, String hours, HashSet<Destination> destinations) {
+    public Doctor(String name, String description, String hours, ObservableList<Destination> destinations) {
         this.name = name;
         this.description = description;
         this.hours = hours;
@@ -33,7 +32,7 @@ public class Doctor
 
     }
 
-    public Doctor(UUID docID, String name, String description, String hours, HashSet<Destination> destinations) {
+    public Doctor(UUID docID, String name, String description, String hours, ObservableList<Destination> destinations) {
         this.name = name;
         this.description = description;
         this.hours = hours;
@@ -83,11 +82,11 @@ public class Doctor
         return this.hours;
     }
 
-    public HashSet<Destination> getDestinations() {
+    public ObservableList<Destination> getDestinations() {
         return this.destinations;
     }
 
-    public void setDestinations(HashSet<Destination> suites) {
+    public void setDestinations(ObservableList<Destination> suites) {
         this.destinations = suites;
     }
 

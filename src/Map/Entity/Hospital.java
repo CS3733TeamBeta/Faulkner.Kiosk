@@ -1,18 +1,10 @@
 package Map.Entity;
 
-
-import Directory.*;
-import Map.Entity.Building;
-import Map.Entity.CampusFloor;
-import Map.Entity.Destination;
-import Map.Entity.Office;
-
+import Directory.Entity.Doctor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.UUID;
 
 import static javafx.collections.FXCollections.observableArrayList;
@@ -21,11 +13,11 @@ import static javafx.collections.FXCollections.observableArrayList;
   * Created by IanCJ on 1/29/2017.
   */
 public class Hospital {
-    HashSet<Building> buildings;
+    ObservableList<Building> buildings;
 
-    private HashMap<String, Doctor> doctors;
-    private HashMap<UUID, Destination> destinations;
-    private HashMap<String, Office> offices;
+    private ObservableList<Doctor> doctors;
+    private ObservableList<Destination> destinations;
+    private ObservableList<Office> offices;
 
     CampusFloor CampusFloor;
 
@@ -33,10 +25,10 @@ public class Hospital {
     protected ObservableList<Kiosk> kiosks;
 
     public Hospital() {
-        buildings = new HashSet<Building>();
-        destinations = new HashMap<>();
-        offices = new HashMap<>();
-        doctors = new HashMap<>();
+        buildings = FXCollections.observableArrayList();
+        destinations = FXCollections.observableArrayList();
+        offices = FXCollections.observableArrayList();
+        doctors = FXCollections.observableArrayList();
 
         CampusFloor  = new CampusFloor();
         kiosks = FXCollections.observableArrayList();
@@ -60,29 +52,29 @@ public class Hospital {
     }
 
     //Alter Doctor HashMap: doctors
-    public HashMap<String, Doctor> getDoctors() {
+    public ObservableList<Doctor> getDoctors() {
         return doctors;
     }
-    public void addDoctors(String s, Doctor doc) {
-        doctors.put(s, doc);
+    public void addDoctors(Doctor doc) {
+        doctors.add(doc);
     }
-    public void setDoctors(HashMap<String, Doctor> doctors) {
+    public void setDoctors(ObservableList<Doctor> doctors) {
         this.doctors = doctors;
     }
 
     //Alter Suite HashMap: destinations
-    public HashMap<UUID, Destination> getDestinations() {
+    public ObservableList<Destination> getDestinations() {
         return destinations;
     }
-    public void addDestinations(UUID uuid, Destination suite) {
-        destinations.put(uuid, suite);
+    public void addDestinations(Destination destination) {
+        destinations.add(destination);
     }
 
     //Alter Office HashMap: offices
-    public void addOffices(String s, Office off) {
-        offices.put(s, off);
+    public void addOffices(Office off) {
+        offices.add(off);
     }
-    public HashMap<String, Office> getOffices() {
+    public ObservableList<Office> getOffices() {
         return this.offices;
     }
 

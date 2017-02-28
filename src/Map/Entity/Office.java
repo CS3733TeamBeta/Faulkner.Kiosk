@@ -57,7 +57,11 @@ public class Office
         return this.department;
     }
 
-    public void setSuite(Destination d) {
+    public void setDestination(Destination d) {
         this.destination = d;
+    }
+
+    public String toString() {
+        return this.name;
     }
 }
