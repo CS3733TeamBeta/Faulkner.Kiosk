@@ -55,7 +55,7 @@ public class MapEditorController extends MapController
 	Button newFloorButton;
 
 	@FXML
-	private TabPane BuildingTabPane;
+	private TabPane FloorTabPane;
 
 	@FXML
 	private JFXComboBox<Kiosk> kioskSelector;
@@ -168,9 +168,6 @@ public class MapEditorController extends MapController
 		mapPane.setOnMouseDragged(e -> {
 			clearSelected();
 
-			target.setLayoutY(e.getY()-target.getFitHeight()/2);
-			target.setLayoutX(e.getX()-target.getFitWidth()/2);
-
 			if(!drawingEdgeLine.isVisible())
 			{
 				selectionRect.setX(Math.min(e.getX(), mouseAnchor.get().getX()));
@@ -193,14 +190,14 @@ public class MapEditorController extends MapController
 							.filter(r -> r.getBoundsInParent().intersects(selectionRect.getBoundsInParent()))
 							.collect(Collectors.toList()));
 
-			target.setVisible(false);
-
-			for(DragIcon icon: selectedIcons)
+			if(selectedIcons.size()>1)
 			{
 				markSelected();
 			}
-
-			System.out.println("Selected: " + selectedIcons.size());
+			else
+			{
+				selectedIcons.clear();
+			}
 
 			selectionRect.setWidth(0);
 			selectionRect.setHeight(0);
@@ -217,7 +214,7 @@ public class MapEditorController extends MapController
 
 		drawingEdgeLine.setVisible(false);
 
-		BuildingTabPane.getTabs().clear();
+		FloorTabPane.getTabs().clear();
 
 		initBoundary();
 
@@ -316,7 +313,7 @@ public class MapEditorController extends MapController
 			makeFloorTab(f);
 		}
 
-		BuildingTabPane.getSelectionModel().selectedItemProperty().addListener(
+		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
 				(ov, newvalue, oldvalue)->{
 					boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
 
@@ -328,7 +325,8 @@ public class MapEditorController extends MapController
 
 		mapPane.getChildren().add(target); //adds to map pane
 
-		BuildingTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
+		FloorTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
+		FloorTabPane.getSelectionModel().select(0);
 	}
 
 	protected void markSelected()
@@ -377,6 +375,7 @@ public class MapEditorController extends MapController
 
 		menu.show(screenCoords.getX(), screenCoords.getY());
 
+		target.toFront();
 		target.setVisible(true);
 
 		target.setX(point.getX() - target.getFitWidth() / 2);
@@ -429,7 +428,7 @@ public class MapEditorController extends MapController
 	{
 		menu = new CirclePopupMenu(mapPane, null);
 
-		for (int i = 0; i < NodeType.values().length; i++)
+		for (int i = 0; i < NodeType.values().length-1; i++) //skips currentkiosk type
 		{
 			DragIcon icn = new DragIcon();
 			icn.setType(NodeType.values()[i]);
@@ -559,7 +558,7 @@ public class MapEditorController extends MapController
 
 		tab.setContent(listView);
 
-		BuildingTabPane.getTabs().add(tab);
+		FloorTabPane.getTabs().add(tab);
 
 		tabFloorMap.put(tab, f);
 
