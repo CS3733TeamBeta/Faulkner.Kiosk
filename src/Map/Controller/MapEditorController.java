@@ -141,7 +141,9 @@ public class MapEditorController extends MapController
 			adminBoundary.setCurrentKiosk(newSelection);
 
 			iconEntityMap.inverse().get(newSelection).setType(newSelection.getType());
-			iconEntityMap.inverse().get(old).setType(old.getType());
+			if(iconEntityMap.inverse().get(old) != null && old.getType() != null) {
+				iconEntityMap.inverse().get(old).setType(old.getType());
+			}
 		});
 
 		int kioskIndex = boundary.getHospital().getKiosks().indexOf(boundary.getHospital().getCurrentKiosk());

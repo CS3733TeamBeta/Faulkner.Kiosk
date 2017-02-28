@@ -32,7 +32,6 @@ public class Hospital {
 
         CampusFloor  = new CampusFloor();
         kiosks = FXCollections.observableArrayList(new ArrayList<Kiosk>());
-
     }
 
     public void addBuilding(Building b) {
