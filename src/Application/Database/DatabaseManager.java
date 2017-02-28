@@ -704,6 +704,18 @@ public class DatabaseManager {
         conn.commit();
     }
 
+    public void addKioskToDB(Kiosk k) throws SQLException {
+        PreparedStatement insertKiosk = conn.prepareStatement("INSERT INTO KIOSK (NAME, NODE_ID, DIRECTION, FLAG) " +
+                "VALUES (?, ?, ?, ?)");
+        // insert kiosk to database
+        insertKiosk.setString(1, k.getName());
+        insertKiosk.setString(2, k.getNodeID().toString());
+        insertKiosk.setString(3, k.getDirection());
+        insertKiosk.setBoolean(4, false);
+        insertKiosk.executeUpdate();
+        conn.commit();
+    }
+
     public void addNodeToDB(MapNode m) throws SQLException {
         PreparedStatement insertNode = conn.prepareStatement("INSERT INTO NODE (NODE_ID, POSX, POSY, FLOOR_ID, TYPE) " +
                 "VALUES (?, ?, ?, ?, ?)");

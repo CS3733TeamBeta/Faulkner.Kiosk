@@ -106,6 +106,11 @@ public class AdminMapBoundary extends MapBoundary
         if(n instanceof Kiosk)
         {
             getHospital().getKiosks().add((Kiosk)n);
+            try {
+                new DatabaseManager().addKioskToDB((Kiosk)n);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         nodesOnMap.add(n);
