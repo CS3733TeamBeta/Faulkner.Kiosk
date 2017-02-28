@@ -38,8 +38,7 @@ public class TextDirectionsCreator {
         MapNode fromNode = new MapNode();
         MapNode toNode = new MapNode();
 
-        int intersectionsPassed = 0;
-
+        int intersectionsPassed = -0;
         //Add the first node to the textual directions
         if (vFlag) {
             tempTextDirection = ("Start at the Kiosk. (Node " + listNodes.get(0).getNodeID() + ")");
@@ -101,7 +100,7 @@ public class TextDirectionsCreator {
                 intersectionsPassed++;
             } else if (!directionChangeString.equals("Straight") && (!directionChangeString.equals("up")) && (!directionChangeString.equals("down"))) {
                 if(intersectionsPassed  == 0) {
-                    tempTextDirection = ("Go " + directionChangeString + " at the next intersection");
+                    tempTextDirection = ("Turn " + directionChangeString);
                     tempMapNodes.add(fromNode);
                     if (vFlag) {
                         tempTextDirection += (" ID: " + fromNode.getNodeID());

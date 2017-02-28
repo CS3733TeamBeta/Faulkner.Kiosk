@@ -28,6 +28,7 @@ public class Path implements Iterable {
         System.out.println("Path constuctor must be called with fields");
     }
 
+
     /**
      * Fills this path's field with the path genereated from start to end using Astar, printing out lots of stuff if vFlag is true
      * @param start
@@ -454,6 +455,7 @@ public class Path implements Iterable {
      */
     public Path(MapNode start, MapNode end, boolean vFlag, String algo, boolean useStairs) throws PathFindingException{
         this.vFlag = vFlag;
+        System.out.println("Pathfinding with " + algo);
         switch (algo) {
             case "astar":
                 System.out.println(start.toString());
