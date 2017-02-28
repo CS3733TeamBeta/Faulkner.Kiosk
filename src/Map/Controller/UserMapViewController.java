@@ -388,6 +388,10 @@ public class UserMapViewController extends MapController
 
         panToCenter();
 
+        addEdgesToCurrentFloor();
+    }
+
+    private void addEdgesToCurrentFloor(){
         for(MapNode n : boundary.getCurrentFloor().getFloorNodes()){
             for(NodeEdge e : n.getEdges()){
                 if(!edgeEntityMap.values().contains(e)){
@@ -395,6 +399,24 @@ public class UserMapViewController extends MapController
                     updateEdgeLine(e, Color.BLACK, 0.2);
                 }
             }
+        }
+    }
+
+    private void removeEdgesFromFloor(){
+        for(MapNode n : boundary.getCurrentFloor().getFloorNodes()){
+            for(NodeEdge e : n.getEdges()){
+                if(edgeEntityMap.values().contains(e)){
+                    Line line = edgeEntityMap.inverse().get(e);
+                    mapItems.getChildren().remove(line);
+                    edgeEntityMap.remove(line, e);
+                }
+            }
+        }
+    }
+
+    private void removeNodesFromFloor(){
+        for(MapNode n : boundary.getCurrentFloor().getFloorNodes()){
+            removeMapNode(n);
         }
     }
 
@@ -503,16 +525,12 @@ public class UserMapViewController extends MapController
             return;//TODO add error message throw
         }
 
-        for(NodeEdge e: newRoute.getPathEdges())
-        {
-            for (NodeEdge edge : edgeEntityMap.values()) {
-                if (newRoute.getPathEdges().contains(edge)) {
-                    updateEdgeLine(edge, Color.RED, 1.0);
-                } else {
-                    updateEdgeLine(edge, Color.BLACK, 0.2);
-                }
+        for (NodeEdge edge : edgeEntityMap.values()) {
+            if (newRoute.getPathEdges().contains(edge)) {
+                updateEdgeLine(edge, Color.RED, 1.0);
+            } else {
+                updateEdgeLine(edge, Color.BLACK, 0.2);
             }
-            //updateEdgeLine(n);
         }
         /*
         for(Building b : model.getHospital().getBuildings()) {
