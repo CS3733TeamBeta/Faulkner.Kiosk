@@ -41,7 +41,9 @@ public class Hospital {
     }
 
     public void addBuilding(Building b) {
+
         buildings.add(b);
+        b.setHospital(this);
     }
 
     public CampusFloor getCampusFloor()

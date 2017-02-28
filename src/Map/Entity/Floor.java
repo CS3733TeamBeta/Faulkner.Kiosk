@@ -106,6 +106,12 @@ public class Floor extends Observable implements Comparable
         {
             tableItems.remove(n);
         }
+
+
+        if(n instanceof Kiosk)
+        {
+            getBuilding().getHospital().getKiosks().remove(n);
+        }
     }
 
     /**

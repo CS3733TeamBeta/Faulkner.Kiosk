@@ -1,8 +1,11 @@
 package Map.Entity;
 
+import Application.Events.DeleteRequestedEvent;
+import Application.Events.DeleteRequestedHandler;
 import Map.Controller.Popover.KioskEditController;
 import org.controlsfx.control.PopOver;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -34,8 +37,6 @@ public class Kiosk extends MapNode{
         this.setPosY(m.getPosY());
 
         this.setType(m.getType());
-
-
     }
 
     @Override
