@@ -139,6 +139,8 @@ public class MapEditorController extends MapController
 		});
 
 		mapPane.setOnMouseDragged(e -> {
+			selectedIcons.clear();
+
 			if(!drawingEdgeLine.isVisible())
 			{
 				selectionRect.setX(Math.min(e.getX(), mouseAnchor.get().getX()));
@@ -156,8 +158,6 @@ public class MapEditorController extends MapController
 		});
 
 		mapPane.setOnMouseReleased(e -> {
-			selectedIcons.clear();
-
 			selectedIcons.addAll(
 					iconEntityMap.keySet().stream()
 							.filter(r -> r.getBoundsInParent().intersects(selectionRect.getBoundsInParent()))
@@ -171,6 +171,8 @@ public class MapEditorController extends MapController
 				//colorInput.setPaint(Color.RED);
 				//icon.setEffect(colorInput);
 			}
+
+			System.out.println("Selected: " + selectedIcons.size());
 
 			selectionRect.setWidth(0);
 			selectionRect.setHeight(0);
@@ -557,13 +559,39 @@ public class MapEditorController extends MapController
 		MouseControlUtil.makeDraggable(n, //could be used to track node and update line
 				event ->
 				{
+					MapNode dragged = iconEntityMap.get(n);
+
 					Bounds iconBounds = n.getBoundsInParent();
 
 					Point2D movedTo = new Point2D((iconBounds.getMaxX()+iconBounds.getMinX())/2,
 							(iconBounds.getMinY()+iconBounds.getMaxY())/2);
 
+					double deltaX = movedTo.getX() - dragged.getPosX();
+					double deltaY = movedTo.getY() - dragged.getPosY();
+
 					adminBoundary.moveNode(iconEntityMap.get(n), movedTo);
 					updateEdgeLinesForNode(iconEntityMap.get(n));
+
+					if(selectedIcons.contains(n)) //allows selection to be moved around, should be converted to event based like adding + removing
+					{
+						System.out.println("Selection contains node");
+
+						for(DragIcon icon: selectedIcons)
+						{
+							if(!icon.equals(n))
+							{
+								MapNode mapNode = iconEntityMap.get(icon);
+								Point2D relocPoint = new Point2D(mapNode.getPosX() + deltaX,
+										mapNode.getPosY() + deltaY);
+
+								icon.relocate(relocPoint.getX() - icon.getPrefWidth() / 2,
+										relocPoint.getY() - icon.getPrefHeight() / 2);
+
+								adminBoundary.moveNode(mapNode, relocPoint);
+							}
+						}
+					}
+
 					System.out.println("Node moved to (X: "+ n.getParent().sceneToLocal(event.getSceneX(),event.getSceneY()));
 
 				},

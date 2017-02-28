@@ -100,7 +100,7 @@ public class ApplicationController extends Application
 
     public void switchToUserMapView() throws IOException
     {
-        switchToScene( UserMapViewerPath);
+        switchToScene(UserMapViewerPath);
     }
 
     public void switchToAddFloor() throws IOException{
