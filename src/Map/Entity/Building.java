@@ -24,6 +24,7 @@ public class Building {
         this.buildingFloors = FXCollections.observableSet(new HashSet<Floor>());
     }
 
+    Hospital hospital;
 
     public Building(String name)
     {
@@ -36,6 +37,16 @@ public class Building {
         this();
         this.buildID = id;
         this.name = name;
+    }
+
+    public void setHospital(Hospital h)
+    {
+        hospital = h;
+    }
+
+    public Hospital getHospital()
+    {
+        return hospital;
     }
 
     public Floor newFloor()

@@ -6,6 +6,7 @@ import Map.Entity.Floor;
 import Map.Entity.MapNode;
 import Map.Entity.NodeEdge;
 import Application.Database.DataCache;
+import com.jfoenix.controls.JFXComboBox;
 import javafx.collections.*;
 
 import java.util.HashSet;
@@ -20,6 +21,8 @@ public class MapBoundary extends Observable
     protected ObservableSet<NodeEdge> edges = FXCollections.observableSet(new HashSet<NodeEdge>());
 
     protected Floor currentFloor;
+    private Floor kioskFloor;
+
     MapNode kiosk;
 
     protected Hospital h;
@@ -43,13 +46,22 @@ public class MapBoundary extends Observable
     {
         this.h = h;
         nodesOnMap = FXCollections.observableSet(new HashSet<MapNode>());
+
+        if(h.getCurrentKiosk()!=null)
+        {
+            kioskFloor = h.getCurrentKiosk().getMyFloor();
+        }
     }
 
     public void setInitialFloor()
     {
         try
         {
-            changeFloor(h.getBuildings().iterator().next().getFloor(1));
+            if(h.getCurrentKiosk()!=null)
+            {
+                changeFloor(h.getCurrentKiosk().getMyFloor());
+            }
+            else changeFloor(h.getBuildings().iterator().next().getFloor(1));
         }
         catch (Exception e)
         {
@@ -89,11 +101,24 @@ public class MapBoundary extends Observable
     {
         int nextFloorID = currentFloor.getFloorNumber() + incAmount;
 
-        if(nextFloorID<=currentFloor.getBuilding().getFloors().size() && nextFloorID >0)
+        if(kioskFloor==null)
+        {
+            System.out.println("You have not specififed a kiosk");
+        }
+        else if(nextFloorID<=kioskFloor.getBuilding().getFloors().size() &&( nextFloorID >0))
         {
             try
             {
-                changeFloor(currentFloor.getBuilding().getFloor(nextFloorID));
+                if(nextFloorID==1)
+                {
+                    changeFloor(getHospital().getCampusFloor());
+                }
+                else
+                {
+                    changeFloor(getHospital().getCurrentKiosk().getMyFloor().
+                            getBuilding().getFloor(nextFloorID));
+                }
+
                 return nextFloorID;
             }
             catch (Exception e)
@@ -123,7 +148,7 @@ public class MapBoundary extends Observable
      */
     public int changeToNextFloor()
     {
-        int result = incrementFloor(-1);
+        int result = incrementFloor(1);
         return result;
     }
 
