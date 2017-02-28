@@ -37,14 +37,18 @@ public class IdleTimer
         active,
         pending_response,
         inactive,
+        stopped
     }
 
     public IdleTimer()
     {
         inactivityHandler = event ->
         {
-            System.out.println("Activity detected");
-            resetInactivity();
+            if(state != TimerState.stopped)
+            {
+                state = TimerState.active;
+                resetInactivity();
+            }
         };
 
         userResponseWait = new Timeline(new KeyFrame(Duration.seconds(10), e ->{
@@ -53,6 +57,7 @@ public class IdleTimer
                 userPrompt.close();
                 ApplicationController.getController().switchToUserMapView();
                 System.out.println("User response time out.");
+                state = TimerState.inactive;
             } catch (Exception e1)
             {
                 e1.printStackTrace();
@@ -73,16 +78,18 @@ public class IdleTimer
                 {
                     Platform.runLater(() ->
                     {
+                        System.out.println("User inactivity detected... Prompt deployed");
                         userPrompt = new Alert(Alert.AlertType.CONFIRMATION);
                         userPrompt.setTitle("Are you still there?");
-                        userPrompt.setHeaderText("You've been inactive for a while,\n so we'd like to exit" +
-                                " to protect your privacy.");
+                        userPrompt.setHeaderText("Your session is about to expire.");
 
-                        userPrompt.setContentText("Proceed with exit?");
+                        userPrompt.setContentText("Would you like to end your session? Please respond within a minute.");
 
                         userResponseWait.playFromStart();
 
                         Optional<ButtonType> result = userPrompt.showAndWait();
+
+                        state = TimerState.pending_response;
 
                         if (result.get() == ButtonType.CANCEL)
                         {
@@ -114,21 +121,20 @@ public class IdleTimer
 
     public void start()
     {
+        state = TimerState.active;
         inactivityWait.playFromStart();
     }
 
     public void stop()
     {
+        state = TimerState.stopped;
         inactivityWait.stop();
     }
 
     public void resetInactivity()
     {
-        System.out.println("Inactivity timeline reset");
-
         inactivityWait.playFromStart();
     }
-
 
     public void setStageToMonitor(Stage stage)
     {

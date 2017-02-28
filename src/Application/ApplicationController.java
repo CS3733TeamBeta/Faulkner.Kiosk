@@ -56,7 +56,7 @@ public class ApplicationController extends Application
 
     IdleTimer idle = new IdleTimer();
 
-    long timeout=5;
+    long timeout=120;
 
     FXMLLoader loader;
 
@@ -102,10 +102,6 @@ public class ApplicationController extends Application
         primaryStage.setScene(scene);
 
         loader.getController();
-
-       // controller.setStage(primaryStage);
-
-       // return controller;
     }
 
     /**
@@ -122,12 +118,15 @@ public class ApplicationController extends Application
        switchToScene(ModifyDirectoryViewPath);
     }
 
-    public void switchToMapEditorView() throws IOException {
+    public void switchToMapEditorView() throws IOException
+    {
+        idle.stop();
         switchToScene(MapEditorViewPath);
     }
 
     public void switchToUserMapView() throws IOException
     {
+        idle.start();
         switchToScene(UserMapViewerPath);
     }
 
