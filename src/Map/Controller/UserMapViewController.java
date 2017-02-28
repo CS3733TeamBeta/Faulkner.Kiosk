@@ -57,6 +57,11 @@ public class UserMapViewController extends MapController
     int numClickBath = -1;
     int numClickHelp = -1;
 
+    double opacityWhenNotOnPath = 0.2;
+    double opacityWhenOnPath = 1.0;
+    Color edgeOnPathColor = Color.RED;
+    Color edgeNotOnPathColor = Color.BLACK;
+
     Floor kioskFloor;
 
     Guidance newRoute;
@@ -394,7 +399,7 @@ public class UserMapViewController extends MapController
             for(NodeEdge e : n.getEdges()){
                 if(!edgeEntityMap.values().contains(e)){
                     addEdge(e);
-                    updateEdgeLine(e, Color.BLACK, 0.2);
+                    updateEdgeLine(e, edgeNotOnPathColor, opacityWhenNotOnPath);
                 }
             }
         }
@@ -495,8 +500,7 @@ public class UserMapViewController extends MapController
         {
             for (NodeEdge n : newRoute.getPathEdges())
             {
-                //   n.changeOpacity(0.0);
-                //  n.changeColor(Color.BLACK);
+                updateEdgeLine(n, edgeNotOnPathColor, opacityWhenNotOnPath);
             }
         }
 
@@ -525,25 +529,11 @@ public class UserMapViewController extends MapController
 
         for (NodeEdge edge : edgeEntityMap.values()) {
             if (newRoute.getPathEdges().contains(edge)) {
-                updateEdgeLine(edge, Color.RED, 1.0);
+                updateEdgeLine(edge, edgeOnPathColor, opacityWhenOnPath);
             } else {
-                updateEdgeLine(edge, Color.BLACK, 0.2);
+                updateEdgeLine(edge, edgeNotOnPathColor, opacityWhenNotOnPath);
             }
         }
-        /*
-        for(Building b : model.getHospital().getBuildings()) {
-            for(Floor f : b.getFloors()) {
-                for (NodeEdge edge : f.getFloorEdges()) {
-                    if (newRoute.getPathEdges().contains(edge)) {
-                        edge.changeOpacity(1.0);
-                        edge.changeColor(Color.RED);
-                    } else {
-                        edge.changeOpacity(0.0);
-                        edge.changeColor(Color.BLACK);
-                    }
-                }
-            }
-        }*/
         panel.fillGuidance(newRoute);
 
         showDirections();
