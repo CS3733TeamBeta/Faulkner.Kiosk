@@ -173,6 +173,14 @@ public class AdminMapBoundary extends MapBoundary
     }
 
     /**
+     * Set Current kiosk
+     */
+    public void setCurrentKiosk(Kiosk k)
+    {
+        h.setCurrentKiosk(k); //handles changing node type in hospital
+    }
+
+    /**
      * Moves a node to a given point
      * @param n
      * @param movedTo
@@ -190,13 +198,4 @@ public class AdminMapBoundary extends MapBoundary
         }
     }
 
-    /**Sets the current kiosk being used for this hospital*/
-    public void setCurrentKiosk (Kiosk kiosk) {
-        if (getHospital().getKiosks().contains(kiosk)) {
-            getHospital().setCurrentKiosk(kiosk);
-        } else {
-            getHospital().getKiosks().add(kiosk);
-            getHospital().setCurrentKiosk(kiosk);
-        }
-    }
 }

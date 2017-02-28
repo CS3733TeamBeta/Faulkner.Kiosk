@@ -2,16 +2,14 @@ package Map.Controller;
 
 import Application.ApplicationController;
 import Map.Boundary.AdminMapBoundary;
-import Map.Entity.MapNode;
-import Map.Entity.NodeType;
+import Map.Entity.*;
 import Application.Events.EdgeCompleteEvent;
 import Application.Events.EdgeCompleteEventHandler;
 
-import Map.Entity.Floor;
-import Map.Entity.NodeEdge;
 import Application.Database.DataCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -58,6 +56,9 @@ public class MapEditorController extends MapController
 
 	@FXML
 	private TabPane BuildingTabPane;
+
+	@FXML
+	private JFXComboBox<Kiosk> kioskSelector;
 
 	NodeEdge drawingEdge;
 	Line drawingEdgeLine;
@@ -132,11 +133,23 @@ public class MapEditorController extends MapController
 	@FXML
 	private void initialize()
 	{
+		kioskSelector.setItems(boundary.getHospital().getKiosks());
+
+		kioskSelector.getSelectionModel().selectedItemProperty().addListener(
+				(o, old, newSelection)->
+		{
+			adminBoundary.setCurrentKiosk(newSelection);
+
+			iconEntityMap.inverse().get(newSelection).setType(newSelection.getType());
+			iconEntityMap.inverse().get(old).setType(old.getType());
+		});
+
+		int kioskIndex = boundary.getHospital().getKiosks().indexOf(boundary.getHospital().getCurrentKiosk());
+
 		Rectangle selectionRect = new Rectangle();
 		selectionRect.setFill(Color.GREY);
 		selectionRect.setOpacity(.3);
 		selectionRect.setStroke(Color.WHITE);
-
 
 		ObjectProperty<Point2D> mouseAnchor = new SimpleObjectProperty<>();
 
@@ -584,8 +597,7 @@ public class MapEditorController extends MapController
 
 		edge.setOnMouseClicked(deEvent->{
 			if (edge != null) {
-			
-					adminBoundary.removeEdge(edgeEntityMap.get(edge));
+				adminBoundary.removeEdge(edgeEntityMap.get(edge));
 			}
 		});
 	}

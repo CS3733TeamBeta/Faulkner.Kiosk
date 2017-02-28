@@ -11,7 +11,7 @@ import java.util.UUID;
 public class Kiosk extends MapNode{
     Character direction;
 
-    String name;
+    String name = "Kiosk";
 
     UUID kioskID;
 
@@ -70,7 +70,6 @@ public class Kiosk extends MapNode{
     }
 
     public Character getDirection() { return this.direction; }
-
 
     @Override
     public String getLabel()

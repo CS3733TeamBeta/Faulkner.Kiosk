@@ -10,10 +10,7 @@ import Map.Entity.Office;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 
 import static javafx.collections.FXCollections.observableArrayList;
 
@@ -39,7 +36,7 @@ public class Hospital {
         doctors = new HashMap<>();
 
         CampusFloor  = new CampusFloor();
-        kiosks = FXCollections.observableArrayList();
+        kiosks = FXCollections.observableArrayList(new ArrayList<Kiosk>());
 
     }
 
@@ -98,8 +95,14 @@ public class Hospital {
         kiosks.add(newKiosk);
     }
 
-    public  void setCurrentKiosk (Kiosk kiosk) {
+    public void setCurrentKiosk (Kiosk kiosk)
+    {
+        if(currentKiosk!=null)
+        {
+            currentKiosk.setType(NodeType.Kiosk);
+        }
+
+        kiosk.setType(NodeType.CurrentKiosk);
         this.currentKiosk = kiosk;
     }
-
 }
