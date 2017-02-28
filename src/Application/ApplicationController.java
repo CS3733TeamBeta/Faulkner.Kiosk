@@ -7,6 +7,8 @@ import Map.Controller.MapEditorController;
 import Map.Controller.UserMapViewController;
 import Map.Entity.Hospital;
 import javafx.application.Application;
+import javafx.event.Event;
+import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -51,9 +53,13 @@ public class ApplicationController extends Application
         return controller.dataCache.getHospital();
     }
 
+    IdleTimer idle = new IdleTimer();
+
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        idle.setStageToMonitor(primaryStage);
+
         dataCache = DataCache.getInstance();
         this.primaryStage = primaryStage;
 
