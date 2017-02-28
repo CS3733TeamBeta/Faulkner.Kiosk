@@ -252,8 +252,6 @@ public class Path implements Iterable {
             n.resetTempValues();
         }
 
-
-
         //Determine pathNodes from pathEdges
         nodesFromEdges(start, end);
 
@@ -349,7 +347,6 @@ public class Path implements Iterable {
      * @param vFlag
      * @throws PathFindingException
      */
-
     private void createPathDepthFirst(MapNode start, MapNode end, boolean vFlag, boolean useStairs) throws PathFindingException {
 
         pathEdges = new LinkedList<NodeEdge>();
