@@ -84,6 +84,17 @@ public class Guidance extends Path {
         floorSteps = new LinkedList<DirectionFloorStep>();
         TextDirectionsCreator tdc = new TextDirectionsCreator(pathNodes, pathEdges, kioskDirection, false);
         floorSteps = tdc.getDirectionFloorSteps();
+    }
+
+    public Guidance (MapNode start, MapNode end, String kioskInputDirection, boolean useStairs) throws PathFindingException{
+        super(start, end, false);
+        setImages();
+
+        kioskDirection = Guidance.directionToNum(kioskInputDirection);
+
+        floorSteps = new LinkedList<DirectionFloorStep>();
+        TextDirectionsCreator tdc = new TextDirectionsCreator(pathNodes, pathEdges, kioskDirection, false);
+        floorSteps = tdc.getDirectionFloorSteps();
 
 
     }

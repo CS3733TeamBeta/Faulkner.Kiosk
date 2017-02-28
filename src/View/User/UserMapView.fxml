@@ -17,6 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.CheckBox?>
 <AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Map.Controller.UserMapViewController">
    <children>
       <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" pannable="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -168,6 +169,8 @@
             <Double fx:value="-60.0" />
          </points>
       </Polygon>
+      <Label fx:id="useStairsField" text="Use stairs:" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="170.0"></Label>
+      <CheckBox id="checkBoxUseStairs" fx:id="checkBoxUseStairs" layoutX="240.0" layoutY="240.0" AnchorPane.leftAnchor="70.0" AnchorPane.topAnchor="170.0"></CheckBox>
       <ImageView fx:id="adminLogin" fitHeight="42.0" fitWidth="41.0" onMouseClicked="#adminLogin" opacity="0.21" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <image>
             <Image url="@resources/admin_login.png" />

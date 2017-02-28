@@ -5,6 +5,7 @@ import Map.Entity.NodeEdge;
 import Application.Exceptions.PathFindingException;
 import Application.Exceptions.PathFindingInvalidPathException;
 import Application.Exceptions.PathFindingNoPathException;
+import Map.Entity.NodeType;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -34,7 +35,7 @@ public class Path implements Iterable {
      * @param vFlag
      * @throws PathFindingException
      */
-    private void createPathAStar(MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
+    private void createPathAStar(MapNode start, MapNode end, boolean vFlag, boolean useStairs) throws PathFindingException {
 
         this.vFlag = vFlag;
 
@@ -80,7 +81,9 @@ public class Path implements Iterable {
                 MapNode aNode = aEdge.getOtherNode(currentNode);
 
                 //As long as you have not already visited the node, recalculate its heuristic values
-                if (!closedSet.contains(aNode)) {
+                if (!closedSet.contains(aNode) &&
+                        ((aNode.getType() == NodeType.Stairs && useStairs) || (aNode.getType() != NodeType.Stairs))
+                        ) {
 
                     //Calculate what the F value would be
                     //the heuristic is the geometric distance from the next node to the end point
@@ -151,7 +154,7 @@ public class Path implements Iterable {
      * @param vFlag
      * @throws PathFindingException
      */
-    private void createPathRandom(MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
+    private void createPathRandom(MapNode start, MapNode end, boolean vFlag, boolean useStairs) throws PathFindingException {
 
         this.vFlag = vFlag;
 
@@ -197,7 +200,8 @@ public class Path implements Iterable {
                 MapNode aNode = aEdge.getOtherNode(currentNode);
 
                 //As long as you have not already visited the node, recalculate its heuristic values
-                if (!closedSet.contains(aNode)) {
+                if (!closedSet.contains(aNode) &&
+                        ((aNode.getType() == NodeType.Stairs && useStairs) || (aNode.getType() != NodeType.Stairs))) {
 
                     //Calculate what the F value would be
                     //the heuristic is the geometric distance from the next node to the end point
@@ -268,7 +272,7 @@ public class Path implements Iterable {
      * @param vFlag
      * @throws PathFindingException
      */
-    private void createPathBreadthFirst(MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
+    private void createPathBreadthFirst(MapNode start, MapNode end, boolean vFlag, boolean useStairs) throws PathFindingException {
 
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
@@ -284,7 +288,8 @@ public class Path implements Iterable {
 
             for (NodeEdge e : newNode.getEdges()) {
                 MapNode neighbor = e.getOtherNode(newNode);
-                if (!openSet.contains(neighbor) && !visitedNodes.contains(neighbor)) {
+                if (!openSet.contains(neighbor) && !visitedNodes.contains(neighbor) &&
+                        ((neighbor.getType() == NodeType.Stairs && useStairs) || (neighbor.getType() != NodeType.Stairs))) {
                     openSet.add(neighbor);
                     neighbor.setParent(e);
                 }
@@ -332,7 +337,7 @@ public class Path implements Iterable {
      * @throws PathFindingException
      */
 
-    private void createPathDepthFirst(MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
+    private void createPathDepthFirst(MapNode start, MapNode end, boolean vFlag, boolean useStairs) throws PathFindingException {
 
         pathEdges = new LinkedList<NodeEdge>();
         pathNodes = new LinkedList<MapNode>();
@@ -348,7 +353,8 @@ public class Path implements Iterable {
 
             for (NodeEdge e : newNode.getEdges()) {
                 MapNode neighbor = e.getOtherNode(newNode);
-                if (!openSet.contains(neighbor) && !visitedNodes.contains(neighbor)) {
+                if (!openSet.contains(neighbor) && !visitedNodes.contains(neighbor) &&
+                        ((neighbor.getType() == NodeType.Stairs && useStairs) || (neighbor.getType() != NodeType.Stairs))) {
                     openSet.addFirst(neighbor);
                     neighbor.setParent(e);
                 }
@@ -390,11 +396,15 @@ public class Path implements Iterable {
 
 
     public Path(MapNode start, MapNode end) throws PathFindingException {
-        this(start, end, false, "astar");
+        this(start, end, false, "astar", false);
     }
 
     public Path(MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
-        this(start, end, vFlag, "astar");
+        this(start, end, vFlag, "astar", false);
+    }
+
+    public Path(MapNode start, MapNode end, boolean vFlag, boolean useStairs) throws PathFindingException {
+        this(start, end, vFlag, "astar", useStairs);
     }
 
     /**
@@ -427,26 +437,26 @@ public class Path implements Iterable {
      * @param vFlag
      * @throws PathFindingException
      */
-    public Path(MapNode start, MapNode end, boolean vFlag, String algo) throws PathFindingException{
+    public Path(MapNode start, MapNode end, boolean vFlag, String algo, boolean useStairs) throws PathFindingException{
         this.vFlag = vFlag;
         switch (algo) {
             case "astar":
                 System.out.println(start.toString());
                 System.out.println(end.toString());
-                createPathAStar(start, end, vFlag);
+                createPathAStar(start, end, vFlag, useStairs);
                 break;
             case "breadthfirst":
-                createPathBreadthFirst(start, end, vFlag);
+                createPathBreadthFirst(start, end, vFlag, useStairs);
                 break;
             case "depthfirst":
-                createPathDepthFirst(start, end, vFlag);
+                createPathDepthFirst(start, end, vFlag, useStairs);
                 break;
             case "random":
-                createPathRandom(start, end, vFlag);
+                createPathRandom(start, end, vFlag, useStairs);
                 break;
             default:
                 System.out.println("Input was neither \"astar\" nor \"breadthfirst\" nor \"depthfirst\" nor \"random\", using astar");
-                createPathAStar(start, end, vFlag);
+                createPathAStar(start, end, vFlag, useStairs);
         }
     }
 
