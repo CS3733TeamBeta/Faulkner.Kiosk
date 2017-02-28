@@ -29,6 +29,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -489,10 +491,9 @@ public class UserMapViewController extends MapController
             return;//TODO add error message throw
         }
 
-        /*for(NodeEdge n: newRoute.getPathEdges())
+        for(NodeEdge n: newRoute.getPathEdges())
         {
-          //  n.changeOpacity(1.0);
-            //n.changeColor(Color.RED);
+            addEdge(n);
         }
         /*
         for(Building b : model.getHospital().getBuildings()) {
@@ -517,6 +518,32 @@ public class UserMapViewController extends MapController
     public void setStage(Stage s)
     {
         primaryStage = s;
+    }
+
+    /**
+     * Called when a NodeEdge is added to the boundary
+     * @param edge the edge that was added
+     */
+    public void addEdge(NodeEdge edge)
+    {
+        Line line = new Line();
+        line.setStrokeWidth(5);
+
+        mapItems.getChildren().add(line);
+        line.toBack();
+        mapImage.toBack();
+
+        //edgeEntityMap.put(line, edge);
+
+        line.setStroke(Color.RED);
+        MapNode source = edge.getSource();
+        MapNode target = edge.getTarget();
+
+        line.setStartX(source.getPosX());
+        line.setStartY(source.getPosY());
+
+        line.setEndX(target.getPosX());
+        line.setEndY(target.getPosY());
     }
 
     public void defaultProperty()
