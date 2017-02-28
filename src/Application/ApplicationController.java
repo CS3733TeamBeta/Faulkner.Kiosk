@@ -1,10 +1,11 @@
 package Application;//Testing
 
 //import Entity.Doctor;
+
 import Application.Database.DataCache;
-import Directory.*;
+import Directory.Controller.AdminDeptDirectoryEditor;
+import Directory.Controller.AdminDocDirectoryEditorController;
 import Map.Controller.MapEditorController;
-import Map.Controller.UserMapViewController;
 import Map.Entity.Hospital;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -21,7 +22,8 @@ public class ApplicationController extends Application
    // public static final ObservableList<Doctor> FaulknerHospitalDirectory = FXCollections.observableArrayList();
     MapEditorController mapEditorController;
     AdminLoginController adminLoginController;
-    AdminDirectoryEditorController adminDirectoryEditorController;
+    AdminDocDirectoryEditorController adminDocDirectoryEditorController;
+    AdminDeptDirectoryEditor adminDeptDirectoryEditor;
 
     DataCache dataCache;
 
