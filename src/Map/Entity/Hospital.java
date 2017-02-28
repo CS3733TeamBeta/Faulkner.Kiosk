@@ -51,13 +51,25 @@ public class Hospital {
         return CampusFloor;
     }
 
-    //Alter Doctor HashMap: doctors
     public ObservableList<Doctor> getDoctors() {
         return doctors;
     }
-    public void addDoctors(Doctor doc) {
+
+    public void addDoctor(Doctor doc) {
         doctors.add(doc);
+
+        doc.addObserver((observer, args)->
+        {
+            int i = doctors.indexOf(doc);
+
+            doctors.remove(doc);
+            doctors.add(i, doc);
+        });
     }
+
+    //Alter Doctor HashMap: doctors
+    public void removeDoctor(Doctor doc) { doctors.remove(doc); }
+    public boolean containsDoctor(Doctor doc) { return doctors.contains(doc); }
     public void setDoctors(ObservableList<Doctor> doctors) {
         this.doctors = doctors;
     }
@@ -71,11 +83,26 @@ public class Hospital {
     }
 
     //Alter Office HashMap: offices
-    public void addOffices(Office off) {
+    public void addOffice(Office off) {
         offices.add(off);
+
+        off.addObserver((observer, args)->
+        {
+            int i = offices.indexOf(off);
+
+            offices.remove(off);
+            offices.add(i, off);
+        });
+    }
+    public void removeOffice(Office off) {
+        offices.remove(off);
     }
     public ObservableList<Office> getOffices() {
         return this.offices;
+    }
+
+    public Boolean containsOffice(Office off) {
+        return offices.contains(off);
     }
 
     public Collection<Building> getBuildings()

@@ -1,12 +1,13 @@
 package Map.Entity;
 
+import java.util.Observable;
 import java.util.UUID;
 
 /**
  *  Office is a particular type of destination that is a doctor's office
  */
 
-public class Office
+public class Office extends Observable
 {
     UUID id;
     String name;
