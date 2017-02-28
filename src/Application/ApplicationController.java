@@ -7,6 +7,9 @@ import Map.Controller.MapEditorController;
 import Map.Controller.UserMapViewController;
 import Map.Entity.Hospital;
 import javafx.application.Application;
+import javafx.event.Event;
+import javafx.event.EventType;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -51,9 +54,19 @@ public class ApplicationController extends Application
         return controller.dataCache.getHospital();
     }
 
+    IdleTimer idle = new IdleTimer();
+
+    long timeout=120;
+
+    FXMLLoader loader;
+
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        idle.initTimer();
+
+        idle.setStageToMonitor(primaryStage);
+
         dataCache = DataCache.getInstance();
         this.primaryStage = primaryStage;
 
@@ -62,9 +75,23 @@ public class ApplicationController extends Application
         primaryStage.show();
     }
 
+    public long getTimeout()
+    {
+        return timeout;
+    }
+
+    public void updateTimeout()
+    {
+        idle.updateTimeout(); //updates timeout with latest value from application controller
+    }
+
+    public void resetController() throws Exception
+    {
+       loader.setController(new UserMapViewController());
+    }
+
     public void switchToScene(String pathToView) throws IOException
     {
-        FXMLLoader loader;
         Parent root;
 
         loader = new FXMLLoader(this.getClass().getResource(pathToView));
@@ -75,9 +102,6 @@ public class ApplicationController extends Application
         primaryStage.setScene(scene);
 
         loader.getController();
-       // controller.setStage(primaryStage);
-
-       // return controller;
     }
 
     /**
@@ -94,12 +118,15 @@ public class ApplicationController extends Application
        switchToScene(ModifyDirectoryViewPath);
     }
 
-    public void switchToMapEditorView() throws IOException {
+    public void switchToMapEditorView() throws IOException
+    {
+        idle.stop();
         switchToScene(MapEditorViewPath);
     }
 
     public void switchToUserMapView() throws IOException
     {
+        idle.start();
         switchToScene(UserMapViewerPath);
     }
 
