@@ -840,9 +840,17 @@ public class MapEditorController extends MapController
 	{
 		//DataCache.getInstance().save();
 
-		System.out.println("value for selectAlgo is " + selectAlgo.getValue());
+		System.out.println("Previous value for algo was " + adminBoundary.getHospital().getAlgorithm());
 
-		boundary.getHospital().setAlgorithm(selectAlgo.getValue());
+
+		String newAlgorithm;
+		if (selectAlgo.getValue() != null) {
+			newAlgorithm = selectAlgo.getValue();
+		} else {
+			newAlgorithm = "astar";
+		}
+		System.out.println("value for selectAlgo is " + newAlgorithm);
+		adminBoundary.setHospitalAlgo(newAlgorithm);
 		
 		ApplicationController.getController().switchToUserMapView();
 	}

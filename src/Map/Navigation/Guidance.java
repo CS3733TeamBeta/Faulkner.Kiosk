@@ -541,7 +541,6 @@ public class Guidance extends Path {
     public boolean sendEmailGuidance(String address) {
         String subjectLine;
         String directionLine = "<H1><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H1>" + "<H4>";
-        subjectLine = "BEN IT WORKS!";
         subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
 
         int stepNumber = 1;
