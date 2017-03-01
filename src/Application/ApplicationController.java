@@ -1,10 +1,11 @@
 package Application;//Testing
 
 //import Entity.Doctor;
+
 import Application.Database.DataCache;
-import Directory.*;
+import Directory.Controller.AdminDeptDirectoryEditor;
+import Directory.Controller.AdminDocDirectoryEditorController;
 import Map.Controller.MapEditorController;
-import Map.Controller.UserMapViewController;
 import Map.Entity.Hospital;
 import javafx.application.Application;
 import javafx.event.Event;
@@ -24,14 +25,15 @@ public class ApplicationController extends Application
    // public static final ObservableList<Doctor> FaulknerHospitalDirectory = FXCollections.observableArrayList();
     MapEditorController mapEditorController;
     AdminLoginController adminLoginController;
-    AdminDirectoryEditorController adminDirectoryEditorController;
+    AdminDocDirectoryEditorController adminDocDirectoryEditorController;
+    AdminDeptDirectoryEditor adminDeptDirectoryEditor;
 
     DataCache dataCache;
 
     protected static final String AdminPackage = "../Admin";
     protected static final String UserPackage = "../User";
     protected static final String AdminLoginViewPath = AdminPackage + "/AdminLoginView.fxml";
-    protected static final String ModifyDirectoryViewPath = AdminPackage + "/AdminDirectoryEditor.fxml";
+    protected static final String ModifyDirectoryViewPath = AdminPackage + "/AdminDocDirectoryEditor.fxml";
     protected static final String MapEditorViewPath = AdminPackage + "/MapBuilder/MapEditorView.fxml";
     protected static final String UserMapViewerPath = UserPackage + "/UserMapView.fxml";
 
@@ -60,6 +62,11 @@ public class ApplicationController extends Application
 
     FXMLLoader loader;
 
+    public static DataCache getCache()
+    {
+        return controller.dataCache;
+
+    }
     @Override
     public void start(Stage primaryStage) throws Exception
     {
