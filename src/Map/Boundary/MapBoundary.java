@@ -126,7 +126,6 @@ public class MapBoundary extends Observable
     private int incrementFloor(int incAmount)
     {
         int nextFloorID = currentFloor.getFloorNumber() + incAmount;
-
         if(kioskFloor==null)
         {
             System.out.println("You have not specififed a kiosk");

@@ -312,10 +312,10 @@ public class MapEditorController extends MapController
 				(ov, newvalue, oldvalue) -> {
 					if(tabFloorMap.get(oldvalue).getFloorNumber() == 1){
 						System.out.println("Switching to campus floor");
-						//boundary.changeFloor(boundary.getCampusFloor()); //called when floor tab is selected
+						boundary.changeFloor(boundary.getCampusFloor()); //called when floor tab is selected
 					}else {
 						System.out.println("Tab hit to switch to : " + tabFloorMap.get(oldvalue).getFloorNumber());
-						//boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
+						boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
 					}
 					boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
 
@@ -508,6 +508,8 @@ public class MapEditorController extends MapController
 						System.out.println("adding floor to tabpane");
 						makeFloorTab(f);
 					}
+					FloorTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
+					FloorTabPane.getSelectionModel().select(0);
 					try {
 						boundary.changeFloor(boundary.getHospital().getCampusFloor());
 					}catch(Exception e){
