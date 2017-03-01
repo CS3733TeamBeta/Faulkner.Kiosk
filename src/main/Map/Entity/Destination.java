@@ -1,10 +1,12 @@
 package main.Map.Entity;
 
 import main.Application.popover.*;
-import main.Directory.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import main.Directory.Entity.Doctor;
 import org.controlsfx.control.PopOver;
 
-import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -19,8 +21,8 @@ public class Destination extends MapNode {
 
     UUID floorID;
 
-    HashSet<Doctor> doctors;
-    HashSet<Office> offices;
+    ObservableList<Doctor> doctors;
+    ObservableList<Office> offices;
 
     private final String popOverEditFXML = "/Map/Controller/Popover/DestinationEditPopup.fxml";
 
@@ -50,8 +52,8 @@ public class Destination extends MapNode {
         this.setType(m.getType());
 
         this.nodeUID = m.getNodeID();
-        this.doctors = new HashSet<>();
-        this.offices = new HashSet<>();
+        this.doctors = FXCollections.observableArrayList();
+        this.offices = FXCollections.observableArrayList();
     }
 
 

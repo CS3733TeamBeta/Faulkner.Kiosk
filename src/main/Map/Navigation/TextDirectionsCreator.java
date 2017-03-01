@@ -223,17 +223,4 @@ public class TextDirectionsCreator {
         return tempDirectionFloorSteps;
 
     }
-
-
-    /**
-     * Totally necessary
-     */
-    public void makeSmartass() {
-        for(DirectionFloorStep floorStep: this.directionFloorSteps) {
-            for (DirectionStep step: floorStep.getDirectionSteps()) {
-                String tempString = step.getInstruction() + ", idiot.";
-                step.setInstruction(tempString);
-            }
-        }
-    }
 }
