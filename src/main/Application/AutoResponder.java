@@ -19,11 +19,11 @@ public class AutoResponder
         inbox = new Inbox();
         inbox.addReceivedHandler(e->
         {
-         System.out.println(e.getContent());
-         System.out.println("Best match: " + findBestMatch(e.getContent()).getName());
-         ///handle receiving here... find the right mapnode from the content,
-            // genrate the text directions to send back,
-            //send an email to the sender
+             System.out.println(e.getContent());
+             System.out.println("Best match: " + findBestMatch(e.getContent()).getName());
+             ///handle receiving here... find the right mapnode from the content,
+                // genrate the text directions to send back,
+                //send an email to the sender
         });
     }
 
@@ -44,6 +44,7 @@ public class AutoResponder
 
         int minLevDist = 0;
         int curLeven;
+
 
         for(String key: h.getDoctors().keySet())
         {
