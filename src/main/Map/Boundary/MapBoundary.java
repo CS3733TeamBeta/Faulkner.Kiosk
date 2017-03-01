@@ -1,10 +1,6 @@
 package main.Map.Boundary;
 
-import main.Map.Entity.Hospital;
-import main.Map.Entity.NodeType;
-import main.Map.Entity.Floor;
-import main.Map.Entity.MapNode;
-import main.Map.Entity.NodeEdge;
+import main.Map.Entity.*;
 import main.Application.Database.DataCache;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.collections.*;
@@ -22,14 +18,30 @@ public class MapBoundary extends Observable
 
     protected Floor currentFloor;
     private Floor kioskFloor;
+    protected Building currentBuilding;
 
     MapNode kiosk;
 
     protected Hospital h;
 
+    public void changeBuilding(Building b)
+    {
+        currentBuilding = b;
+
+        if(currentFloor.getFloorNumber()!=1) //if not already on campus floor
+        {
+            changeFloor(b.getFloor(1));
+        }
+    }
+
     public static enum UpdateType
     {
         FloorChange
+    }
+
+    public Building getCurrentBuilding()
+    {
+        return currentBuilding;
     }
 
     public void addNodeSetChangeHandler(SetChangeListener<MapNode> mapChangeListener)
@@ -101,22 +113,15 @@ public class MapBoundary extends Observable
     {
         int nextFloorID = currentFloor.getFloorNumber() + incAmount;
 
-        if(kioskFloor==null)
+        if(currentBuilding==null)
         {
             System.out.println("You have not specififed a kiosk");
         }
-        else if(nextFloorID<=kioskFloor.getBuilding().getFloors().size() &&( nextFloorID >0))
+        else if(nextFloorID<=currentBuilding.getFloors().size() &&( nextFloorID >0))
         {
             try
             {
-                if(nextFloorID==1)
-                {
-                    changeFloor(getHospital().getCampusFloor());
-                }
-                else
-                {
-                    changeFloor(kioskFloor.getBuilding().getFloor(nextFloorID));
-                }
+                changeFloor(currentBuilding.getFloor(nextFloorID));
 
                 return nextFloorID;
             }

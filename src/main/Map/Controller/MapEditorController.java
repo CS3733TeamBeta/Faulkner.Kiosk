@@ -313,7 +313,7 @@ public class MapEditorController extends MapController
 			}
 		});
 
-		for(Floor f: boundary.getCurrentFloor().getBuilding().getFloors()) //makes a floor tab for each floor in the building
+		for(Floor f: boundary.getCurrentBuilding().getFloors()) //makes a floor tab for each floor in the building
 		{
 			makeFloorTab(f);
 		}

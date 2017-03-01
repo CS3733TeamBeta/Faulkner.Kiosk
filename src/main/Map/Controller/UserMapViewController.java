@@ -1,13 +1,12 @@
 package main.Map.Controller;
 
+import com.jfoenix.controls.JFXComboBox;
 import main.Application.ApplicationController;
 import main.Map.Boundary.MapBoundary;
 import main.Map.Boundary.UserMapBoundary;
+import main.Map.Entity.*;
 import main.Map.Navigation.Guidance;
 import main.Application.Exceptions.PathFindingException;
-import main.Map.Entity.Floor;
-import main.Map.Entity.MapNode;
-import main.Map.Entity.NodeEdge;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import javafx.fxml.FXML;
@@ -42,19 +41,23 @@ public class UserMapViewController extends MapController
     Guidance newRoute;
 
     @FXML
-    AnchorPane mapPane;
+    private AnchorPane mapPane;
 
     @FXML
-    AnchorPane mainPane;
+    private AnchorPane mainPane;
 
     @FXML
-    ScrollPane scrollPane;
+    private ScrollPane scrollPane;
 
     @FXML
-    Polygon floorUpArrow;
+    private Polygon floorUpArrow;
 
     @FXML
-    Polygon floorDownArrow;
+    private Polygon floorDownArrow;
+
+
+    @FXML
+    private JFXComboBox<Building> buildingDropdown;
 
     Stage primaryStage;
 
@@ -323,6 +326,24 @@ public class UserMapViewController extends MapController
         boundary.setInitialFloor();
 
         curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
+
+        buildingDropdown.setItems(boundary.getHospital().getBuildings());
+        buildingDropdown.toFront();
+
+        buildingDropdown.selectionModelProperty().addListener(
+                (o, oldVal, newVal)->
+                {
+                    boundary.changeBuilding(newVal.getSelectedItem());
+                }
+        );
+
+        Kiosk kiosk = boundary.getHospital().getCurrentKiosk();
+
+        if(kiosk!=null)
+        {
+            userMapBoundary.changeBuilding(kiosk.getMyFloor().getBuilding());
+            buildingDropdown.getSelectionModel().select(boundary.getCurrentBuilding());
+        }
 
         panToCenter();
     }
