@@ -38,7 +38,7 @@ public class DestinationEditController extends AbstractPopupController
     {
         destinationUnderEdit.setName(nameBox.getText());
         try {
-            new DatabaseManager().updateDestination(destinationUnderEdit);
+            ApplicationController.getCache().getDbManager().updateDestination(destinationUnderEdit);
         } catch (SQLException e) {
             e.printStackTrace();
         }
