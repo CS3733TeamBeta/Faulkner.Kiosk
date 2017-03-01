@@ -1,6 +1,8 @@
 package main.Application.Database;
 
-import main.Directory.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import main.Directory.Entity.Doctor;
 import main.Map.Entity.*;
 
 import java.sql.*;
@@ -143,7 +145,7 @@ public class DatabaseManager {
         s = conn.createStatement();
         executeStatements(dropTables);
         executeStatements(createTables);
-        saveHospital(h);
+        //saveHospital(h);
         s.close();
 
         System.out.println("Data Saved Correctly");
@@ -189,7 +191,7 @@ public class DatabaseManager {
 //
 //        rs = s.executeQuery("select * from BUILDING ORDER BY NAME DESC");
 //
-//        // load both buildingds in
+//        // load both buildings in
 //        while (rs.next())
 //        {
 //            if (!rs.getString(2).equals(CAMPUS_ID))
@@ -527,7 +529,37 @@ public class DatabaseManager {
             nodes.put(tempNodeID, tempDest);
 
             // adds destination to hospital list of destinations
-            h.addDestinations(UUID.fromString(destRS.getString(1)), tempDest);
+            destinations.put(UUID.fromString(destRS.getString(1)), tempDest);
+        }
+
+        rs = s.executeQuery("SELECT * FROM KIOSK");
+
+        while(rs.next()){
+            UUID tempID = UUID.fromString(rs.getString(2));
+            if (nodes.containsKey(tempID)) {
+                // node to replace with kiosk
+                MapNode replacedNode = nodes.get(tempID);
+
+                // kiosk to replace node with
+                Kiosk tempKiosk = new Kiosk(replacedNode,
+                        rs.getString(1),
+                        rs.getString(3));
+
+                // if saved as default kiosk, then set as current kiosk
+                if (rs.getBoolean(4)) {
+                    h.setCurrentKiosk(tempKiosk);
+                }
+
+                // replace regular nodes with kiosk nodes
+                mapNodes.remove(tempID);
+                mapNodes.put(tempID, tempKiosk);
+
+                // replace nodes in current floor
+                nodes.remove(tempID);
+                nodes.put(tempID, tempKiosk);
+                // adds kiosk to list of hospital's kiosks
+                h.addKiosk(tempKiosk);
+            }
         }
 
         // add all nodes to floor
@@ -567,7 +599,7 @@ public class DatabaseManager {
         rs = s.executeQuery("select * from USER1.DOCTOR order by NAME");
 
         while(rs.next()) {
-            HashSet<Destination> locations = new HashSet<>();
+            ObservableList<Destination> locations = FXCollections.observableArrayList();
 
             // create new Doctor
             Doctor tempDoc = new Doctor(UUID.fromString(rs.getString(1)),
@@ -580,8 +612,8 @@ public class DatabaseManager {
             ResultSet results = destDoc.executeQuery();
             // create doctor - destination relationships within the objects
             while(results.next()) {
-                h.getDestinations().get(UUID.fromString(results.getString(1))).addDoctor(tempDoc);
-                locations.add(h.getDestinations().get(UUID.fromString(results.getString(1))));
+                destinations.get(UUID.fromString(results.getString(1))).addDoctor(tempDoc);
+                locations.add(destinations.get(UUID.fromString(results.getString(1))));
             }
 //            doctors.put(UUID.fromString(rs.getString(2)),
 //                    new Doctor(UUID.fromString(rs.getString(1)),
@@ -589,8 +621,12 @@ public class DatabaseManager {
 //                            rs.getString(3),
 //                            rs.getString(5),
 //                            locations));
-            h.addDoctors(rs.getString(2), tempDoc);
+            doctors.put(rs.getString(2), tempDoc);
 
+        }
+
+        for (Doctor doc : doctors.values()) {
+            h.addDoctor(doc);
         }
         //System.out.println(doctors.keySet());
     }
@@ -609,15 +645,20 @@ public class DatabaseManager {
             while(offRS.next()) {
                 Office tempOff = new Office(UUID.fromString(rs.getString(1)),
                         offRS.getString(2),
-                        (h.getDestinations().get(UUID.fromString(rs.getString(1)))));
+                        (destinations.get(UUID.fromString(rs.getString(1)))));
 
                 // add office to hospital offices list
-                h.addOffices(offRS.getString(2), tempOff);
+                //offices.put(offRS.getString(2), tempOff);
+                h.addOffice(tempOff);
                 //System.out.println("******************************" + tempOff.getName());
 
                 // add office to list of offices for a destination
-                h.getDestinations().get(UUID.fromString(rs.getString(1))).addOffice(tempOff);
+                destinations.get(UUID.fromString(rs.getString(1))).addOffice(tempOff);
             }
+        }
+
+        for (Destination d : destinations.values()) {
+            h.addDestinations(d);
         }
     }
 
@@ -713,6 +754,17 @@ public class DatabaseManager {
         insertKiosk.setString(3, k.getDirection());
         insertKiosk.setBoolean(4, false);
         insertKiosk.executeUpdate();
+        conn.commit();
+    }
+
+    public void updateKiosk(Kiosk k) throws SQLException {
+        PreparedStatement upKiosk = conn.prepareStatement("UPDATE KIOSK " +
+                "SET NAME = ? " +
+                "WHERE NODE_ID = ?");
+
+        upKiosk.setString(1, k.getName());
+        upKiosk.setString(2, k.getNodeID().toString());
+        upKiosk.executeUpdate();
         conn.commit();
     }
 
@@ -886,187 +938,187 @@ public class DatabaseManager {
         insertBuildings.executeUpdate();
     }
 
-    private void saveHospital(Hospital h) throws SQLException {
-        PreparedStatement insertBuildings = conn.prepareStatement("INSERT INTO BUILDING (BUILDING_ID, NAME) VALUES (?, ?)");
-        PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO FLOOR (FLOOR_ID, BUILDING_ID, NUMBER, IMAGE) VALUES (?, ?, ?, ?)");
-        PreparedStatement insertNodes = conn.prepareStatement("INSERT INTO NODE (NODE_ID, POSX, POSY, FLOOR_ID, TYPE) VALUES (?, ?, ?, ?, ?)");
-        PreparedStatement insertEdges = conn.prepareStatement("INSERT INTO EDGE (EDGE_ID, NODEA, NODEB, COST, FLOOR_ID) VALUES (?, ?, ?, ?, ?)");
-        PreparedStatement insertDoctors = conn.prepareStatement("INSERT INTO USER1.DOCTOR (DOC_ID, NAME, DESCRIPTION, NUMBER, HOURS) VALUES (?, ?, ?, ?, ?)");
-        PreparedStatement insertDestinations = conn.prepareStatement("INSERT INTO USER1.DESTINATION (DEST_ID, NAME, NODE_ID, FLOOR_ID) VALUES (?, ?, ?, ?)");
-        PreparedStatement insertAssoc = conn.prepareStatement("INSERT INTO USER1.DEST_DOC (DEST_ID, DOC_ID) VALUES (?, ?)");
-        PreparedStatement insertOffices = conn.prepareStatement("INSERT INTO USER1.OFFICES (OFFICE_ID, NAME, DEST_ID) VALUES (?, ?, ?)");
-
-        PreparedStatement insertCampusNodes = conn.prepareStatement("INSERT INTO USER1.CAMPUS (NODE_ID) VALUES ?");
-
-        int counter = 1;
-
-        HashMap<NodeEdge, String> collectedEdges = new HashMap<>();
-
-        for(MapNode n: h.getCampusFloor().getCampusNodes())
-        {
-            insertBuildings.setInt(1, counter);
-            insertBuildings.setString(2, CAMPUS_ID);
-            insertBuildings.executeUpdate();
-
-            insertFloors.setString(1, CAMPUS_ID);
-            insertFloors.setInt(2, counter);
-            insertFloors.setInt(3, 1);
-            insertFloors.setString(4, h.getCampusFloor().getImageLocation());
-            insertFloors.executeUpdate();
-
-            insertNodes.setString(1, n.getNodeID().toString());
-            insertNodes.setDouble(2, n.getPosX());
-            insertNodes.setDouble(3, n.getPosY());
-            insertNodes.setString(4, CAMPUS_ID);
-            insertNodes.setInt(5, n.getType().ordinal());
-            insertNodes.executeUpdate();
-
-            insertCampusNodes.setString(1, n.getNodeID().toString());
-            insertCampusNodes.executeUpdate();
-            conn.commit();
-
-            for(NodeEdge edge: n.getEdges())
-            {
-                if(!collectedEdges.containsKey(edge)) //if current collection of edges doesn't contain this edge,
-                {                                   //add it. (Will load ot db later)
-                    collectedEdges.put(edge, CAMPUS_ID);
-                }
-            }
-        }
-
-        counter++;
-
-        // insert buildings into database
-        for (Building b : h.getBuildings()) {
-            try {
-                insertBuildings.setInt(1, counter);
-                insertBuildings.setString(2, b.getName());
-                insertBuildings.executeUpdate();
-            }
-            catch (SQLException e) {
-                System.out.println("Error saving building " + e.getMessage());
-            }
-            conn.commit();
-
-            int edgesCount = 1;
-            // insert floors into database
-            for (Floor f : b.getFloors()) {
-                String floorID = "" + b.getName() + Integer.toString(f.getFloorNumber()) + "";
-                try {
-                    insertFloors.setString(1, floorID);
-                    insertFloors.setInt(2, counter);
-                    insertFloors.setInt(3, f.getFloorNumber());
-                    insertFloors.setString(4, f.getImageLocation());
-                    insertFloors.executeUpdate();
-                }
-                catch (SQLException e) {
-                    System.out.println("Error saving floor " + e.getMessage());
-                }
-                conn.commit();
-
-                // insert nodes into database
-                for (MapNode n : f.getFloorNodes()) {
-                    try {
-                        insertNodes.setString(1, n.getNodeID().toString());
-                        insertNodes.setDouble(2, n.getPosX());
-                        insertNodes.setDouble(3, n.getPosY());
-                        insertNodes.setString(4, floorID);
-                        insertNodes.setInt(5, n.getType().ordinal());
-                        insertNodes.executeUpdate();
-                    }
-                    catch (SQLException e) {
-                        System.out.println("Error saving node " + e.getMessage());
-                    }
-                    conn.commit();
-                    if (n instanceof Destination)
-                    {
-                        try {
-                            insertDestinations.setString(1, ((Destination)n).getDestUID().toString());
-                            insertDestinations.setString(2, ((Destination)n).getName());
-                            insertDestinations.setString(3, n.getNodeID().toString());
-                            insertDestinations.setString(4, floorID);
-                            insertDestinations.executeUpdate();
-                        }
-                        catch (SQLException e) {
-                            System.out.println("Error saving suite " + e.getMessage());
-                        }
-                        conn.commit();
-                    }
-
-                    for(NodeEdge edge: n.getEdges())
-                    {
-                        if(!collectedEdges.containsKey(edge)) //if current collection of edges doesn't contain this edge,
-                        {                                   //add it. (Will load ot db later)
-                            collectedEdges.put(edge, floorID);
-                        }
-                    }
-                }
-            }
-            counter = counter + 1;
-        }
-
-        int edgesCount = 1;
-        // insert edges into database
-        for (NodeEdge edge : collectedEdges.keySet()) {
-            try {
-                insertEdges.setInt(1, edgesCount);
-                insertEdges.setString(2, edge.getSource().getNodeID().toString());
-                insertEdges.setString(3, edge.getOtherNode(edge.getSource()).getNodeID().toString());
-                insertEdges.setDouble(4, edge.getCost());
-                insertEdges.setString(5, collectedEdges.get(edge));
-                insertEdges.executeUpdate();
-            }
-            catch (SQLException e) {
-                System.out.println("Error saving edge " + e.getMessage());
-            }
-
-            conn.commit();
-            edgesCount++;
-        }
-
-        
-        for (Doctor doc : h.getDoctors().values()) {
-            try {
-                insertDoctors.setString(1, doc.getDocID().toString());
-                insertDoctors.setString(2, doc.getName());
-                insertDoctors.setString(3, doc.getDescription());
-                insertDoctors.setString(4, doc.getPhoneNum());
-                insertDoctors.setString(5, doc.getHours());
-
-                insertDoctors.executeUpdate();
-            }
-            catch (SQLException e) {
-                System.out.println("Error saving doctor " + e.getMessage());
-            }
-            conn.commit();
-            // saves Suite and Doctor Relationships
-            for (Destination dest : doc.getDestinations()) {
-                try {
-                    insertAssoc.setString(1, dest.getDestUID().toString());
-                    insertAssoc.setString(2, doc.getDocID().toString());
-                    insertAssoc.executeUpdate();
-                }
-                catch (SQLException e) {
-                    System.out.println("Error saving suite_doc " + e.getMessage());
-                }
-                conn.commit();
-            }
-        }
-        // saves Offices
-        for (Office office : h.getOffices().values()) {
-            try {
-                insertOffices.setString(1, office.getId().toString());
-                insertOffices.setString(2, office.getName());
-                insertOffices.setString(3, office.getDestination().getDestUID().toString());
-                insertOffices.executeUpdate();
-            }
-            catch (SQLException e) {
-                System.out.println("Error saving edge" + e.getMessage());
-            }
-            conn.commit();
-        }
-
-    }
+//    private void saveHospital(Hospital h) throws SQLException {
+//        PreparedStatement insertBuildings = conn.prepareStatement("INSERT INTO BUILDING (BUILDING_ID, NAME) VALUES (?, ?)");
+//        PreparedStatement insertFloors = conn.prepareStatement("INSERT INTO FLOOR (FLOOR_ID, BUILDING_ID, NUMBER, IMAGE) VALUES (?, ?, ?, ?)");
+//        PreparedStatement insertNodes = conn.prepareStatement("INSERT INTO NODE (NODE_ID, POSX, POSY, FLOOR_ID, TYPE) VALUES (?, ?, ?, ?, ?)");
+//        PreparedStatement insertEdges = conn.prepareStatement("INSERT INTO EDGE (EDGE_ID, NODEA, NODEB, COST, FLOOR_ID) VALUES (?, ?, ?, ?, ?)");
+//        PreparedStatement insertDoctors = conn.prepareStatement("INSERT INTO USER1.DOCTOR (DOC_ID, NAME, DESCRIPTION, NUMBER, HOURS) VALUES (?, ?, ?, ?, ?)");
+//        PreparedStatement insertDestinations = conn.prepareStatement("INSERT INTO USER1.DESTINATION (DEST_ID, NAME, NODE_ID, FLOOR_ID) VALUES (?, ?, ?, ?)");
+//        PreparedStatement insertAssoc = conn.prepareStatement("INSERT INTO USER1.DEST_DOC (DEST_ID, DOC_ID) VALUES (?, ?)");
+//        PreparedStatement insertOffices = conn.prepareStatement("INSERT INTO USER1.OFFICES (OFFICE_ID, NAME, DEST_ID) VALUES (?, ?, ?)");
+//
+//        PreparedStatement insertCampusNodes = conn.prepareStatement("INSERT INTO USER1.CAMPUS (NODE_ID) VALUES ?");
+//
+//        int counter = 1;
+//
+//        HashMap<NodeEdge, String> collectedEdges = new HashMap<>();
+//
+//        for(MapNode n: h.getCampusFloor().getCampusNodes())
+//        {
+//            insertBuildings.setInt(1, counter);
+//            insertBuildings.setString(2, CAMPUS_ID);
+//            insertBuildings.executeUpdate();
+//
+//            insertFloors.setString(1, CAMPUS_ID);
+//            insertFloors.setInt(2, counter);
+//            insertFloors.setInt(3, 1);
+//            insertFloors.setString(4, h.getCampusFloor().getImageLocation());
+//            insertFloors.executeUpdate();
+//
+//            insertNodes.setString(1, n.getNodeID().toString());
+//            insertNodes.setDouble(2, n.getPosX());
+//            insertNodes.setDouble(3, n.getPosY());
+//            insertNodes.setString(4, CAMPUS_ID);
+//            insertNodes.setInt(5, n.getType().ordinal());
+//            insertNodes.executeUpdate();
+//
+//            insertCampusNodes.setString(1, n.getNodeID().toString());
+//            insertCampusNodes.executeUpdate();
+//            conn.commit();
+//
+//            for(NodeEdge edge: n.getEdges())
+//            {
+//                if(!collectedEdges.containsKey(edge)) //if current collection of edges doesn't contain this edge,
+//                {                                   //add it. (Will load ot db later)
+//                    collectedEdges.put(edge, CAMPUS_ID);
+//                }
+//            }
+//        }
+//
+//        counter++;
+//
+//        // insert buildings into database
+//        for (Building b : h.getBuildings()) {
+//            try {
+//                insertBuildings.setInt(1, counter);
+//                insertBuildings.setString(2, b.getName());
+//                insertBuildings.executeUpdate();
+//            }
+//            catch (SQLException e) {
+//                System.out.println("Error saving building " + e.getMessage());
+//            }
+//            conn.commit();
+//
+//            int edgesCount = 1;
+//            // insert floors into database
+//            for (Floor f : b.getFloors()) {
+//                String floorID = "" + b.getName() + Integer.toString(f.getFloorNumber()) + "";
+//                try {
+//                    insertFloors.setString(1, floorID);
+//                    insertFloors.setInt(2, counter);
+//                    insertFloors.setInt(3, f.getFloorNumber());
+//                    insertFloors.setString(4, f.getImageLocation());
+//                    insertFloors.executeUpdate();
+//                }
+//                catch (SQLException e) {
+//                    System.out.println("Error saving floor " + e.getMessage());
+//                }
+//                conn.commit();
+//
+//                // insert nodes into database
+//                for (MapNode n : f.getFloorNodes()) {
+//                    try {
+//                        insertNodes.setString(1, n.getNodeID().toString());
+//                        insertNodes.setDouble(2, n.getPosX());
+//                        insertNodes.setDouble(3, n.getPosY());
+//                        insertNodes.setString(4, floorID);
+//                        insertNodes.setInt(5, n.getType().ordinal());
+//                        insertNodes.executeUpdate();
+//                    }
+//                    catch (SQLException e) {
+//                        System.out.println("Error saving node " + e.getMessage());
+//                    }
+//                    conn.commit();
+//                    if (n instanceof Destination)
+//                    {
+//                        try {
+//                            insertDestinations.setString(1, ((Destination)n).getDestUID().toString());
+//                            insertDestinations.setString(2, ((Destination)n).getName());
+//                            insertDestinations.setString(3, n.getNodeID().toString());
+//                            insertDestinations.setString(4, floorID);
+//                            insertDestinations.executeUpdate();
+//                        }
+//                        catch (SQLException e) {
+//                            System.out.println("Error saving suite " + e.getMessage());
+//                        }
+//                        conn.commit();
+//                    }
+//
+//                    for(NodeEdge edge: n.getEdges())
+//                    {
+//                        if(!collectedEdges.containsKey(edge)) //if current collection of edges doesn't contain this edge,
+//                        {                                   //add it. (Will load ot db later)
+//                            collectedEdges.put(edge, floorID);
+//                        }
+//                    }
+//                }
+//            }
+//            counter = counter + 1;
+//        }
+//
+//        int edgesCount = 1;
+//        // insert edges into database
+//        for (NodeEdge edge : collectedEdges.keySet()) {
+//            try {
+//                insertEdges.setInt(1, edgesCount);
+//                insertEdges.setString(2, edge.getSource().getNodeID().toString());
+//                insertEdges.setString(3, edge.getOtherNode(edge.getSource()).getNodeID().toString());
+//                insertEdges.setDouble(4, edge.getCost());
+//                insertEdges.setString(5, collectedEdges.get(edge));
+//                insertEdges.executeUpdate();
+//            }
+//            catch (SQLException e) {
+//                System.out.println("Error saving edge " + e.getMessage());
+//            }
+//
+//            conn.commit();
+//            edgesCount++;
+//        }
+//
+//
+//        for (Doctor doc : h.getDoctors().values()) {
+//            try {
+//                insertDoctors.setString(1, doc.getDocID().toString());
+//                insertDoctors.setString(2, doc.getName());
+//                insertDoctors.setString(3, doc.getDescription());
+//                insertDoctors.setString(4, doc.getPhoneNum());
+//                insertDoctors.setString(5, doc.getHours());
+//
+//                insertDoctors.executeUpdate();
+//            }
+//            catch (SQLException e) {
+//                System.out.println("Error saving doctor " + e.getMessage());
+//            }
+//            conn.commit();
+//            // saves Suite and Doctor Relationships
+//            for (Destination dest : doc.getDestinations()) {
+//                try {
+//                    insertAssoc.setString(1, dest.getDestUID().toString());
+//                    insertAssoc.setString(2, doc.getDocID().toString());
+//                    insertAssoc.executeUpdate();
+//                }
+//                catch (SQLException e) {
+//                    System.out.println("Error saving suite_doc " + e.getMessage());
+//                }
+//                conn.commit();
+//            }
+//        }
+//        // saves Offices
+//        for (Office office : h.getOffices().values()) {
+//            try {
+//                insertOffices.setString(1, office.getId().toString());
+//                insertOffices.setString(2, office.getName());
+//                insertOffices.setString(3, office.getDestination().getDestUID().toString());
+//                insertOffices.executeUpdate();
+//            }
+//            catch (SQLException e) {
+//                System.out.println("Error saving edge" + e.getMessage());
+//            }
+//            conn.commit();
+//        }
+//
+//    }
 
     public void shutdown() {
         try

@@ -285,17 +285,4 @@ public class TextDirectionsCreator {
         double endNodeY = b.getPosY();
         return Math.sqrt(Math.pow(endNodeX - currentNodeX, 2) + Math.pow(endNodeY - currentNodeY, 2));
     }
-
-
-    /**
-     * Totally necessary
-     */
-    public void makeSmartass() {
-        for(DirectionFloorStep floorStep: this.directionFloorSteps) {
-            for (DirectionStep step: floorStep.getDirectionSteps()) {
-                String tempString = step.getInstruction() + ", idiot.";
-                step.setInstruction(tempString);
-            }
-        }
-    }
 }
