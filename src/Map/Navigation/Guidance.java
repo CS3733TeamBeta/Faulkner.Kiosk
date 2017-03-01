@@ -11,6 +11,7 @@ import java.awt.Point;
 import Map.Entity.*;
 import Application.Exceptions.*;
 import javafx.embed.swing.SwingFXUtils;
+import sun.security.krb5.internal.crypto.Des;
 
 import javax.imageio.ImageIO;
 
@@ -431,6 +432,11 @@ public class Guidance extends Path {
 
 
                         g.drawImage(currentImage, (int) (Math.round(n.getPosX()) * constant), (int) (Math.round(n.getPosY()) * constant), null);
+                        if(n instanceof Destination){
+                            String s = ((Destination) n).getName();
+                            g.setColor(Color.BLACK);
+                            g.drawString(s, (int)(Math.round(n.getPosX()) * constant), (int) (Math.round(n.getPosY()) * constant));
+                        }
                     }
                 }
 
