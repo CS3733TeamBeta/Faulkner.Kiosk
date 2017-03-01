@@ -37,6 +37,7 @@ public class ApplicationController extends Application
     public ApplicationController()
     {
         controller = this; //only instantiated once
+        dataCache = DataCache.getInstance();
     }
 
     public static ApplicationController getController()
@@ -59,18 +60,17 @@ public class ApplicationController extends Application
     public void start(Stage primaryStage) throws Exception
     {
         AutoResponder responder = new AutoResponder();
-        responder.startWatching();
 
         idle.initTimer();
 
         idle.setStageToMonitor(primaryStage);
 
-        dataCache = DataCache.getInstance();
         this.primaryStage = primaryStage;
 
         switchToUserMapView();
 
         primaryStage.show();
+        responder.startWatching();
     }
 
     public long getTimeout()
