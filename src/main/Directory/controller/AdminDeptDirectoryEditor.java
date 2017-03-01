@@ -1,7 +1,7 @@
-package main.Directory;
+package main.Directory.controller;
 
 import main.Application.ApplicationController;
-import main.Directory.AdminDeptDirectoryBoundary;
+import main.Directory.Boundary.AdminDeptDirectoryBoundary;
 import main.Map.Entity.Destination;
 import main.Map.Entity.Office;
 import com.jfoenix.controls.JFXTextField;

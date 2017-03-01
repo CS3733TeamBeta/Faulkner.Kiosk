@@ -1,10 +1,10 @@
 package main.Map.Controller;
 
 import main.Application.ApplicationController;
-import main.Directory.UserDirectoryBoundary;
+import main.Directory.Boundary.UserDirectoryBoundary;
 import main.Map.Entity.Destination;
 import main.Map.Entity.Office;
-import main.Directory.Doctor;
+import main.Directory.Entity.Doctor;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

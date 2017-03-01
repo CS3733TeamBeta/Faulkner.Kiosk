@@ -1,6 +1,7 @@
-package main.Directory;
+package main.Directory.Boundary;
 
 import main.Application.Database.DataCache;
+import main.Directory.Entity.Doctor;
 import main.Map.Entity.Hospital;
 import main.Map.Entity.Office;
 import javafx.collections.ObservableList;

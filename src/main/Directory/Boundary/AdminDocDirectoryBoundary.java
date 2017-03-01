@@ -1,5 +1,7 @@
-package main.Directory;
+package main.Directory.Boundary;
 
+import main.Directory.Boundary.AbstractDirectoryBoundary;
+import main.Directory.Entity.Doctor;
 import main.Map.Entity.Destination;
 import main.Map.Entity.Hospital;
 import javafx.collections.ObservableList;
@@ -8,7 +10,8 @@ import javafx.collections.transformation.FilteredList;
 /**
  * Created by jw97 on 2/25/2017.
  */
-public class AdminDocDirectoryBoundary extends AbstractDirectoryBoundary {
+public class AdminDocDirectoryBoundary extends AbstractDirectoryBoundary
+{
     public AdminDocDirectoryBoundary(Hospital h) {
         super(h);
     }

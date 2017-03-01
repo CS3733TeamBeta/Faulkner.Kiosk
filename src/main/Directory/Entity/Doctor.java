@@ -1,4 +1,4 @@
-package main.Directory;
+package main.Directory.Entity;
 
 import main.Map.Entity.Destination;
 import javafx.collections.ObservableList;

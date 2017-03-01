@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainDirectoryPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Directory.AdminDocDirectoryEditorController">
+<AnchorPane fx:id="mainDirectoryPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Directory.controller.AdminDocDirectoryEditorController">
    <children>
       <JFXTextField fx:id="searchBar" layoutX="83.0" layoutY="70.0" prefHeight="20.0" prefWidth="200.0" promptText="Search Directory" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="510.0" AnchorPane.topAnchor="70.0">
          <font>

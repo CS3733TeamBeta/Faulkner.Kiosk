@@ -1,10 +1,10 @@
 package main.Map.Entity;
 
 import main.Application.popover.*;
-import main.Directory.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import main.Directory.Entity.Doctor;
 import org.controlsfx.control.PopOver;
 
 import java.util.UUID;

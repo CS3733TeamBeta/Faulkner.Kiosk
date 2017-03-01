@@ -1,4 +1,4 @@
-package main.Directory;
+package main.Directory.Boundary;
 
 import main.Map.Entity.Destination;
 import main.Map.Entity.Hospital;

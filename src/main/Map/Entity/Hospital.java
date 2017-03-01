@@ -3,7 +3,7 @@ package main.Map.Entity;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import main.Directory.Doctor;
+import main.Directory.Entity.Doctor;
 import main.Application.ApplicationController;
 import java.sql.SQLException;
 import java.util.ArrayList;

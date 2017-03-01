@@ -1,8 +1,8 @@
 package main.Application;//Testing
 
 //import Entity.Doctor;
-import main.Directory.AdminDeptDirectoryEditor;
-import main.Directory.AdminDocDirectoryEditorController;
+import main.Directory.controller.AdminDeptDirectoryEditor;
+import main.Directory.controller.AdminDocDirectoryEditorController;
 import main.Application.Database.DataCache;
 import main.Map.Controller.MapEditorController;
 import main.Map.Controller.UserMapViewController;
