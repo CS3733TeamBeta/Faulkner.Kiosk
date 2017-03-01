@@ -8,11 +8,8 @@ import java.io.File;
 import java.util.LinkedList;
 import java.awt.Point;
 
-import Map.Entity.NodeType;
+import Map.Entity.*;
 import Application.Exceptions.*;
-import Map.Entity.Floor;
-import Map.Entity.MapNode;
-import Map.Entity.NodeEdge;
 import javafx.embed.swing.SwingFXUtils;
 
 import javax.imageio.ImageIO;
@@ -528,7 +525,7 @@ public class Guidance extends Path {
 
     public boolean sendEmailGuidance(String address) {
         String subjectLine;
-        String directionLine = "<H1><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H1>" + "<H4>";
+        String directionLine = "<H1><center> You have chosen to navigate to " + ((Destination) pathNodes.get(pathNodes.size() - 1)).toString() + ".</center></H1>" + "<H4>";
         subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
 
         int stepNumber = 1;

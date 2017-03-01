@@ -38,6 +38,8 @@ public class TextDirectionsCreator {
         MapNode fromNode = new MapNode();
         MapNode toNode = new MapNode();
 
+
+
         int intersectionsPassed = 0;
 
         //Add the first node to the textual directions
@@ -57,7 +59,7 @@ public class TextDirectionsCreator {
             fromNode = listNodes.get(i);
             toNode = listNodes.get(i+1);
 
-            double costConstant = 50; //Should be 25 in the final
+            double costConstant = 25; //Should be 25 in the final
 
             if (vFlag) {
                 System.out.println("");
@@ -73,6 +75,8 @@ public class TextDirectionsCreator {
                 System.out.println("PrevDirection is " + prevDirection);
             }
 
+            System.out.println("previous direction was " + Guidance.numToDirection(prevDirection));
+
             int changeInDirection;
             //If direction is not in an elevator
             if (currentDirection < 9) {
@@ -83,11 +87,17 @@ public class TextDirectionsCreator {
                 //If you're on an elevator, your previous direction doesn't matter
                 changeInDirection = currentDirection;
                 //Presume the elevator passenger faces opposite the way they come in. Add 4 to previous direction, wraparound with modulo.
+                if (prevDirection > 8) {
+                    prevDirection = 8;
+                }
                 prevDirection = (prevDirection+4)%8;
             }
 
+
+            System.out.println("new Direction is " + Guidance.numToDirection(currentDirection));
             //Change the directionChange into a textual string
             String directionChangeString = Guidance.directionChangeToString(changeInDirection, vFlag);
+            System.out.println("Direction change is " + directionChangeString);
 
             if (directionChangeString.equals("Straight")) {
                 System.out.println("Passing an possible intersection");
@@ -101,21 +111,25 @@ public class TextDirectionsCreator {
                 intersectionsPassed++;
             } else if (!directionChangeString.equals("Straight") && (!directionChangeString.equals("up")) && (!directionChangeString.equals("down"))) {
                 if(intersectionsPassed  == 0) {
-                    tempTextDirection = ("Go " + directionChangeString + " at the next intersection");
+                    if ((i == 0)  || fromNode.getType().toString().equals("Elevator")){
+                        tempTextDirection = ("Turn " + directionChangeString + " and proceed forward");
+                    } else {
+                            tempTextDirection = ("Take a " + directionChangeString + " at the next intersection");
+                    }
                     tempMapNodes.add(fromNode);
                     if (vFlag) {
                         tempTextDirection += (" ID: " + fromNode.getNodeID());
                     }
                 }
                 else if(intersectionsPassed == 1){
-                    tempTextDirection = ("After passing 1 intersection, go " + directionChangeString);
+                    tempTextDirection = ("After passing 1 intersection, take a " + directionChangeString);
                     tempMapNodes.add(fromNode);
                     if (vFlag) {
                         tempTextDirection += (" at " + fromNode.getNodeID());
                     }
                 }
                 else{
-                    tempTextDirection = ("After passing " + intersectionsPassed + " intersections, go " + directionChangeString);
+                    tempTextDirection = ("After passing " + intersectionsPassed + " intersections, take a " + directionChangeString);
                     tempMapNodes.add(fromNode);
                     if (vFlag) {
                         tempTextDirection += (" at " + fromNode.getNodeID());
@@ -133,6 +147,7 @@ public class TextDirectionsCreator {
                     }
                 }
                 //If there are nodes after this
+
                 if(listNodes.size() > i+4) {
                     System.out.println("It's greater");
                     MapNode tempFromNode = listNodes.get(i+1);
@@ -149,16 +164,18 @@ public class TextDirectionsCreator {
                             //change in direction is the difference between directions
                             tempChangeInDirection = tempPrevDirection - tempCurrentDirection;
                         }
-                        if ((Math.abs(tempChangeInDirection) < 8) && !(Guidance.directionChangeToString(tempChangeInDirection, false).equals("Straight"))){
+                        if ((Math.abs(tempChangeInDirection) < 8) && !(Guidance.directionChangeToString(tempChangeInDirection, false).equals("Straight")) && (!tempToNode.getType().toString().equals("Elevator"))){
                             System.out.println("good change");
                             String tempDirectionChangeString = Guidance.directionChangeToString(tempChangeInDirection, vFlag);
-                            tempTextDirection += ",\n then immediately turn " + tempDirectionChangeString;
+                            tempTextDirection += ",\n then immediately take a" + tempDirectionChangeString;
                             tempMapNodes.add(tempFromNode);
                             tempNodeEdges.add(tempFromNode.getEdgeTo(tempToNode));
                             i++;
+                            intersectionsPassed = 0;
                         }
                     }
                 }
+
                 tempDirectionSteps.add(new DirectionStep(tempTextDirection, tempNodeEdges));
                 tempNodeEdges = new LinkedList<>();
                 if (directionChangeString.equals("outside") || directionChangeString.equals("inside")) {
@@ -168,6 +185,7 @@ public class TextDirectionsCreator {
                     intersectionsPassed = 0;
                 }
             } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
+                System.out.println("Hit an elevator");
                 if(intersectionsPassed == 0){
                     tempTextDirection = ("Take an elevator at the next intersection from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
                     tempMapNodes.add(fromNode);
