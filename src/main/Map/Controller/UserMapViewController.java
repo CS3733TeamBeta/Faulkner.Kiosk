@@ -422,12 +422,13 @@ public class UserMapViewController extends MapController
 
                     Timeline tL = new Timeline();
                     Line l = new Line();
+
                     l.setStrokeWidth(5);
                     l.setStroke(Color.RED);
-                    l.toBack();
-                    mapImage.toBack();
 
                     mapItems.getChildren().add(l);
+                    l.toBack();
+                    mapImage.toBack();
 
                     l.setStartY(n.getPosY());
                     l.setStartX(n.getPosX());
@@ -438,6 +439,9 @@ public class UserMapViewController extends MapController
                     KeyValue moveLineX = new KeyValue(l.endYProperty(), edge.getOtherNode(n).getPosY());
 
                     KeyFrame kf = new KeyFrame((Duration.millis(500)), moveLineX, moveLineY);
+
+
+                    //tL.getKeyFrames(new KeyFrame(Duration.millis(0), new KeyValue(l.visibleProperty(), true)));
 
                     tL.getKeyFrames().add(kf);
                     stepDrawing.getChildren().add(tL);
