@@ -429,7 +429,7 @@ public class Guidance extends Path {
 
                 //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
-                    if (d.getNodesForThisFloor().contains(n)) {
+                    if (d.getNodesForThisFloor().contains(n) && !(n.getType().toString().equals("Connector"))) {
                         int isConnector = 0;
                         System.out.println("X: " + Math.round(n.getPosX()) * constant + " Y; " + ((int) Math.round(n.getPosY())) * constant);
                         String thisIconType = n.getType().toString();
@@ -541,7 +541,6 @@ public class Guidance extends Path {
     public boolean sendEmailGuidance(String address) {
         String subjectLine;
         String directionLine = "<H1><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H1>" + "<H4>";
-        subjectLine = "BEN IT WORKS!";
         subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
 
         int stepNumber = 1;
