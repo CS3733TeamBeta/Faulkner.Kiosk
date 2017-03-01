@@ -1,14 +1,14 @@
-package Map.Controller.Popover;
+package main.Application.popover;
 
-import Map.Entity.MapNode;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
+import main.Map.Entity.Destination;
 import org.controlsfx.control.PopOver;
 
 /**
  * Controlled for popup that edits an office map node
  */
-public class NodeEditController extends AbstractPopupController
+public class DestinationEditController extends AbstractPopupController
 {
     @FXML
     private JFXTextField nameBox;
@@ -21,24 +21,24 @@ public class NodeEditController extends AbstractPopupController
 
     protected PopOver popOver;
 
-    protected MapNode nodeUnderEdit;
+    protected Destination destinationUnderEdit;
 
-    public NodeEditController(MapNode destination)
+    public DestinationEditController(Destination destination)
     {
         super(destination);
 
-        this.nodeUnderEdit = destination;
+        this.destinationUnderEdit = destination;
     }
 
     @Override
     public void saveEdits()
     {
-        //nothing to save
+        destinationUnderEdit.setName(nameBox.getText());
     }
 
     @Override
     public void fillFields()
     {
-        //nothing to fill
+        nameBox.setText(destinationUnderEdit.getName());
     }
 }

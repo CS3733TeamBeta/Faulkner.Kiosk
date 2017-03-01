@@ -1,9 +1,9 @@
-package Map.Controller.Popover;
+package main.Application.popover;
 
-import Map.Entity.MapNode;
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import main.Map.Entity.MapNode;
 import org.controlsfx.control.PopOver;
 
 /**

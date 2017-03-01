@@ -1,9 +1,8 @@
-package Map.Controller.Popover;
+package main.Application.popover;
 
-import Map.*;
-import Map.Entity.Kiosk;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
+import main.Map.Entity.Kiosk;
 import org.controlsfx.control.PopOver;
 
 /**

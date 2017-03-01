@@ -14,17 +14,15 @@ sourceSets {
             srcDirs = ['src']
             exclude 'test/**'
         }
-        resources {
-            srcDirs = ['src/View', 'resources']
-            includes = ["**/*.fxml", "**/*.png", "**/*.properties", "**/*.json", "**/*.css"]
+        resources{
+            srcDirs = ['src/main/resources']
         }
     }
-
-    test {
+   /* test {
         java {
             srcDirs = ["src/test"]
         }
-    }
+    }*/
 }
 
 task compile {
