@@ -168,31 +168,14 @@ public class UserSearchPanel extends AnchorPane {
     }
 
     public void welcomeScreen() {
-        /*
-        // Title shown
-        welcomeGreeting.setVisible(true);
+        TranslateTransition translateTransition =
+                new TranslateTransition(Duration.millis(600), this);
 
-        menuSlide.getKeyFrames().clear();
-        KeyValue welcomeUp = new KeyValue(this.translateYProperty(), this.getHeight() + 350);
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
-        searchBar.clear();
-        menuSlide.getKeyFrames().add(keyFrame);
-        navigateArrow.setRotate(0);
-        menuSlide.play();
-        */
+        translateTransition.setToY(0);
     }
 
     private void searchBarView() {
-        /*
-        menuSlide.getKeyFrames().clear();
-        KeyValue welcomeDown = new KeyValue(this.translateYProperty(), 180);
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), welcomeDown);
-        welcomeGreeting.setVisible(false);
-        mainPane.setStyle("-fx-background-color: transparent;");
-        menuSlide.getKeyFrames().add(keyFrame);
-        navigateArrow.setRotate(0);
-        menuSlide.play();
-        */
+
     }
 
     private void loadSearchMenu() {
@@ -215,6 +198,7 @@ public class UserSearchPanel extends AnchorPane {
     @FXML
     private void doctorSelected() {
         selectionMode(doctorIcon);
+        deSelect(doctorIcon);
         numClickDr = numClickDr * (-1);
         displayTable();
     }
