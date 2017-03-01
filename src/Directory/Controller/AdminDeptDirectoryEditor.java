@@ -1,5 +1,6 @@
 package Directory.Controller;
 
+import Application.ApplicationController;
 import Directory.Boundary.AdminDeptDirectoryBoundary;
 import Map.Entity.Destination;
 import Map.Entity.Office;
@@ -30,13 +31,28 @@ import java.io.IOException;
  */
 public class AdminDeptDirectoryEditor extends AnchorPane {
     Boolean deptDirectoryUp = false;
-    ObservableList<Destination> existingLoc = FXCollections.observableArrayList();
+    private AdminDeptDirectoryBoundary deptBoundary;
+    ObservableList<Destination> existingLoc;
+
+    public AdminDeptDirectoryEditor() {
+        deptBoundary = new AdminDeptDirectoryBoundary(ApplicationController.getHospital());
+        existingLoc = FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
+                "../../Admin/AdminDeptDirectoryEditor.fxml"));
+
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+
+        try {
+            fxmlLoader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
     @FXML
     public AnchorPane mainDirectoryPane;
-
-    @FXML
-    private AnchorPane deptDirectory;
 
     @FXML
     private JFXTextField searchDeptBar;
@@ -62,29 +78,7 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
     @FXML
     private Button editorButton;
 
-    private AdminDeptDirectoryBoundary deptBoundary;
-
-    public AdminDeptDirectoryEditor() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                "../../Admin/AdminDeptDirectoryEditor.fxml"));
-
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
-
-        searchDeptBar.clear();
-        searchDeptBar.setStyle("-fx-text-inner-color: white;");
-        deptDataTable.getSelectionModel().clearSelection();
-
-        loadData();
-    }
-
-    public void loadData() {
+    private void initialize() {
         deptNameCol.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
 
         deptLocCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Office, String>, ObservableValue<String>>() {
@@ -93,34 +87,38 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
             }
         });
 
+        if (deptBoundary.getDepartments() != null) {
+            deptDataTable.setItems(deptBoundary.getDepartments());
+        }
+
         // Adding a listener to the search bar, filtering through the data as the user types
         searchDeptBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            // Create a sorted list for the filtered data list
-            SortedList<Office> sortedDepts = new SortedList<>(deptBoundary.setSearchList(newValue));
-            // Bind the sorted list to table
-            sortedDepts.comparatorProperty().bind(deptDataTable.comparatorProperty());
-            // Set table data
-            deptDataTable.setItems(sortedDepts);
+            deptDataTable.setItems(deptBoundary.setSearchList(newValue));
         });
 
         locAssignedField.setItems(existingLoc);
-
-        editDeptFields.setVisible(false);
-        editorButton.setText("Add");
         showDeptOptions();
     }
 
+    private void reset() {
+        searchDeptBar.clear();
+        searchDeptBar.setStyle("-fx-text-inner-color: white;");
+        deptDataTable.getSelectionModel().clearSelection();
+        editorButton.setText("Add");
+        editDeptFields.setVisible(false);
+    }
+
     private KeyFrame hideDirectory() {
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), new KeyValue(deptDirectory.translateYProperty(),
-                -(deptDirectory.getHeight() - 80)));
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), new KeyValue(mainDirectoryPane.translateYProperty(),
+                -(mainDirectoryPane.getHeight() - 80)));
         deptDirectoryUp = false;
 
         return keyFrame;
     }
 
     private KeyFrame showDirectory() {
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), new KeyValue(deptDirectory.translateYProperty(),
-                (deptDirectory.getHeight() - 700)));
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), new KeyValue(mainDirectoryPane.translateYProperty(),
+                (mainDirectoryPane.getHeight() - 700)));
         deptDirectoryUp = true;
 
         return keyFrame;
@@ -137,6 +135,7 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
         if (deptDirectoryUp) {
             keyFrame = hideDirectory();
         } else {
+            reset();
             keyFrame = showDirectory();
         }
 
@@ -207,6 +206,8 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
                 default:
                     break;
             }
+
+            reset();
         }
     }
 

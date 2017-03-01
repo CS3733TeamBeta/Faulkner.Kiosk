@@ -18,18 +18,12 @@ public class AdminDocDirectoryBoundary extends AbstractDirectoryBoundary {
         return setSearchList(h.getDoctors(), newValue);
     }
 
-    public ObservableList<Doctor> getDoctors() {
-        return h.getDoctors();
-    }
-
     public void addDoctor (Doctor d) {
         h.addDoctor(d);
-        save();
     }
 
     public void removeDoctor(Doctor d) {
         h.removeDoctor(d);
-        save();
     }
 
     public void editDoctor(Doctor d, String name, String description, String hrs,
@@ -42,7 +36,6 @@ public class AdminDocDirectoryBoundary extends AbstractDirectoryBoundary {
             d.setPhoneNum(phoneNum);
         }
 
-        save();
     }
 
     public ObservableList<Destination> getDocLoc(Doctor d) {
