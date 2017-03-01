@@ -312,7 +312,7 @@ public class UserMapViewController extends MapController
         mainPane.getChildren().add(searchPanel);
         searchPanel.toFront();
         searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
-        searchPanel.welcomeScreen();
+        searchPanel.relocate(0, mainPane.getHeight() + 350);
 
         panel.setCloseHandler(event ->
         {
