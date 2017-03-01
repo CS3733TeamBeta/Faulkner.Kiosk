@@ -94,6 +94,18 @@ public class MapEditorController extends MapController
 
 		adminBoundary = (AdminMapBoundary)boundary;
 
+		/*
+		for(Building b : boundary.getHospital().getBuildings()) {
+			if(b.getName().equals("Faulkner")) {
+				for (Floor f : b.getFloors()) {
+					if (f.getFloorNumber() == 1) {
+						System.out.println("SETTING CAMPUS MAP TO FAULKNER");
+						boundary.getHospital().setCampusFloorToFloor(f);
+					}
+				}
+			}
+		}*/
+
 		edgeEntityMap = HashBiMap.create();
 		tabFloorMap = HashBiMap.create();
 
@@ -298,7 +310,15 @@ public class MapEditorController extends MapController
 
 		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
 				(ov, newvalue, oldvalue) -> {
+					if(tabFloorMap.get(oldvalue).getFloorNumber() == 1){
+						System.out.println("Switching to campus floor");
+						//boundary.changeFloor(boundary.getCampusFloor()); //called when floor tab is selected
+					}else {
+						System.out.println("Tab hit to switch to : " + tabFloorMap.get(oldvalue).getFloorNumber());
+						//boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
+					}
 					boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
+
 
 				});
 
@@ -317,6 +337,7 @@ public class MapEditorController extends MapController
 		}
 		if(buildings != null) {
 			buildingSelector.setItems(FXCollections.observableArrayList(buildings));
+			buildingSelector.setValue(boundary.getCurrentFloor().getBuilding().getName());
 		}
 	}
 
@@ -476,8 +497,25 @@ public class MapEditorController extends MapController
 	@FXML
 	public void switchBuilding(){
 		String currentBuilding = boundary.getCurrentFloor().getBuilding().getName();
-		if(buildingSelector.getValue() != currentBuilding){
+		String newBuilding = buildingSelector.getValue();
+		if(!newBuilding.equals(currentBuilding)){
+			for(Building b : boundary.getHospital().getBuildings()) {
+				if(b.getName().equals(newBuilding)) {
+					boundary.changeBuilding(b);
+					FloorTabPane.getTabs().clear();
+					tabFloorMap.clear();
+					for(Floor f : b.getFloors()){
+						System.out.println("adding floor to tabpane");
+						makeFloorTab(f);
+					}
+					try {
+						boundary.changeFloor(boundary.getHospital().getCampusFloor());
+					}catch(Exception e){
+						System.out.println("ERROR IN SWITCHING FLOORS");
+					}
 
+				}
+			}
 		}
 	}
 
