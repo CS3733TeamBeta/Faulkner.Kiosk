@@ -22,16 +22,16 @@ public class AbstractDirectoryBoundary {
     public FilteredList setSearchList(ObservableList<?> list, String newValue) {
         FilteredList filteredList = new FilteredList<>(list);
 
-        if (filteredList.getClass().equals(Doctor.class)) {
-            filteredList.setPredicate((Predicate<? super Doctor>) d -> filterMatches(this, newValue));
-        } else {
-            filteredList.setPredicate((Predicate<? super Office>) o -> filterMatches(this, newValue));
+        if (filteredList.get(0) instanceof Doctor) {
+            filteredList.setPredicate((Predicate<? super Doctor>) d -> filterMatches(d.getName(), newValue));
+        } else if (filteredList.get(0) instanceof Office){
+            filteredList.setPredicate((Predicate<? super Office>) o -> filterMatches(o.getName(), newValue));
         }
 
         return filteredList;
     }
 
-    public boolean filterMatches(Object obj, String newValue) {
+    public boolean filterMatches(String name, String newValue) {
         // By default, the entire directory is displayed
         if (newValue == null || newValue.isEmpty()) {
             return true;
@@ -40,12 +40,20 @@ public class AbstractDirectoryBoundary {
         String lowerCaseFilter = newValue.toLowerCase();
 
         // Checks if filter matches
-        if (obj.getClass().getName().toLowerCase().contains(lowerCaseFilter)) {
+        if (name.toLowerCase().contains(lowerCaseFilter)) {
             return true;
         }
 
         // Filter does not match
         return false;
+    }
+
+    public ObservableList<Doctor> getDoctors() {
+        return h.getDoctors();
+    }
+
+    public ObservableList<Office> getDepartments() {
+        return h.getOffices();
     }
 
     // Save to database

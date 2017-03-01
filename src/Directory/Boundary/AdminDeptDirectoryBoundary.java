@@ -15,22 +15,16 @@ public class AdminDeptDirectoryBoundary extends AbstractDirectoryBoundary {
         super(h);
     }
 
-    public ObservableList<Office> getDepartments() {
-        return h.getOffices();
-    }
-
     public FilteredList<Office> setSearchList(String newValue) {
         return setSearchList(h.getOffices(), newValue);
     }
 
     public void addDept(Office office) {
         h.addOffice(office);
-        save();
     }
 
     public void removeDept(Office office) {
         h.removeOffice(office);
-        save();
     }
 
     public void editDept(Office office, String name, Destination destination) {
@@ -45,6 +39,5 @@ public class AdminDeptDirectoryBoundary extends AbstractDirectoryBoundary {
             }
         }
 
-        save();
     }
   }

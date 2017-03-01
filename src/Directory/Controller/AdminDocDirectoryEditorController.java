@@ -7,9 +7,10 @@ import Map.Entity.Destination;
 import Map.Entity.Hospital;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -63,10 +64,12 @@ public class AdminDocDirectoryEditorController {
 
     Hospital hospital;
     AdminDocDirectoryBoundary docBoundary;
-    ObservableList<Destination> existingLoc = FXCollections.observableArrayList(hospital.getDestinations());
+    ObservableList<Destination> existingLoc =
+            FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
     AdminDeptDirectoryEditor deptPane = new AdminDeptDirectoryEditor();
+    Boolean editMode = false;
 
-    public AdminDocDirectoryEditorController() throws SQLException
+    public AdminDocDirectoryEditorController() throws Exception
     {
         docBoundary = new AdminDocDirectoryBoundary(ApplicationController.getHospital());
     }
@@ -85,39 +88,30 @@ public class AdminDocDirectoryEditorController {
 
         // Adding a listener to the search bar, filtering through the data as the user types
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            // Create a sorted list for the filtered data list
-            SortedList<Doctor> sortedDoctors = new SortedList<>(docBoundary.setSearchList(newValue));
-            // Bind the sorted list to table
-            sortedDoctors.comparatorProperty().bind(dataTable.comparatorProperty());
-            // Set table data
-            dataTable.setItems(sortedDoctors);
+            dataTable.setItems(docBoundary.setSearchList(newValue));
         });
+
+        if (docBoundary.getDoctors() != null) {
+            dataTable.setItems(docBoundary.getDoctors());
+        }
 
         searchForLoc.setItems(existingLoc);
+        searchForLoc.valueProperty().addListener(new ChangeListener<Destination>() {
+            @Override public void changed(ObservableValue ov, Destination t, Destination d1) {
+                if (!locAssigned.getItems().contains(d1)) {
+                    locAssigned.getItems().add(d1);
+                }
+            }});
 
-        searchForLoc.setOnKeyPressed((KeyEvent e) -> {
-            switch (e.getCode()) {
-                case ENTER:
-                    if (!locAssigned.getItems().contains(searchForLoc.getValue())) {
-                        locAssigned.getItems().add(searchForLoc.getValue());
-                    }
-
-                    searchForLoc.setValue(null);
-                    break;
-                default:
-                    break;
-            }
-        });
 
         setPhoneNumConstraint(phoneNum1, 3);
         setPhoneNumConstraint(phoneNum2, 3);
         setPhoneNumConstraint(phoneNum3, 4);
 
-        deptPane.mainDirectoryPane.setPrefWidth(mainDirectoryPane.getPrefWidth());
-
         mainDirectoryPane.getChildren().add(deptPane);
+        deptPane.prefWidthProperty().bind(mainDirectoryPane.widthProperty());
         deptPane.toFront();
-        deptPane.relocate(0, mainDirectoryPane.getHeight() - 700);
+        deptPane.relocate(mainDirectoryPane.getLayoutX(), mainDirectoryPane.getHeight() + 620);
     }
 
     public void setPhoneNumConstraint(TextField textField, int length) {
@@ -160,6 +154,10 @@ public class AdminDocDirectoryEditorController {
 
     @FXML
     private void reset() {
+        editMode = false;
+
+        dataTable.getSelectionModel().clearSelection();
+
         firstName.clear();
         lastName.clear();
 
@@ -168,8 +166,6 @@ public class AdminDocDirectoryEditorController {
         phoneNum1.clear();
         phoneNum2.clear();
         phoneNum3.clear();
-
-        dataTable.getSelectionModel().clearSelection();
 
         searchBar.clear();
 
@@ -220,11 +216,10 @@ public class AdminDocDirectoryEditorController {
 
     @FXML
     private void displaySelectedDocInfo() {
-        reset();
-
         Doctor selectedDoc = dataTable.getSelectionModel().getSelectedItem();
 
         if (selectedDoc != null) {
+            editMode = true;
             firstName.setText(selectedDoc.splitName()[1]);
             lastName.setText(selectedDoc.splitName()[0]);
             description.setText(selectedDoc.getDescription());
@@ -239,35 +234,32 @@ public class AdminDocDirectoryEditorController {
             endTime.setText(selectedDoc.splitHours()[1]);
 
             locAssigned.setItems(docBoundary.getDocLoc(selectedDoc));
-
-            showDelOption();
         }
     }
 
     @FXML
     private void saveProfile() {
         if (isProcessable()) {
-            Doctor toEdit = dataTable.getSelectionModel().getSelectedItem();
 
             String name = lastName.getText() + ", " + firstName.getText();
             String d = description.getText();
             String phoneNum = "N/A";
             String hrs = startTime.getText() + " - " + endTime.getText();
-
-            if (phoneNum1.getText() != null || phoneNum1.getText().isEmpty()) {
+            if (phoneNum1.getText() != null || !phoneNum1.getText().isEmpty()) {
                 phoneNum = phoneNum1.getText() + "-" + phoneNum2.getText() + "-" + phoneNum3.getText();
             }
 
-            if (toEdit == null) {
+            if (editMode) {
+                Doctor toEdit = dataTable.getSelectionModel().getSelectedItem();
+                docBoundary.editDoctor(toEdit, name, d, hrs, locAssigned.getItems(), phoneNum);
+            } else {
                 Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
                 newDoc.setPhoneNum(phoneNum);
                 docBoundary.addDoctor(newDoc);
-            } else {
-                docBoundary.editDoctor(toEdit, name, d, hrs, locAssigned.getItems(), phoneNum);
             }
 
             reset();
-            initialize();
+
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
             alert.setTitle("Action denied.");

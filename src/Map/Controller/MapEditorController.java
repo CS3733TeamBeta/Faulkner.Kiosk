@@ -836,7 +836,7 @@ public class MapEditorController extends MapController
 	}
 
 	@FXML
-	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
+	public void onDirectoryEditorSwitch() throws IOException
 	{
 		ApplicationController.getController().switchToModifyDirectoryView();
 	}
