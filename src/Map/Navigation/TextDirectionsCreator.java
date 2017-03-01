@@ -46,7 +46,7 @@ public class TextDirectionsCreator {
         if (vFlag) {
             tempTextDirection = ("Start at the Kiosk. (Node " + listNodes.get(0).getNodeID() + ")");
         } else {
-            tempTextDirection =("Start at the Kiosk, facing " + Guidance.numToDirection(kioskDirection));
+            tempTextDirection =("Start by turning towards the Kiosk");
         }
         tempDirectionSteps.add(new DirectionStep(tempTextDirection, tempNodeEdges));
         tempTextDirection = "";
@@ -100,7 +100,7 @@ public class TextDirectionsCreator {
             System.out.println("Direction change is " + directionChangeString);
 
             if (directionChangeString.equals("Straight")) {
-                System.out.println("Passing an possible intersection");
+                System.out.println("Passing a possible intersection");
                 if (fromNode.getEdges().size() > 3) {
                     System.out.println("Passing a definite intersection");
                     System.out.println("fromNode has size of edges: " + fromNode.getEdges().size());
@@ -138,16 +138,39 @@ public class TextDirectionsCreator {
                 }
                 intersectionsPassed = 0;
                 tempNodeEdges.add(fromNode.getEdgeTo(toNode));
-                //Adds "near" this or that to the string
-                boolean foundNearbyDestination = false;
-                for (NodeEdge e: toNode.getEdges()) {
-                    if (e.getOtherNode(toNode) instanceof Destination && !foundNearbyDestination) {
-                        foundNearbyDestination = true;
-                        tempTextDirection += " near " + ((Destination) e.getOtherNode(toNode)).getName();
+                String directionsRelativeToOtherNodes = "";
+                //check if the node we are at is a node with a name (IE, going through an office), and make sure that it's not the destination
+                if(fromNode instanceof Destination) {
+                    directionsRelativeToOtherNodes = " at " + ((Destination) fromNode).getName();
+                    intersectionsPassed = 0;
+                }
+                else {
+                    System.out.println("not a destination");
+                    double max = 70;
+                    // If a nearby node has a name use that
+                    for( NodeEdge e: fromNode.getEdges()) {
+                        MapNode potentialNeighbor = e.getOtherNode(fromNode);
+                        double distance = getDistanceBetweenNodes(fromNode,potentialNeighbor);
+                        if( (distance < max) && (potentialNeighbor instanceof Destination) ) {
+                            max = distance;
+                            // If the nearby node is the node you came from
+                            if(potentialNeighbor == listNodes.get(i - 1)) {
+                                directionsRelativeToOtherNodes = " away from ";
+                            }
+                            else if(potentialNeighbor == toNode) {
+                                directionsRelativeToOtherNodes = " towards ";
+                            }
+                            else{
+                                directionsRelativeToOtherNodes = " near ";
+                            }
+                            directionsRelativeToOtherNodes += ((Destination) potentialNeighbor).getName();
+                            intersectionsPassed = 0;
+                        }
                     }
                 }
-                //If there are nodes after this
+                tempTextDirection += directionsRelativeToOtherNodes;
 
+                //If there are nodes after this
                 if(listNodes.size() > i+4) {
                     System.out.println("It's greater");
                     MapNode tempFromNode = listNodes.get(i+1);
@@ -174,6 +197,12 @@ public class TextDirectionsCreator {
                             intersectionsPassed = 0;
                         }
                     }
+                }
+
+                //replace stupid substring that sometimes gets generated
+                if(tempTextDirection.contains("at the next intersection at")){
+                    tempTextDirection = tempTextDirection.replace("at the next intersection at", "at");
+                    System.out.println(tempTextDirection);
                 }
 
                 tempDirectionSteps.add(new DirectionStep(tempTextDirection, tempNodeEdges));
@@ -246,6 +275,14 @@ public class TextDirectionsCreator {
 
         return tempDirectionFloorSteps;
 
+    }
+
+    private double getDistanceBetweenNodes(MapNode a, MapNode b){
+        double currentNodeX = a.getPosX();
+        double currentNodeY = a.getPosY();
+        double endNodeX = b.getPosX();
+        double endNodeY = b.getPosY();
+        return Math.sqrt(Math.pow(endNodeX - currentNodeX, 2) + Math.pow(endNodeY - currentNodeY, 2));
     }
 
 
