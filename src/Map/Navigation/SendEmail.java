@@ -96,7 +96,7 @@ public class SendEmail {
                 System.out.println("There are " + floorSteps.get(0).getDirectionSteps().size() + " direction steps in this floorStep");
                 int j;
                 for (j = 0; j < floorSteps.get(i-1).getDirectionSteps().size(); j++) {
-                    messageText += "<b>" + stepNumber + ":</b> ";
+                    messageText += "<b>" + stepNumber + ".</b> ";
                     messageText += floorSteps.get(i-1).getDirectionSteps().get(j);
                     messageText += "<br>";
                     stepNumber++;
