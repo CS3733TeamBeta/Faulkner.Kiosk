@@ -449,7 +449,12 @@ public class Path implements Iterable {
 
     public Path(MapNode start, MapNode end, boolean vFlag) throws PathFindingException{
         this.vFlag = vFlag;
-        String algo = start.getMyFloor().getBuilding().getHospital().getAlgorithm().toLowerCase();
+        String algo = "astar";
+        try {
+            algo = start.getMyFloor().getBuilding().getHospital().getAlgorithm().toLowerCase();
+        } catch (Exception e) {
+            System.out.println("Start node didn't have a floor's building's hospital's algorithm, using \"astar\"");
+        }
         System.out.println("Algo is " + algo);
         switch (algo) {
             case "astar":
