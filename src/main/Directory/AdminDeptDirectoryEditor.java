@@ -38,7 +38,7 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
         existingLoc = FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                "../../Admin/AdminDeptDirectoryEditor.fxml"));
+                "/directory/AdminDeptDirectoryEditor.fxml"));
 
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);

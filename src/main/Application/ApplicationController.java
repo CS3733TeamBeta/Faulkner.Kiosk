@@ -28,7 +28,7 @@ public class ApplicationController extends Application
     DataCache dataCache;
 
     protected static final String AdminLoginViewPath = "/application/AdminLoginView.fxml";
-    protected static final String ModifyDirectoryViewPath = "/directory/AdminDirectoryEditor.fxml";
+    protected static final String ModifyDirectoryViewPath = "/directory/AdminDocDirectoryEditor.fxml";
     protected static final String MapEditorViewPath = "/map/MapEditorView.fxml";
     protected static final String UserMapViewerPath = "/map/UserMapView.fxml";
 
