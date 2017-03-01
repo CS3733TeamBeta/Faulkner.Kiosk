@@ -18,15 +18,18 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.*;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.*;
+import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -833,8 +836,8 @@ public class MapEditorController extends MapController
 	}
 
 	@FXML
-	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
+	public void onDirectoryEditorSwitch() throws IOException
 	{
-		//SceneSwitcher.switchToModifyDirectoryView(this.getStage(), model.getHospital());
+		ApplicationController.getController().switchToModifyDirectoryView();
 	}
 }

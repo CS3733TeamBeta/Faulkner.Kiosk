@@ -1,26 +1,18 @@
 package main.Map.Controller;
 
 import main.Application.ApplicationController;
-import main.Directory.Doctor;
-import main.Map.Boundary.AdminMapBoundary;
 import main.Map.Boundary.MapBoundary;
 import main.Map.Boundary.UserMapBoundary;
 import main.Map.Navigation.Guidance;
 import main.Application.Exceptions.PathFindingException;
-import main.Map.Entity.Destination;
 import main.Map.Entity.Floor;
 import main.Map.Entity.MapNode;
 import main.Map.Entity.NodeEdge;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
@@ -36,27 +28,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.image.ImageView;
-import javafx.scene.control.TextField;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.function.Predicate;
+
 /**
  * Created by jw97 on 2/16/2017.
  *
  */
 public class UserMapViewController extends MapController
 {
-
-    Boolean downArrow = true; // By default, the navigation arrow is to minimize the welcome page
-    ColorAdjust colorAdjust = new ColorAdjust();
-    int numClickDr = -1;
-    int numClickFood = -1;
-    int numClickBath = -1;
-    int numClickHelp = -1;
-
     Floor kioskFloor;
 
     Guidance newRoute;
@@ -66,54 +46,6 @@ public class UserMapViewController extends MapController
 
     @FXML
     AnchorPane mainPane;
-
-    @FXML
-    AnchorPane searchMenu;
-
-    @FXML
-    ImageView doctorIcon;
-
-    @FXML
-    ImageView bathroomIcon;
-
-    @FXML
-    ImageView foodIcon;
-
-    @FXML
-    ImageView helpIcon;
-
-    @FXML
-    ImageView navigateArrow;
-
-    @FXML
-    TextField searchBar;
-
-    @FXML
-    Text welcomeGreeting;
-
-    @FXML
-    TableView deptTable;
-
-    @FXML
-    TableColumn deptName;
-
-    @FXML
-    TableColumn deptPhoneNum;
-
-    @FXML
-    TableColumn deptLocation;
-
-    @FXML
-    TableView doctorTable;
-
-    @FXML
-    TableColumn docName;
-
-    @FXML
-    TableColumn jobTitle;
-
-    @FXML
-    TableColumn docDepts;
 
     @FXML
     ScrollPane scrollPane;
@@ -127,6 +59,7 @@ public class UserMapViewController extends MapController
     Stage primaryStage;
 
     UserDirectionsPanel panel = new UserDirectionsPanel(mapImage);
+    UserSearchPanel searchPanel = new UserSearchPanel();
 
     Group zoomGroup;
 
@@ -371,12 +304,17 @@ public class UserMapViewController extends MapController
         panel.toFront();
         panel.relocate(mainPane.getPrefWidth() - 5, 0);
 
+        mainPane.getChildren().add(searchPanel);
+        searchPanel.toFront();
+        searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
+        searchPanel.relocate(0, mainPane.getHeight() + 350);
+
         panel.setCloseHandler(event ->
         {
             hideDirections();
             // Ben, you might want to consider reset the direction panel here
             panel.setVisible(false);
-            searchMenuUp();
+            searchPanel.welcomeScreen();
         });
 
         panel.setVisible(false);
@@ -397,12 +335,6 @@ public class UserMapViewController extends MapController
 
         panel.addEventHandler(MouseEvent.MOUSE_EXITED,
                 e -> hideDirections());
-
-        numClickDr = -1;
-        numClickFood = -1;
-        numClickBath = -1;
-        numClickHelp = -1;
-        LoadTableData();
     }
 
     public void playDirections(Guidance g)
@@ -473,223 +405,6 @@ public class UserMapViewController extends MapController
         primaryStage = s;
     }
 
-    public void defaultProperty()
-    {
-        searchMenu.setStyle("-fx-background-color:  #f2f2f2;");
-        // Sets the color of the icons to black
-        ColorAdjust original = new ColorAdjust();
-        original.setContrast(0);
-        doctorIcon.setEffect(original);
-        bathroomIcon.setEffect(original);
-        foodIcon.setEffect(original);
-        helpIcon.setEffect(original);
-        // By default, only the departments table is shown
-        deptTable.setVisible(true);
-        // Set all other tables false
-        doctorTable.setVisible(false);
-        searchBar.setPromptText("Search for Departments");
-        // Title shown
-        welcomeGreeting.setVisible(true);
-        panel.setVisible(false);
-    }
-
-    public void searchMenuUp()
-    {
-        Timeline menuSlideDown = new Timeline();
-        KeyFrame keyFrame;
-        menuSlideDown.setCycleCount(1);
-        menuSlideDown.setAutoReverse(true);
-        if (downArrow)
-        { // Navigate down icon -> welcome page down (left with search bar)
-            KeyValue welcomeDown = new KeyValue(searchMenu.translateYProperty(), 180);
-            keyFrame = new KeyFrame(Duration.millis(600), welcomeDown);
-            welcomeGreeting.setVisible(false);
-            downArrow = false; // Changes to up icon
-            searchMenu.setStyle("-fx-background-color: transparent;");
-            panel.setVisible(true);
-        }
-        else
-        { // Navigate up icon -> show welcome page
-            panel.setVisible(false);
-            KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
-            keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
-            // Reset to default
-            //defaultProperty();
-            downArrow = true;
-            numClickDr = -1;
-            numClickFood = -1;
-            numClickBath = -1;
-            numClickHelp = -1;
-            searchBar.clear();
-        }
-        navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
-        menuSlideDown.getKeyFrames().add(keyFrame);
-        menuSlideDown.play();
-    }
-
-    public void loadMenu()
-    {
-        //defaultProperty();
-        Timeline menuSlideUp = new Timeline();
-        menuSlideUp.setCycleCount(1);
-        menuSlideUp.setAutoReverse(true);
-        KeyValue menuUp = new KeyValue(searchMenu.translateYProperty(), -(mainPane.getHeight() - 350));
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), menuUp);
-        menuSlideUp.getKeyFrames().add(keyFrame);
-        menuSlideUp.play();
-    }
-
-    public void doctorSelected()
-    {
-        loadMenu();
-        numClickDr = numClickDr * (-1);
-        numClickHelp = -1;
-        numClickBath = -1;
-        numClickFood = -1;
-        DisplayCorrectTable();
-    }
-
-    public void bathroomSelected()
-    {
-        loadMenu();
-        numClickDr = -1;
-        numClickHelp = -1;
-        numClickBath = numClickBath * (-1);
-        numClickFood = -1;
-        DisplayCorrectTable();
-    }
-
-    public void foodSelected()
-    {
-        loadMenu();
-        numClickDr = -1;
-        numClickHelp = -1;
-        numClickBath = -1;
-        numClickFood = numClickFood * (-1);
-        DisplayCorrectTable();
-    }
-
-    public void helpSelected()
-    {
-        loadMenu();
-        numClickDr = -1;
-        numClickHelp = numClickHelp * (-1);
-        numClickBath = -1;
-        numClickFood = -1;
-        DisplayCorrectTable();
-    }
-
-    public void adminLogin() throws IOException
-    {
-        ApplicationController.getController().switchToLoginView();
-    }
-
-    private void LoadTableData()
-    {
-        docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
-        jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
-        docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
-
-        Collection<Doctor> doctrine = boundary.getHospital().getDoctors().values();
-        ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
-        FilteredList<Doctor> filteredDoctor = new FilteredList<>(doctors);
-
-        searchBar.textProperty().addListener((observableValue, oldValue, newValue) ->
-        {
-            filteredDoctor.setPredicate((Predicate<? super Doctor>) profile ->
-            {
-                // By default, the entire directory is displayed
-                if (newValue == null || newValue.isEmpty())
-                {
-                    return true;
-                }
-                // Compare the name of the doctor with filter text
-                String lowerCaseFilter = newValue.toLowerCase();
-                // Checks if filter matches
-                if (profile.getName().toLowerCase().contains(lowerCaseFilter))
-                {
-                    return true;
-                }
-                // Filter does not match
-                return false;
-            });
-        });
-
-        SortedList<Doctor> sortedDoctor = new SortedList<Doctor>(filteredDoctor);
-        sortedDoctor.comparatorProperty().bind(deptTable.comparatorProperty());
-        doctorTable.setItems(sortedDoctor);
-
-
-        deptName.setCellValueFactory(new PropertyValueFactory<Destination, String>("name"));
-        deptPhoneNum.setCellValueFactory(new PropertyValueFactory<Destination, String>("phoneNum"));
-        deptLocation.setCellValueFactory(new PropertyValueFactory<Destination, String>("location"));
-        Collection<Destination> suiteVal = boundary.getHospital().getDestinations().values();
-        ObservableList<Destination> suites = FXCollections.observableArrayList(suiteVal);
-        FilteredList<Destination> filteredSuite = new FilteredList<>(suites);
-        searchBar.textProperty().addListener((observableValue, oldValue, newValue) ->
-        {
-            filteredSuite.setPredicate((Predicate<? super Destination>) profile ->
-            {
-                // By default, the entire directory is displayed
-                if (newValue == null || newValue.isEmpty())
-                {
-                    return true;
-                }
-                // Compare the name of the doctor with filter text
-                String lowerCaseFilter = newValue.toLowerCase();
-                // Checks if filter matches
-                if (profile.getName().toLowerCase().contains(lowerCaseFilter))
-                {
-                    return true;
-                }
-                // Filter does not match
-                return false;
-            });
-        });
-        SortedList<Destination> sortedSuite = new SortedList<Destination>(filteredSuite);
-        sortedSuite.comparatorProperty().bind(deptTable.comparatorProperty());
-        deptTable.setItems(sortedSuite);
-    }
-
-    public void DisplayCorrectTable()
-    {
-        defaultProperty();
-        if (numClickDr == 1)
-        {
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-            doctorIcon.setEffect(clicked);
-            searchBar.setPromptText("Search for doctors");
-            deptTable.setVisible(false);
-            doctorTable.setVisible(true);
-        }
-        if (numClickBath == 1)
-        {
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-            bathroomIcon.setEffect(clicked);
-            searchBar.setPromptText("Search for bathrooms");
-        }
-        if (numClickFood == 1)
-        {
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-            foodIcon.setEffect(clicked);
-            searchBar.setPromptText("Search for food");
-        }
-        if (numClickHelp == 1)
-        {
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-            helpIcon.setEffect(clicked);
-            searchBar.setPromptText("Search for help");
-        }
-        if ((numClickDr == -1) && (numClickBath == -1) && (numClickFood == -1) && (numClickHelp == -1))
-        {
-            defaultProperty();
-        }
-    }
-
     private void panToCenter()
     {
         Bounds groupBounds = zoomGroup.getLayoutBounds();
@@ -725,6 +440,11 @@ public class UserMapViewController extends MapController
 
         scrollPane.setHvalue(middleX * scaleX);
         scrollPane.setVvalue(middleY * scaleY-.1);
+    }
+
+    public void adminLogin() throws IOException
+    {
+        ApplicationController.getController().switchToLoginView();
     }
 }
 

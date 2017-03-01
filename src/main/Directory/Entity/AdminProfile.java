@@ -1,4 +1,4 @@
-package main.Directory;
+package main.Directory.Entity;
 
 /**
  * Created by Pattop on 2/1/2017.
