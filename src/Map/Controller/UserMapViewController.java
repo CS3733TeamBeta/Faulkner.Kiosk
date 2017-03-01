@@ -59,6 +59,8 @@ public class UserMapViewController extends MapController
 
     Guidance newRoute;
 
+    @FXML CheckBox checkBoxUseStairs;
+
     @FXML
     AnchorPane mapPane;
 
@@ -166,9 +168,12 @@ public class UserMapViewController extends MapController
             { // deal with other types of mouse clicks
                 try
                 {
-                    findPathToNode(n);
-                } catch (PathFindingException e)
+                    System.out.println("BOX IS " + checkBoxUseStairs.isSelected());
+                    findPathToNode(n,checkBoxUseStairs.isSelected());
+                }
+                catch (PathFindingException e)
                 {
+                    System.out.println("ERROR: COULD NOT COMPLETE PATH");
                 }
             }
         });
@@ -453,7 +458,7 @@ public class UserMapViewController extends MapController
         slideHideDirections.play();
     }
 
-    protected void findPathToNode(MapNode endPoint) throws PathFindingException
+    protected void findPathToNode(MapNode endPoint, boolean useStairs) throws PathFindingException
     {
         if (newRoute != null) //hide stale path
         {
@@ -481,7 +486,10 @@ public class UserMapViewController extends MapController
 
         try
         {
-            newRoute = new Guidance(startPoint, endPoint, "North");
+            if(useStairs){
+                System.out.println("TRYING TO USE STAIRS");
+            }
+            newRoute = new Guidance(startPoint, endPoint, "North", useStairs);
         } catch (PathFindingException e)
         {
             return;//TODO add error message throw

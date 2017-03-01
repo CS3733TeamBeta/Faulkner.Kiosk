@@ -112,8 +112,12 @@ public class DragIcon extends AnchorPane{
 				getStyleClass().add("kiosk");
 				break;
 
+			case Stairs:
+				getStyleClass().add("stairs");
+
 			case CurrentKiosk:
 				getStyleClass().add("CurrentKiosk");
+
 				break;
 
 			default:
@@ -136,6 +140,13 @@ public class DragIcon extends AnchorPane{
 			{
 				newNode = new MapNode();
 				newNode.setIsElevator(true);
+				break;
+			}
+
+			case Stairs:
+			{
+				newNode = new MapNode();
+				newNode.setIsStairs(true);
 				break;
 			}
 
