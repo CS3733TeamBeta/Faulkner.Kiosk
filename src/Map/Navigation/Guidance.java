@@ -398,8 +398,15 @@ public class Guidance extends Path {
                 //System.out.println("Height: " + offsetHeight + " Width: " + offsetWidth);
                 for (NodeEdge e : this.pathEdges){
                     //check the edge to see if it's on the current floor
+                    boolean edgeIsInThisFloorStep = false;
+                    for (DirectionStep aDirectionStep: d.getDirectionSteps()) {
+                        if (aDirectionStep.getStepEdges().contains(e)) {
+                            edgeIsInThisFloorStep = true;
+                        }
+                    }
                     if(e.getSource().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()
-                            && e.getTarget().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()){
+                            && e.getTarget().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()
+                            && edgeIsInThisFloorStep){
                         //get the nodes to draw the lines between
                         MapNode targetNode = e.getTarget();
                         MapNode sourceNode = e.getSource();
@@ -422,22 +429,24 @@ public class Guidance extends Path {
 
                 //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
-                    int isConnector = 0;
-                    System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
-                    String thisIconType = n.getType().toString();
-                    System.out.println("This is an icon of type: " + thisIconType.toString());
+                    if (d.getNodesForThisFloor().contains(n)) {
+                        int isConnector = 0;
+                        System.out.println("X: " + Math.round(n.getPosX()) * constant + " Y; " + ((int) Math.round(n.getPosY())) * constant);
+                        String thisIconType = n.getType().toString();
+                        System.out.println("This is an icon of type: " + thisIconType.toString());
 
-                    BufferedImage currentImage = this.iconToImg(n.getType());
+                        BufferedImage currentImage = this.iconToImg(n.getType());
 
-                    if (n.getType().toString().equals("connector")) {
-                        isConnector = 12;
+                        if (n.getType().toString().equals("connector")) {
+                            isConnector = 12;
+                        }
+
+                        g.drawImage(currentImage, (int) (Math.round(n.getPosX()) * constant + isConnector), (int) (Math.round(n.getPosY()) * constant + isConnector), null);
                     }
-
-                    g.drawImage(currentImage, (int) (Math.round(n.getPosX())*constant + isConnector), (int)(Math.round(n.getPosY())*constant + isConnector), null);
                 }
 
                 // Save as new image
-                LinkedList<Point> startAndEnd = findParemeters(this.pathNodes, d.getFloor().getFloorNumber());
+                LinkedList<Point> startAndEnd = findParemeters(d.getNodesForThisFloor(), d.getFloor().getFloorNumber());
                 Point startPoint = startAndEnd.getFirst();
                 Point endPoint = startAndEnd.getLast();
 
