@@ -29,6 +29,9 @@ public class Inbox
         inboxRefresher = new Timer();
     }
 
+    /**
+     * Starts checking for new mail
+     */
     public void startMonitoring()
     {
         inboxRefresher.schedule(new TimerTask()
@@ -41,11 +44,29 @@ public class Inbox
         }, 0,5000);
 
     }
+
+    /**
+     * Stops the inbox from checking for new mail
+     */
+    public void stopMonitoring()
+    {
+        inboxRefresher.purge();
+        inboxRefresher.cancel();
+    }
+
+    /**
+     * Adds a handler for a new email event
+     * @param h
+     */
     public void addReceivedHandler(EmailReceivedEventHandler h)
     {
         emailReceivedEventHandlers.add(h);
     }
 
+    /**
+     * Notifies all of the handlers that an email has been review
+     * @param e EmailReceivedEvent
+     */
     public void notifyHandlers(EmailReceivedEvent e)
     {
         for(EmailReceivedEventHandler h: emailReceivedEventHandlers)
@@ -54,6 +75,9 @@ public class Inbox
         }
     }
 
+    /**
+     * Receive all of the pending emails
+     */
     public void receiveEmail() {
         try {
             System.out.println("Checking for messages");
@@ -95,10 +119,5 @@ public class Inbox
         } catch (NoSuchProviderException e) {e.printStackTrace();}
         catch (MessagingException e) {e.printStackTrace();}
         catch (IOException e) {e.printStackTrace();}
-    }
-
-    public static void main(String[] args)
-    {
-
     }
 }  
