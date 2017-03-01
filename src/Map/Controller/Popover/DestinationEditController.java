@@ -1,6 +1,6 @@
 package Map.Controller.Popover;
 
-import Application.Database.DatabaseManager;
+import Application.ApplicationController;
 import Map.Entity.Destination;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
@@ -38,7 +38,7 @@ public class DestinationEditController extends AbstractPopupController
     {
         destinationUnderEdit.setName(nameBox.getText());
         try {
-            new DatabaseManager().updateDestination(destinationUnderEdit);
+            ApplicationController.getCache().getDbManager().updateDestination(destinationUnderEdit);
         } catch (SQLException e) {
             e.printStackTrace();
         }

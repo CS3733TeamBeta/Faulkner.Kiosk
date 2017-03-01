@@ -1,6 +1,6 @@
 package Map.Controller.Popover;
 
-import Application.Database.DatabaseManager;
+import Application.ApplicationController;
 import Map.Entity.Kiosk;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
@@ -35,7 +35,7 @@ public class KioskEditController extends AbstractPopupController{
     {
         kioskUnderEdit.setName(nameBox.getText());
         try {
-            new DatabaseManager().updateKiosk(kioskUnderEdit);
+            ApplicationController.getCache().getDbManager().updateKiosk(kioskUnderEdit);
         } catch (SQLException e) {
             e.printStackTrace();
         }
