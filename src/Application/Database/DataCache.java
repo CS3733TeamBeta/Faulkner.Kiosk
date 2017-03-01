@@ -62,4 +62,9 @@ public class DataCache
             e.printStackTrace();
         }
     }
+
+    public DatabaseManager getDbManager()
+    {
+        return db;
+    }
 }

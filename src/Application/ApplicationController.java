@@ -53,6 +53,11 @@ public class ApplicationController extends Application
         return controller.dataCache.getHospital();
     }
 
+    public static DataCache getCache()
+    {
+        return controller.dataCache;
+
+    }
     @Override
     public void start(Stage primaryStage) throws Exception
     {

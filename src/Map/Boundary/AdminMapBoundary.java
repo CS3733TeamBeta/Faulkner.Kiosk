@@ -1,6 +1,7 @@
 package Map.Boundary;
 
 
+import Application.ApplicationController;
 import Application.Database.DatabaseManager;
 import Map.Entity.*;
 import javafx.geometry.Point2D;
@@ -150,7 +151,7 @@ public class AdminMapBoundary extends MapBoundary
                 nodesToAdd.add(e);
             }
             try {
-                new DatabaseManager().addNodeToDB(e);
+                ApplicationController.getCache().getDbManager().addNodeToDB(e);
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }

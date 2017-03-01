@@ -9,12 +9,13 @@ import javafx.collections.ObservableList;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Observable;
 
 
 /**
   * Created by IanCJ on 1/29/2017.
   */
-public class Hospital {
+public class Hospital extends Observable {
     ObservableList<Building> buildings;
 
     private ObservableList<Doctor> doctors;
