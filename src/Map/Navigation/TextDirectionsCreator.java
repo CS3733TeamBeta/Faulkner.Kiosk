@@ -57,7 +57,7 @@ public class TextDirectionsCreator {
             fromNode = listNodes.get(i);
             toNode = listNodes.get(i+1);
 
-            double costConstant = 50; //Should be 25 in final
+            double costConstant = 50; //Should be 25 in the final
 
             if (vFlag) {
                 System.out.println("");
@@ -108,14 +108,14 @@ public class TextDirectionsCreator {
                     }
                 }
                 else if(intersectionsPassed == 1){
-                    tempTextDirection = ("After passing 1 intersection, turn " + directionChangeString);
+                    tempTextDirection = ("After passing 1 intersection, go " + directionChangeString);
                     tempMapNodes.add(fromNode);
                     if (vFlag) {
                         tempTextDirection += (" at " + fromNode.getNodeID());
                     }
                 }
                 else{
-                    tempTextDirection = ("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString);
+                    tempTextDirection = ("After passing " + intersectionsPassed + " intersections, go " + directionChangeString);
                     tempMapNodes.add(fromNode);
                     if (vFlag) {
                         tempTextDirection += (" at " + fromNode.getNodeID());
@@ -161,6 +161,12 @@ public class TextDirectionsCreator {
                 }
                 tempDirectionSteps.add(new DirectionStep(tempTextDirection, tempNodeEdges));
                 tempNodeEdges = new LinkedList<>();
+                if (directionChangeString.equals("outside") || directionChangeString.equals("inside")) {
+                    tempDirectionFloorSteps.addLast(new DirectionFloorStep(fromNode.getMyFloor(), tempMapNodes, tempDirectionSteps));
+                    tempDirectionSteps = new LinkedList<>();
+                    tempMapNodes = new LinkedList<>();
+                    intersectionsPassed = 0;
+                }
             } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
                 if(intersectionsPassed == 0){
                     tempTextDirection = ("Take an elevator at the next intersection from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());

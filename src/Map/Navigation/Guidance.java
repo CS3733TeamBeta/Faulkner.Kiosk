@@ -185,6 +185,12 @@ public class Guidance extends Path {
             case 10:
                 stringDirection = "down";
                 break;
+            case 11:
+                stringDirection = "outside";
+                break;
+            case 12:
+                stringDirection = "inside";
+                break;
             default:
                 //If it reaches this, something quite wrong
                 stringDirection = "Big Error";
@@ -271,6 +277,12 @@ public class Guidance extends Path {
             case 10:
                 textDirection = "Down";
                 break;
+            case 11:
+                textDirection = "Outside";
+                break;
+            case 12:
+                textDirection = "Inside";
+                break;
             default:
                 textDirection = "Big Error";
                 break;
@@ -310,6 +322,12 @@ public class Guidance extends Path {
                 break;
             case "Down":
                 num = 10;
+                break;
+            case "Outside":
+                num = 11;
+                break;
+            case "Inside":
+                num = 12;
                 break;
             default:
                 num = 100;
