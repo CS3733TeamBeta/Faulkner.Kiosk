@@ -2,9 +2,8 @@ package main.Application.Database;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import main.Directory.*;
-import main.Map.Entity.*;
 import main.Directory.Doctor;
+import main.Map.Entity.*;
 
 import java.sql.*;
 import java.util.*;

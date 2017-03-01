@@ -1,6 +1,5 @@
 package main.Directory;
 
-import main.Directory.Doctor;
 import main.Map.Entity.Destination;
 import main.Map.Entity.Hospital;
 import javafx.collections.ObservableList;

@@ -1,24 +1,17 @@
 package main.Map.Controller;
 
 import main.Application.ApplicationController;
-import main.Directory.Doctor;
 import main.Map.Boundary.MapBoundary;
 import main.Map.Navigation.Guidance;
 import main.Application.Exceptions.PathFindingException;
-import main.Map.Entity.Destination;
 import main.Map.Entity.Floor;
 import main.Map.Entity.MapNode;
 import main.Map.Entity.NodeEdge;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
@@ -34,13 +27,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.image.ImageView;
-import javafx.scene.control.TextField;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.function.Predicate;
+
 /**
  * Created by jw97 on 2/16/2017.
  *

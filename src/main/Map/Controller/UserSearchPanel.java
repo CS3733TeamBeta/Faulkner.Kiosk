@@ -2,10 +2,9 @@ package main.Map.Controller;
 
 import main.Application.ApplicationController;
 import main.Directory.UserDirectoryBoundary;
-import main.Directory.Doctor;
 import main.Map.Entity.Destination;
-import main.Map.Entity.Hospital;
 import main.Map.Entity.Office;
+import main.Directory.Doctor;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,7 +37,7 @@ public class UserSearchPanel extends AnchorPane {
         boundary = new UserDirectoryBoundary(ApplicationController.getHospital());
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                "../../User/UserSearchPanel.fxml"));
+                "/directory/UserSearchPanel.fxml"));
 
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);

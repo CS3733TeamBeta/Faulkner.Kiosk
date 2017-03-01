@@ -1,11 +1,10 @@
 package main.Map.Entity;
 
 
-import main.Application.Database.DatabaseManager;
-import main.Directory.Doctor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
+import main.Directory.Doctor;
+import main.Application.ApplicationController;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;

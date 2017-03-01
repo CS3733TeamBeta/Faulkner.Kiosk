@@ -23,7 +23,7 @@
                   <Insets bottom="10.0" left="50.0" right="30.0" top="20.0" />
                </HBox.margin>
                <image>
-                  <Image url="@resources/22779-200.png" />
+                  <Image url="@/icons/22779-200.png" />
                </image>
             </ImageView>
             <ImageView fx:id="bathroomIcon" fitHeight="106.0" fitWidth="128.0" onMouseClicked="#bathroomSelected" pickOnBounds="true" preserveRatio="true">
@@ -31,7 +31,7 @@
                   <Insets bottom="5.0" left="150.0" right="5.0" top="5.0" />
                </HBox.margin>
                <image>
-                  <Image url="@resources/Gender-Neutral-Toilet-Sign-White-1000.png" />
+                  <Image url="@/icons/Gender-Neutral-Toilet-Sign-White-1000.png" />
                </image>
             </ImageView>
             <ImageView fx:id="foodIcon" fitHeight="108.0" fitWidth="144.0" onMouseClicked="#foodSelected" pickOnBounds="true" preserveRatio="true">
@@ -39,7 +39,7 @@
                   <Insets bottom="5.0" left="170.0" right="5.0" top="5.0" />
                </HBox.margin>
                <image>
-                  <Image url="@resources/10446-200.png" />
+                  <Image url="@/icons/10446-200.png" />
                </image>
             </ImageView>
             <ImageView fx:id="helpIcon" fitHeight="127.0" fitWidth="127.0" onMouseClicked="#helpSelected" pickOnBounds="true" preserveRatio="true">
@@ -47,7 +47,7 @@
                   <Insets bottom="10.0" left="150.0" right="100.0" top="2.0" />
                </HBox.margin>
                <image>
-                  <Image url="@resources/75-Question-mark-sign.png" />
+                  <Image url="@/icons/75-Question-mark-sign.png" />
                </image>
             </ImageView>
          </children>
@@ -70,7 +70,7 @@
       </Text>
       <ImageView fx:id="navigateArrow" fitHeight="43.0" fitWidth="43.0" layoutX="1135.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <image>
-            <Image url="@resources/navigate_down.png" />
+            <Image url="@/icons/navigate_down.png" />
          </image>
       </ImageView>
       <TableView fx:id="doctorTable" layoutX="359.0" layoutY="381.0" opacity="0.82" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="370.0">
@@ -126,7 +126,7 @@
       </HBox>
       <ImageView fx:id="searchSymbolPicture" fitHeight="41.0" fitWidth="41.0" layoutX="943.0" layoutY="96.0">
          <image>
-            <Image url="@MapViewer/magnifying_glass.png" />
+            <Image url="@/icons/magnifying_glass.png" />
          </image>
       </ImageView>
    </children>
