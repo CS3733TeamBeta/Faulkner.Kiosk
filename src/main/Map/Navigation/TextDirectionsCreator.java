@@ -38,13 +38,16 @@ public class TextDirectionsCreator {
         MapNode fromNode = new MapNode();
         MapNode toNode = new MapNode();
 
+
+
         int intersectionsPassed = 0;
 
         //Add the first node to the textual directions
         if (vFlag) {
             tempTextDirection = ("Start at the Kiosk. (Node " + listNodes.get(0).getNodeID() + ")");
         } else {
-            tempTextDirection =("Start at the Kiosk, facing " + Guidance.numToDirection(kioskDirection));
+            tempTextDirection = ("Start facing the Kiosk");
+            //tempTextDirection =("Start by turning towards the Kiosk");
         }
         tempDirectionSteps.add(new DirectionStep(tempTextDirection, tempNodeEdges));
         tempTextDirection = "";
@@ -57,7 +60,7 @@ public class TextDirectionsCreator {
             fromNode = listNodes.get(i);
             toNode = listNodes.get(i+1);
 
-            double costConstant = 50; //Should be 25 in final
+            double costConstant = 25; //Should be 25 in the final
 
             if (vFlag) {
                 System.out.println("");
@@ -73,6 +76,8 @@ public class TextDirectionsCreator {
                 System.out.println("PrevDirection is " + prevDirection);
             }
 
+            System.out.println("previous direction was " + Guidance.numToDirection(prevDirection));
+
             int changeInDirection;
             //If direction is not in an elevator
             if (currentDirection < 9) {
@@ -83,14 +88,20 @@ public class TextDirectionsCreator {
                 //If you're on an elevator, your previous direction doesn't matter
                 changeInDirection = currentDirection;
                 //Presume the elevator passenger faces opposite the way they come in. Add 4 to previous direction, wraparound with modulo.
+                if (prevDirection > 8) {
+                    prevDirection = 8;
+                }
                 prevDirection = (prevDirection+4)%8;
             }
 
+
+            System.out.println("new Direction is " + Guidance.numToDirection(currentDirection));
             //Change the directionChange into a textual string
             String directionChangeString = Guidance.directionChangeToString(changeInDirection, vFlag);
+            System.out.println("Direction change is " + directionChangeString);
 
             if (directionChangeString.equals("Straight")) {
-                System.out.println("Passing an possible intersection");
+                System.out.println("Passing a possible intersection");
                 if (fromNode.getEdges().size() > 3) {
                     System.out.println("Passing a definite intersection");
                     System.out.println("fromNode has size of edges: " + fromNode.getEdges().size());
@@ -101,21 +112,25 @@ public class TextDirectionsCreator {
                 intersectionsPassed++;
             } else if (!directionChangeString.equals("Straight") && (!directionChangeString.equals("up")) && (!directionChangeString.equals("down"))) {
                 if(intersectionsPassed  == 0) {
-                    tempTextDirection = ("Go " + directionChangeString + " at the next intersection");
+                    if ((i == 0)  || fromNode.getType().toString().equals("Elevator")){
+                        tempTextDirection = ("Turn " + directionChangeString + " and proceed forward");
+                    } else {
+                            tempTextDirection = ("Take a " + directionChangeString + " at the next intersection");
+                    }
                     tempMapNodes.add(fromNode);
                     if (vFlag) {
                         tempTextDirection += (" ID: " + fromNode.getNodeID());
                     }
                 }
                 else if(intersectionsPassed == 1){
-                    tempTextDirection = ("After passing 1 intersection, turn " + directionChangeString);
+                    tempTextDirection = ("After passing 1 intersection, take a " + directionChangeString);
                     tempMapNodes.add(fromNode);
                     if (vFlag) {
                         tempTextDirection += (" at " + fromNode.getNodeID());
                     }
                 }
                 else{
-                    tempTextDirection = ("After passing " + intersectionsPassed + " intersections, turn " + directionChangeString);
+                    tempTextDirection = ("After passing " + intersectionsPassed + " intersections, take a " + directionChangeString);
                     tempMapNodes.add(fromNode);
                     if (vFlag) {
                         tempTextDirection += (" at " + fromNode.getNodeID());
@@ -124,14 +139,38 @@ public class TextDirectionsCreator {
                 }
                 intersectionsPassed = 0;
                 tempNodeEdges.add(fromNode.getEdgeTo(toNode));
-                //Adds "near" this or that to the string
-                boolean foundNearbyDestination = false;
-                for (NodeEdge e: toNode.getEdges()) {
-                    if (e.getOtherNode(toNode) instanceof Destination && !foundNearbyDestination) {
-                        foundNearbyDestination = true;
-                        tempTextDirection += " near " + ((Destination) e.getOtherNode(toNode)).getName();
+                String directionsRelativeToOtherNodes = "";
+                //check if the node we are at is a node with a name (IE, going through an office), and make sure that it's not the destination
+                if(fromNode instanceof Destination) {
+                    directionsRelativeToOtherNodes = " at " + ((Destination) fromNode).getName();
+                    intersectionsPassed = 0;
+                }
+                else {
+                    System.out.println("not a destination");
+                    double max = 70;
+                    // If a nearby node has a name use that
+                    for( NodeEdge e: fromNode.getEdges()) {
+                        MapNode potentialNeighbor = e.getOtherNode(fromNode);
+                        double distance = getDistanceBetweenNodes(fromNode,potentialNeighbor);
+                        if( (distance < max) && (potentialNeighbor instanceof Destination) ) {
+                            max = distance;
+                            // If the nearby node is the node you came from
+                            if(potentialNeighbor == listNodes.get(i - 1)) {
+                                directionsRelativeToOtherNodes = " away from ";
+                            }
+                            else if(potentialNeighbor == toNode) {
+                                directionsRelativeToOtherNodes = " towards ";
+                            }
+                            else{
+                                directionsRelativeToOtherNodes = " near ";
+                            }
+                            directionsRelativeToOtherNodes += ((Destination) potentialNeighbor).getName();
+                            intersectionsPassed = 0;
+                        }
                     }
                 }
+                tempTextDirection += directionsRelativeToOtherNodes;
+
                 //If there are nodes after this
                 if(listNodes.size() > i+4) {
                     System.out.println("It's greater");
@@ -149,19 +188,34 @@ public class TextDirectionsCreator {
                             //change in direction is the difference between directions
                             tempChangeInDirection = tempPrevDirection - tempCurrentDirection;
                         }
-                        if ((Math.abs(tempChangeInDirection) < 8) && !(Guidance.directionChangeToString(tempChangeInDirection, false).equals("Straight"))){
+                        if ((Math.abs(tempChangeInDirection) < 8) && !(Guidance.directionChangeToString(tempChangeInDirection, false).equals("Straight")) && (!tempToNode.getType().toString().equals("Elevator"))){
                             System.out.println("good change");
                             String tempDirectionChangeString = Guidance.directionChangeToString(tempChangeInDirection, vFlag);
-                            tempTextDirection += ", then immediately turn " + tempDirectionChangeString;
+                            tempTextDirection += ",\n then immediately take a " + tempDirectionChangeString;
                             tempMapNodes.add(tempFromNode);
                             tempNodeEdges.add(tempFromNode.getEdgeTo(tempToNode));
                             i++;
+                            intersectionsPassed = 0;
                         }
                     }
                 }
+
+                //replace stupid substring that sometimes gets generated
+                if(tempTextDirection.contains("at the next intersection at")){
+                    tempTextDirection = tempTextDirection.replace("at the next intersection at", "at");
+                    System.out.println(tempTextDirection);
+                }
+
                 tempDirectionSteps.add(new DirectionStep(tempTextDirection, tempNodeEdges));
                 tempNodeEdges = new LinkedList<>();
+                if (directionChangeString.equals("outside") || directionChangeString.equals("inside")) {
+                    tempDirectionFloorSteps.addLast(new DirectionFloorStep(fromNode.getMyFloor(), tempMapNodes, tempDirectionSteps));
+                    tempDirectionSteps = new LinkedList<>();
+                    tempMapNodes = new LinkedList<>();
+                    intersectionsPassed = 0;
+                }
             } else if (directionChangeString.equals("up") || directionChangeString.equals("down")) {
+                System.out.println("Hit an elevator");
                 if(intersectionsPassed == 0){
                     tempTextDirection = ("Take an elevator at the next intersection from floor " + fromNode.getMyFloor().getFloorNumber() + " " + directionChangeString + " to floor " + toNode.getMyFloor().getFloorNumber());
                     tempMapNodes.add(fromNode);
@@ -222,6 +276,14 @@ public class TextDirectionsCreator {
 
         return tempDirectionFloorSteps;
 
+    }
+
+    private double getDistanceBetweenNodes(MapNode a, MapNode b){
+        double currentNodeX = a.getPosX();
+        double currentNodeY = a.getPosY();
+        double endNodeX = b.getPosX();
+        double endNodeY = b.getPosY();
+        return Math.sqrt(Math.pow(endNodeX - currentNodeX, 2) + Math.pow(endNodeY - currentNodeY, 2));
     }
 
 

@@ -8,12 +8,16 @@ import java.io.File;
 import java.util.LinkedList;
 import java.awt.Point;
 
+import main.Map.Entity.*;
+import main.Application.Exceptions.*;
+
 import main.Map.Entity.NodeType;
 import main.Application.Exceptions.*;
 import main.Map.Entity.Floor;
 import main.Map.Entity.MapNode;
 import main.Map.Entity.NodeEdge;
 import javafx.embed.swing.SwingFXUtils;
+import sun.security.krb5.internal.crypto.Des;
 
 import javax.imageio.ImageIO;
 
@@ -25,7 +29,10 @@ public class Guidance extends Path {
     //This is the direction that the user of the kiosk starts off facing.
     private int kioskDirection = 3;
     private int scaleFactor = 1;
-    private int borderSize = 100;
+
+    private int desiredWidth = 375;
+    private int desiredHeight = 375;
+    private int boarderSize = 100;
 
     BufferedImage nodeImg = null;
     BufferedImage bathImg= null;
@@ -34,6 +41,9 @@ public class Guidance extends Path {
     BufferedImage foodImg = null;
     BufferedImage infoImg = null;
     BufferedImage storeImg = null;
+    BufferedImage currentKioskImg = null;
+    BufferedImage kioskImg = null;
+
 
     LinkedList<DirectionFloorStep> floorSteps;
 
@@ -49,6 +59,9 @@ public class Guidance extends Path {
             foodImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/food.png")), imgRescaleSize, imgRescaleSize, true);
             infoImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/info.png")), imgRescaleSize, imgRescaleSize, true);
             storeImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/store.png")), imgRescaleSize, imgRescaleSize, true);
+            currentKioskImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/star.png")), imgRescaleSize, imgRescaleSize, true);
+            kioskImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/kiosk.png")), imgRescaleSize, imgRescaleSize, true);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -139,7 +152,7 @@ public class Guidance extends Path {
                 stringDirection = "hard right";
                 break;
             case -4:
-                stringDirection = "U-Turn";
+                stringDirection = "around";
                 break;
             case -3:
                 stringDirection = "hard left";
@@ -163,7 +176,7 @@ public class Guidance extends Path {
                 stringDirection = "hard right";
                 break;
             case 4:
-                stringDirection = "U-Turn";
+                stringDirection = "around";
                 break;
             case 5:
                 stringDirection = "hard left";
@@ -179,6 +192,12 @@ public class Guidance extends Path {
                 break;
             case 10:
                 stringDirection = "down";
+                break;
+            case 11:
+                stringDirection = "outside";
+                break;
+            case 12:
+                stringDirection = "inside";
                 break;
             default:
                 //If it reaches this, something quite wrong
@@ -266,6 +285,12 @@ public class Guidance extends Path {
             case 10:
                 textDirection = "Down";
                 break;
+            case 11:
+                textDirection = "Outside";
+                break;
+            case 12:
+                textDirection = "Inside";
+                break;
             default:
                 textDirection = "Big Error";
                 break;
@@ -305,6 +330,12 @@ public class Guidance extends Path {
                 break;
             case "Down":
                 num = 10;
+                break;
+            case "Outside":
+                num = 11;
+                break;
+            case "Inside":
+                num = 12;
                 break;
             default:
                 num = 100;
@@ -357,6 +388,16 @@ public class Guidance extends Path {
                 Graphics2D g = combined.createGraphics();
                 g.drawImage(SwingFXUtils.fromFXImage(realBaseImage, null), 0, 0, null);
                 double constant = 2.175;
+/*                int w = realBaseImage.getWidth();
+                int h = realBaseImage.getHeight();
+                BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+                System.out.println("ERE");
+                // paint both images, preserving the alpha channels
+                Graphics2D g = combined.createGraphics();
+                g.drawImage(realBaseImage, 0, 0, null);
+                System.out.println("THERE");
+                double constant = 2.185;
+*/
                 //add edges to the map
                 g.setStroke(new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
                 g.setColor(Color.RED);
@@ -365,51 +406,55 @@ public class Guidance extends Path {
                 //System.out.println("Height: " + offsetHeight + " Width: " + offsetWidth);
                 for (NodeEdge e : this.pathEdges){
                     //check the edge to see if it's on the current floor
+                    boolean edgeIsInThisFloorStep = false;
+                    for (DirectionStep aDirectionStep: d.getDirectionSteps()) {
+                        if (aDirectionStep.getStepEdges().contains(e)) {
+                            edgeIsInThisFloorStep = true;
+                        }
+                    }
                     if(e.getSource().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()
-                            && e.getTarget().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()){
+                            && e.getTarget().getMyFloor().getFloorNumber() == d.getFloor().getFloorNumber()
+                            && edgeIsInThisFloorStep){
                         //get the nodes to draw the lines between
                         MapNode targetNode = e.getTarget();
                         MapNode sourceNode = e.getSource();
 
-                        int targetIsConnector = 0;
-                        int sourceIsConnector = 0;
 
-                        if (targetNode.getType().toString().equals("connector")) {
-                            targetIsConnector = 12;
-                        }
-                        if (sourceNode.getType().toString().equals("connector")) {
-                            sourceIsConnector = 12;
-                        }
-                        g.drawLine((int)Math.round(targetNode.getPosX() * constant) + (targetIsConnector + this.iconToImg(targetNode.getType()).getWidth()/2), (int)Math.round(targetNode.getPosY() * constant) + (targetIsConnector + this.iconToImg(targetNode.getType()).getHeight()/2),
-                                (int)Math.round(sourceNode.getPosX() * constant) + (sourceIsConnector + this.iconToImg(sourceNode.getType()).getWidth()/2), (int)Math.round(sourceNode.getPosY() * constant) + (sourceIsConnector + this.iconToImg(sourceNode.getType()).getHeight()/2));
+                        g.drawLine((int)Math.round(targetNode.getPosX() * constant) + (this.iconToImg(targetNode.getType()).getWidth()/2), (int)Math.round(targetNode.getPosY() * constant) + (this.iconToImg(targetNode.getType()).getHeight()/2),
+                                (int)Math.round(sourceNode.getPosX() * constant) + (this.iconToImg(sourceNode.getType()).getWidth()/2), (int)Math.round(sourceNode.getPosY() * constant) + (this.iconToImg(sourceNode.getType()).getHeight()/2));
+
+
                     }
                 }
 
                 //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
-                    int isConnector = 0;
-                    System.out.println("X: " + Math.round(n.getPosX()) *constant + " Y; " +  ((int) Math.round(n.getPosY()))*constant);
-                    String thisIconType = n.getType().toString();
-                    System.out.println("This is an icon of type: " + thisIconType.toString());
+                    if (d.getNodesForThisFloor().contains(n) && !(n.getType().toString().equals("Connector"))) {
+                        System.out.println("X: " + Math.round(n.getPosX()) * constant + " Y; " + ((int) Math.round(n.getPosY())) * constant);
+                        String thisIconType = n.getType().toString();
+                        System.out.println("This is an icon of type: " + thisIconType.toString());
 
-                    BufferedImage currentImage = this.iconToImg(n.getType());
+                        BufferedImage currentImage = this.iconToImg(n.getType());
 
-                    if (n.getType().toString().equals("connector")) {
-                        isConnector = 12;
+
+                        g.drawImage(currentImage, (int) (Math.round(n.getPosX()) * constant), (int) (Math.round(n.getPosY()) * constant), null);
+                        if(n instanceof Destination){
+                            String s = ((Destination) n).getName();
+                            g.setColor(Color.BLACK);
+                            g.drawString(s, (int)(Math.round(n.getPosX()) * constant), (int) (Math.round(n.getPosY()) * constant));
+                        }
                     }
-
-                    g.drawImage(currentImage, (int) (Math.round(n.getPosX())*constant + isConnector), (int)(Math.round(n.getPosY())*constant + isConnector), null);
                 }
 
                 // Save as new image
-                LinkedList<Point> startAndEnd = findParemeters(this.pathNodes, d.getFloor().getFloorNumber());
+                LinkedList<Point> startAndEnd = findParemeters(d.getNodesForThisFloor(), d.getFloor().getFloorNumber());
                 Point startPoint = startAndEnd.getFirst();
                 Point endPoint = startAndEnd.getLast();
 
-                int scaledStartX = (int)(startPoint.x * constant) - borderSize + offsetWidth;
-                int scaledStartY = (int)(startPoint.y * constant) - borderSize + offsetHeight;
-                int scaledEndX = (int)(endPoint.x * constant) + borderSize + offsetWidth;
-                int scaledEndY = (int)(endPoint.y * constant) + borderSize + offsetHeight;
+                int scaledStartX = (int)(startPoint.x * constant) - boarderSize + offsetWidth;
+                int scaledStartY = (int)(startPoint.y * constant) - boarderSize + offsetHeight;
+                int scaledEndX = (int)(endPoint.x * constant) + boarderSize + offsetWidth;
+                int scaledEndY = (int)(endPoint.y * constant) + boarderSize + offsetHeight;
 
                 if(scaledEndX > combined.getWidth()){
                     scaledEndX = combined.getWidth();
@@ -423,14 +468,33 @@ public class Guidance extends Path {
                 if(scaledStartY < 0){
                     scaledStartY = 0;
                 }
-                System.out.println("starting with: " + scaledStartX + " " + scaledStartY);
-                System.out.println("ending with: " + scaledEndX + " " + scaledEndY);
                 BufferedImage croppedImage = cropImage(combined,scaledStartX, scaledStartY, scaledEndX ,scaledEndY );
-                int resizedScaleWidthFactor = croppedImage.getWidth() * scaleFactor / (scaledEndX - scaledStartX);
-                int resizedScaleHeightFactor = croppedImage.getHeight() * scaleFactor / (scaledEndY - scaledStartY);
-                System.out.println("scaled height: " + resizedScaleHeightFactor);
-                System.out.println("scaled width: " + resizedScaleWidthFactor);
-                BufferedImage resizedVersion = createResizedCopy(croppedImage, croppedImage.getWidth()/resizedScaleWidthFactor, croppedImage.getHeight()/resizedScaleHeightFactor, true);
+                float newX;
+                float newY;
+                int oldX = (scaledEndX - scaledStartX);
+                int oldY = (scaledEndY - scaledStartY);
+                System.out.println("OLD X: " + oldX);
+                System.out.println("OLD Y: " + oldY);
+                float R = (float)oldX/(float)oldY;
+                System.out.println("R is: " + R);
+                if(R > desiredWidth/desiredHeight){
+                    System.out.println("Height smaller than Width");
+                    newX = desiredWidth;
+                    newY = desiredWidth/R;
+                }
+                else if(R < desiredWidth/desiredHeight){
+                    System.out.println("Width smaller than Height");
+                    newX = desiredHeight*R;
+                    newY = desiredHeight;
+                }
+                else{
+                    System.out.println("Height and width are the same");
+                    newY = desiredHeight;
+                    newX = desiredWidth;
+                }
+                System.out.println("NEW X: " + newX);
+                System.out.println("NEW Y: " + newY);
+                BufferedImage resizedVersion = createResizedCopy(croppedImage, (int)newX, (int)newY, true);
                 System.out.println("Writing image to combined" + i + ".png");
                 ImageIO.write(resizedVersion, "PNG", new File("combined" + i + ".png"));
             } catch (Exception e) {
@@ -443,39 +507,44 @@ public class Guidance extends Path {
 
     public BufferedImage iconToImg(NodeType t) {
         BufferedImage currentImage;
-        String typeString = t.toString();
-        switch (typeString) {
-            case "connector":
-                currentImage = nodeImg;
-                break;
-            case "store":
-                currentImage = storeImg;
-                break;
-            case "elevator":
-                currentImage = elevatorImg;
-                break;
-            case "food":
-                currentImage = foodImg;
-                break;
-            case "info":
-                currentImage = infoImg;
-                break;
-            case "department":
-                currentImage = docImg;
-                break;
-            case "bathroom":
-                currentImage = bathImg;
-                break;
-            default:
-                currentImage = null;
-                break;
+        NodeType typeOfNode = t;
+        if(t == NodeType.Connector){
+            currentImage = nodeImg;
+        }
+        else if(t == NodeType.Store){
+            currentImage = storeImg;
+        }
+        else if(t == NodeType.Elevator){
+            currentImage = elevatorImg;
+        }
+        else if(t == NodeType.Food){
+            currentImage = foodImg;
+        }
+        else if(t == NodeType.Info){
+            currentImage = infoImg;
+        }
+        else if(t == NodeType.Department){
+            currentImage = docImg;
+        }
+        else if(t == NodeType.Restroom){
+            currentImage = bathImg;
+        }
+        else if(t == NodeType.CurrentKiosk){
+            currentImage = currentKioskImg;
+        }
+        else if(t == NodeType.Kiosk){
+            currentImage = kioskImg;
+        }
+        else{
+            System.out.println("ERROR. NO NODE IMAGE SET. LOOKING FOR: " + t.toString());
+            currentImage = null;
         }
         return currentImage;
     }
 
     public boolean sendEmailGuidance(String address) {
         String subjectLine;
-        String directionLine = "<H2><center> You have chosen to navigate to " + pathNodes.get(pathNodes.size() - 1).getNodeID() + ".</center></H2>" + "<H3>";
+        String directionLine = "<H1><center> You have chosen to navigate to " + (pathNodes.get(pathNodes.size() - 1)).toString() + ".</center></H1>" + "<H4>";
         subjectLine = "Your Directions are Enclosed - Faulkner Hospital";
 
         int stepNumber = 1;
@@ -487,14 +556,10 @@ public class Guidance extends Path {
                 stepNumber++;
             }
         }
-        directionLine += "</H3>";
+        directionLine += "</H4>";
 
         saveStepImages();
 
-        if (Math.random() < .25) {
-            System.out.println("Egg called");
-            directionLine += "<a href=\"https://youtu.be/dQw4w9WgXcQ\">Some music for your enjoyement, hospital-goer.</a>";
-        }
 
         try {
             SendEmail e = new SendEmail(address, subjectLine, directionLine, true, floorSteps.size());
@@ -510,6 +575,14 @@ public class Guidance extends Path {
                                     boolean preserveAlpha)
     {
         System.out.println("resizing...");
+        if(scaledHeight == 0) {
+            System.out.println("desired height is 0?");
+            scaledHeight = desiredHeight;
+        }
+        if(scaledWidth == 0){
+            System.out.println("desired width is 0?");
+            scaledWidth = desiredWidth;
+        }
         int imageType = preserveAlpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
         BufferedImage scaledBI = new BufferedImage(scaledWidth, scaledHeight, imageType);
         Graphics2D g = scaledBI.createGraphics();
