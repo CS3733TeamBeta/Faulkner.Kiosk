@@ -31,12 +31,19 @@ task compile {
     }
 }
 
+
 repositories {
     mavenCentral()
     mavenLocal()
 
     maven {
         url 'https://repo.gradle.org/gradle/plugins-releases'
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'main.Application.ApplicationController'
     }
 }
 
