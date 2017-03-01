@@ -3,6 +3,7 @@ package Map.Navigation;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
+import javax.imageio.ImageIO;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -10,6 +11,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Properties;
@@ -22,6 +24,8 @@ public class SendEmail {
     static final String username = "faulknerkioskdirections@gmail.com";
     static final String password = "FaulkPassword";
     String recipient;
+
+    private static final int PIX_PER_LINE_BREAK = 15;
 
     String subject;
     LinkedList<DirectionFloorStep> floorSteps;
@@ -76,18 +80,31 @@ public class SendEmail {
             String imageDirectionsPortion = "";
 
             String messageText = "";
-            messageText +="<H1><center> You have chosen to navigate to " + floorSteps.getLast().getNodesForThisFloor().getLast().toString()+ ".</center></H1>" + "<H4>";
+            messageText +="<H1><center> You have chosen to navigate to " + floorSteps.getLast().getNodesForThisFloor().getLast().toString()+ ".</center></H1><br>" + "<H4>";
 
             for (int i = 1; i <= numDirectionFloors; i++) {
                 messageText += "<p>";
-                messageText += "<img src =\"cid:imageDirections" + i + "\" height = \"300\" width = \"300\" align = \"left\">" ;
+                messageText += "<img src =\"cid:imageDirections" + i + "\" align = \"left\">" ;
+                int desiredNumOfLineBreaks = 0;
+                try {
+                    BufferedImage bufferedImage = ImageIO.read(new File( "combined" + i + ".png"));
+                    desiredNumOfLineBreaks = bufferedImage.getHeight()/PIX_PER_LINE_BREAK;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 int stepNumber = 1;
                 System.out.println("There are " + floorSteps.get(0).getDirectionSteps().size() + " direction steps in this floorStep");
-                for(DirectionStep s: floorSteps.get(i-1).getDirectionSteps()) {
+                int j;
+                for (j = 0; j < floorSteps.get(i-1).getDirectionSteps().size(); j++) {
                     messageText += "<b>" + stepNumber + ":</b> ";
-                    messageText += s;
+                    messageText += floorSteps.get(i-1).getDirectionSteps().get(j);
                     messageText += "<br>";
                     stepNumber++;
+                }
+
+                while ((j+1) < desiredNumOfLineBreaks) {
+                    messageText += "<br>";
+                    j++;
                 }
 
                 messageText += "</p><br>";
