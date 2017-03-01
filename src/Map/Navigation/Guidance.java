@@ -411,17 +411,9 @@ public class Guidance extends Path {
                         MapNode targetNode = e.getTarget();
                         MapNode sourceNode = e.getSource();
 
-                        int targetIsConnector = 0;
-                        int sourceIsConnector = 0;
 
-                        if (targetNode.getType().toString().equals("connector")) {
-                            targetIsConnector = 12;
-                        }
-                        if (sourceNode.getType().toString().equals("connector")) {
-                            sourceIsConnector = 12;
-                        }
-                        g.drawLine((int)Math.round(targetNode.getPosX() * constant) + (targetIsConnector + this.iconToImg(targetNode.getType()).getWidth()/2), (int)Math.round(targetNode.getPosY() * constant) + (targetIsConnector + this.iconToImg(targetNode.getType()).getHeight()/2),
-                                (int)Math.round(sourceNode.getPosX() * constant) + (sourceIsConnector + this.iconToImg(sourceNode.getType()).getWidth()/2), (int)Math.round(sourceNode.getPosY() * constant) + (sourceIsConnector + this.iconToImg(sourceNode.getType()).getHeight()/2));
+                        g.drawLine((int)Math.round(targetNode.getPosX() * constant) + (this.iconToImg(targetNode.getType()).getWidth()/2), (int)Math.round(targetNode.getPosY() * constant) + (this.iconToImg(targetNode.getType()).getHeight()/2),
+                                (int)Math.round(sourceNode.getPosX() * constant) + (this.iconToImg(sourceNode.getType()).getWidth()/2), (int)Math.round(sourceNode.getPosY() * constant) + (this.iconToImg(sourceNode.getType()).getHeight()/2));
 
 
                     }
@@ -430,18 +422,14 @@ public class Guidance extends Path {
                 //add nodes to the map
                 for (MapNode n: d.nodesForThisFloor) {
                     if (d.getNodesForThisFloor().contains(n) && !(n.getType().toString().equals("Connector"))) {
-                        int isConnector = 0;
                         System.out.println("X: " + Math.round(n.getPosX()) * constant + " Y; " + ((int) Math.round(n.getPosY())) * constant);
                         String thisIconType = n.getType().toString();
                         System.out.println("This is an icon of type: " + thisIconType.toString());
 
                         BufferedImage currentImage = this.iconToImg(n.getType());
 
-                        if (n.getType().toString().equals("connector")) {
-                            isConnector = 12;
-                        }
 
-                        g.drawImage(currentImage, (int) (Math.round(n.getPosX()) * constant + isConnector), (int) (Math.round(n.getPosY()) * constant + isConnector), null);
+                        g.drawImage(currentImage, (int) (Math.round(n.getPosX()) * constant), (int) (Math.round(n.getPosY()) * constant), null);
                     }
                 }
 
