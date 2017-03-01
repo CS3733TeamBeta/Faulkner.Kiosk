@@ -216,6 +216,10 @@ public class AdminMapBoundary extends MapBoundary
         }
     }
 
+    public void setHospitalAlgo(String algo) {
+        h.setAlgorithm(algo.toLowerCase());
+    }
+
     /**
      * Set Current kiosk
      */

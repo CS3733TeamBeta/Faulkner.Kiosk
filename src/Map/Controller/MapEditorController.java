@@ -839,6 +839,10 @@ public class MapEditorController extends MapController
 	public void saveInfoAndExit() throws IOException, SQLException
 	{
 		//DataCache.getInstance().save();
+
+		System.out.println("value for selectAlgo is " + selectAlgo.getValue());
+
+		boundary.getHospital().setAlgorithm(selectAlgo.getValue());
 		
 		ApplicationController.getController().switchToUserMapView();
 	}
