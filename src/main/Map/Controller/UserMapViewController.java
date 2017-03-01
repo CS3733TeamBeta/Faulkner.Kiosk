@@ -1,14 +1,18 @@
 package main.Map.Controller;
 
+import javafx.animation.SequentialTransition;
+import javafx.scene.control.Label;
+import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import main.Application.ApplicationController;
 import main.Directory.Doctor;
 import main.Map.Boundary.MapBoundary;
+import main.Map.Entity.*;
+import main.Map.Navigation.DirectionFloorStep;
+import main.Map.Navigation.DirectionStep;
 import main.Map.Navigation.Guidance;
 import main.Application.Exceptions.PathFindingException;
-import main.Map.Entity.Destination;
-import main.Map.Entity.Floor;
-import main.Map.Entity.MapNode;
-import main.Map.Entity.NodeEdge;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import javafx.collections.FXCollections;
@@ -38,6 +42,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -400,28 +405,51 @@ public class UserMapViewController extends MapController
 
     public void playDirections(Guidance g)
     {
-        //for(FloorStep floorStep: g.getFloorSteps()
-        //{
-       /* for(DirectionStep step : g.getSteps())
+        for (DirectionFloorStep floorStep : g.getFloorSteps())
         {
             SequentialTransition stepDrawing = new SequentialTransition();
 
-            //for(edge in step)//
-            /*{
-                Timeline tL = new Timeline();
-                Line l = new Line();
-                KeyValue moveLineY = new KeyValue(l.endXProperty(), end_x_of_edge);
-                KeyValue moveLineX = new KeyValue(l.endYProperty(), end_y_of_edge);
+            MapNode n = g.getPathNodes().iterator().next();
 
-                KeyFrame kf = new KeyFrame((Duration.millis(500)), moveLineX, moveLineY);
+            for (DirectionStep step : floorStep.getDirectionSteps())
+            {
+                for (NodeEdge edge : step.getStepEdges())
+                {
+                    if(n.getType().equals(NodeType.Connector))
+                    {
+                        System.out.println("Found connector");
+                    }
 
-                tL.getKeyFrames().add(kf);
-                stepDrawing.getChildren().add(tL);
-             }*/
+                    Timeline tL = new Timeline();
+                    Line l = new Line();
+                    l.setStrokeWidth(5);
+                    l.setStroke(Color.RED);
+                    l.toBack();
+                    mapImage.toBack();
 
-            //stepDrawing.play();
-           ////switch floors
-        //}
+                    mapItems.getChildren().add(l);
+
+                    l.setStartY(n.getPosY());
+                    l.setStartX(n.getPosX());
+                    l.setEndY(n.getPosY());
+                    l.setEndX(n.getPosX());
+
+                    KeyValue moveLineY = new KeyValue(l.endXProperty(), edge.getOtherNode(n).getPosX());
+                    KeyValue moveLineX = new KeyValue(l.endYProperty(), edge.getOtherNode(n).getPosY());
+
+                    KeyFrame kf = new KeyFrame((Duration.millis(500)), moveLineX, moveLineY);
+
+                    tL.getKeyFrames().add(kf);
+                    stepDrawing.getChildren().add(tL);
+
+                    n = edge.getOtherNode(n);
+                }
+                ////switch floors
+                //}
+            }
+
+            stepDrawing.play();
+        }
     }
 
     private void hideDirections()
@@ -510,6 +538,9 @@ public class UserMapViewController extends MapController
 
         showDirections();
         newRoute.printTextDirections();
+
+        playDirections(newRoute);
+
     }
 
     public void setStage(Stage s)

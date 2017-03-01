@@ -9,10 +9,8 @@ import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import main.Map.Controller.VisualBuilding;
 
-
 public class DragDropMain extends Application
 {
-
 	int offset = 200;
 	//@TODO  Add code to calculate offset
 
@@ -44,7 +42,7 @@ public class DragDropMain extends Application
 		floor.setTranslateY(200);
 		floor.setTranslateZ(50);
 
-		Image img = new Image(this.getClass().getResourceAsStream("../FloorMaps/1_thefirstfloor.png"));
+		Image img = new Image(this.getClass().getResourceAsStream("/map/FloorMaps/1_thefirstfloor.png"));
 
 		PhongMaterial material = new PhongMaterial(Color.WHITE);
 		material.setSpecularPower(10000);
