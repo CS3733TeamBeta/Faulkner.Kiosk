@@ -41,7 +41,7 @@ public class Floor extends Observable implements Comparable
         System.out.println("Getting image in floor: " + imageLocation);
         if(imageInfo==null)
         {
-            new ProxyImage("/FloorMaps/" + imageLocation);
+            imageInfo = new ProxyImage("/FloorMaps/" + imageLocation);
         }
 
         return imageInfo.getImage();
