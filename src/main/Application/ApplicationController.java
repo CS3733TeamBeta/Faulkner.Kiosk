@@ -58,6 +58,9 @@ public class ApplicationController extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        AutoResponder responder = new AutoResponder();
+        responder.startWatching();
+
         idle.initTimer();
 
         idle.setStageToMonitor(primaryStage);
