@@ -833,8 +833,8 @@ public class MapEditorController extends MapController
 	}
 
 	@FXML
-	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
+	public void onDirectoryEditorSwitch() throws IOException
 	{
-		//SceneSwitcher.switchToModifyDirectoryView(this.getStage(), model.getHospital());
+		ApplicationController.getController().switchToModifyDirectoryView();
 	}
 }
