@@ -17,6 +17,7 @@ import javafx.animation.Timeline;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.*;
@@ -63,6 +64,9 @@ public class MapEditorController extends MapController
 
 	@FXML
 	private JFXComboBox<Kiosk> kioskSelector;
+
+	@FXML
+	private JFXComboBox<String> selectAlgo;
 
 	NodeEdge drawingEdge;
 	Line drawingEdgeLine;
@@ -317,6 +321,16 @@ public class MapEditorController extends MapController
 		}
 		if(buildings != null) {
 			buildingSelector.setItems(FXCollections.observableArrayList(buildings));
+		}
+
+
+		LinkedList<String> algorithms = new LinkedList<>();
+		algorithms.add("Astar");
+		algorithms.add("Depthfirst");
+		algorithms.add("Breadthfirst");
+		algorithms.add("Random");
+		if(algorithms != null) {
+			selectAlgo.setItems(FXCollections.observableArrayList(algorithms));
 		}
 	}
 
@@ -825,7 +839,7 @@ public class MapEditorController extends MapController
 	public void saveInfoAndExit() throws IOException, SQLException
 	{
 		//DataCache.getInstance().save();
-
+		
 		ApplicationController.getController().switchToUserMapView();
 	}
 
