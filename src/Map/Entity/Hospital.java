@@ -1,7 +1,7 @@
 package Map.Entity;
 
 
-import Application.Database.DatabaseManager;
+import Application.ApplicationController;
 import Directory.Entity.Doctor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,13 +9,12 @@ import javafx.collections.ObservableList;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Observable;
 
 
 /**
   * Created by IanCJ on 1/29/2017.
   */
-public class Hospital extends Observable {
+public class Hospital{
     ObservableList<Building> buildings;
 
     private ObservableList<Doctor> doctors;
@@ -132,7 +131,7 @@ public class Hospital extends Observable {
         this.currentKiosk = kiosk;
 
         try {
-            new DatabaseManager().updateCurKiosk(kiosk);
+            ApplicationController.getCache().getDbManager().updateCurKiosk(kiosk);
         } catch (SQLException e) {
             e.printStackTrace();
         }

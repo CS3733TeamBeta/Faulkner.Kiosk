@@ -164,7 +164,7 @@ public class AdminMapBoundary extends MapBoundary
                     LinkEdge edge = new LinkEdge(nextNode, e);
                     e.addEdge(edge);
                     try {
-                        new DatabaseManager().addEdgeToDB(edge);
+                        ApplicationController.getCache().getDbManager().addEdgeToDB(edge);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
@@ -184,7 +184,7 @@ public class AdminMapBoundary extends MapBoundary
         nodesOnMap.remove(n);
         currentFloor.removeNode(n);
         try {
-            new DatabaseManager().delNodeFromDB(n);
+            ApplicationController.getCache().getDbManager().delNodeFromDB(n);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -211,7 +211,7 @@ public class AdminMapBoundary extends MapBoundary
 
         edges.remove(edge);
         try {
-            new DatabaseManager().delEdgeFromDB(edge);
+            ApplicationController.getCache().getDbManager().delEdgeFromDB(edge);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -235,7 +235,7 @@ public class AdminMapBoundary extends MapBoundary
         n.setPosX(movedTo.getX());
         n.setPosY(movedTo.getY());
         try {
-            new DatabaseManager().updateNode(n);
+            ApplicationController.getCache().getDbManager().updateNode(n);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -246,7 +246,7 @@ public class AdminMapBoundary extends MapBoundary
         {
             edge.updateCost();
             try {
-                new DatabaseManager().updateEdge(edge);
+                ApplicationController.getCache().getDbManager().updateEdge(edge);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
