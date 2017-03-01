@@ -19,7 +19,9 @@ public class ProxyImage {
     // Display image from associated file, create object for RealImage if necessary
     public Image getImage()
     {
+        System.out.println("getImage called, current filename is " + fileName);
         if(realImage == null) {
+            System.out.println("realImage is null");
             realImage = new Image(fileName);
         }
 

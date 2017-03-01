@@ -117,12 +117,18 @@ public class UserDirectionsPanel extends AnchorPane
     public void fillDirectionsList(DirectionFloorStep step)
     {
         directionsListView.getItems().clear();
+
+        for (DirectionStep aDirectionStep: step.getDirectionSteps()) {
+            Label l = new Label((aDirectionStep.toString()));
+            directionsListView.getItems().add(l);
+        }
+        /*
         for(DirectionFloorStep s : guidance.getSteps()) {
             for (DirectionStep aStep : s.getDirectionSteps()) {
                 Label l = new Label(aStep.toString());
                 directionsListView.getItems().add(l);
             }
-        }
+        } */
     }
 
     @FXML
@@ -134,10 +140,10 @@ public class UserDirectionsPanel extends AnchorPane
     @FXML
     void onNextButtonClicked(MouseEvent event)
     {
-        stepIndex++;
 
-        if(stepIndex<guidance.getSteps().size())
+        if((stepIndex) < guidance.getSteps().size()-1)
         {
+            stepIndex++;
             fillDirectionsList(guidance.getSteps().get(stepIndex));
             onStepChanged(guidance.getSteps().get(stepIndex));
         }
@@ -147,10 +153,10 @@ public class UserDirectionsPanel extends AnchorPane
     @FXML
     void onPreviousButtonClicked(MouseEvent event)
     {
-        stepIndex--;
 
-        if(stepIndex>0)
+        if((stepIndex) > 0 )
         {
+            stepIndex--;
             fillDirectionsList(guidance.getSteps().get(stepIndex));
             onStepChanged(guidance.getSteps().get(stepIndex));
         }

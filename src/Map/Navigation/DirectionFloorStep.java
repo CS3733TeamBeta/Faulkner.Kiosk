@@ -51,6 +51,10 @@ public class DirectionFloorStep {
             System.out.println("Nodes were null");
         }
     }
+
+    public LinkedList<MapNode> getNodesForThisFloor() {
+        return this.nodesForThisFloor;
+    }
     public Floor getFloor()
     {
         return floorOfTheseDirections;

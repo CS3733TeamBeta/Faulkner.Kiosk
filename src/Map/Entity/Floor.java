@@ -18,7 +18,7 @@ public class Floor extends Observable implements Comparable
     UUID floorID;
 
     MapNode kioskNode = null;
-    String imageLocation = "/FloorMaps/1_thefirstfloor.png"; //default floor image path
+    String imageLocation = "1_thefirstfloor.png"; //default floor image path
 
     ProxyImage imageInfo;
 
@@ -34,14 +34,14 @@ public class Floor extends Observable implements Comparable
     }
 
     public void initImage(){
-        imageInfo = new ProxyImage(imageLocation);
+        imageInfo = new ProxyImage("/FloorMaps/" + imageLocation);
     }
 
     public Image getImage(){
-
+        System.out.println("Getting image in floor: " + imageLocation);
         if(imageInfo==null)
         {
-            imageInfo = new ProxyImage(imageLocation);
+            imageInfo = new ProxyImage("/FloorMaps/" + imageLocation);
         }
 
         return imageInfo.getImage();

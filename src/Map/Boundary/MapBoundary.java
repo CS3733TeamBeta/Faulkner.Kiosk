@@ -1,10 +1,6 @@
 package Map.Boundary;
 
-import Map.Entity.Hospital;
-import Map.Entity.NodeType;
-import Map.Entity.Floor;
-import Map.Entity.MapNode;
-import Map.Entity.NodeEdge;
+import Map.Entity.*;
 import Application.Database.DataCache;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.collections.*;
@@ -22,6 +18,11 @@ public class MapBoundary extends Observable
 
     protected Floor currentFloor;
     private Floor kioskFloor;
+    private Building currentBuilding;
+
+    private Floor campusFloor;
+
+    private boolean firstLoad = true;
 
     MapNode kiosk;
 
@@ -50,7 +51,10 @@ public class MapBoundary extends Observable
         if(h.getCurrentKiosk()!=null)
         {
             kioskFloor = h.getCurrentKiosk().getMyFloor();
+            currentBuilding = kioskFloor.getBuilding();
         }
+        System.out.println(h.getCampusFloor().toString());
+        campusFloor = h.getCampusFloor();
     }
 
     public void setInitialFloor()
@@ -61,7 +65,11 @@ public class MapBoundary extends Observable
             {
                 changeFloor(h.getCurrentKiosk().getMyFloor());
             }
-            else changeFloor(h.getBuildings().iterator().next().getFloor(1));
+            else{
+                changeFloor(h.getBuildings().iterator().next().getFloor(1));
+            }
+
+            currentBuilding = currentFloor.getBuilding();
         }
         catch (Exception e)
         {
@@ -71,6 +79,14 @@ public class MapBoundary extends Observable
 
     public void changeFloor(Floor f)
     {
+        if(f.getFloorNumber()==1)
+        {
+            //currentFloor = campusFloor;
+        }
+        else
+        {
+            currentFloor = f;
+        }
         currentFloor = f;
 
         nodesOnMap.clear();
@@ -87,6 +103,16 @@ public class MapBoundary extends Observable
         notifyObservers(UpdateType.FloorChange);
     }
 
+    public void changeBuilding(Building b){
+        currentBuilding = b;
+
+        try {
+            changeFloor(campusFloor);
+        }catch(Exception e){
+            System.out.println("ERROR IN SWITCHING BUILDINGS");
+        }
+    }
+
     protected boolean shouldBeOnMap(MapNode n)
     {
         return (n.getType()!= NodeType.Connector);
@@ -100,12 +126,11 @@ public class MapBoundary extends Observable
     private int incrementFloor(int incAmount)
     {
         int nextFloorID = currentFloor.getFloorNumber() + incAmount;
-
         if(kioskFloor==null)
         {
             System.out.println("You have not specififed a kiosk");
         }
-        else if(nextFloorID<=kioskFloor.getBuilding().getFloors().size() &&( nextFloorID >0))
+        else if(nextFloorID<=currentBuilding.getFloors().size() &&( nextFloorID >0))
         {
             try
             {
@@ -115,7 +140,7 @@ public class MapBoundary extends Observable
                 }
                 else
                 {
-                    changeFloor(kioskFloor.getBuilding().getFloor(nextFloorID));
+                    changeFloor(currentBuilding.getFloor(nextFloorID));
                 }
 
                 return nextFloorID;
@@ -161,9 +186,17 @@ public class MapBoundary extends Observable
 
     }
 
+    public Floor getCampusFloor(){
+        return campusFloor;
+    }
+
     public Floor getCurrentFloor()
     {
         return currentFloor;
+    }
+
+    public Building getCurrentBuilding(){
+        return this.currentBuilding;
     }
 
     public ObservableSet<MapNode> mapElements()
