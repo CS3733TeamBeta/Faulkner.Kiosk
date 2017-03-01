@@ -46,7 +46,7 @@ public class CampusFloor extends Floor
 
             for(MapNode n: ground.getFloorNodes())
             {
-                super.addNode(n);
+                super.addNode(n, false); //make sure floor doesn't get set to campus floor
             }
         }
         catch (Exception e)
