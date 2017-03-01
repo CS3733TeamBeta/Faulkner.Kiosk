@@ -1,0 +1,65 @@
+
+.bathroom {
+	-fx-background-repeat: stretch;
+	-fx-background-size: 25 25;
+	-fx-background-position: center center;
+	-fx-background-image: url("../icons/bathroom.png");
+}
+
+.doctor {
+	-fx-background-repeat: stretch;
+	-fx-background-size: 25 25;
+	-fx-background-position: center center;
+	-fx-background-image: url("../icons/doctor.png");
+}
+
+.elevator {
+	-fx-background-repeat: stretch;
+	-fx-background-size: 25 25;
+	-fx-background-position: center center;
+	-fx-background-image: url("../icons/elevator.png");
+}
+
+.food {
+	-fx-background-repeat: stretch;
+	-fx-background-size: 25 25;
+	-fx-background-position: center center;
+	-fx-background-image: url("../icons/food.png");
+}
+
+.store{
+	-fx-background-repeat: stretch;
+	-fx-background-size: 25 25;
+	-fx-background-position: center center;
+	-fx-background-image: url("../icons/store.png");
+}
+
+.info {
+	-fx-background-repeat: stretch;
+	-fx-background-size: 25 25;
+	-fx-background-position: center center;
+	-fx-background-image: url("../icons/info.png");
+}
+
+.connector {
+	-fx-background-repeat: stretch;
+	-fx-background-position: center center;
+	-fx-background-image: url("../icons/blank2.png");
+	-fx-background-size: 10 10;
+}
+
+.kiosk
+{
+	-fx-background-repeat: stretch;
+	-fx-background-size: 25 25;
+	-fx-background-position: center center;
+	-fx-background-image: url("../icons/kiosk.png");
+}
+
+.CurrentKiosk
+{
+	-fx-background-repeat: stretch;
+	-fx-background-size: 25 25;
+	-fx-background-position: center center;
+	-fx-background-image: url("../icons/star.png");
+}

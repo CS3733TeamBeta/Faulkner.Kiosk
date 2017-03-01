@@ -1,13 +1,13 @@
 package test.java;
 
-import Map.Entity.Hospital;
-import Map.Navigation.Guidance;
-import Map.Navigation.Path;
-import Application.Exceptions.PathFindingNoPathException;
-import Map.Entity.Building;
-import Map.Entity.Floor;
-import Map.Entity.MapNode;
-import Map.Entity.NodeEdge;
+import main.Map.Entity.Hospital;
+import main.Map.Navigation.Guidance;
+import main.Map.Navigation.Path;
+import main.Application.Exceptions.PathFindingNoPathException;
+import main.Map.Entity.Building;
+import main.Map.Entity.Floor;
+import main.Map.Entity.MapNode;
+import main.Map.Entity.NodeEdge;
 import junit.framework.TestCase;
 
 import java.util.LinkedList;
@@ -182,12 +182,11 @@ public class PathFindingTest extends TestCase{
 
     public void testGuidance() {
         try {
-            g1 = new Guidance(nodeT, nodeH, false);
-            g2 = new Guidance(nodeA, nodeL, true);
-            g2.printTextDirections();
+            g2 = new Guidance(nodeA, nodeL, false);
+            g2.printTextDirections(true);
             System.out.println("line break");
-            System.out.println("Nodes in first step are: ");
-            g2.getTextDirections().getFirst();
+            //System.out.println("Nodes in first step are: ");
+            //g2.getFloorSteps().getFirst();
             assertTrue(true);
        } catch(Exception e) {
             fail("Threw unexpected exception in testGuidance");

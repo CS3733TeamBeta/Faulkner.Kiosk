@@ -1,12 +1,12 @@
 package test.java;
 
-import Map.Entity.Hospital;
-import Map.Navigation.Guidance;
-import Map.Navigation.Path;
-import Map.Entity.Building;
-import Map.Entity.Floor;
-import Map.Entity.MapNode;
-import Map.Entity.NodeEdge;
+import main.Map.Entity.Hospital;
+import main.Map.Navigation.Guidance;
+import main.Map.Navigation.Path;
+import main.Map.Entity.Building;
+import main.Map.Entity.Floor;
+import main.Map.Entity.MapNode;
+import main.Map.Entity.NodeEdge;
 import junit.framework.TestCase;
 
 
