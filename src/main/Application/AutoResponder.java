@@ -15,6 +15,9 @@ public class AutoResponder
         inbox.addReceivedHandler(e->
         {
          System.out.println(e.getContent());
+         ///handle receiving here... find the right mapnode from the content,
+            // geenrate the text generations to send back,
+            //send an email to the sender
         });
     }
 
