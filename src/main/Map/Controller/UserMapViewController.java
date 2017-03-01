@@ -2,7 +2,9 @@ package main.Map.Controller;
 
 import main.Application.ApplicationController;
 import main.Directory.Doctor;
+import main.Map.Boundary.AdminMapBoundary;
 import main.Map.Boundary.MapBoundary;
+import main.Map.Boundary.UserMapBoundary;
 import main.Map.Navigation.Guidance;
 import main.Application.Exceptions.PathFindingException;
 import main.Map.Entity.Destination;
@@ -133,10 +135,15 @@ public class UserMapViewController extends MapController
 
     BiMap<MapNode, Text> nodeTextMap;
 
+    private UserMapBoundary userMapBoundary;
+
     public UserMapViewController() throws Exception
     {
         super();
-        boundary = new MapBoundary(ApplicationController.getHospital());
+
+        userMapBoundary = new UserMapBoundary(ApplicationController.getHospital());
+        boundary = userMapBoundary;
+
         nodeTextMap = HashBiMap.create();
 
         initBoundary();
@@ -455,57 +462,6 @@ public class UserMapViewController extends MapController
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException
     {
-        if (newRoute != null) //hide stale path
-        {
-            for (NodeEdge n : newRoute.getPathEdges())
-            {
-                //   n.changeOpacity(0.0);
-                //  n.changeColor(Color.BLACK);
-            }
-        }
-
-        System.out.println("In path finding");
-        MapNode startPoint = boundary.getHospital().getCurrentKiosk();
-
-        if (startPoint == null)
-        {
-            System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
-            startPoint = boundary.getHospital().getCampusFloor().getFloorNodes().iterator().next();
-        }
-
-        if (endPoint == startPoint)
-        {
-            System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
-            return;//TODO add error message of some kind
-        }
-
-        try
-        {
-            newRoute = new Guidance(startPoint, endPoint, "North");
-        } catch (PathFindingException e)
-        {
-            return;//TODO add error message throw
-        }
-
-        /*for(NodeEdge n: newRoute.getPathEdges())
-        {
-          //  n.changeOpacity(1.0);
-            //n.changeColor(Color.RED);
-        }
-        /*
-        for(Building b : model.getHospital().getBuildings()) {
-            for(Floor f : b.getFloors()) {
-                for (NodeEdge edge : f.getFloorEdges()) {
-                    if (newRoute.getPathEdges().contains(edge)) {
-                        edge.changeOpacity(1.0);
-                        edge.changeColor(Color.RED);
-                    } else {
-                        edge.changeOpacity(0.0);
-                        edge.changeColor(Color.BLACK);
-                    }
-                }
-            }
-        }*/
         panel.fillGuidance(newRoute);
 
         showDirections();
