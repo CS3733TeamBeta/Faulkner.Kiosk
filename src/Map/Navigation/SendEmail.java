@@ -11,6 +11,7 @@ import javax.mail.internet.MimeMultipart;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Properties;
 
 //http://www.codejava.net/java-se/graphics/how-to-capture-screenshot-programmatically-in-java
@@ -23,16 +24,16 @@ public class SendEmail {
     String recipient;
 
     String subject;
-    String message;
+    LinkedList<DirectionFloorStep> floorSteps;
 
     int numDirectionFloors;
 
     boolean includeImage;
 
-    public SendEmail(String recipient, String subject, String message, boolean includeImage, int numDirectionFloors){
+    public SendEmail(String recipient, String subject, LinkedList<DirectionFloorStep> floorSteps, boolean includeImage, int numDirectionFloors){
         this.recipient = recipient;
         this.subject = subject;
-        this.message = message;
+        this.floorSteps = floorSteps;
         this.includeImage = includeImage;
         this.numDirectionFloors = numDirectionFloors;
         sendEmail();
@@ -74,16 +75,29 @@ public class SendEmail {
 
             String imageDirectionsPortion = "";
 
+            String messageText = "";
+            messageText +="<H1><center> You have chosen to navigate to " + floorSteps.getLast().getNodesForThisFloor().getLast().toString()+ ".</center></H1>" + "<H4>";
+
             for (int i = 1; i <= numDirectionFloors; i++) {
-                String tempString = "<img src =\"cid:imageDirections" + i + "\">" ;
-                imageDirectionsPortion = imageDirectionsPortion + tempString;
+                messageText += "<p>";
+                messageText += "<img src =\"cid:imageDirections" + i + "\" height = \"300\" width = \"300\" align = \"left\">" ;
+                int stepNumber = 1;
+                System.out.println("There are " + floorSteps.get(0).getDirectionSteps().size() + " direction steps in this floorStep");
+                for(DirectionStep s: floorSteps.get(i-1).getDirectionSteps()) {
+                    messageText += "<b>" + stepNumber + ":</b> ";
+                    messageText += s;
+                    messageText += "<br>";
+                    stepNumber++;
+                }
+
+                messageText += "</p><br>";
             }
 
 
             if (includeImage) {
-                htmlText = "<img src=\"cid:imageLogo\">" + this.message + imageDirectionsPortion;
+                htmlText = "<img src=\"cid:imageLogo\">" + messageText + imageDirectionsPortion;
             } else {
-                htmlText = "<img src=\"cid:imageLogo\">" + this.message;
+                htmlText = "<img src=\"cid:imageLogo\">" + messageText;
             }
 
             messageBodyPart.setContent(htmlText, "text/html");
