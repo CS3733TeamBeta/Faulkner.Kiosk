@@ -76,29 +76,9 @@ public class SendEmail {
 
             for (int i = 1; i <= numDirectionFloors; i++) {
                 String tempString = "<img src =\"cid:imageDirections" + i + "\">" ;
-               //tempString = "<tempString>" + "<body> <style>" + "body{background:#f2f7ff} </style>" + "<p>...</p> </body> </html>";
                 imageDirectionsPortion = imageDirectionsPortion + tempString;
             }
-            /*
-            for (int i = 1; i <= numDirectionFloors; i++) {
-                try {
-                    bimg = ImageIO.read(new File("combined" + i + ".png"));
-                    convertToJpg("combined" + i);
-                    width = bimg.getWidth();
-                    height = bimg.getHeight();
-                    bimg = ImageIO.read(new File("combined" + i + ".jpg"));
-                    encoding = SendEmail.encodeToString(bimg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
-                String tempString = "";
-                if (!isPhone) {
-                    tempString += "<img src =\"cid:imageDirections" + i + "\" width = \"" + width + "\" height = \"" + height + "\" border = \"0\" />";
-                }
-                //tempString += "<img src=\"data:image/jpg;base64," + encoding + "\" />" + htmlText;
-                imageDirectionsPortion = imageDirectionsPortion + tempString;
-            } */
 
             if (includeImage) {
                 htmlText = "<img src=\"cid:imageLogo\">" + this.message + imageDirectionsPortion;
