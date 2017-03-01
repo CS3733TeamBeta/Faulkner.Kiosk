@@ -1,12 +1,12 @@
 
 
-import Directory.AdminProfile;
-import Application.Exceptions.AddFoundException;
-import Application.Exceptions.RemoveNotFoundException;
-import Directory.Directory;
-import Directory.DoctorProfile;
-import Directory.RoomInfo;
-import Directory.RoomList;
+import main.Directory.AdminProfile;
+import main.Application.Exceptions.AddFoundException;
+import main.Application.Exceptions.RemoveNotFoundException;
+import main.Directory.Directory;
+import main.Directory.DoctorProfile;
+import main.Directory.RoomInfo;
+import main.Directory.RoomList;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
