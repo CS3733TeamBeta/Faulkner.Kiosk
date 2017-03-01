@@ -139,7 +139,6 @@ public class SendEmail {
                     messageBodyPart.setDataHandler(new DataHandler(fds));
                     messageBodyPart.setHeader("Content-ID", "<imageDirections" + i + ">");
 
-//                    multipart.addBodyPart("<aside>" + messageBodyPart + "</aside>"); //trying for an inline aside
                     multipart.addBodyPart(messageBodyPart);
                 }
             }
