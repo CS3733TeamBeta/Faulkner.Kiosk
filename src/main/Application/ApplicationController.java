@@ -25,12 +25,10 @@ public class ApplicationController extends Application
 
     DataCache dataCache;
 
-    protected static final String AdminPackage = "../Admin";
-    protected static final String UserPackage = "../User";
-    protected static final String AdminLoginViewPath = AdminPackage + "/AdminLoginView.fxml";
-    protected static final String ModifyDirectoryViewPath = AdminPackage + "/AdminDirectoryEditor.fxml";
-    protected static final String MapEditorViewPath = AdminPackage + "/MapBuilder/MapEditorView.fxml";
-    protected static final String UserMapViewerPath = UserPackage + "/UserMapView.fxml";
+    protected static final String AdminLoginViewPath = "/application/AdminLoginView.fxml";
+    protected static final String ModifyDirectoryViewPath = "/directory/AdminDirectoryEditor.fxml";
+    protected static final String MapEditorViewPath = "/map/MapEditorView.fxml";
+    protected static final String UserMapViewerPath = "/map/UserMapView.fxml";
 
     Stage primaryStage;
 
