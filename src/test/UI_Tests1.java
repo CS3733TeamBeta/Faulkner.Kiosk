@@ -1,13 +1,12 @@
 
 
-import Controller.Admin.AdminList;
-import Controller.Admin.AdminProfile;
-import Exceptions.AddFoundException;
-import Exceptions.RemoveNotFoundException;
-import Model.Directory;
-import Model.DoctorProfile;
-import Model.RoomInfo;
-import Model.RoomList;
+import main.Directory.AdminProfile;
+import main.Application.Exceptions.AddFoundException;
+import main.Application.Exceptions.RemoveNotFoundException;
+import main.Directory.Directory;
+import main.Directory.DoctorProfile;
+import main.Directory.RoomInfo;
+import main.Directory.RoomList;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -41,7 +40,7 @@ public class UI_Tests1 extends TestCase{
             fail("Password not found");
         }
 
-        AdminList testList = new AdminList();
+        /*AdminList testList = new AdminList();
         testList.addAdmin("testAdmin2", "testAdmin2");
         testList.addAdmin("testAdmin3", "testAdmin3");
 
@@ -57,7 +56,7 @@ public class UI_Tests1 extends TestCase{
             testList.changePassword("testAdmin3", "admin3", "testAdmin4");
         } catch (Exception e) {
             fail ("cant change password");
-        }
+        }*/
 
     }
 
