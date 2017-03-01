@@ -46,7 +46,8 @@ public class TextDirectionsCreator {
         if (vFlag) {
             tempTextDirection = ("Start at the Kiosk. (Node " + listNodes.get(0).getNodeID() + ")");
         } else {
-            tempTextDirection =("Start by turning towards the Kiosk");
+            tempTextDirection = ("Start facing the Kiosk");
+            //tempTextDirection =("Start by turning towards the Kiosk");
         }
         tempDirectionSteps.add(new DirectionStep(tempTextDirection, tempNodeEdges));
         tempTextDirection = "";
@@ -190,7 +191,7 @@ public class TextDirectionsCreator {
                         if ((Math.abs(tempChangeInDirection) < 8) && !(Guidance.directionChangeToString(tempChangeInDirection, false).equals("Straight")) && (!tempToNode.getType().toString().equals("Elevator"))){
                             System.out.println("good change");
                             String tempDirectionChangeString = Guidance.directionChangeToString(tempChangeInDirection, vFlag);
-                            tempTextDirection += ",\n then immediately take a" + tempDirectionChangeString;
+                            tempTextDirection += ",\n then immediately take a " + tempDirectionChangeString;
                             tempMapNodes.add(tempFromNode);
                             tempNodeEdges.add(tempFromNode.getEdgeTo(tempToNode));
                             i++;
