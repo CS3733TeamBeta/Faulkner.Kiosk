@@ -29,6 +29,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -55,9 +57,16 @@ public class UserMapViewController extends MapController
     int numClickBath = -1;
     int numClickHelp = -1;
 
+    double opacityWhenNotOnPath = 0.2;
+    double opacityWhenOnPath = 1.0;
+    Color edgeOnPathColor = Color.RED;
+    Color edgeNotOnPathColor = Color.BLACK;
+
     Floor kioskFloor;
 
     Guidance newRoute;
+
+    BiMap<Line, NodeEdge>  edgeEntityMap;
 
     @FXML
     AnchorPane mapPane;
@@ -138,6 +147,7 @@ public class UserMapViewController extends MapController
         super();
         boundary = new MapBoundary(ApplicationController.getHospital());
         nodeTextMap = HashBiMap.create();
+        edgeEntityMap = HashBiMap.create();
 
         initBoundary();
     }
@@ -380,6 +390,37 @@ public class UserMapViewController extends MapController
         curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
 
         panToCenter();
+
+        addEdgesToCurrentFloor();
+    }
+
+    private void addEdgesToCurrentFloor(){
+        for(MapNode n : boundary.getCurrentFloor().getFloorNodes()){
+            for(NodeEdge e : n.getEdges()){
+                if(!edgeEntityMap.values().contains(e)){
+                    addEdge(e);
+                    updateEdgeLine(e, edgeNotOnPathColor, opacityWhenNotOnPath);
+                }
+            }
+        }
+    }
+
+    private void removeEdgesFromFloor(){
+        for(MapNode n : boundary.getCurrentFloor().getFloorNodes()){
+            for(NodeEdge e : n.getEdges()){
+                if(edgeEntityMap.values().contains(e)){
+                    Line line = edgeEntityMap.inverse().get(e);
+                    mapItems.getChildren().remove(line);
+                    edgeEntityMap.remove(line, e);
+                }
+            }
+        }
+    }
+
+    private void removeNodesFromFloor(){
+        for(MapNode n : boundary.getCurrentFloor().getFloorNodes()){
+            removeMapNode(n);
+        }
     }
 
     private void directionPaneView()
@@ -459,8 +500,7 @@ public class UserMapViewController extends MapController
         {
             for (NodeEdge n : newRoute.getPathEdges())
             {
-                //   n.changeOpacity(0.0);
-                //  n.changeColor(Color.BLACK);
+                updateEdgeLine(n, edgeNotOnPathColor, opacityWhenNotOnPath);
             }
         }
 
@@ -487,25 +527,13 @@ public class UserMapViewController extends MapController
             return;//TODO add error message throw
         }
 
-        /*for(NodeEdge n: newRoute.getPathEdges())
-        {
-          //  n.changeOpacity(1.0);
-            //n.changeColor(Color.RED);
-        }
-        /*
-        for(Building b : model.getHospital().getBuildings()) {
-            for(Floor f : b.getFloors()) {
-                for (NodeEdge edge : f.getFloorEdges()) {
-                    if (newRoute.getPathEdges().contains(edge)) {
-                        edge.changeOpacity(1.0);
-                        edge.changeColor(Color.RED);
-                    } else {
-                        edge.changeOpacity(0.0);
-                        edge.changeColor(Color.BLACK);
-                    }
-                }
+        for (NodeEdge edge : edgeEntityMap.values()) {
+            if (newRoute.getPathEdges().contains(edge)) {
+                updateEdgeLine(edge, edgeOnPathColor, opacityWhenOnPath);
+            } else {
+                updateEdgeLine(edge, edgeNotOnPathColor, opacityWhenNotOnPath);
             }
-        }*/
+        }
         panel.fillGuidance(newRoute);
 
         showDirections();
@@ -515,6 +543,40 @@ public class UserMapViewController extends MapController
     public void setStage(Stage s)
     {
         primaryStage = s;
+    }
+
+    /**
+     * Called when a NodeEdge is added to the boundary
+     * @param edge the edge that was added
+     */
+    private void addEdge(NodeEdge edge)
+    {
+        Line line = new Line();
+        line.setStrokeWidth(5);
+
+        mapItems.getChildren().add(line);
+        line.toBack();
+        mapImage.toBack();
+
+        edgeEntityMap.put(line, edge);
+
+        line.setStroke(Color.RED);
+        MapNode source = edge.getSource();
+        MapNode target = edge.getTarget();
+
+        line.setStartX(source.getPosX());
+        line.setStartY(source.getPosY());
+
+        line.setEndX(target.getPosX());
+        line.setEndY(target.getPosY());
+    }
+
+    private void updateEdgeLine(NodeEdge edge, Color color, double opacity)
+    {
+        Line l = edgeEntityMap.inverse().get(edge);
+
+        l.setStroke(color);
+        l.setOpacity(opacity);
     }
 
     public void defaultProperty()
