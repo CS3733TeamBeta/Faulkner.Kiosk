@@ -21,7 +21,7 @@ public class Floor extends Observable implements Comparable
 
     //String imageLocation = "1_thefirstfloor.png"; //default floor image path
 
-    String imageLocation = "/map/FloorMaps/1_thefirstfloor.png"; //default floor image path
+    String imageLocation = "1_thefirstfloor.png"; //default floor image path
 
     ProxyImage imageInfo;
 
@@ -37,14 +37,14 @@ public class Floor extends Observable implements Comparable
     }
 
     public void initImage(){
-        imageInfo = new ProxyImage("/FloorMaps/" + imageLocation);
+        imageInfo = new ProxyImage("/map/FloorMaps/" + imageLocation);
     }
 
     public Image getImage(){
         System.out.println("Getting image in floor: " + imageLocation);
         if(imageInfo==null)
         {
-            imageInfo = new ProxyImage("/FloorMaps/" + imageLocation);
+            imageInfo = new ProxyImage("/map/FloorMaps/" + imageLocation);
         }
 
         return imageInfo.getImage();

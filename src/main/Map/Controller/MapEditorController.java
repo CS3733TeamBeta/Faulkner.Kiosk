@@ -337,7 +337,11 @@ public class MapEditorController extends MapController
 		}
 		if(buildings != null) {
 			buildingSelector.setItems(FXCollections.observableArrayList(buildings));
-			buildingSelector.setValue(boundary.getCurrentFloor().getBuilding().getName());
+			try {
+				buildingSelector.setValue(boundary.getCurrentFloor().getBuilding().getName());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
