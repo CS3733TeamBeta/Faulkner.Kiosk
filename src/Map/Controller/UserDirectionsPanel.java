@@ -141,7 +141,7 @@ public class UserDirectionsPanel extends AnchorPane
     void onNextButtonClicked(MouseEvent event)
     {
 
-        if((stepIndex) < guidance.getSteps().size())
+        if((stepIndex) < guidance.getSteps().size()-1)
         {
             stepIndex++;
             fillDirectionsList(guidance.getSteps().get(stepIndex));
@@ -154,7 +154,7 @@ public class UserDirectionsPanel extends AnchorPane
     void onPreviousButtonClicked(MouseEvent event)
     {
 
-        if((stepIndex) >0 )
+        if((stepIndex) > 0 )
         {
             stepIndex--;
             fillDirectionsList(guidance.getSteps().get(stepIndex));
