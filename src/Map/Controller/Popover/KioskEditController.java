@@ -35,7 +35,7 @@ public class KioskEditController extends AbstractPopupController{
     {
         kioskUnderEdit.setName(nameBox.getText());
         try {
-            new DatabaseManager().updateKiosk(kioskUnderEdit);
+            ApplicationController.getCache().getDbManager().updateKiosk(kioskUnderEdit);
         } catch (SQLException e) {
             e.printStackTrace();
         }
