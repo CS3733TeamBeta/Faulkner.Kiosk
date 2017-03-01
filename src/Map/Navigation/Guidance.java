@@ -35,6 +35,8 @@ public class Guidance extends Path {
     BufferedImage infoImg = null;
     BufferedImage storeImg = null;
     BufferedImage currentKioskImg = null;
+    BufferedImage kioskImg = null;
+
 
     LinkedList<DirectionFloorStep> floorSteps;
 
@@ -51,6 +53,8 @@ public class Guidance extends Path {
             infoImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/info.png")), imgRescaleSize, imgRescaleSize, true);
             storeImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/store.png")), imgRescaleSize, imgRescaleSize, true);
             currentKioskImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/star.png")), imgRescaleSize, imgRescaleSize, true);
+            kioskImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/kiosk.png")), imgRescaleSize, imgRescaleSize, true);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -515,6 +519,9 @@ public class Guidance extends Path {
         }
         else if(t == NodeType.CurrentKiosk){
             currentImage = currentKioskImg;
+        }
+        else if(t == NodeType.Kiosk){
+            currentImage = kioskImg;
         }
         else{
             System.out.println("ERROR. NO NODE IMAGE SET. LOOKING FOR: " + t.toString());
