@@ -38,6 +38,12 @@ public class Floor extends Observable implements Comparable
     }
 
     public Image getImage(){
+
+        if(imageInfo==null)
+        {
+            imageInfo = new ProxyImage(imageLocation);
+        }
+
         return imageInfo.getImage();
     }
 
@@ -63,6 +69,11 @@ public class Floor extends Observable implements Comparable
     }
 
     public void addNode(MapNode n) {
+      addNode(n, true);
+    }
+
+    public void addNode(MapNode n, boolean setFloor)
+    {
         floorNodes.add(n);
 
         if(!n.getType().equals(NodeType.Connector))
@@ -70,7 +81,10 @@ public class Floor extends Observable implements Comparable
             tableItems.add(n);
         }
 
-        n.setFloor(this);
+        if(setFloor)
+        {
+            n.setFloor(this);
+        }
 
         n.addObserver((observer, args)->
         {
