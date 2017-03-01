@@ -51,7 +51,7 @@ public class ApplicationController extends Application
 
     IdleTimer idle = new IdleTimer();
 
-    long timeout=120;
+    long timeout=5;
 
     FXMLLoader loader;
 
