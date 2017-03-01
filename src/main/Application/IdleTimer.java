@@ -54,10 +54,13 @@ public class IdleTimer
         userResponseWait = new Timeline(new KeyFrame(Duration.seconds(10), e ->{
             try
             {
-                userPrompt.close();
-                ApplicationController.getController().switchToUserMapView();
-                System.out.println("User response time out.");
-                state = TimerState.inactive;
+                if(state == TimerState.pending_response)
+                {
+                    userPrompt.close();
+                    ApplicationController.getController().switchToUserMapView();
+                    System.out.println("User response time out.");
+                    state = TimerState.inactive;
+                }
             } catch (Exception e1)
             {
                 e1.printStackTrace();
@@ -80,6 +83,8 @@ public class IdleTimer
                     {
                         System.out.println("User inactivity detected... Prompt deployed");
                         userPrompt = new Alert(Alert.AlertType.CONFIRMATION);
+                        userPrompt.getButtonTypes().clear();
+                        userPrompt.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
                         userPrompt.setTitle("Are you still there?");
                         userPrompt.setHeaderText("Your session is about to expire.");
 
@@ -87,11 +92,11 @@ public class IdleTimer
 
                         userResponseWait.playFromStart();
 
-                        Optional<ButtonType> result = userPrompt.showAndWait();
-
                         state = TimerState.pending_response;
 
-                        if (result.get() == ButtonType.CANCEL)
+                        Optional<ButtonType> result = userPrompt.showAndWait();
+
+                        if (result.get() == ButtonType.NO)
                         {
                             resetInactivity();
                             userResponseWait.stop();
