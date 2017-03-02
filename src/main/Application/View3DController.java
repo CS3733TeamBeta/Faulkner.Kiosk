@@ -47,16 +47,13 @@ public class View3DController {
         VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 200, (50 - boxHeight));
         objects3D.getChildren().add(visualbuilding.getGroup());
     }
-    
+
     @FXML
     public void initialize()   {
-
-        //rootPane = new AnchorPane();
-        //pane3D = new AnchorPane();
-
+        
         objects3D = new Group();
 
-         cam = new PerspectiveCamera();
+        cam = new PerspectiveCamera();
         cam.setFieldOfView(50);
         cam.setFarClip(10000);
         cam.setNearClip(0.01);
@@ -87,7 +84,7 @@ public class View3DController {
 
         floor.setMaterial(material);
         objects3D.getChildren().add(floor);
-       objects3D.getChildren().add(greenLight);
+        objects3D.getChildren().add(greenLight);
         objects3D.getChildren().add(whiteLight);
 
         // THIS IS THE BUILDING STUFF
@@ -101,6 +98,5 @@ public class View3DController {
         subScene.setCamera(cam);
 
         button.toFront();
-
     }
 }
