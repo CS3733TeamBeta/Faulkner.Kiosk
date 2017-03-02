@@ -13,6 +13,7 @@ combined2.png
 combined3.png
 combined4.png
 src/Model/Database/CustomFilePath.*
+derbyDB
 
 #Don't ignore these
 !.gitignore

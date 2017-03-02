@@ -1,10 +1,10 @@
 package main.Map.Controller;
 
 import com.jfoenix.controls.JFXComboBox;
-import com.sun.javafx.geom.Edge;
 import javafx.animation.SequentialTransition;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import main.Application.ApplicationController;
 import main.Map.Boundary.MapBoundary;
 import main.Map.Boundary.UserMapBoundary;
@@ -35,8 +35,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
-
-import static main.Application.ApplicationController.getHospital;
 
 /**
  * Created by jw97 on 2/16/2017.
@@ -85,7 +83,7 @@ public class UserMapViewController extends MapController
     {
         super();
 
-        userMapBoundary = new UserMapBoundary(getHospital());
+        userMapBoundary = new UserMapBoundary(ApplicationController.getHospital());
         boundary = userMapBoundary;
 
         nodeTextMap = HashBiMap.create();
@@ -210,21 +208,11 @@ public class UserMapViewController extends MapController
 
         if (newFloorNum != -1)
         {
-            //   renderFloorMap();
             curFloorLabel.setText("Floor " + newFloorNum);
         }
 
         floorDownArrow.setVisible(true);
 
-       /* if(newFloorNum>boundary.getKioskBuilding().getFloors().size()-1)
-        {
-            floorUpArrow.setVisible(false);
-        }
-        else
-        {
-            floorUpArrow.setVisible(true);
-            floorDownArrow.setVisible(true);
-        }*/
 
         if (newRoute != null)
         {
@@ -331,7 +319,7 @@ public class UserMapViewController extends MapController
 
         directionPaneView();
 
-        boundary.setInitialFloor();
+        userMapBoundary.setInitFloor();
 
         curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
 
@@ -376,28 +364,48 @@ public class UserMapViewController extends MapController
 
     public void playDirections(Guidance g)
     {
-        //for(FloorStep floorStep: g.getFloorSteps()
-        //{
-       /* for(DirectionStep step : g.getSteps())
+        for (DirectionFloorStep floorStep : g.getFloorSteps())
         {
             SequentialTransition stepDrawing = new SequentialTransition();
 
-            //for(edge in step)//
-            /*{
-                Timeline tL = new Timeline();
-                Line l = new Line();
-                KeyValue moveLineY = new KeyValue(l.endXProperty(), end_x_of_edge);
-                KeyValue moveLineX = new KeyValue(l.endYProperty(), end_y_of_edge);
+            MapNode n = g.getPathNodes().iterator().next();
 
-                KeyFrame kf = new KeyFrame((Duration.millis(500)), moveLineX, moveLineY);
+            for (DirectionStep step : floorStep.getDirectionSteps())
+            {
+                for (NodeEdge edge : step.getStepEdges())
+                {
+                    Timeline tL = new Timeline();
+                    Line l = new Line();
 
-                tL.getKeyFrames().add(kf);
-                stepDrawing.getChildren().add(tL);
-             }*/
+                    l.setStrokeWidth(5);
+                    l.setStroke(Color.RED);
 
-        //stepDrawing.play();
-        ////switch floors
-        //}
+                    mapItems.getChildren().add(l);
+                    l.toBack();
+                    mapImage.toBack();
+
+                    l.setStartY(n.getPosY());
+                    l.setStartX(n.getPosX());
+                    l.setEndY(n.getPosY());
+                    l.setEndX(n.getPosX());
+
+                    KeyValue moveLineY = new KeyValue(l.endXProperty(), edge.getOtherNode(n).getPosX());
+                    KeyValue moveLineX = new KeyValue(l.endYProperty(), edge.getOtherNode(n).getPosY());
+
+                    KeyFrame kf = new KeyFrame((Duration.millis(500)), moveLineX, moveLineY);
+
+
+                    //tL.getKeyFrames(new KeyFrame(Duration.millis(0), new KeyValue(l.visibleProperty(), true)));
+
+                    tL.getKeyFrames().add(kf);
+                    stepDrawing.getChildren().add(tL);
+
+                    n=edge.getOtherNode(n);
+                }
+            }
+
+            stepDrawing.play();
+        }
     }
 
     private void hideDirections()
@@ -431,17 +439,14 @@ public class UserMapViewController extends MapController
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException
     {
-        newRoute = new Guidance(getHospital().getCurrentKiosk(), endPoint);
-        //followPath(panel.getStepIndex());
+        //followPath(newRoute);
+        newRoute = userMapBoundary.findPathToNode(endPoint);
         panel.fillGuidance(newRoute);
 
         showDirections();
         newRoute.printTextDirections();
-    }
 
-    public void setStage(Stage s)
-    {
-        primaryStage = s;
+        playDirections(newRoute);
     }
 
     private void panToCenter()

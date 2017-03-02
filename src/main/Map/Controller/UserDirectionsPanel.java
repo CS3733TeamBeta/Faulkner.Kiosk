@@ -128,13 +128,6 @@ public class UserDirectionsPanel extends AnchorPane
             Label l = new Label((aDirectionStep.toString()));
             directionsListView.getItems().add(l);
         }
-        /*
-        for(DirectionFloorStep s : guidance.getSteps()) {
-            for (DirectionStep aStep : s.getDirectionSteps()) {
-                Label l = new Label(aStep.toString());
-                directionsListView.getItems().add(l);
-            }
-        } */
     }
 
     @FXML
@@ -155,7 +148,6 @@ public class UserDirectionsPanel extends AnchorPane
             return;
         }
     }
-
 
     @FXML
     void onPreviousButtonClicked()

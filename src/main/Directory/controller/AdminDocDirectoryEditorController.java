@@ -272,6 +272,6 @@ public class AdminDocDirectoryEditorController {
 
     @FXML
     public void onMapBuilderSwitch(ActionEvent actionEvent) throws IOException {
-        ApplicationController.getController().switchToMapEditorView();
+        ApplicationController.getController().switchToSavedMapEditorView();
     }
 }
