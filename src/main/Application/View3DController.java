@@ -47,9 +47,9 @@ public class View3DController {
     private Group objects3D;
 
     private double mouseOldX, mouseOldY = 0;
-    private Rotate rotateX = new Rotate(0, Rotate.X_AXIS);
-    private Rotate rotateY = new Rotate(0, Rotate.Y_AXIS);
-    private Rotate rotateZ = new Rotate(0, Rotate.Z_AXIS);
+    private Rotate rotateX = new Rotate(0, 200, 200, 0, Rotate.X_AXIS);
+    private Rotate rotateY = new Rotate(0, 200, 200, -200, Rotate.Y_AXIS);
+    private Rotate rotateZ = new Rotate(0, 200, 200, 0, Rotate.Z_AXIS);
 
 
     public View3DController()
@@ -69,22 +69,24 @@ public class View3DController {
 
 
     @FXML
-    public void initialize()   {
+    public void initialize(){
 
         verticalScroll.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
-                objects3D.getTransforms().add(new Rotate(verticalScroll.getValue(), 200, 200, -200, Rotate.X_AXIS));
+                rotateX.setAngle(verticalScroll.getValue());
             }
         });
 
 
         horizontalScroll.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
-                objects3D.getTransforms().add(new Rotate(horizontalScroll.getValue(), 200, 200, -200, Rotate.Z_AXIS));
+                rotateZ.setAngle(horizontalScroll.getValue());
             }
         });
 
         objects3D = new Group();
+
+        objects3D.getTransforms().addAll(rotateX, rotateY, rotateZ);
 
         cam = new PerspectiveCamera();
         cam.setFieldOfView(50);
