@@ -96,6 +96,8 @@ public class UserSearchPanel extends AnchorPane {
     @FXML
     TableColumn<Doctor, Doctor> docNavigateCol;
 
+
+
     private void initialize() {
         docNameCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         jobTitleCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));

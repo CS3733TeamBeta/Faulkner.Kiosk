@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -13,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.9" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #f2f2f2;" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.9" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #f2f2f2;" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox prefHeight="200.0" prefWidth="100.0" />
       <HBox layoutX="25.0" layoutY="168.0" prefHeight="138.0" prefWidth="1075.0" spacing="46.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="180.0">
@@ -129,5 +137,11 @@
             <Image url="@/icons/magnifying_glass.png" />
          </image>
       </ImageView>
+      <SubScene fx:id="subScene" height="300.0" layoutX="44.0" layoutY="261.0" width="1018.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="82.0" AnchorPane.topAnchor="370.0">
+        <root>
+          <Region />
+        </root>
+      </SubScene>
+      <Label fx:id="txtInstructions" alignment="TOP_LEFT" layoutX="116.0" layoutY="370.0" text="You have selected the Help Icon. It is used to pull up this window which can provide helpful information for navigating this Kiosk. This window may be closed by either re-clicking the help icon or by selecting one of the other icons next to it.These icons, labeled Doctors, Bathrooms, and Food, will each display a table featuring information for locating doctors, bathrooms, and food respectively. Additionally, you may de-select all icons to display a list of departments. All locations in the tables may be selected and a button pressed to show the path from this kiosk to the desired location. You also have the option to type a name or location into the search bar above to filter through the displayed table. Once a location is chosen and a path generated, the focus will shift out of the search pane and onto the map behind it. You may also exit to the map at any time by clicking the arrow in the top right corner. If a path has been generated, a panel with textual directions will slide out from the right. This panel also features an option to send the directions to you or a friend." wrapText="true" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="116.0" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="370.0" />
    </children>
 </fx:root>
