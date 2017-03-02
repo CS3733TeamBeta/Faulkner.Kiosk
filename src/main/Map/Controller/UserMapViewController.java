@@ -495,6 +495,9 @@ public class UserMapViewController extends MapController
             SequentialTransition animation = new SequentialTransition();
             MapNode n = newRoute.getPathNodes().get(i);
             NodeEdge e = newRoute.getPathEdges().get(i);
+            if (newRoute.getFloorSteps().getLast().equals(n)) {
+                floorUpResetOpacity();
+            }
             movePath.setCenterX(n.getPosX());
             movePath.setCenterY(n.getPosY());
 

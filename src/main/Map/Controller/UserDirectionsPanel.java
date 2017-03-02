@@ -110,6 +110,7 @@ public class UserDirectionsPanel extends AnchorPane
     {
         this.guidance = g;
         stepIndex = 0;
+        followIndex = -1;
 
         fillDirectionsList(stepIndex);
     }
@@ -160,7 +161,7 @@ public class UserDirectionsPanel extends AnchorPane
     void onPreviousButtonClicked()
     {
 
-        if((followIndex) > 0 )
+        if((followIndex) > 0)
         {
             followIndex--;
         }else {
