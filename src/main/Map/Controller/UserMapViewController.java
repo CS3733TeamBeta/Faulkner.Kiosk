@@ -308,14 +308,13 @@ public class UserMapViewController extends MapController
 
         panel.mainPane.setPrefHeight(mainPane.getPrefHeight());
 
+        mainPane.getChildren().add(searchPanel);
+        searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
+        searchPanel.welcomeScreen();
+
         mainPane.getChildren().add(panel);
         panel.toFront();
         panel.relocate(mainPane.getPrefWidth() - 5, 0);
-
-        mainPane.getChildren().add(searchPanel);
-        searchPanel.toFront();
-        searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
-        searchPanel.relocate(0, mainPane.getHeight() + 350);
 
         panel.setCloseHandler(event ->
         {
@@ -325,7 +324,8 @@ public class UserMapViewController extends MapController
             searchPanel.welcomeScreen();
         });
 
-        panel.setVisible(false);
+        panel.setVisible(true);
+
         directionPaneView();
 
         boundary.setInitialFloor();
@@ -384,8 +384,8 @@ public class UserMapViewController extends MapController
                 stepDrawing.getChildren().add(tL);
              }*/
 
-            //stepDrawing.play();
-           ////switch floors
+        //stepDrawing.play();
+        ////switch floors
         //}
     }
 
