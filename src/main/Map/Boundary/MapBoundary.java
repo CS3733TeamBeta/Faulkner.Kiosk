@@ -77,7 +77,7 @@ public class MapBoundary extends Observable
                 changeFloor(h.getCurrentKiosk().getMyFloor());
             }
             else{
-                changeFloor(h.getBuildings().iterator().next().getFloor(1));
+                changeFloor(h.getBuildings().iterator().next().getBaseFloor());
             }
 
             currentBuilding = currentFloor.getBuilding();
