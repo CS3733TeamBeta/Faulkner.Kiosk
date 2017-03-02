@@ -114,10 +114,10 @@ public class DragIcon extends AnchorPane{
 
 			case Stairs:
 				getStyleClass().add("stairs");
+				break;
 
 			case CurrentKiosk:
 				getStyleClass().add("CurrentKiosk");
-
 				break;
 
 			default:
