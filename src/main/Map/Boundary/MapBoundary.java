@@ -115,7 +115,7 @@ public class MapBoundary extends Observable
 
         if(currentBuilding==null)
         {
-            System.out.println("You have not specififed a kiosk");
+            System.out.println("You have not specififed a building");
         }
         else if(nextFloorID<=currentBuilding.getFloors().size() &&( nextFloorID >0))
         {
