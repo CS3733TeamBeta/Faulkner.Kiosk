@@ -16,6 +16,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 
@@ -255,6 +256,9 @@ public class AdminDocDirectoryEditorController {
                 Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
                 newDoc.setPhoneNum(phoneNum);
                 docBoundary.addDoctor(newDoc);
+
+                dataTable.getSelectionModel().select(newDoc);
+                dataTable.scrollTo(newDoc);
             }
 
             reset();
