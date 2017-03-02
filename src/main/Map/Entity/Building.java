@@ -72,17 +72,28 @@ public class Building {
     public void addFloor(Floor f) throws Exception {
         boolean floorExists;
 
-        try
+        if(f.floorNumber == 1) //@TODO sketchy (but will never do this lol)
         {
-            getFloor(f.getFloorNumber());
-            floorExists = true;
-        } catch (Exception e) {
-            floorExists = false;
-        }
-        if(!floorExists) {
             buildingFloors.add(f);
-        } else {
-            throw new Exception("Floor already exists");
+        }
+        else
+        {
+            try
+            {
+                getFloor(f.getFloorNumber());
+                floorExists = true;
+            } catch (Exception e)
+            {
+                floorExists = false;
+            }
+            if (!floorExists)
+            {
+                buildingFloors.add(f);
+            }
+            else
+            {
+                throw new Exception("Floor already exists");
+            }
         }
 
         f.setBuilding(this);
@@ -93,13 +104,37 @@ public class Building {
      * @param floorNumber
      * @return floor with matching number
      */
-    public Floor getFloor(int floorNumber) throws Exception {
-        for (Floor f : buildingFloors) {
-            if(f.getFloorNumber() == floorNumber) {
+    public Floor getFloor(int floorNumber)
+    {
+        if(floorNumber==1)
+        {
+            return hospital.getCampusFloor();
+        }
+        else
+        {
+            for (Floor f : buildingFloors)
+            {
+                if (f.getFloorNumber() == floorNumber)
+                {
+                    return f;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public Floor getBaseFloor()
+    {
+        for (Floor f : buildingFloors)
+        {
+            if (f.getFloorNumber() == 1)
+            {
                 return f;
             }
         }
-        throw new Exception("Floor not found");
+
+        return null;
     }
 
     public Collection<Floor> getFloors()
@@ -126,6 +161,15 @@ public class Building {
 
     public UUID getBuildID() {
         return this.buildID;
+    }
+
+    /**
+     * Provides the name of the building
+     */
+    @Override
+    public String toString()
+    {
+        return name;
     }
 
 }

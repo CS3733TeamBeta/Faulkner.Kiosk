@@ -1,21 +1,20 @@
-package main.Directory;
+package main.Directory.Entity;
 
 import main.Map.Entity.Destination;
+import javafx.collections.ObservableList;
 
-import java.util.HashSet;
+import java.util.Observable;
 import java.util.UUID;
 
-public class Doctor
-{
+public class Doctor extends Observable {
 
     UUID docID;
     String phoneNum = "N/A";
     private String name;
     private String description;
-    private HashSet<Destination> destinations;
+    private ObservableList<Destination> destinations;
 
     protected String hours;
-    protected String phoneNumber;
 
     /*
     HashSet<String> lstNames;
@@ -24,7 +23,7 @@ public class Doctor
 */
 
 
-    public Doctor(String name, String description, String hours, HashSet<Destination> destinations) {
+    public Doctor(String name, String description, String hours, ObservableList<Destination> destinations) {
         this.name = name;
         this.description = description;
         this.hours = hours;
@@ -33,7 +32,7 @@ public class Doctor
 
     }
 
-    public Doctor(UUID docID, String name, String description, String hours, HashSet<Destination> destinations) {
+    public Doctor(UUID docID, String name, String description, String hours, ObservableList<Destination> destinations) {
         this.name = name;
         this.description = description;
         this.hours = hours;
@@ -83,12 +82,20 @@ public class Doctor
         return this.hours;
     }
 
-    public HashSet<Destination> getDestinations() {
+    public ObservableList<Destination> getDestinations() {
         return this.destinations;
     }
 
-    public void setDestinations(HashSet<Destination> suites) {
-        this.destinations = suites;
+    public void setDestinations(ObservableList<Destination> destinations) {
+        this.destinations = destinations;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setHours(String hours) {
+        this.hours = hours;
     }
 
     public String[] splitName() {

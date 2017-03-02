@@ -16,17 +16,21 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.*;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.*;
+import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -56,6 +60,9 @@ public class MapEditorController extends MapController
 
 	@FXML
 	private TabPane FloorTabPane;
+
+	@FXML
+	private JFXComboBox<String> buildingSelector;
 
 	@FXML
 	private JFXComboBox<Kiosk> kioskSelector;
@@ -237,14 +244,11 @@ public class MapEditorController extends MapController
 		FloorTabPane.getTabs().clear();
 
 
-		adminBoundary.addEdgeSetChangeHandler(change->
+		adminBoundary.addEdgeSetChangeHandler(change ->
 		{
-			if(change.wasAdded())
-			{
+			if (change.wasAdded()) {
 				onEdgeAdded(change.getElementAdded());
-			}
-			else if(change.wasRemoved())
-			{
+			} else if (change.wasRemoved()) {
 				onEdgeRemoved(change.getElementRemoved());
 			}
 		});
@@ -253,73 +257,64 @@ public class MapEditorController extends MapController
 
 		buildRadialMenu(); //instantiates and populates the radial menu
 
-		menu.shownProperty().addListener((e, oldValue, newValue)-> //when the menu is closed, hide the target icon
+		menu.shownProperty().addListener((e, oldValue, newValue) -> //when the menu is closed, hide the target icon
 		{
-			if(!newValue)
-			{
+			if (!newValue) {
 				target.setVisible(false);
 				drawingEdgeFrozen = false;
-			}
-			else
-			{
+			} else {
 				drawingEdgeFrozen = true;
 			}
 		});
 
-		root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
+		root_pane.setOnKeyPressed(keyEvent -> { //handle escaping from edge creation
 
-			if(keyEvent.getCode() == KeyCode.ESCAPE)
-			{
+			if (keyEvent.getCode() == KeyCode.ESCAPE) {
 				clearSelected();
-			}
-			else if(keyEvent.getCode() == KeyCode.BACK_SPACE)
-			{
+			} else if (keyEvent.getCode() == KeyCode.BACK_SPACE) {
 				System.out.println("Delete requested");
 
-				for(DragIcon icon : selectedIcons)
-				{
+				for (DragIcon icon : selectedIcons) {
 					adminBoundary.remove(iconEntityMap.get(icon));
 				}
 				selectedIcons.clear();
 			}
 
 			if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
-				if(drawingEdgeLine.isVisible()) //and the right pane has the drawing edge as child
+				if (drawingEdgeLine.isVisible()) //and the right pane has the drawing edge as child
 				{
 					drawingEdgeLine.setVisible(false);
 				}
 
 				makeIconDraggable(iconEntityMap.inverse().get(drawingEdge.getSource()));
 				drawingEdge = null;
-			}
-			else if(drawingEdge!=null && keyEvent.getCode() == KeyCode.A) //radial menu chain linking
+			} else if (drawingEdge != null && keyEvent.getCode() == KeyCode.A) //radial menu chain linking
 			{
-				Point2D location= new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
+				Point2D location = new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
 						MouseInfo.getPointerInfo().getLocation().getY());
 
 				showRadialMenu(mapPane.screenToLocal(location));
 			}
 		});
 
-		mapPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event->
+		mapPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event ->
 		{
 			Node clickedNode = event.getPickResult().getIntersectedNode();
 
-			if(event.getButton() != MouseButton.SECONDARY && !dragInProgress && !iconEntityMap.containsKey(clickedNode)
-					&& !edgeEntityMap.containsKey(clickedNode))
-			{
-				if(!drawingEdgeLine.isVisible()) //radial menu requested
+			if (event.getButton() != MouseButton.SECONDARY && !dragInProgress && !iconEntityMap.containsKey(clickedNode)
+					&& !edgeEntityMap.containsKey(clickedNode)) {
+				if (!drawingEdgeLine.isVisible()) //radial menu requested
 				{
 					showRadialMenu(new Point2D(event.getX(), event.getY()));
-				}
-				else //Chain Linking
+				} else //Chain Linking
 				{
 					chainLink(clickedNode, new Point2D(event.getX(), event.getY()));
 				}
-			}
-			else if(event.getButton() != MouseButton.SECONDARY && edgeEntityMap.containsKey(clickedNode)) //dropped in the middle of a line
+			} else if (event.getButton() != MouseButton.SECONDARY && edgeEntityMap.containsKey(clickedNode)) //dropped in the middle of a line
 			{
 				dropOnLine(clickedNode, new Point2D(event.getX(), event.getY()));
+			} else if (dragInProgress) {
+				dragInProgress = false;
 			}
 			else if(dragInProgress)
 			{
@@ -837,8 +832,8 @@ public class MapEditorController extends MapController
 	}
 
 	@FXML
-	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
+	public void onDirectoryEditorSwitch() throws IOException
 	{
-		//SceneSwitcher.switchToModifyDirectoryView(this.getStage(), model.getHospital());
+		ApplicationController.getController().switchToModifyDirectoryView();
 	}
 }

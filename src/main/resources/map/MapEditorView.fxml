@@ -9,7 +9,8 @@
 
 <AnchorPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Map.Controller.MapEditorController">
    <children>
-      <TabPane fx:id="FloorTabPane" layoutX="839.0" layoutY="48.0" opacity="0.82" prefHeight="527.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="173.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0" />
+       <JFXComboBox fx:id="buildingSelector" layoutX="980.0" layoutY="10.0" prefHeight="27.0" prefWidth="147.0" promptText="INVALID" />
+       <TabPane fx:id="FloorTabPane" onMouseClicked="#switchBuilding" layoutX="839.0" layoutY="48.0" opacity="0.82" prefHeight="527.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="173.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0" />
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="667.0" prefWidth="915.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="340.0" AnchorPane.topAnchor="20.0">
          <children>
             <ScrollPane fx:id="scroll_pane" hbarPolicy="ALWAYS" layoutX="21.0" layoutY="33.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

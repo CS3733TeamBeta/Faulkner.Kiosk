@@ -1,8 +1,9 @@
 package main.Application;//Testing
 
 //import Entity.Doctor;
+import main.Directory.controller.AdminDeptDirectoryEditor;
+import main.Directory.controller.AdminDocDirectoryEditorController;
 import main.Application.Database.DataCache;
-import main.Directory.*;
 import main.Map.Controller.MapEditorController;
 import main.Map.Controller.UserMapViewController;
 import main.Map.Entity.Building;
@@ -22,12 +23,15 @@ public class ApplicationController extends Application
    // public static final ObservableList<Doctor> FaulknerHospitalDirectory = FXCollections.observableArrayList();
     MapEditorController mapEditorController;
     AdminLoginController adminLoginController;
-    AdminDirectoryEditorController adminDirectoryEditorController;
+    AdminDocDirectoryEditorController adminDocDirectoryEditorController;
+    AdminDeptDirectoryEditor adminDeptDirectoryEditor;
 
     DataCache dataCache;
 
+    Building lastBuildingUnderEdit;
+
     protected static final String AdminLoginViewPath = "/application/AdminLoginView.fxml";
-    protected static final String ModifyDirectoryViewPath = "/directory/AdminDirectoryEditor.fxml";
+    protected static final String ModifyDirectoryViewPath = "/directory/AdminDocDirectoryEditor.fxml";
     protected static final String MapEditorViewPath = "/map/MapEditorView.fxml";
     protected static final String UserMapViewerPath = "/map/UserMapView.fxml";
     protected static final String View3DPath = "/map/3DMapView.fxml";
@@ -51,12 +55,27 @@ public class ApplicationController extends Application
         return controller.dataCache.getHospital();
     }
 
+    public void stashBuildingEdit(Building b)
+    {
+        lastBuildingUnderEdit = b;
+    }
+
+    public Building popBuildingEdit()
+    {
+        return lastBuildingUnderEdit;
+    }
+
     IdleTimer idle = new IdleTimer();
 
     long timeout=120;
 
     FXMLLoader loader;
 
+    public static DataCache getCache()
+    {
+        return controller.dataCache;
+
+    }
     @Override
     public void start(Stage primaryStage) throws Exception
     {
@@ -118,8 +137,14 @@ public class ApplicationController extends Application
     public void switchToMapEditorView(Building b) throws IOException
     {
         idle.stop();
+        lastBuildingUnderEdit = b;
         MapEditorController controller = (MapEditorController) switchToScene(MapEditorViewPath);
         controller.setBuilding(b);
+    }
+
+    public void switchToSavedMapEditorView() throws IOException
+    {
+        switchToMapEditorView(lastBuildingUnderEdit);
     }
 
     public void switchToUserMapView() throws IOException
