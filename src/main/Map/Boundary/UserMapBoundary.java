@@ -52,6 +52,8 @@ public class UserMapBoundary extends MapBoundary
 
     public Guidance findPathToNode(MapNode endPoint)
     {
+        System.out.println("Function called ");
+
         MapNode startPoint = getHospital().getCurrentKiosk();
 
         if (startPoint == null)

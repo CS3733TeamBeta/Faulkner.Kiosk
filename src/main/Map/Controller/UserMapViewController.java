@@ -342,16 +342,24 @@ public class UserMapViewController extends MapController
         }
 
         panToCenter();
+        movePath.setFill(Color.BLACK);
+        movePath.toFront();
+        mapItems.getChildren().add(movePath);
+
+
     }
 
     private void directionPaneView()
     {
+
 
         panel.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 e -> showDirections());
 
         panel.addEventHandler(MouseEvent.MOUSE_EXITED,
                 e -> hideDirections());
+        panel.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                e -> followPath());
     }
 
     public void playDirections(Guidance g)
@@ -366,11 +374,6 @@ public class UserMapViewController extends MapController
             {
                 for (NodeEdge edge : step.getStepEdges())
                 {
-                    if (n.getType().equals(NodeType.Connector))
-                    {
-                        System.out.println("Found connector");
-                    }
-
                     Timeline tL = new Timeline();
                     Line l = new Line();
 
@@ -396,12 +399,10 @@ public class UserMapViewController extends MapController
 
                     tL.getKeyFrames().add(kf);
                     stepDrawing.getChildren().add(tL);
+
+                    n=edge.getOtherNode(n);
                 }
             }
-
-            //stepDrawing.play();
-           ////switch floors
-        //}
 
             stepDrawing.play();
         }
@@ -438,6 +439,7 @@ public class UserMapViewController extends MapController
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException
     {
+        //followPath(newRoute);
         newRoute = userMapBoundary.findPathToNode(endPoint);
         panel.fillGuidance(newRoute);
 
@@ -445,11 +447,6 @@ public class UserMapViewController extends MapController
         newRoute.printTextDirections();
 
         playDirections(newRoute);
-    }
-
-    public void setStage(Stage s)
-    {
-        primaryStage = s;
     }
 
     private void panToCenter()
@@ -494,53 +491,41 @@ public class UserMapViewController extends MapController
         ApplicationController.getController().switchToLoginView();
     }
 
-    public void followPath (Guidance g) {
+    Circle movePath = new Circle(10);
 
+    public void followPath () {
 
-        Circle movePath = new Circle(10);
-        movePath.setFill(Color.BLACK);
-        movePath.toFront();
-        mapItems.getChildren().add(movePath);
+            int i = panel.getFollowIndex();
 
-        for (DirectionFloorStep fStep: g.getFloorSteps()) {
             SequentialTransition animation = new SequentialTransition();
-            MapNode n = g.getPathNodes().iterator().next();
+            MapNode n = newRoute.getPathNodes().get(i);
+            NodeEdge e = newRoute.getPathEdges().get(i);
+            if (newRoute.getFloorSteps().getLast().equals(n)) {
+                floorUpResetOpacity();
+            }
             movePath.setCenterX(n.getPosX());
             movePath.setCenterY(n.getPosY());
-            for (DirectionStep step: fStep.getDirectionSteps()) {
 
-                for (NodeEdge edge: step.getStepEdges()) {
-                    if(n.getType().equals(NodeType.Connector))
-                    {
-                        System.out.println("Found connector");
-                    }
+            Timeline tl = new Timeline();
 
+            double endX = e.getOtherNode(n).getPosX();
+            double endY = e.getOtherNode(n).getPosY();
 
-                    Timeline tl = new Timeline();
-
-
-
-                    double endX = edge.getOtherNode(n).getPosX();
-                    double endY = edge.getOtherNode(n).getPosY();
+            KeyValue moveX = new KeyValue(movePath.centerXProperty(), endX);
+            KeyValue moveY = new KeyValue(movePath.centerYProperty(), endY);
+            KeyFrame kf = new KeyFrame(Duration.seconds(3), moveX, moveY);
+            tl.getKeyFrames().add(kf);
+            animation.getChildren().add(tl);
 
 
-                    KeyValue moveX = new KeyValue(movePath.centerXProperty(), endX);
-                    KeyValue moveY = new KeyValue(movePath.centerYProperty(), endY);
-                    KeyFrame kf = new KeyFrame(Duration.seconds(3), moveX, moveY);
-                    tl.getKeyFrames().add(kf);
-                    animation.getChildren().add(tl);
-
-                    n = edge.getOtherNode(n);
-
-                }
-
-            }
             System.out.println("playing");
             animation.play();
-        }
 
     }
+
+
 }
+
 
 
      /*

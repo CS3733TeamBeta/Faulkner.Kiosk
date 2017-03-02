@@ -1,0 +1,13 @@
+#loginLabel {
+    -fx-font-size: 55px;
+}
+
+#txtPassword{
+    -fx-effect: dropshadow( one-pass-box , #c0c6cc , 10 , 0.0 , 1 , 2 );
+    -fx-background-radius: 0px;
+}
+
+#txtUsername{
+    -fx-effect: dropshadow( one-pass-box , #c0c6cc , 10 , 0.0 , 1 , 2 );
+    -fx-background-radius: 0px;
+}
