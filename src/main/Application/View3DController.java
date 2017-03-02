@@ -41,7 +41,7 @@ public class View3DController {
     private ScrollBar verticalScroll;
 
     @FXML
-    private Scrollbar hScroll;
+    private ScrollBar horizontalScroll;
 
 
     private Group objects3D;
@@ -73,17 +73,16 @@ public class View3DController {
 
         verticalScroll.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
-                objects3D.getTransforms().add(new Rotate(verticalScroll.getValue(), 200, 200, -200, Rotate.Z_AXIS));
+                objects3D.getTransforms().add(new Rotate(verticalScroll.getValue(), 200, 200, -200, Rotate.X_AXIS));
             }
         });
 
-        /*
-        hScroll.valueProperty().addListener(new ChangeListener<Number>() {
+
+        horizontalScroll.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
                 objects3D.getTransforms().add(new Rotate(horizontalScroll.getValue(), 200, 200, -200, Rotate.Z_AXIS));
             }
         });
-*/
 
         objects3D = new Group();
 

@@ -9,6 +9,6 @@
       <Button fx:id="button" layoutX="534.0" layoutY="14.0" mnemonicParsing="false" onAction="#buttonPush" text="Button" />
       <AnchorPane fx:id="pane3D" layoutX="14.0" layoutY="15.0" prefHeight="370.0" prefWidth="370.0" />
       <ScrollBar fx:id="verticalScroll" layoutX="477.0" layoutY="130.0" orientation="VERTICAL" />
-      <ScrollBar fx:id="hScroll" layoutX="459.0" layoutY="291.0" />
+      <ScrollBar fx:id="horizontalScroll" layoutX="459.0" layoutY="291.0" />
    </children>
 </AnchorPane>
