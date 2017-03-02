@@ -1,3 +1,5 @@
+-- noinspection SqlDialectInspectionForFile
+
 DROP TABLE USER1.DEST_DOC;
 DROP TABLE USER1.EDGE;
 DROP TABLE USER1.OFFICES;

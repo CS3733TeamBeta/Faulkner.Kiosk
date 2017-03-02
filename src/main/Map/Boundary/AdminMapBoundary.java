@@ -83,8 +83,9 @@ public class AdminMapBoundary extends MapBoundary
 
         n.setOnDeleteRequested(e->remove(n));
 
-        if(type == NodeType.Elevator){
-            addElevator(n);
+        if(type == NodeType.Elevator || type == NodeType.Stairs){
+            //and add either a series of stairs or elevators, all connected to each other
+            addMultiFloorNode(n);
         }
         else {
             currentFloor.addNode(n);
@@ -124,7 +125,7 @@ public class AdminMapBoundary extends MapBoundary
      *
      * @param n Elevator node
      */
-    private void addElevator(MapNode n)
+    private void addMultiFloorNode(MapNode n)
     {
         ArrayList<MapNode> nodesToAdd = new ArrayList<MapNode>();
 
@@ -135,8 +136,15 @@ public class AdminMapBoundary extends MapBoundary
             if (!f.equals(currentFloor))
             {
                 e = new MapNode();
-
-                e.setIsElevator(true);
+                if(n.getType() == NodeType.Elevator) {
+                    e.setIsElevator(true);
+                }
+                else if(n.getType() == NodeType.Stairs){
+                    e.setIsStairs(true);
+                }
+                else{
+                    System.out.println("ERROR IN SETTING NODES TO MULTIFLOOR");
+                }
                 e.setPos(n.getPosX(), n.getPosY());
 
                 f.addNode(e);
