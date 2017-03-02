@@ -447,8 +447,10 @@ public class DatabaseManager {
 
         while(rs.next()) {
             b = new Building(UUID.fromString(rs.getString(1)), rs.getString(2));
-            loadFloors(h, b);
-            h.addBuilding(b);
+            if (rs.getString(2) != "Campus") {
+                loadFloors(h, b);
+                h.addBuilding(b);
+            }
         }
     }
 
@@ -466,7 +468,6 @@ public class DatabaseManager {
             floor_id = UUID.fromString(floorRS.getString(1));
             f = new Floor(floor_id, floorRS.getInt(3));
             f.setImageLocation(floorRS.getString(4));
-            f.setBuilding(b);
 
             loadNodes(h, f);
             try {
