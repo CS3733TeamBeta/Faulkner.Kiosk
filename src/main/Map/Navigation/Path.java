@@ -390,12 +390,9 @@ public class Path implements Iterable {
 
 
     public Path(MapNode start, MapNode end) throws PathFindingException {
-        this(start, end, false, "astar");
+        this(start, end, false);
     }
 
-    public Path(MapNode start, MapNode end, boolean vFlag) throws PathFindingException {
-        this(start, end, vFlag, "astar");
-    }
 
     /**
      * Given an ending node, reconstructs the path taken to that node, given that that path has been populated with parents.
@@ -426,9 +423,39 @@ public class Path implements Iterable {
      * @param end
      * @param vFlag
      * @throws PathFindingException
-     */
+     */ /*
     public Path(MapNode start, MapNode end, boolean vFlag, String algo) throws PathFindingException{
         this.vFlag = vFlag;
+        switch (algo) {
+            case "astar":
+                System.out.println(start.toString());
+                System.out.println(end.toString());
+                createPathAStar(start, end, vFlag);
+                break;
+            case "breadthfirst":
+                createPathBreadthFirst(start, end, vFlag);
+                break;
+            case "depthfirst":
+                createPathDepthFirst(start, end, vFlag);
+                break;
+            case "random":
+                createPathRandom(start, end, vFlag);
+                break;
+            default:
+                System.out.println("Input was neither \"astar\" nor \"breadthfirst\" nor \"depthfirst\" nor \"random\", using astar");
+                createPathAStar(start, end, vFlag);
+        }
+    } */
+
+    public Path(MapNode start, MapNode end, boolean vFlag) throws PathFindingException{
+        this.vFlag = vFlag;
+        String algo = "astar";
+        try {
+            algo = start.getMyFloor().getBuilding().getHospital().getAlgorithm().toLowerCase();
+        } catch (Exception e) {
+            System.out.println("Start node didn't have a floor's building's hospital's algorithm, using \"astar\"");
+        }
+        System.out.println("Algo is " + algo);
         switch (algo) {
             case "astar":
                 System.out.println(start.toString());

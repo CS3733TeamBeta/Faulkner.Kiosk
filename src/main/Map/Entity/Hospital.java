@@ -22,6 +22,8 @@ public class Hospital{
 
     CampusFloor CampusFloor;
 
+    private String algorithmType;
+
     private Kiosk currentKiosk = null;
     protected ObservableList<Kiosk> kiosks;
 
@@ -33,6 +35,18 @@ public class Hospital{
 
         CampusFloor  = new CampusFloor();
         kiosks = FXCollections.observableArrayList(new ArrayList<Kiosk>());
+    }
+
+    public void setAlgorithm(String algorithmType) {
+        if (algorithmType.equals("astar") || algorithmType.equals("depthfirst") || algorithmType.equals("breadthfirst") || algorithmType.equals("random")) {
+            this.algorithmType = algorithmType;
+        } else {
+            System.out.println("Passed in invalid thingie");
+        }
+    }
+
+    public String getAlgorithm() {
+        return this.algorithmType;
     }
 
     public void addBuilding(Building b) {

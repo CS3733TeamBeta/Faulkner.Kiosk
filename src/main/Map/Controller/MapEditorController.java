@@ -17,6 +17,7 @@ import javafx.animation.Timeline;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -67,6 +68,9 @@ MapEditorController extends MapController
 
 	@FXML
 	private JFXComboBox<Kiosk> kioskSelector;
+
+	@FXML
+	private JFXComboBox<String> selectAlgo;
 
 	NodeEdge drawingEdge;
 	Line drawingEdgeLine;
@@ -353,6 +357,16 @@ MapEditorController extends MapController
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+
+
+		LinkedList<String> algorithms = new LinkedList<>();
+		algorithms.add("Astar");
+		algorithms.add("Depthfirst");
+		algorithms.add("Breadthfirst");
+		algorithms.add("Random");
+		if(algorithms != null) {
+			selectAlgo.setItems(FXCollections.observableArrayList(algorithms));
 		}
 	}
 
@@ -888,6 +902,18 @@ MapEditorController extends MapController
 	{
 		//DataCache.getInstance().save();
 
+		System.out.println("Previous value for algo was " + adminBoundary.getHospital().getAlgorithm());
+
+
+		String newAlgorithm;
+		if (selectAlgo.getValue() != null) {
+			newAlgorithm = selectAlgo.getValue();
+		} else {
+			newAlgorithm = "astar";
+		}
+		System.out.println("value for selectAlgo is " + newAlgorithm);
+		adminBoundary.setHospitalAlgo(newAlgorithm);
+		
 		ApplicationController.getController().switchToUserMapView();
 	}
 
