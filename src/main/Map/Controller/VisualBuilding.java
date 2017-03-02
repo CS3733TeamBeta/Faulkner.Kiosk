@@ -122,7 +122,7 @@ public class VisualBuilding
         });
     }
 
-    private Box createNewFloor()
+    public Box createNewFloor()
     {
         Box floor = new Box(baseFloor.getWidth(), baseFloor.getHeight(), baseFloor.getDepth());
 

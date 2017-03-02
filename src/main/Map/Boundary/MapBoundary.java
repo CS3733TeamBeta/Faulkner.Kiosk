@@ -135,15 +135,6 @@ public class MapBoundary extends Observable
         return result;
     }
 
-    public void switchFloor()
-    {
-
-    }
-
-    public void refreshNodes()
-    {
-
-    }
     public Floor getCurrentFloor()
     {
         return currentFloor;

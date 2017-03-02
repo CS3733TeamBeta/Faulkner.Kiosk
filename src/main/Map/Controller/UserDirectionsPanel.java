@@ -1,7 +1,12 @@
 package main.Map.Controller;
 
 
+import com.jfoenix.controls.JFXListCell;
 import javafx.event.EventType;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.text.Text;
+import javafx.util.Callback;
 import main.Application.Exceptions.PathFindingException;
 import main.Map.Navigation.DirectionFloorStep;
 import main.Map.Navigation.DirectionStep;
@@ -36,6 +41,12 @@ public class UserDirectionsPanel extends AnchorPane
     ImageView MapImage;
     ArrayList<StepChangedEventHandler> stepChangedEventHandlers;
 
+    @FXML
+    Text startName;
+
+    @FXML
+    Text endName;
+
     public UserDirectionsPanel(ImageView mapImage)
     {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
@@ -62,7 +73,7 @@ public class UserDirectionsPanel extends AnchorPane
     private GridPane locationGridPane;
 
     @FXML
-    private JFXListView<Label> directionsListView;
+    private JFXListView<String> directionsListView;
 
     @FXML
     private ImageView previousButton;
@@ -82,9 +93,42 @@ public class UserDirectionsPanel extends AnchorPane
     @FXML
     private ImageView closeButton;
 
+    @FXML
+    private AnchorPane startIcon;
+
+    @FXML
+    private AnchorPane endIcon;
+
     public void setCloseHandler(EventHandler<? super MouseEvent> e)
     {
         closeButton.setOnMouseClicked(e);
+    }
+
+
+    @FXML
+    public void initialize()
+    {
+        directionsListView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> list) {
+                final ListCell cell = new JFXListCell() {
+                    private Text text;
+
+                    @Override
+                    public void updateItem(Object item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if (!isEmpty()) {
+                            text = new Text(item.toString());
+                            text.setWrappingWidth(directionsListView.getPrefWidth());
+                            setGraphic(text);
+                        }
+                    }
+                };
+
+                return cell;
+            }
+        });
     }
 
     public void setGuidance(Guidance g)
@@ -108,9 +152,32 @@ public class UserDirectionsPanel extends AnchorPane
 
     public void fillGuidance(Guidance g)
     {
+        startIcon.getChildren().clear();
+        endIcon.getChildren().clear();;
+
+        DragIcon start = new DragIcon();
+        start.setType(g.getPathNodes().getFirst().getType());
+
+        startName.setText(g.getPathNodes().getFirst().toString());
+
+        DragIcon end = new DragIcon();
+        end.setType(g.getPathNodes().getLast().getType());
+
+        endName.setText(g.getPathNodes().getLast().toString());
+
+        startIcon.getChildren().add(start);
+        endIcon.getChildren().add(end);
+
+        startIcon.setTranslateY(8);
+        startIcon.setTranslateX(8);
+
+        endIcon.setTranslateY(8);
+        endIcon.setTranslateX(4);
+
         this.guidance = g;
         stepIndex = 0;
         followIndex = -1;
+
 
         fillDirectionsList(stepIndex);
     }
@@ -124,9 +191,9 @@ public class UserDirectionsPanel extends AnchorPane
     {
         directionsListView.getItems().clear();
 
-        for (DirectionStep aDirectionStep: step.getDirectionSteps()) {
-            Label l = new Label((aDirectionStep.toString()));
-            directionsListView.getItems().add(l);
+        for (DirectionStep aDirectionStep: step.getDirectionSteps())
+        {
+            directionsListView.getItems().add(aDirectionStep.toString());
         }
     }
 

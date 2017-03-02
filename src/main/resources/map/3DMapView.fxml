@@ -17,7 +17,7 @@
       <AnchorPane fx:id="pane3D" layoutX="14.0" layoutY="15.0" prefHeight="745.0" prefWidth="969.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="15.0" />
       <ScrollBar fx:id="verticalScroll" layoutX="783.0" layoutY="198.0" max="120.0" min="-30.0" orientation="VERTICAL" value="40.0" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="280.0" AnchorPane.topAnchor="10.0" />
       <ScrollBar fx:id="horizontalScroll" layoutX="1002.0" layoutY="624.0" max="200.0" min="-200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="280.0" />
-      <Text layoutX="940.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Faulkner Campus Tool" wrappingWidth="250.08330436050892">
+      <Text layoutX="940.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Faulkner Campus Tool" wrappingWidth="250.08330436050892" AnchorPane.rightAnchor="15.0">
          <font>
             <Font size="23.0" />
          </font>

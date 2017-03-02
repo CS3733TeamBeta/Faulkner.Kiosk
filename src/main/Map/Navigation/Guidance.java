@@ -54,14 +54,6 @@ public class Guidance extends Path {
             storeImg = createResizedCopy(ImageIO.read(new File("src/main/resources/icons/store.png")), imgRescaleSize, imgRescaleSize, true);
             currentKioskImg = createResizedCopy(ImageIO.read(new File("src/main/resources/icons/star.png")), imgRescaleSize, imgRescaleSize, true);
             kioskImg = createResizedCopy(ImageIO.read(new File("src/main/resources/icons/kiosk.png")), imgRescaleSize, imgRescaleSize, true);
-
-            nodeImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/blank2.png")), imgRescaleSize/2, imgRescaleSize/2, true);
-            bathImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/bathroom.png")), imgRescaleSize, imgRescaleSize, true);
-            docImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/doctor.png")), imgRescaleSize, imgRescaleSize, true);
-            elevatorImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/elevator.png")), imgRescaleSize, imgRescaleSize, true);
-            foodImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/food.png")), imgRescaleSize, imgRescaleSize, true);
-            infoImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/info.png")), imgRescaleSize, imgRescaleSize, true);
-            storeImg = createResizedCopy(ImageIO.read(new File("src/View/Admin/MapBuilder/store.png")), imgRescaleSize, imgRescaleSize, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
