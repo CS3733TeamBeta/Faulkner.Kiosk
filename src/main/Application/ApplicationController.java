@@ -29,6 +29,7 @@ public class ApplicationController extends Application
     protected static final String ModifyDirectoryViewPath = "/directory/AdminDirectoryEditor.fxml";
     protected static final String MapEditorViewPath = "/map/MapEditorView.fxml";
     protected static final String UserMapViewerPath = "/map/UserMapView.fxml";
+    protected static final String View3DPath = "/map/3DMapView.fxml";
 
 
     Stage primaryStage;
@@ -81,10 +82,7 @@ public class ApplicationController extends Application
         idle.updateTimeout(); //updates timeout with latest value from application controller
     }
 
-    public void resetController() throws Exception
-    {
-       loader.setController(new UserMapViewController());
-    }
+
 
     public void switchToScene(String pathToView) throws IOException
     {
@@ -107,6 +105,11 @@ public class ApplicationController extends Application
      */
     public void switchToLoginView() throws IOException {
        switchToScene(AdminLoginViewPath);
+    }
+
+    public void switchToVisualBuildingEditor() throws IOException
+    {
+        switchToScene(View3DPath);
     }
 
     public void switchToModifyDirectoryView() throws IOException {

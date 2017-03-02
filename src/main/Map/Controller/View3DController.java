@@ -14,8 +14,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
+import main.Application.ApplicationController;
 import main.Map.Controller.VisualBuilding;
 import javafx.scene.control.ScrollBar;
+import main.Map.Entity.Building;
 
 import javax.swing.text.View;
 import java.awt.*;
@@ -66,7 +68,7 @@ public class View3DController {
     void newBuildingButtonPress() {
         System.out.println("Adding Building");
         int boxHeight = 10;
-        VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 200, (50 - boxHeight));
+        VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 300, (50 - boxHeight));
         objects3D.getChildren().add(visualbuilding.getGroup());
     }
 
@@ -75,7 +77,7 @@ public class View3DController {
         rotateX.setAngle(30);
         rotateY.setAngle(0);
         rotateZ.setAngle(0);
-        verticalScroll.setValue(30);
+        verticalScroll.setValue(40);
         horizontalScroll.setValue(0);
     }
 
@@ -102,14 +104,18 @@ public class View3DController {
         System.out.println("Adding Building");
         int boxHeight = 10;
 
-        VisualBuilding faulkner = new VisualBuilding(110, 110, 10, 200, 200, (50 - boxHeight));
-        objects3D.getChildren().add(faulkner.getGroup());
 
-        VisualBuilding house = new VisualBuilding(40, 50, 10, 100, 70, (50 - boxHeight));
+        for(Building b: ApplicationController.getHospital().getBuildings())
+        {
+            objects3D.getChildren().add(VisualBuilding.BuildingFactory(b).getGroup());
+        }
+       /* objects3D.getChildren().add(faulkner.getGroup());
+
+        VisualBuilding house = new VisualBuilding(40, 50, 10, 100, 70, 50-(boxHeight/2));
         objects3D.getChildren().add(house.getGroup());
 
-        VisualBuilding lot = new VisualBuilding(50, 80, 10, 90, 150, (50 - boxHeight));
-        objects3D.getChildren().add(lot.getGroup());
+        VisualBuilding lot = new VisualBuilding(50, 80, 10, 90, 150, 50-(boxHeight/2));
+        objects3D.getChildren().add(lot.getGroup());*/
 
 
         cam = new PerspectiveCamera();
