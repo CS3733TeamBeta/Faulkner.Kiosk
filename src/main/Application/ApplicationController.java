@@ -30,6 +30,7 @@ public class ApplicationController extends Application
     protected static final String MapEditorViewPath = "/map/MapEditorView.fxml";
     protected static final String UserMapViewerPath = "/map/UserMapView.fxml";
 
+
     Stage primaryStage;
 
     private static ApplicationController controller;
@@ -107,7 +108,6 @@ public class ApplicationController extends Application
     public void switchToLoginView() throws IOException {
        switchToScene(AdminLoginViewPath);
     }
-
 
     public void switchToModifyDirectoryView() throws IOException {
        switchToScene(ModifyDirectoryViewPath);

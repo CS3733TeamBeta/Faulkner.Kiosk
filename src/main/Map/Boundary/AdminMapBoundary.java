@@ -169,7 +169,6 @@ public class AdminMapBoundary extends MapBoundary
                     }
                 }
             }
-
         }
     }
 
