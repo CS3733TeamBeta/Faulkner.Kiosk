@@ -401,42 +401,34 @@ public class DatabaseManager {
 //    }
 
     private void loadHospital(Hospital h) throws SQLException {
-        loadCampus(h);
+        //loadCampus(h);
         loadBuilding(h);
         loadDestinationOffice(h);
         loadDoctors(h);
         loadEdges(h);
     }
 
-    private void loadCampus(Hospital h) throws SQLException{
-        PreparedStatement campusNodePS = conn.prepareStatement("SELECT * FROM NODE WHERE NODE_ID = ?");
-
-        HashMap<UUID, MapNode> mapNodes = new HashMap<>();
-
-        ResultSet rs = s.executeQuery("SELECT * FROM USER1.CAMPUS");
-
-        final int NODE_ID_COL = 1;
-
-        while(rs.next())
-        {
-            String node_UUID = rs.getString(1);
-            campusNodePS.setString(1, node_UUID);
-
-            ResultSet campusNodeRS = campusNodePS.executeQuery();
-
-            while(campusNodeRS.next())
-            {
-                MapNode tempNode = new MapNode(UUID.fromString(campusNodeRS.getString(1)),
-                        campusNodeRS.getDouble(2),
-                        campusNodeRS.getDouble(3),
-                        campusNodeRS.getInt(5));
-
-                //  for(tempNode)
-                mapNodes.put(UUID.fromString(node_UUID), tempNode);
-                h.getCampusFloor().addNode(tempNode);
-            }
-        }
-    }
+//    private void loadCampus(Hospital h) throws SQLException{
+//        PreparedStatement campusNodePS = conn.prepareStatement("SELECT * FROM NODE WHERE FLOOR_ID = ?");
+//
+//        HashMap<UUID, MapNode> mapNodes = new HashMap<>();
+//        // select all from node table with floor_id of Campus
+//        campusNodePS.setString(1, "Campus");
+//
+//        ResultSet campusNodeRS = campusNodePS.executeQuery();
+//
+//        while(campusNodeRS.next())
+//        {
+//            MapNode tempNode = new MapNode(UUID.fromString(campusNodeRS.getString(1)),
+//                    campusNodeRS.getDouble(2),
+//                    campusNodeRS.getDouble(3),
+//                    campusNodeRS.getInt(5));
+//
+//            //  for(tempNode)
+//            mapNodes.put(UUID.fromString(campusNodeRS.getString(1)), tempNode);
+//            h.getCampusFloor().addNode(tempNode);
+//        }
+//    }
 
     private void loadBuilding(Hospital h) throws SQLException
     {
@@ -446,11 +438,13 @@ public class DatabaseManager {
         Building b;
 
         while(rs.next()) {
+            String buildName = rs.getString(2);
             b = new Building(UUID.fromString(rs.getString(1)), rs.getString(2));
-            if (rs.getString(2) != "Campus") {
-                loadFloors(h, b);
+            loadFloors(h, b);
+            if (buildName != "Campus") {
                 h.addBuilding(b);
             }
+
         }
     }
 
@@ -467,13 +461,19 @@ public class DatabaseManager {
         while(floorRS.next()) {
             floor_id = UUID.fromString(floorRS.getString(1));
             f = new Floor(floor_id, floorRS.getInt(3));
-            f.setImageLocation(floorRS.getString(4));
+            if (b.getName() != "Campus") {
+                f.setImageLocation(floorRS.getString(4));
+                f.setBuilding(b);
 
-            loadNodes(h, f);
-            try {
-                b.addFloor(f);
-            } catch (Exception e) {
-                e.getMessage();
+                loadNodes(h, f);
+                try {
+                    b.addFloor(f);
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+            }
+            else {
+                loadNodes(h, f);
             }
         }
     }
@@ -564,9 +564,16 @@ public class DatabaseManager {
             }
         }
 
-        // add all nodes to floor
-        for (MapNode n : nodes.values()) {
-            f.addNode(n);
+        if (f.getBuilding().getName() == "Campus") {
+            for (MapNode n : nodes.values()) {
+                h.getCampusFloor().addNode(n);
+            }
+        }
+        else {
+            // add all nodes to floor
+            for (MapNode n : nodes.values()) {
+                f.addNode(n);
+            }
         }
     }
 
