@@ -519,7 +519,7 @@ public class UserMapViewController extends MapController
             MapNode n = iconEntityMap.get(iconFromPortal);
             iconEntityMap.remove(iconFromPortal);
 
-            importMapNode(n);
+            if(n!=null) importMapNode(n);
 
             portalTimeline.stop();
             portalTimeline=null;
