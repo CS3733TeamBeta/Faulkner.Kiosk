@@ -32,13 +32,20 @@ public class View3DController {
     @FXML
     private AnchorPane rootPane;
 
+    private Group objects3D;
+
+    private double mouseOldX, mouseOldY = 0;
+    private Rotate rotateX = new Rotate(0, Rotate.X_AXIS);
+    private Rotate rotateY = new Rotate(0, Rotate.Y_AXIS);
+    private Rotate rotateZ = new Rotate(0, Rotate.Z_AXIS);
+
     PerspectiveCamera cam;
     @FXML
     void buttonPush() {
         System.out.println("Adding Building");
         int boxHeight = 10;
         VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 200, (50 - boxHeight));
-        pane3D.getChildren().add(visualbuilding.getGroup());
+        objects3D.getChildren().add(visualbuilding.getGroup());
     }
 
     public View3DController()
@@ -51,6 +58,8 @@ public class View3DController {
 
         //rootPane = new AnchorPane();
         //pane3D = new AnchorPane();
+
+        objects3D = new Group();
 
          cam = new PerspectiveCamera();
         cam.setFieldOfView(50);
@@ -82,20 +91,78 @@ public class View3DController {
         material.setDiffuseMap(img);
 
         floor.setMaterial(material);
-        pane3D.getChildren().add(floor);
-        pane3D.getChildren().add(greenLight);
-        pane3D.getChildren().add(whiteLight);
+        objects3D.getChildren().add(floor);
+       objects3D.getChildren().add(greenLight);
+        objects3D.getChildren().add(whiteLight);
 
         // THIS IS THE BUILDING STUFF
 
         // THIS IS THE BUILDING STUFF
-
 
     }
 
     public void initCamera()
     {
-        rootPane.getScene().setCamera(cam);
+        Rectangle rectangle = new Rectangle();
+        rectangle.setX(200);
+        rectangle.setY(600);
+        rectangle.setWidth(200);
+        rectangle.setHeight(100);
+        rectangle.setFill(Color.GREY);
+
+        rootPane.getChildren().add(rectangle);
+
+        SubScene subScene = new SubScene(objects3D, 800, 800, true, SceneAntialiasing.BALANCED);
+        //subScene.setCamera(cam);
+        pane3D.getChildren().add(subScene);
+
+        final PhongMaterial redMaterial = new PhongMaterial();
+        redMaterial.setSpecularColor(Color.ORANGE);
+        redMaterial.setDiffuseColor(Color.RED);
+
+        Box myBox = new Box(100, 100, 100);
+        myBox.setTranslateX(400);
+        myBox.setTranslateY(300);
+        myBox.setTranslateZ(400);
+        myBox.setMaterial(redMaterial);
+
+        // to Set pivot points
+        rotateX.setPivotX(400);
+        rotateX.setPivotY(300);
+        rotateX.setPivotZ(400);
+
+        rotateY.setPivotX(400);
+        rotateY.setPivotY(300);
+        rotateY.setPivotZ(400);
+
+        rotateZ.setPivotX(400);
+        rotateZ.setPivotY(300);
+        rotateZ.setPivotZ(400);
+
+        // initialize the camera
+        //PerspectiveCamera camera = new PerspectiveCamera(false);
+        //camera.getTransforms().addAll (rotateX, rotateY, new Translate(0, 0, 0));
+        subScene.setCamera(cam);
+
+        objects3D.getChildren().add(myBox);
+
+        // events for rotation
+        /*rectangle.setOnMousePressed(event -> {
+            mouseOldX = event.getSceneX();
+            mouseOldY = event.getSceneY();
+        });
+
+        rectangle.setOnMouseDragged(event -> {
+            if(event.isPrimaryButtonDown())
+            {
+                rotateX.setAngle(rotateX.getAngle() - (event.getSceneY() - mouseOldY));
+                rotateY.setAngle(rotateY.getAngle() + (event.getSceneX() - mouseOldX));
+                mouseOldX = event.getSceneX();
+                mouseOldY = event.getSceneY();
+            }
+        });*/
+
+        button.toFront();
     }
 
 
