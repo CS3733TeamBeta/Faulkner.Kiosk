@@ -476,7 +476,7 @@ public class DatabaseManager {
             floor_id = UUID.fromString(floorRS.getString(1));
             f = new Floor(floor_id, floorRS.getInt(3));
             System.out.println("Loaded Floor" + floor_id);
-            if (b.getName() != "Campus") {
+            //if (!b.getName().equals("Campus")) {
                 f.setImageLocation(floorRS.getString(4));
                 f.setBuilding(b);
 
@@ -487,10 +487,10 @@ public class DatabaseManager {
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-            }
-            else {
-                loadNodes(h, f);
-            }
+            //}
+//            else {
+//                loadNodes(h, f);
+//            }
         }
     }
 
@@ -583,7 +583,7 @@ public class DatabaseManager {
             }
         }
 
-        if (f.getBuilding().getName() == "Campus") {
+        if (f.getBuilding().getName().equals("Campus")) {
             for (MapNode n : nodes.values()) {
                 h.getCampusFloor().addNode(n);
             }
@@ -626,19 +626,21 @@ public class DatabaseManager {
     {
         PreparedStatement destDoc = conn.prepareStatement("select DEST_ID from DEST_DOC where doc_id = ?");
 
-        rs = s.executeQuery("select * from USER1.DOCTOR order by NAME");
+        PreparedStatement docPS = conn.prepareStatement("SELECT * FROM DOCTOR");
 
-        while(rs.next()) {
+        ResultSet docRS = docPS.executeQuery();
+
+        while(docRS.next()) {
             ObservableList<Destination> locations = FXCollections.observableArrayList();
 
             // create new Doctor
-            Doctor tempDoc = new Doctor(UUID.fromString(rs.getString(1)),
-                    rs.getString(2),
-                    rs.getString(3),
-                    rs.getString(5),
+            Doctor tempDoc = new Doctor(UUID.fromString(docRS.getString(1)),
+                    docRS.getString(2),
+                    docRS.getString(3),
+                    docRS.getString(5),
                     locations);
 
-            destDoc.setString(1, rs.getString(1));
+            destDoc.setString(1, docRS.getString(1));
             ResultSet results = destDoc.executeQuery();
             // create doctor - destination relationships within the objects
             while(results.next()) {
@@ -651,7 +653,7 @@ public class DatabaseManager {
 //                            rs.getString(3),
 //                            rs.getString(5),
 //                            locations));
-            doctors.put(rs.getString(2), tempDoc);
+            doctors.put(docRS.getString(2), tempDoc);
 
         }
 
@@ -665,17 +667,19 @@ public class DatabaseManager {
     {
         PreparedStatement destOff = conn.prepareStatement("select * from OFFICES where DEST_ID = ?");
 
+        PreparedStatement destPS = conn.prepareStatement("SELECT * FROM DESTINATION");
 
-        rs = s.executeQuery("SELECT * FROM USER1.DESTINATION");
-        while (rs.next()) {
 
-            destOff.setString(1, rs.getString(1));
+        ResultSet destRS = destPS.executeQuery();
+        while (destRS.next()) {
+
+            destOff.setString(1, destRS.getString(1));
             // set of offices with particular destination ID foreign key
             ResultSet offRS = destOff.executeQuery();
             while(offRS.next()) {
-                Office tempOff = new Office(UUID.fromString(rs.getString(1)),
+                Office tempOff = new Office(UUID.fromString(offRS.getString(1)),
                         offRS.getString(2),
-                        (destinations.get(UUID.fromString(rs.getString(1)))));
+                        (destinations.get(UUID.fromString(destRS.getString(1)))));
 
                 // add office to hospital offices list
                 //offices.put(offRS.getString(2), tempOff);
@@ -683,7 +687,7 @@ public class DatabaseManager {
                 //System.out.println("******************************" + tempOff.getName());
 
                 // add office to list of offices for a destination
-                destinations.get(UUID.fromString(rs.getString(1))).addOffice(tempOff);
+                destinations.get(UUID.fromString(destRS.getString(1))).addOffice(tempOff);
             }
         }
 
