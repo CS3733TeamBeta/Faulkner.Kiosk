@@ -38,7 +38,6 @@ public class Main3D extends Application
 
         primaryStage.setScene(s);
 
-        ((View3DController)loader.getController()).initCamera();
         primaryStage.show();
     }
 
