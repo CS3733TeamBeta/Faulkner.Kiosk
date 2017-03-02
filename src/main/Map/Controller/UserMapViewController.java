@@ -1,6 +1,7 @@
 package main.Map.Controller;
 
 import com.jfoenix.controls.JFXComboBox;
+import com.sun.javafx.geom.Edge;
 import javafx.animation.SequentialTransition;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -34,6 +35,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+
+import static main.Application.ApplicationController.getHospital;
 
 /**
  * Created by jw97 on 2/16/2017.
@@ -82,7 +85,7 @@ public class UserMapViewController extends MapController
     {
         super();
 
-        userMapBoundary = new UserMapBoundary(ApplicationController.getHospital());
+        userMapBoundary = new UserMapBoundary(getHospital());
         boundary = userMapBoundary;
 
         nodeTextMap = HashBiMap.create();
@@ -351,16 +354,24 @@ public class UserMapViewController extends MapController
         }
 
         panToCenter();
+        movePath.setFill(Color.BLACK);
+        movePath.toFront();
+        mapItems.getChildren().add(movePath);
+
+
     }
 
     private void directionPaneView()
     {
+
 
         panel.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 e -> showDirections());
 
         panel.addEventHandler(MouseEvent.MOUSE_EXITED,
                 e -> hideDirections());
+        panel.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                e -> followPath());
     }
 
     public void playDirections(Guidance g)
@@ -420,7 +431,8 @@ public class UserMapViewController extends MapController
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException
     {
-        //followPath(newRoute);
+        newRoute = new Guidance(getHospital().getCurrentKiosk(), endPoint);
+        //followPath(panel.getStepIndex());
         panel.fillGuidance(newRoute);
 
         showDirections();
@@ -474,53 +486,38 @@ public class UserMapViewController extends MapController
         ApplicationController.getController().switchToLoginView();
     }
 
-    public void followPath (Guidance g) {
+    Circle movePath = new Circle(10);
 
+    public void followPath () {
 
-        Circle movePath = new Circle(10);
-        movePath.setFill(Color.BLACK);
-        movePath.toFront();
-        mapItems.getChildren().add(movePath);
+            int i = panel.getFollowIndex();
 
-        for (DirectionFloorStep fStep: g.getFloorSteps()) {
             SequentialTransition animation = new SequentialTransition();
-            MapNode n = g.getPathNodes().iterator().next();
+            MapNode n = newRoute.getPathNodes().get(i);
+            NodeEdge e = newRoute.getPathEdges().get(i);
             movePath.setCenterX(n.getPosX());
             movePath.setCenterY(n.getPosY());
-            for (DirectionStep step: fStep.getDirectionSteps()) {
 
-                for (NodeEdge edge: step.getStepEdges()) {
-                    if(n.getType().equals(NodeType.Connector))
-                    {
-                        System.out.println("Found connector");
-                    }
+            Timeline tl = new Timeline();
 
+            double endX = e.getOtherNode(n).getPosX();
+            double endY = e.getOtherNode(n).getPosY();
 
-                    Timeline tl = new Timeline();
-
-
-
-                    double endX = edge.getOtherNode(n).getPosX();
-                    double endY = edge.getOtherNode(n).getPosY();
+            KeyValue moveX = new KeyValue(movePath.centerXProperty(), endX);
+            KeyValue moveY = new KeyValue(movePath.centerYProperty(), endY);
+            KeyFrame kf = new KeyFrame(Duration.seconds(3), moveX, moveY);
+            tl.getKeyFrames().add(kf);
+            animation.getChildren().add(tl);
 
 
-                    KeyValue moveX = new KeyValue(movePath.centerXProperty(), endX);
-                    KeyValue moveY = new KeyValue(movePath.centerYProperty(), endY);
-                    KeyFrame kf = new KeyFrame(Duration.seconds(3), moveX, moveY);
-                    tl.getKeyFrames().add(kf);
-                    animation.getChildren().add(tl);
-
-                    n = edge.getOtherNode(n);
-
-                }
-
-            }
             System.out.println("playing");
             animation.play();
-        }
 
     }
+
+
 }
+
 
 
      /*
