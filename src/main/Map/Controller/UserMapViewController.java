@@ -127,6 +127,7 @@ public class UserMapViewController extends MapController
                     edgesOnFloor.getChildren().clear();
                     newRoute=null;
                     portal=null;
+                    hideDirections();
                 }
                 else
                 {
@@ -362,14 +363,13 @@ public class UserMapViewController extends MapController
     private void directionPaneView()
     {
 
-
-        panel.addEventHandler(MouseEvent.MOUSE_ENTERED,
+       /* panel.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 e -> showDirections());
 
         panel.addEventHandler(MouseEvent.MOUSE_EXITED,
                 e -> hideDirections());
         panel.addEventHandler(MouseEvent.MOUSE_CLICKED,
-                e -> followPath());
+                e -> followPath());*/
     }
 
     public void playLineDirections(DirectionFloorStep floorStep)
@@ -445,6 +445,11 @@ public class UserMapViewController extends MapController
 
     private void hideDirections()
     {
+        searchPanel.setVisible(true);
+        edgesOnFloor.getChildren().clear();
+        newRoute=null;
+        portal=null;
+
         Timeline slideHideDirections = new Timeline();
         KeyFrame keyFrame;
         slideHideDirections.setCycleCount(1);
@@ -460,6 +465,8 @@ public class UserMapViewController extends MapController
     private void showDirections()
     {
         panel.setVisible(true);
+        searchPanel.setVisible(false);
+
         Timeline slideHideDirections = new Timeline();
         KeyFrame keyFrame;
         slideHideDirections.setCycleCount(1);
@@ -486,13 +493,12 @@ public class UserMapViewController extends MapController
         showDirections();
         newRoute.printTextDirections();
 
-        for(DirectionFloorStep floorStep: newRoute.getFloorSteps())
+        if(newRoute!=null)
         {
-            if(floorStep.getFloor().getFloorNumber()==boundary.getCurrentFloor().getFloorNumber())
-            {
-                playLineDirections(floorStep);
-            }
+            userMapBoundary.changeFloor(newRoute.getFloorSteps().getFirst().getFloor());
         }
+
+        showDirections();
     }
 
     private void panToCenter()
