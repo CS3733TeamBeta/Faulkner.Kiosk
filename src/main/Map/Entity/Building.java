@@ -124,7 +124,7 @@ public class Building {
         return null;
     }
 
-    Floor getBaseFloor()
+    public Floor getBaseFloor()
     {
         for (Floor f : buildingFloors)
         {
