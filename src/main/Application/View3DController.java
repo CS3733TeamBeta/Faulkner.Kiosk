@@ -50,7 +50,7 @@ public class View3DController {
     private Group objects3D;
 
     private double mouseOldX, mouseOldY = 0;
-    private Rotate rotateX = new Rotate(30, 200, 200, 0, Rotate.X_AXIS);
+    private Rotate rotateX = new Rotate(90, 200, 200, 0, Rotate.X_AXIS);
     private Rotate rotateY = new Rotate(0, 200, 200, -200, Rotate.Y_AXIS);
     private Rotate rotateZ = new Rotate(0, 200, 200, 0, Rotate.Z_AXIS);
 
@@ -61,12 +61,10 @@ public class View3DController {
     }
 
     PerspectiveCamera cam;
+
     @FXML
     void newBuildingButtonPress() {
-        System.out.println("Adding Building");
-        int boxHeight = 10;
-        VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 200, (50 - boxHeight));
-        objects3D.getChildren().add(visualbuilding.getGroup());
+
     }
 
     @FXML
@@ -97,6 +95,19 @@ public class View3DController {
         objects3D = new Group();
 
         objects3D.getTransforms().addAll(rotateX, rotateY, rotateZ);
+
+        System.out.println("Adding Building");
+        int boxHeight = 10;
+
+        VisualBuilding faulkner = new VisualBuilding(110, 110, 10, 200, 200, (50 - boxHeight));
+        objects3D.getChildren().add(faulkner.getGroup());
+
+        VisualBuilding house = new VisualBuilding(40, 50, 10, 100, 70, (50 - boxHeight));
+        objects3D.getChildren().add(house.getGroup());
+
+        VisualBuilding lot = new VisualBuilding(50, 80, 10, 90, 150, (50 - boxHeight));
+        objects3D.getChildren().add(lot.getGroup());
+
 
         cam = new PerspectiveCamera();
         cam.setFieldOfView(50);
