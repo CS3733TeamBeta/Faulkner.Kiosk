@@ -75,7 +75,7 @@ public class AdminMapBoundary extends MapBoundary
         edge.updateCost();
         edges.add(edge);
         try {
-            new DatabaseManager().addEdgeToDB(edge);
+            ApplicationController.getCache().getDbManager().addEdgeToDB(edge);
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -102,7 +102,15 @@ public class Building {
 
     public Floor getBaseFloor()
     {
-        return buildingFloors.iterator().next();
+        for(Floor f: buildingFloors)
+        {
+            if(f.getFloorNumber()==1)
+            {
+                return f;
+            }
+        }
+
+        return null;
     }
 
     public Collection<Floor> getFloors()
