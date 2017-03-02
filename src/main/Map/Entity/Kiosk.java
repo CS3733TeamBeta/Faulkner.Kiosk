@@ -3,7 +3,6 @@ package main.Map.Entity;
 import main.Application.popover.KioskEditController;
 import org.controlsfx.control.PopOver;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -16,7 +15,7 @@ public class Kiosk extends MapNode{
 
     UUID kioskID;
 
-    private final String popOverEditFXML = "/Popup/KioskEditPopup.fxml";
+    private final String popOverEditFXML = "/Popover/KioskEditPopup.fxml";
 
     public Kiosk () {
         this.direction = "N";
