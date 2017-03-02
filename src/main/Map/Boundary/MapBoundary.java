@@ -1,8 +1,6 @@
 package main.Map.Boundary;
 
 import main.Map.Entity.*;
-import main.Application.Database.DataCache;
-import com.jfoenix.controls.JFXComboBox;
 import javafx.collections.*;
 
 import java.util.HashSet;
@@ -67,6 +65,7 @@ public class MapBoundary extends Observable
         }
         System.out.println(h.getCampusFloor().toString());
         campusFloor = h.getCampusFloor();
+        kiosk = getHospital().getCurrentKiosk();
     }
 
     public void setInitialFloor()
@@ -124,24 +123,15 @@ public class MapBoundary extends Observable
     {
         int nextFloorID = currentFloor.getFloorNumber() + incAmount;
 
-        if(kioskFloor==null)
+        if(currentBuilding==null)
         {
-            System.out.println("You have not specififed a kiosk");
+            System.out.println("You have not specififed a building");
         }
         else if(nextFloorID<=currentBuilding.getFloors().size() &&( nextFloorID >0))
         {
             try
             {
-                if(nextFloorID==1)
-                {
-                    changeFloor(getHospital().getCampusFloor());
-                }
-                else
-                {
-                    changeFloor(currentBuilding.getFloor(nextFloorID));
-                }
-
-                return nextFloorID;
+                changeFloor(currentBuilding.getFloor(nextFloorID));
             }
             catch (Exception e)
             {
