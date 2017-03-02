@@ -1,4 +1,6 @@
 package main.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.*;
 import javafx.scene.control.Button;
@@ -13,7 +15,10 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import main.Map.Controller.VisualBuilding;
+import javafx.scene.control.ScrollBar;
 
+import javax.swing.text.View;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 import static javafx.application.ConditionalFeature.FXML;
@@ -32,12 +37,25 @@ public class View3DController {
     @FXML
     private AnchorPane rootPane;
 
+    @FXML
+    private ScrollBar verticalScroll;
+
+    @FXML
+    private Scrollbar hScroll;
+
+
     private Group objects3D;
 
     private double mouseOldX, mouseOldY = 0;
     private Rotate rotateX = new Rotate(0, Rotate.X_AXIS);
     private Rotate rotateY = new Rotate(0, Rotate.Y_AXIS);
     private Rotate rotateZ = new Rotate(0, Rotate.Z_AXIS);
+
+
+    public View3DController()
+    {
+
+    }
 
     PerspectiveCamera cam;
     @FXML
@@ -48,15 +66,32 @@ public class View3DController {
         objects3D.getChildren().add(visualbuilding.getGroup());
     }
 
+
+
     @FXML
     public void initialize()   {
-        
+
+        verticalScroll.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
+                objects3D.getTransforms().add(new Rotate(verticalScroll.getValue(), 200, 200, -200, Rotate.Z_AXIS));
+            }
+        });
+
+        /*
+        hScroll.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
+                objects3D.getTransforms().add(new Rotate(horizontalScroll.getValue(), 200, 200, -200, Rotate.Z_AXIS));
+            }
+        });
+*/
+
         objects3D = new Group();
 
         cam = new PerspectiveCamera();
         cam.setFieldOfView(50);
         cam.setFarClip(10000);
         cam.setNearClip(0.01);
+
         cam.getTransforms().addAll(new Rotate(75,Rotate.X_AXIS),new Translate(-200,-200,-60));
 
         PointLight greenLight = new PointLight();
@@ -98,5 +133,8 @@ public class View3DController {
         subScene.setCamera(cam);
 
         button.toFront();
+
+
+
     }
 }
