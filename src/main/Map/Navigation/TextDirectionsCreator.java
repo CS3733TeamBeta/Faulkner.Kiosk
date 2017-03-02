@@ -115,7 +115,7 @@ public class TextDirectionsCreator {
                     if ((i == 0)  || fromNode.getType().toString().equals("Elevator")){
                         tempTextDirection = ("Turn " + directionChangeString + " and proceed forward");
                     } else {
-                            tempTextDirection = ("Take a " + directionChangeString + " at the next intersection");
+                        tempTextDirection = ("Take a " + directionChangeString + " at the next intersection");
                     }
                     tempMapNodes.add(fromNode);
                     if (vFlag) {
