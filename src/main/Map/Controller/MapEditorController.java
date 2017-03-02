@@ -509,7 +509,7 @@ MapEditorController extends MapController
 		updateEdgeLine(edge);
 	}
 
-	@FXML
+	/*@FXML
 	public void switchBuilding(){
 		String currentBuilding = boundary.getCurrentFloor().getBuilding().getName();
 		String newBuilding = buildingSelector.getValue();
@@ -534,7 +534,7 @@ MapEditorController extends MapController
 				}
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Called when an edge is removed
