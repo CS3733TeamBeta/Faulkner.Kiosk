@@ -5,6 +5,4 @@ package main.Application.Database;
  */
 public class CustomFilePath {
     public final static String myFilePath = "jdbc:derby:";
-    //public final static String myFilePath = "jdbc:derby:";
-
 }

@@ -38,6 +38,7 @@ public class Guidance extends Path {
     BufferedImage storeImg = null;
     BufferedImage currentKioskImg = null;
     BufferedImage kioskImg = null;
+    BufferedImage stairsImg = null;
 
 
     LinkedList<DirectionFloorStep> floorSteps;
@@ -55,6 +56,7 @@ public class Guidance extends Path {
             storeImg = createResizedCopy(ImageIO.read(new File("src/main/resources/icons/store.png")), imgRescaleSize, imgRescaleSize, true);
             currentKioskImg = createResizedCopy(ImageIO.read(new File("src/main/resources/icons/star.png")), imgRescaleSize, imgRescaleSize, true);
             kioskImg = createResizedCopy(ImageIO.read(new File("src/main/resources/icons/kiosk.png")), imgRescaleSize, imgRescaleSize, true);
+            stairsImg = createResizedCopy(ImageIO.read(new File("src/main/resources/icons/stairs.png")), imgRescaleSize, imgRescaleSize, true);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,6 +86,17 @@ public class Guidance extends Path {
 
     public Guidance (MapNode start, MapNode end, String kioskInputDirection) throws PathFindingException{
         super(start, end, false);
+        setImages();
+
+        kioskDirection = Guidance.directionToNum(kioskInputDirection);
+
+        floorSteps = new LinkedList<DirectionFloorStep>();
+        TextDirectionsCreator tdc = new TextDirectionsCreator(pathNodes, pathEdges, kioskDirection, false);
+        floorSteps = tdc.getDirectionFloorSteps();
+    }
+
+    public Guidance (MapNode start, MapNode end, String kioskInputDirection, boolean useStairs) throws PathFindingException{
+        super(start, end, false, useStairs);
         setImages();
 
         kioskDirection = Guidance.directionToNum(kioskInputDirection);
@@ -528,6 +541,9 @@ public class Guidance extends Path {
         }
         else if(t == NodeType.Kiosk){
             currentImage = kioskImg;
+        }
+        else if(t == NodeType.Stairs){
+            currentImage = stairsImg;
         }
         else{
             System.out.println("ERROR. NO NODE IMAGE SET. LOOKING FOR: " + t.toString());

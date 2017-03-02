@@ -146,4 +146,6 @@ public class NodeEdge
         return this.edgeID;
     }
 
+    public void setOpacity(double opacity){}
+
 }

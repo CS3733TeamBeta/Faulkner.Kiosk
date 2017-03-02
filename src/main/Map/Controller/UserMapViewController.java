@@ -3,8 +3,10 @@ package main.Map.Controller;
 import com.jfoenix.controls.JFXComboBox;
 import com.sun.javafx.geom.Edge;
 import javafx.animation.SequentialTransition;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import main.Application.ApplicationController;
 import main.Map.Boundary.MapBoundary;
 import main.Map.Boundary.UserMapBoundary;
@@ -35,6 +37,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
 import static main.Application.ApplicationController.getHospital;
 
@@ -47,6 +50,8 @@ public class UserMapViewController extends MapController
     Floor kioskFloor;
 
     Guidance newRoute;
+
+    @FXML CheckBox checkBoxUseStairs;
 
     @FXML
     private AnchorPane mapPane;
@@ -63,9 +68,79 @@ public class UserMapViewController extends MapController
     @FXML
     private Polygon floorDownArrow;
 
+    LinkedList<Line> edgesOnMap;
 
     @FXML
     private JFXComboBox<Building> buildingDropdown;
+
+    protected void findPathToNode(MapNode endPoint, boolean useStairs) throws PathFindingException
+    {
+        System.out.println("In path finding");
+        MapNode startPoint = boundary.getHospital().getCurrentKiosk();
+
+        if (startPoint == null)
+        {
+            System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
+            startPoint = boundary.getHospital().getCampusFloor().getFloorNodes().iterator().next();
+        }
+
+        if (endPoint == startPoint)
+        {
+            System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
+            return;//TODO add error message of some kind
+        }
+
+        try
+        {
+            if(useStairs){
+                System.out.println("TRYING TO USE STAIRS");
+            }
+            newRoute = new Guidance(startPoint, endPoint, "North", useStairs);
+        } catch (PathFindingException e)
+        {
+            return;//TODO add error message throw
+        }
+
+        drawRouteEdges();
+
+        /*
+        for(Building b : model.getHospital().getBuildings()) {
+            for(Floor f : b.getFloors()) {
+                for (NodeEdge edge : f.getFloorEdges()) {
+                    if (newRoute.getPathEdges().contains(edge)) {
+                        edge.changeOpacity(1.0);
+                        edge.changeColor(Color.RED);
+                    } else {
+                        edge.changeOpacity(0.0);
+                        edge.changeColor(Color.BLACK);
+                    }
+                }
+            }
+        }*/
+        panel.fillGuidance(newRoute);
+
+        showDirections();
+        newRoute.printTextDirections();
+    }
+
+    public void drawRouteEdges(){
+        for(Line l : edgesOnMap){
+            mapItems.getChildren().remove(l);
+        }
+        for(NodeEdge n: newRoute.getPathEdges())
+        {
+            MapNode one = n.getSource();
+            MapNode other = n.getTarget();
+            Line newLine = new Line(one.getPosX(), one.getPosY(), other.getPosX(), other.getPosY());
+            newLine.setOpacity(1.0);
+            newLine.setStroke(Color.RED);
+            edgesOnMap.add(newLine);
+            mapItems.getChildren().add(newLine);
+            newLine.toBack();
+        }
+        mapImage.toBack();
+    }
+
 
     Stage primaryStage;
 
@@ -117,7 +192,7 @@ public class UserMapViewController extends MapController
             { // deal with other types of mouse clicks
                 try
                 {
-                    findPathToNode(n);
+                    findPathToNode(n, checkBoxUseStairs.isSelected());
                 } catch (PathFindingException e)
                 {
                 }
@@ -195,11 +270,7 @@ public class UserMapViewController extends MapController
 
         if (newRoute != null)
         {
-            for (NodeEdge n : newRoute.getPathEdges())
-            {
-                // n.changeOpacity(1.0);
-                // n.changeColor(Color.RED);
-            }
+            drawRouteEdges();
         }
     }
 
@@ -228,11 +299,7 @@ public class UserMapViewController extends MapController
 
         if (newRoute != null)
         {
-            for (NodeEdge n : newRoute.getPathEdges())
-            {
-                //n.changeOpacity(1.0);
-                // n.changeColor(Color.RED);
-            }
+            drawRouteEdges();
         }
     }
 
@@ -352,6 +419,8 @@ public class UserMapViewController extends MapController
             userMapBoundary.changeBuilding(kiosk.getMyFloor().getBuilding());
             buildingDropdown.getSelectionModel().select(boundary.getCurrentBuilding());
         }
+
+        edgesOnMap = new LinkedList<>();
 
         panToCenter();
         movePath.setFill(Color.BLACK);
