@@ -329,7 +329,7 @@ public class UserMapViewController extends MapController
 
         directionPaneView();
 
-        boundary.setInitialFloor();
+        userMapBoundary.setInitFloor();
 
         curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
 
@@ -448,14 +448,13 @@ public class UserMapViewController extends MapController
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException
     {
-        //followPath(newRoute);
+        newRoute = userMapBoundary.findPathToNode(endPoint);
         panel.fillGuidance(newRoute);
 
         showDirections();
         newRoute.printTextDirections();
 
         playDirections(newRoute);
-
     }
 
     public void setStage(Stage s)

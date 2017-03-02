@@ -62,9 +62,6 @@ public class MapEditorController extends MapController
 	private TabPane FloorTabPane;
 
 	@FXML
-	private JFXComboBox<String> buildingSelector;
-
-	@FXML
 	private JFXComboBox<Kiosk> kioskSelector;
 
 	NodeEdge drawingEdge;
@@ -90,6 +87,7 @@ public class MapEditorController extends MapController
 	public void setBuilding(Building b)
 	{
 		boundary = new AdminMapBoundary(b, ApplicationController.getHospital());
+		initBoundary();
 
 		adminBoundary = (AdminMapBoundary)boundary;
 
@@ -102,13 +100,44 @@ public class MapEditorController extends MapController
 			}
 		});
 
-		for(Floor f: boundary.getCurrentFloor().getBuilding().getFloors()) //makes a floor tab for each floor in the building
+		for(Floor f: boundary.getCurrentBuilding().getFloors()) //makes a floor tab for each floor in the building
 		{
 			makeFloorTab(f);
 		}
 
 		FloorTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
+
+		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
+				(ov, oldvalue, newvalue) -> {
+					boundary.changeFloor(tabFloorMap.get(newvalue)); //called when floor tab is selected
+
+				});
+
 		FloorTabPane.getSelectionModel().select(0);
+
+		kioskSelector.setItems(boundary.getHospital().getKiosks());
+
+		if(ApplicationController.getHospital().getCurrentKiosk()!=null)
+		{
+			kioskSelector.getSelectionModel().select(ApplicationController.getHospital().getCurrentKiosk());
+		}
+
+		kioskSelector.getSelectionModel().selectedItemProperty().addListener(
+				(obs, old, newVal)->
+				{
+					DragIcon oldIcon = iconEntityMap.inverse().get(old);
+					DragIcon newIcon = iconEntityMap.inverse().get(newVal);
+
+					ApplicationController.getHospital().setCurrentKiosk(newVal);
+
+					if(oldIcon!=null)
+					{
+						oldIcon.setType(old.getType());
+					}
+
+					newIcon.setType(newVal.getType());
+				}
+		);
 	}
 
 	public MapEditorController()
@@ -293,14 +322,6 @@ public class MapEditorController extends MapController
 				dragInProgress = false;
 			}
 		});
-
-
-		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
-				(ov, oldvalue, newvalue) -> {
-					boundary.changeFloor(tabFloorMap.get(newvalue)); //called when floor tab is selected
-
-				});
-
 
 		target.setVisible(false); //hides target
 		target.setFitWidth(14); //sets width

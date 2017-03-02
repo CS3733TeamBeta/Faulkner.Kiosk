@@ -470,8 +470,9 @@ public class DatabaseManager {
             loadNodes(h, f);
             try {
                 b.addFloor(f);
+                f.setBuilding(b);
             } catch (Exception e) {
-                e.getMessage();
+                System.out.println(e.getMessage());
             }
         }
     }

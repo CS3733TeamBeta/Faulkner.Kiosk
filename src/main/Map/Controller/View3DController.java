@@ -107,8 +107,10 @@ public class View3DController {
 
         for(Building b: ApplicationController.getHospital().getBuildings())
         {
+            System.out.println("Parsing " + b.getName());
             objects3D.getChildren().add(VisualBuilding.BuildingFactory(b).getGroup());
         }
+
        /* objects3D.getChildren().add(faulkner.getGroup());
 
         VisualBuilding house = new VisualBuilding(40, 50, 10, 100, 70, 50-(boxHeight/2));

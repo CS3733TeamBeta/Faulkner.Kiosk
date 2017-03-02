@@ -19,9 +19,8 @@ public class AdminMapBoundary extends MapBoundary
     {
         super(h);
 
-        currentBuilding =b;
+        currentBuilding = b;
         currentFloor = b.getBaseFloor();
-
     }
 
     public Building getCurrentBuilding()
@@ -33,7 +32,7 @@ public class AdminMapBoundary extends MapBoundary
     @Override
     public void changeFloor(Floor f)
     {
-        super.changeFloor(f, true);
+        super.changeFloor(f);
 
         edges.clear();
 

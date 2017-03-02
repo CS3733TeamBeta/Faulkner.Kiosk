@@ -24,7 +24,7 @@ public class Destination extends MapNode {
     ObservableList<Doctor> doctors;
     ObservableList<Office> offices;
 
-    private final String popOverEditFXML = "/Map/Controller/Popover/DestinationEditPopup.fxml";
+    private final String popOverEditFXML = "/Popover/DestinationEditPopup.fxml";
 
     /**
      *  Creates a new Destination with an new empty info

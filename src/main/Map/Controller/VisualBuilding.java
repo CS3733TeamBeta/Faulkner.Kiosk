@@ -36,7 +36,7 @@ public class VisualBuilding
         }
         else if(b.getName().equals("Belkin"))
         {
-            return new VisualBuilding(40, 50, 10, 100, 70, 45);
+            return new VisualBuilding(b,40, 50, 10, 100, 70, 45);
         }
         else
         {
@@ -47,6 +47,10 @@ public class VisualBuilding
     public VisualBuilding(Building b, double width, double height, double depth, double startingTranslationX, double startingTranslationY, double startingTranslationZ)
     {
         this(width, height,depth,startingTranslationX,startingTranslationY, startingTranslationZ);
+
+        this.b = b;
+
+        System.out.print(b.getFloors());
 
         for(Floor f: b.getFloors())
         {

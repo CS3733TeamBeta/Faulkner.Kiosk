@@ -1,6 +1,9 @@
 package main.Map.Boundary;
 
+import main.Application.ApplicationController;
 import main.Application.Exceptions.PathFindingException;
+import main.Map.Entity.Building;
+import main.Map.Entity.Floor;
 import main.Map.Entity.Hospital;
 import main.Map.Entity.MapNode;
 import main.Map.Navigation.Guidance;
@@ -11,11 +14,40 @@ import main.Map.Navigation.Guidance;
 public class UserMapBoundary extends MapBoundary
 {
     Guidance currentGuidance;
+    protected Floor kioskFloor;
+    protected Floor campusFloor;
+
+    private MapNode kiosk;
+    private Building currentBuilding;
+
+    public void setInitFloor()
+    {
+        if(kioskFloor!=null)
+        {
+            changeFloor(kioskFloor);
+        }
+        else
+        {
+            Building b = ApplicationController.getHospital().getBuildings().iterator().next();
+
+            currentBuilding =b;
+
+            changeFloor(b.getFloor(1));
+        }
+    }
 
     public UserMapBoundary(Hospital h)
     {
         super(h);
 
+        if(h.getCurrentKiosk()!=null)
+        {
+            kiosk = getHospital().getCurrentKiosk();
+            kioskFloor = h.getCurrentKiosk().getMyFloor();
+            currentBuilding = kioskFloor.getBuilding();
+        }
+
+        campusFloor = h.getCampusFloor();
     }
 
     public Guidance findPathToNode(MapNode endPoint)
