@@ -1,12 +1,17 @@
 package main.Map.Controller;
 
+import com.jfoenix.controls.JFXComboBox;
+import javafx.animation.SequentialTransition;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import main.Application.ApplicationController;
 import main.Map.Boundary.MapBoundary;
+import main.Map.Boundary.UserMapBoundary;
+import main.Map.Entity.*;
+import main.Map.Navigation.DirectionFloorStep;
+import main.Map.Navigation.DirectionStep;
 import main.Map.Navigation.Guidance;
 import main.Application.Exceptions.PathFindingException;
-import main.Map.Entity.Floor;
-import main.Map.Entity.MapNode;
-import main.Map.Entity.NodeEdge;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import javafx.fxml.FXML;
@@ -43,19 +48,86 @@ public class UserMapViewController extends MapController
     @FXML CheckBox checkBoxUseStairs;
 
     @FXML
-    AnchorPane mapPane;
+    private AnchorPane mapPane;
 
     @FXML
-    AnchorPane mainPane;
+    private AnchorPane mainPane;
 
     @FXML
-    ScrollPane scrollPane;
+    private ScrollPane scrollPane;
 
     @FXML
-    Polygon floorUpArrow;
+    private Polygon floorUpArrow;
 
     @FXML
-    Polygon floorDownArrow;
+    private Polygon floorDownArrow;
+
+
+    @FXML
+    private JFXComboBox<Building> buildingDropdown;
+
+    protected void findPathToNode(MapNode endPoint, boolean useStairs) throws PathFindingException
+    {
+        if (newRoute != null) //hide stale path
+        {
+            for (NodeEdge n : newRoute.getPathEdges())
+            {
+                //   n.changeOpacity(0.0);
+                //  n.changeColor(Color.BLACK);
+            }
+        }
+
+        System.out.println("In path finding");
+        MapNode startPoint = boundary.getHospital().getCurrentKiosk();
+
+        if (startPoint == null)
+        {
+            System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
+            startPoint = boundary.getHospital().getCampusFloor().getFloorNodes().iterator().next();
+        }
+
+        if (endPoint == startPoint)
+        {
+            System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
+            return;//TODO add error message of some kind
+        }
+
+        try
+        {
+            if(useStairs){
+                System.out.println("TRYING TO USE STAIRS");
+            }
+            newRoute = new Guidance(startPoint, endPoint, "North", useStairs);
+        } catch (PathFindingException e)
+        {
+            return;//TODO add error message throw
+        }
+
+        /*for(NodeEdge n: newRoute.getPathEdges())
+        {
+          //  n.changeOpacity(1.0);
+            //n.changeColor(Color.RED);
+        }
+        /*
+        for(Building b : model.getHospital().getBuildings()) {
+            for(Floor f : b.getFloors()) {
+                for (NodeEdge edge : f.getFloorEdges()) {
+                    if (newRoute.getPathEdges().contains(edge)) {
+                        edge.changeOpacity(1.0);
+                        edge.changeColor(Color.RED);
+                    } else {
+                        edge.changeOpacity(0.0);
+                        edge.changeColor(Color.BLACK);
+                    }
+                }
+            }
+        }*/
+        panel.fillGuidance(newRoute);
+
+        showDirections();
+        newRoute.printTextDirections();
+    }
+
 
     Stage primaryStage;
 
@@ -69,10 +141,15 @@ public class UserMapViewController extends MapController
 
     BiMap<MapNode, Text> nodeTextMap;
 
+    private UserMapBoundary userMapBoundary;
+
     public UserMapViewController() throws Exception
     {
         super();
-        boundary = new MapBoundary(ApplicationController.getHospital());
+
+        userMapBoundary = new UserMapBoundary(ApplicationController.getHospital());
+        boundary = userMapBoundary;
+
         nodeTextMap = HashBiMap.create();
 
         initBoundary();
@@ -102,12 +179,9 @@ public class UserMapViewController extends MapController
             { // deal with other types of mouse clicks
                 try
                 {
-                    System.out.println("BOX IS " + checkBoxUseStairs.isSelected());
-                    findPathToNode(n,checkBoxUseStairs.isSelected());
-                }
-                catch (PathFindingException e)
+                    findPathToNode(n, checkBoxUseStairs.isSelected());
+                } catch (PathFindingException e)
                 {
-                    System.out.println("ERROR: COULD NOT COMPLETE PATH");
                 }
             }
         });
@@ -299,14 +373,13 @@ public class UserMapViewController extends MapController
 
         panel.mainPane.setPrefHeight(mainPane.getPrefHeight());
 
+        mainPane.getChildren().add(searchPanel);
+        searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
+        searchPanel.welcomeScreen();
+
         mainPane.getChildren().add(panel);
         panel.toFront();
         panel.relocate(mainPane.getPrefWidth() - 5, 0);
-
-        mainPane.getChildren().add(searchPanel);
-        searchPanel.toFront();
-        searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
-        searchPanel.relocate(0, mainPane.getHeight() + 350);
 
         panel.setCloseHandler(event ->
         {
@@ -316,12 +389,31 @@ public class UserMapViewController extends MapController
             searchPanel.welcomeScreen();
         });
 
-        panel.setVisible(false);
+        panel.setVisible(true);
+
         directionPaneView();
 
         boundary.setInitialFloor();
 
         curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
+
+        buildingDropdown.setItems(boundary.getHospital().getBuildings());
+        buildingDropdown.toFront();
+
+        buildingDropdown.selectionModelProperty().addListener(
+                (o, oldVal, newVal)->
+                {
+                    boundary.changeBuilding(newVal.getSelectedItem());
+                }
+        );
+
+        Kiosk kiosk = boundary.getHospital().getCurrentKiosk();
+
+        if(kiosk!=null)
+        {
+            userMapBoundary.changeBuilding(kiosk.getMyFloor().getBuilding());
+            buildingDropdown.getSelectionModel().select(boundary.getCurrentBuilding());
+        }
 
         panToCenter();
     }
@@ -357,8 +449,8 @@ public class UserMapViewController extends MapController
                 stepDrawing.getChildren().add(tL);
              }*/
 
-            //stepDrawing.play();
-           ////switch floors
+        //stepDrawing.play();
+        ////switch floors
         //}
     }
 
@@ -389,68 +481,6 @@ public class UserMapViewController extends MapController
 
         slideHideDirections.getKeyFrames().add(keyFrame);
         slideHideDirections.play();
-    }
-
-    protected void findPathToNode(MapNode endPoint, boolean useStairs) throws PathFindingException
-    {
-        if (newRoute != null) //hide stale path
-        {
-            for (NodeEdge n : newRoute.getPathEdges())
-            {
-                //   n.changeOpacity(0.0);
-                //  n.changeColor(Color.BLACK);
-            }
-        }
-
-        System.out.println("In path finding");
-        MapNode startPoint = boundary.getHospital().getCurrentKiosk();
-
-        if (startPoint == null)
-        {
-            System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
-            startPoint = boundary.getHospital().getCampusFloor().getFloorNodes().iterator().next();
-        }
-
-        if (endPoint == startPoint)
-        {
-            System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
-            return;//TODO add error message of some kind
-        }
-
-        try
-        {
-            if(useStairs){
-                System.out.println("TRYING TO USE STAIRS");
-            }
-            newRoute = new Guidance(startPoint, endPoint, "North", useStairs);
-        } catch (PathFindingException e)
-        {
-            return;//TODO add error message throw
-        }
-
-        /*for(NodeEdge n: newRoute.getPathEdges())
-        {
-          //  n.changeOpacity(1.0);
-            //n.changeColor(Color.RED);
-        }
-        /*
-        for(Building b : model.getHospital().getBuildings()) {
-            for(Floor f : b.getFloors()) {
-                for (NodeEdge edge : f.getFloorEdges()) {
-                    if (newRoute.getPathEdges().contains(edge)) {
-                        edge.changeOpacity(1.0);
-                        edge.changeColor(Color.RED);
-                    } else {
-                        edge.changeOpacity(0.0);
-                        edge.changeColor(Color.BLACK);
-                    }
-                }
-            }
-        }*/
-        panel.fillGuidance(newRoute);
-
-        showDirections();
-        newRoute.printTextDirections();
     }
 
     public void setStage(Stage s)
@@ -498,6 +528,53 @@ public class UserMapViewController extends MapController
     public void adminLogin() throws IOException
     {
         ApplicationController.getController().switchToLoginView();
+    }
+
+    public void followPath (Guidance g) {
+
+
+        Circle movePath = new Circle(10);
+        movePath.setFill(Color.BLACK);
+        movePath.toFront();
+        mapItems.getChildren().add(movePath);
+
+        for (DirectionFloorStep fStep: g.getFloorSteps()) {
+            SequentialTransition animation = new SequentialTransition();
+            MapNode n = g.getPathNodes().iterator().next();
+            movePath.setCenterX(n.getPosX());
+            movePath.setCenterY(n.getPosY());
+            for (DirectionStep step: fStep.getDirectionSteps()) {
+
+                for (NodeEdge edge: step.getStepEdges()) {
+                    if(n.getType().equals(NodeType.Connector))
+                    {
+                        System.out.println("Found connector");
+                    }
+
+
+                    Timeline tl = new Timeline();
+
+
+
+                    double endX = edge.getOtherNode(n).getPosX();
+                    double endY = edge.getOtherNode(n).getPosY();
+
+
+                    KeyValue moveX = new KeyValue(movePath.centerXProperty(), endX);
+                    KeyValue moveY = new KeyValue(movePath.centerYProperty(), endY);
+                    KeyFrame kf = new KeyFrame(Duration.seconds(3), moveX, moveY);
+                    tl.getKeyFrames().add(kf);
+                    animation.getChildren().add(tl);
+
+                    n = edge.getOtherNode(n);
+
+                }
+
+            }
+            System.out.println("playing");
+            animation.play();
+        }
+
     }
 }
 

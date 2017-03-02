@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import java.lang.Double?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -9,6 +10,7 @@
 <?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.CheckBox?>
 <AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Map.Controller.UserMapViewController">
    <children>
       <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" pannable="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -16,7 +18,7 @@
           <AnchorPane fx:id="mapPane" minHeight="0.0" minWidth="0.0" prefHeight="1656.0" prefWidth="2300.0" />
         </content>
       </ScrollPane>
-      <Polygon id="floorUpArrow" fx:id="floorUpArrow" fill="#1978d126" layoutX="43.0" layoutY="48.0" onMouseClicked="#clickedUpArrow" onMouseEntered="#floorUpChangeOpacity" onMouseExited="#floorUpResetOpacity" opacity="0.4" scaleX="0.35" scaleY="0.35" stroke="BLACK" strokeType="INSIDE" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="-12.0">
+      <Polygon id="floorUpArrow" fx:id="floorUpArrow" fill="#697d8e36" layoutX="50.0" layoutY="52.0" onMouseClicked="#clickedUpArrow" onMouseEntered="#floorUpChangeOpacity" onMouseExited="#floorUpResetOpacity" opacity="0.7" scaleX="0.35" scaleY="0.35" stroke="BLACK" strokeType="INSIDE" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="90.0">
          <points>
             <Double fx:value="-50.0" />
             <Double fx:value="40.0" />
@@ -26,12 +28,12 @@
             <Double fx:value="-60.0" />
          </points>
       </Polygon>
-      <Label fx:id="curFloorLabel" text="Floor 1" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="70.0">
+      <Label fx:id="curFloorLabel" layoutX="20.0" layoutY="74.0" text="Floor 1" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="175.0">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Polygon id="floorDownArrow" fx:id="floorDownArrow" fill="#1d79cf26" layoutX="43.0" layoutY="240.0" onMouseClicked="#clickedDownArrow" onMouseEntered="#floorDownChangeOpacity" onMouseExited="#floorDownResetOpacity" opacity="0.4" rotate="180.0" scaleX="0.35" scaleY="0.35" stroke="BLACK" strokeType="INSIDE" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="78.0">
+      <Polygon id="floorDownArrow" fx:id="floorDownArrow" fill="#687c8c36" layoutX="50.0" layoutY="142.0" onMouseClicked="#clickedDownArrow" onMouseEntered="#floorDownChangeOpacity" onMouseExited="#floorDownResetOpacity" opacity="0.74" rotate="180.0" scaleX="0.35" scaleY="0.35" stroke="BLACK" strokeType="INSIDE" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="180.0">
          <points>
             <Double fx:value="-50.0" />
             <Double fx:value="40.0" />
@@ -46,5 +48,8 @@
             <Image url="@../icons/admin_login.png" />
          </image>
       </ImageView>
+      <Label fx:id="useStairsField" text="Use stairs:" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="170.0"></Label>
+      <CheckBox id="checkBoxUseStairs" fx:id="checkBoxUseStairs" layoutX="1040.0" layoutY="1040.0" AnchorPane.leftAnchor="70.0" AnchorPane.topAnchor="170.0"></CheckBox>
+      <JFXComboBox fx:id="buildingDropdown" prefHeight="30.0" prefWidth="135.0" style="-fx-background-color: rgba(220, 220, 220, 0.3);" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
    </children>
 </AnchorPane>
