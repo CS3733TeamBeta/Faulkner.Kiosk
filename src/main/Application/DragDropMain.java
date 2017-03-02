@@ -14,68 +14,80 @@ public class DragDropMain extends Application
 	int offset = 200;
 	//@TODO  Add code to calculate offset
 
+	private double mouseOldX, mouseOldY = 0;
+	private Rotate rotateX = new Rotate(0, Rotate.X_AXIS);
+	private Rotate rotateY = new Rotate(0, Rotate.Y_AXIS);
+	private Rotate rotateZ = new Rotate(0, Rotate.Z_AXIS);
+
 	@Override
-	public void start(Stage primaryStage)
+	public void start(Stage stage)
 	{
-		final PerspectiveCamera cam = new PerspectiveCamera();
-		cam.setFieldOfView(50);
-		cam.setFarClip(10000);
-		cam.setNearClip(0.01);
-		cam.getTransforms().addAll(new Rotate(75,Rotate.X_AXIS),new Translate(-200,-200,-60));
+		final PhongMaterial redMaterial = new PhongMaterial();
+		redMaterial.setSpecularColor(Color.ORANGE);
+		redMaterial.setDiffuseColor(Color.RED);
 
-		final Group root = new Group();
+		Box myBox = new Box(100, 100, 100);
+		myBox.setTranslateX(400);
+		myBox.setTranslateY(300);
+		myBox.setTranslateZ(400);
+		myBox.setMaterial(redMaterial);
 
-		PointLight greenLight = new PointLight();
-		greenLight.setColor(Color.WHITE);
-		greenLight.setTranslateX(200);
-		greenLight.setTranslateY(200);
-		greenLight.setTranslateZ(-200);
+		Rectangle rectangle = new Rectangle();
+		rectangle.setX(200);
+		rectangle.setY(600);
+		rectangle.setWidth(200);
+		rectangle.setHeight(100);
+		rectangle.setFill(Color.GREY);
 
-		PointLight whiteLight = new PointLight();
-		greenLight.setColor(Color.WHITE);
-		greenLight.setTranslateX(300);
-		greenLight.setTranslateY(700);
-		greenLight.setTranslateZ(-400);
+		// to Set pivot points
+		rotateX.setPivotX(400);
+		rotateX.setPivotY(300);
+		rotateX.setPivotZ(400);
 
-		final Box floor = new Box(500, 360, 1);
-		floor.setTranslateX(200);
-		floor.setTranslateY(200);
-		floor.setTranslateZ(50);
+		rotateY.setPivotX(400);
+		rotateY.setPivotY(300);
+		rotateY.setPivotZ(400);
 
-		Image img = new Image(this.getClass().getResourceAsStream("/map/FloorMaps/1_thefirstfloor.png"));
-
-		PhongMaterial material = new PhongMaterial(Color.WHITE);
-		material.setSpecularPower(10000);
-		material.setDiffuseMap(img);
-
-		floor.setMaterial(material);
-		root.getChildren().add(floor);
-		root.getChildren().add(greenLight);
-		root.getChildren().add(whiteLight);
-
-		// THIS IS THE BUILDING STUFF
-		int boxHeight = 10;
-		VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 200, (floor.getTranslateZ()-boxHeight));
-		root.getChildren().add(visualbuilding.getGroup());
+		rotateZ.setPivotX(400);
+		rotateZ.setPivotY(300);
+		rotateZ.setPivotZ(400);
 
 
-		VisualBuilding visualbuilding2 = new VisualBuilding(80, 80, 10, 100, 100, (floor.getTranslateZ()-boxHeight));
-		root.getChildren().add(visualbuilding2.getGroup());
+		// initialize the camera
+		PerspectiveCamera camera = new PerspectiveCamera(false);
+		camera.getTransforms().addAll (rotateX, rotateY, new Translate(0, 0, 0));
 
+		Group root = new Group();
+		Group subRoot = new Group();
 
-		// THIS IS THE BUILDING STUFF
-
-		final Rectangle rectangle = new Rectangle(400, 400, Color.TRANSPARENT);
-		rectangle.setMouseTransparent(true);
-		rectangle.setDepthTest(DepthTest.DISABLE);
 		root.getChildren().add(rectangle);
 
-		final Scene scene = new Scene(root, 800, 600, true);
-		scene.setCamera(cam);
+		Scene scene = new Scene(root, 1000, 1000, true);
+		SubScene subScene = new SubScene(subRoot, 800, 800, true, SceneAntialiasing.BALANCED);
 
-		primaryStage.setScene(scene);
-		primaryStage.setTitle("Drag&DropTest");
-		primaryStage.show();
+		subScene.setCamera(camera);
+		subRoot.getChildren().add(myBox);
+		root.getChildren().add(subScene);
+
+		// events for rotation
+		rectangle.setOnMousePressed(event -> {
+			mouseOldX = event.getSceneX();
+			mouseOldY = event.getSceneY();
+		});
+
+		rectangle.setOnMouseDragged(event -> {
+			if(event.isPrimaryButtonDown())
+			{
+				rotateX.setAngle(rotateX.getAngle() - (event.getSceneY() - mouseOldY));
+				rotateY.setAngle(rotateY.getAngle() + (event.getSceneX() - mouseOldX));
+				mouseOldX = event.getSceneX();
+				mouseOldY = event.getSceneY();
+			}
+		});
+
+		stage.setTitle("JavaFX 3D Object");
+		stage.setScene(scene);
+		stage.show();
 	}
 
 	public static void main(String[] args)

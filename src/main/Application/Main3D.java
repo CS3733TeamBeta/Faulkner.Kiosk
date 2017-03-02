@@ -35,8 +35,10 @@ public class Main3D extends Application
         }
 
         Scene s = new Scene(root, 800, 600, true);
-        loader.getController();
+
         primaryStage.setScene(s);
+
+        ((View3DController)loader.getController()).initCamera();
         primaryStage.show();
     }
 

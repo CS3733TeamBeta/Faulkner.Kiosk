@@ -32,6 +32,7 @@ public class View3DController {
     @FXML
     private AnchorPane rootPane;
 
+    PerspectiveCamera cam;
     @FXML
     void buttonPush() {
         System.out.println("Adding Building");
@@ -51,7 +52,7 @@ public class View3DController {
         //rootPane = new AnchorPane();
         //pane3D = new AnchorPane();
 
-        final PerspectiveCamera cam = new PerspectiveCamera();
+         cam = new PerspectiveCamera();
         cam.setFieldOfView(50);
         cam.setFarClip(10000);
         cam.setNearClip(0.01);
@@ -89,13 +90,12 @@ public class View3DController {
 
         // THIS IS THE BUILDING STUFF
 
-        buttonPush();
 
-        final Rectangle rectangle = new Rectangle(400, 400, Color.TRANSPARENT);
-        rectangle.setMouseTransparent(true);
-        rectangle.setDepthTest(DepthTest.DISABLE);
-        pane3D.getChildren().add(rectangle);
+    }
 
+    public void initCamera()
+    {
+        rootPane.getScene().setCamera(cam);
     }
 
 
