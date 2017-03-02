@@ -60,12 +60,12 @@ public class MapBoundary extends Observable
 
         if(h.getCurrentKiosk()!=null)
         {
+            kiosk = getHospital().getCurrentKiosk();
             kioskFloor = h.getCurrentKiosk().getMyFloor();
             currentBuilding = kioskFloor.getBuilding();
         }
-        System.out.println(h.getCampusFloor().toString());
+
         campusFloor = h.getCampusFloor();
-        kiosk = getHospital().getCurrentKiosk();
     }
 
     public void setInitialFloor()
@@ -90,7 +90,7 @@ public class MapBoundary extends Observable
 
     public void changeFloor(Floor f)
     {
-        if(!(f.getFloorNumber()==1 && currentFloor.getFloorNumber()==1)) //if not already on campus floor
+        if(currentFloor==null || !(f.getFloorNumber()==1 && currentFloor==campusFloor)) //if not already on campus floor
         {
             currentFloor = f;
 

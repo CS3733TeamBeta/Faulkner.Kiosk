@@ -25,7 +25,7 @@ public class UserMapBoundary extends MapBoundary
         if (startPoint == null)
         {
             System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
-            startPoint = getHospital().getCampusFloor().getFloorNodes().iterator().next();
+            startPoint = campusFloor.getFloorNodes().iterator().next();
         }
 
         if (endPoint == startPoint)
