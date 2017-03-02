@@ -2,8 +2,10 @@ package main.Map.Controller;
 
 import com.jfoenix.controls.JFXComboBox;
 import javafx.animation.SequentialTransition;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import main.Application.ApplicationController;
 import main.Map.Boundary.MapBoundary;
 import main.Map.Boundary.UserMapBoundary;
@@ -34,6 +36,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
 /**
  * Created by jw97 on 2/16/2017.
@@ -62,21 +65,13 @@ public class UserMapViewController extends MapController
     @FXML
     private Polygon floorDownArrow;
 
+    LinkedList<Line> edgesOnMap;
 
     @FXML
     private JFXComboBox<Building> buildingDropdown;
 
     protected void findPathToNode(MapNode endPoint, boolean useStairs) throws PathFindingException
     {
-        if (newRoute != null) //hide stale path
-        {
-            for (NodeEdge n : newRoute.getPathEdges())
-            {
-                //   n.changeOpacity(0.0);
-                //  n.changeColor(Color.BLACK);
-            }
-        }
-
         System.out.println("In path finding");
         MapNode startPoint = boundary.getHospital().getCurrentKiosk();
 
@@ -103,11 +98,22 @@ public class UserMapViewController extends MapController
             return;//TODO add error message throw
         }
 
-        /*for(NodeEdge n: newRoute.getPathEdges())
-        {
-          //  n.changeOpacity(1.0);
-            //n.changeColor(Color.RED);
+        for(Line l : edgesOnMap){
+            mapItems.getChildren().remove(l);
         }
+        for(NodeEdge n: newRoute.getPathEdges())
+        {
+            MapNode one = n.getSource();
+            MapNode other = n.getTarget();
+            Line newLine = new Line(one.getPosX(), one.getPosY(), other.getPosX(), other.getPosY());
+            newLine.setOpacity(1.0);
+            newLine.setStroke(Color.RED);
+            edgesOnMap.add(newLine);
+            mapItems.getChildren().add(newLine);
+            newLine.toBack();
+        }
+        mapImage.toBack();
+
         /*
         for(Building b : model.getHospital().getBuildings()) {
             for(Floor f : b.getFloors()) {
@@ -414,6 +420,8 @@ public class UserMapViewController extends MapController
             userMapBoundary.changeBuilding(kiosk.getMyFloor().getBuilding());
             buildingDropdown.getSelectionModel().select(boundary.getCurrentBuilding());
         }
+
+        edgesOnMap = new LinkedList<>();
 
         panToCenter();
     }
