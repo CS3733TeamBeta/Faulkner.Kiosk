@@ -16,7 +16,7 @@
 <fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.9" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #f2f2f2;" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox prefHeight="200.0" prefWidth="100.0" />
-      <HBox layoutX="25.0" layoutY="168.0" prefHeight="138.0" prefWidth="1075.0" spacing="46.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="180.0">
+      <HBox layoutX="25.0" layoutY="168.0" prefHeight="138.0" prefWidth="1075.0" spacing="46.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="180.0">
          <children>
             <ImageView fx:id="doctorIcon" fitHeight="80.0" fitWidth="108.0" onMouseClicked="#doctorSelected" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
                <HBox.margin>
@@ -63,7 +63,7 @@
             <DropShadow color="#00000051" height="11.51" offsetY="4.0" radius="6.1075" width="14.92" />
          </effect>
       </TextField>
-      <Text fx:id="welcomeGreeting" layoutX="386.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to Faulkner Hospital!" textAlignment="CENTER" textOrigin="CENTER" AnchorPane.leftAnchor="386.0" AnchorPane.rightAnchor="352.8125">
+      <Text fx:id="welcomeGreeting" layoutX="386.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to Faulkner Hospital!" textAlignment="CENTER" textOrigin="CENTER" AnchorPane.leftAnchor="386.0" AnchorPane.rightAnchor="386.0" AnchorPane.topAnchor="20.0">
          <font>
             <Font size="32.0" />
          </font>
@@ -88,7 +88,7 @@
             <TableColumn fx:id="deptNavigateCol" prefWidth="149.33331298828125" text="Navigate to Here" />
          </columns>
       </TableView>
-      <HBox layoutX="220.0" layoutY="273.0" prefHeight="62.0" prefWidth="792.0" spacing="42.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="290.0">
+      <HBox layoutX="220.0" layoutY="273.0" prefHeight="62.0" prefWidth="792.0" spacing="42.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="290.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Doctors">
                <font>
@@ -124,7 +124,7 @@
             </Text>
          </children>
       </HBox>
-      <ImageView fx:id="searchSymbolPicture" fitHeight="41.0" fitWidth="41.0" layoutX="943.0" layoutY="96.0">
+      <ImageView fx:id="searchSymbolPicture" fitHeight="41.0" fitWidth="41.0" layoutX="943.0" layoutY="96.0" AnchorPane.bottomAnchor="563.0" AnchorPane.leftAnchor="943.0" AnchorPane.rightAnchor="216.0" AnchorPane.topAnchor="96.0">
          <image>
             <Image url="@MapViewer/magnifying_glass.png" />
          </image>

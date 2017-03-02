@@ -4,13 +4,8 @@ import Application.ApplicationController;
 import Directory.Boundary.UserDirectoryBoundary;
 import Directory.Entity.Doctor;
 import Map.Entity.Destination;
-import Map.Entity.Hospital;
 import Map.Entity.Office;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TableColumn;
@@ -31,8 +26,11 @@ import java.io.IOException;
  * Created by jw97 on 2/28/2017.
  */
 public class UserSearchPanel extends AnchorPane {
+    TranslateTransition translateTransition =
+            new TranslateTransition(Duration.millis(600), this);
     UserDirectoryBoundary boundary;
-    Boolean defaultMode = true;
+    ColorAdjust original = new ColorAdjust();
+    Boolean welcome = true;
 
     int numClickDr;
     int numClickFood;
@@ -107,36 +105,35 @@ public class UserSearchPanel extends AnchorPane {
     TableColumn<Doctor, Doctor> docNavigateCol;
 
     private void initialize() {
-        defaultProperty();
-
         docNameCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         jobTitleCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
-
-        searchBar.textProperty().addListener((observableValue, oldValue, newValue) ->
-        {
-            doctorTable.setItems(boundary.setSearchListForDoc(newValue));
-        });
-
-        if (boundary.getDoctors() != null) {
-            doctorTable.setItems(boundary.setSearchListForDoc(null));
-        }
 
         deptNameCol.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
         deptLocCol.setCellValueFactory(new PropertyValueFactory<Office, Destination>("destination"));
 
-        searchBar.textProperty().addListener((observableValue, oldValue, newValue) ->
-        {
-            loadSearchMenu();
-            deptTable.setItems(boundary.setSearchListForDept(newValue));
+        searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (deptTable.isVisible()) {
+                deptTable.setItems(boundary.setSearchListForDept(newValue));
+            } else {
+                doctorTable.setItems(boundary.setSearchListForDoc(newValue));
+            }
         });
 
-        if (boundary.getDepartments() != null) {
-            deptTable.setItems(boundary.setSearchListForDept(null));
+        if (boundary.getDoctors() != null) {
+            doctorTable.setItems(boundary.getDoctors());
         }
 
-        searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            deptTable.setItems(boundary.setSearchListForDept(newValue));
-            doctorTable.setItems(boundary.setSearchListForDoc(newValue));
+        if (boundary.getDepartments() != null) {
+            deptTable.setItems(boundary.getDepartments());
+        }
+
+        navigateArrow.setOnMouseClicked(e -> {
+           if (welcome) {
+               hideWelcomeScreen();
+           } else {
+               welcomeScreen();
+           }
+            navigateArrow.setRotate(180);
         });
     }
 
@@ -151,7 +148,6 @@ public class UserSearchPanel extends AnchorPane {
 
 
     private void defaultProperty() {
-        ColorAdjust original = new ColorAdjust();
         original.setContrast(0);
         this.setStyle("-fx-background-color:  #f2f2f2;");
 
@@ -165,40 +161,46 @@ public class UserSearchPanel extends AnchorPane {
         numClickFood = -1;
         numClickBath = -1;
         numClickHelp = -1;
+
+        // By default, only the departments table is shown
+        deptTable.setVisible(true);
+
+        // Set all other tables false
+        doctorTable.setVisible(false);
+
+        searchBar.setPromptText("Search for Departments");
     }
 
     public void welcomeScreen() {
-        TranslateTransition translateTransition =
-                new TranslateTransition(Duration.millis(600), this);
+        welcomeGreeting.setVisible(true);
+        defaultProperty();
+        initialize();
 
-        translateTransition.setToY(0);
-    }
+        welcome = true;
 
-    private void searchBarView() {
-
+        translateTransition.setToY(350);
+        translateTransition.play();
     }
 
     private void loadSearchMenu() {
-        TranslateTransition translateTransition =
-                new TranslateTransition(Duration.millis(600), this);
-
         translateTransition.setToY(0);
 
-        navigateArrow.setRotate(180);
+        translateTransition.play();
     }
 
-    private void deSelect(ImageView imageView) {
-        imageView.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                defaultProperty();
-            }
-        });
+    @FXML
+    private void hideWelcomeScreen() {
+        this.setStyle("-fx-background-color:  transparent;");
+        welcomeGreeting.setVisible(false);
+        welcome = false;
+        translateTransition.setToY(350 + 175);
+
+        translateTransition.play();
     }
 
     @FXML
     private void doctorSelected() {
         selectionMode(doctorIcon);
-        deSelect(doctorIcon);
         numClickDr = numClickDr * (-1);
         displayTable();
     }
@@ -220,8 +222,7 @@ public class UserSearchPanel extends AnchorPane {
     }
 
     @FXML
-    private void helpSelected()
-    {
+    private void helpSelected() {
         selectionMode(helpIcon);
         numClickHelp = numClickHelp * (-1);
         displayTable();
@@ -251,13 +252,7 @@ public class UserSearchPanel extends AnchorPane {
         }
         if ((numClickDr == -1) && (numClickBath == -1) && (numClickFood == -1) && (numClickHelp == -1))
         {
-            // By default, only the departments table is shown
-            deptTable.setVisible(true);
-
-            // Set all other tables false
-            doctorTable.setVisible(false);
-
-            searchBar.setPromptText("Search for Departments");
+            defaultProperty();
         }
     }
 }
