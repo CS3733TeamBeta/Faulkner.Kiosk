@@ -1,5 +1,6 @@
 package main.Map.Controller;
 
+import javafx.scene.SubScene;
 import main.Application.ApplicationController;
 import main.Directory.Boundary.UserDirectoryBoundary;
 import main.Map.Entity.Destination;
@@ -95,6 +96,20 @@ public class UserSearchPanel extends AnchorPane {
 
     @FXML
     TableColumn<Doctor, Doctor> docNavigateCol;
+
+    @FXML
+    Tooltip tltpSearch;
+
+    @FXML
+    Tooltip tltpDoctor;
+
+    @FXML
+    Tooltip tltpDepartments;
+
+    @FXML
+    ScrollPane scrlInstructions;
+
+
 
 
 
@@ -235,6 +250,7 @@ public class UserSearchPanel extends AnchorPane {
     private void doctorSelected() {
         selectionMode(doctorIcon);
         numClickDr = numClickDr * (-1);
+
         displayTable();
     }
 
@@ -269,6 +285,8 @@ public class UserSearchPanel extends AnchorPane {
             searchBar.setPromptText("Search for doctors");
             deptTable.setVisible(false);
             doctorTable.setVisible(true);
+
+
         }
         if (numClickBath == 1)
         {
@@ -283,6 +301,10 @@ public class UserSearchPanel extends AnchorPane {
         if (numClickHelp == 1)
         {
             searchBar.setPromptText("Search for help");
+            scrlInstructions.setVisible(true);
+
+
+
         }
         if ((numClickDr == -1) && (numClickBath == -1) && (numClickFood == -1) && (numClickHelp == -1))
         {
