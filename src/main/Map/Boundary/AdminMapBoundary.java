@@ -1,10 +1,10 @@
 package main.Map.Boundary;
 
 
-import main.Application.Database.DatabaseManager;
-import main.Map.Entity.*;
 import javafx.geometry.Point2D;
 import main.Application.ApplicationController;
+import main.Map.Entity.*;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -75,7 +75,7 @@ public class AdminMapBoundary extends MapBoundary
         edge.updateCost();
         edges.add(edge);
         try {
-            new DatabaseManager().addEdgeToDB(edge);
+            ApplicationController.getCache().getDbManager().addEdgeToDB(edge);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -100,7 +100,7 @@ public class AdminMapBoundary extends MapBoundary
         else {
             currentFloor.addNode(n);
             try {
-                new DatabaseManager().addNodeToDB(n);
+                ApplicationController.getCache().getDbManager().addNodeToDB(n);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -108,7 +108,7 @@ public class AdminMapBoundary extends MapBoundary
 
         if (n instanceof Destination) {
             try {
-                new DatabaseManager().addDestToDB((Destination)n);
+                ApplicationController.getCache().getDbManager().addDestToDB((Destination)n);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -118,7 +118,7 @@ public class AdminMapBoundary extends MapBoundary
         {
             getHospital().getKiosks().add((Kiosk)n);
             try {
-                new DatabaseManager().addKioskToDB((Kiosk)n);
+                ApplicationController.getCache().getDbManager().addKioskToDB((Kiosk)n);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
