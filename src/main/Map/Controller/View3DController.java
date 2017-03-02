@@ -75,7 +75,7 @@ public class View3DController {
         rotateX.setAngle(30);
         rotateY.setAngle(0);
         rotateZ.setAngle(0);
-        verticalScroll.setValue(30);
+        verticalScroll.setValue(40);
         horizontalScroll.setValue(0);
     }
 
