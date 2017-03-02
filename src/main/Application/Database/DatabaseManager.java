@@ -488,6 +488,9 @@ public class DatabaseManager {
                     System.out.println(e.getMessage());
                 }
             }
+            else {
+                loadNodes(h, f);
+            }
         }
     }
 
