@@ -1,7 +1,12 @@
 package main.Map.Controller;
 
 
+import com.jfoenix.controls.JFXListCell;
 import javafx.event.EventType;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.text.Text;
+import javafx.util.Callback;
 import main.Application.Exceptions.PathFindingException;
 import main.Map.Navigation.DirectionFloorStep;
 import main.Map.Navigation.DirectionStep;
@@ -62,7 +67,7 @@ public class UserDirectionsPanel extends AnchorPane
     private GridPane locationGridPane;
 
     @FXML
-    private JFXListView<Label> directionsListView;
+    private JFXListView<String> directionsListView;
 
     @FXML
     private ImageView previousButton;
@@ -85,6 +90,32 @@ public class UserDirectionsPanel extends AnchorPane
     public void setCloseHandler(EventHandler<? super MouseEvent> e)
     {
         closeButton.setOnMouseClicked(e);
+    }
+
+
+    @FXML
+    public void initialize()
+    {
+        directionsListView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> list) {
+                final ListCell cell = new JFXListCell() {
+                    private Text text;
+
+                    @Override
+                    public void updateItem(Object item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (!isEmpty()) {
+                            text = new Text(item.toString());
+                            text.setWrappingWidth(directionsListView.getPrefWidth());
+                            setGraphic(text);
+                        }
+                    }
+                };
+
+                return cell;
+            }
+        });
     }
 
     public void setGuidance(Guidance g)
@@ -124,9 +155,9 @@ public class UserDirectionsPanel extends AnchorPane
     {
         directionsListView.getItems().clear();
 
-        for (DirectionStep aDirectionStep: step.getDirectionSteps()) {
-            Label l = new Label((aDirectionStep.toString()));
-            directionsListView.getItems().add(l);
+        for (DirectionStep aDirectionStep: step.getDirectionSteps())
+        {
+            directionsListView.getItems().add(aDirectionStep.toString());
         }
     }
 

@@ -272,22 +272,27 @@ public class UserSearchPanel extends AnchorPane {
     }
 
     @FXML
-    private void hideWelcomeScreen() {
-        final Animation animation = new Transition() {
+    public void hideWelcomeScreen() {
 
-            {
-                setCycleDuration(Duration.millis(500));
-                setInterpolator(Interpolator.LINEAR);
-            }
+        if(!transparent)
+        {
+            final Animation animation = new Transition() {
 
-            @Override
-            protected void interpolate(double frac) {
-                Color vColor = new Color(1, 1, 1, .8 - (frac-.2));
-                pane.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
-            }
-        };
-        transparent = true;
-        animation.play();
+                {
+                    setCycleDuration(Duration.millis(500));
+                    setInterpolator(Interpolator.LINEAR);
+                }
+
+                @Override
+                protected void interpolate(double frac) {
+                    Color vColor = new Color(1, 1, 1, .8 - (frac-.2));
+                    pane.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
+                }
+            };
+
+            animation.play();
+            transparent = true;
+        }
 
         welcomeGreeting.setVisible(false);
         welcome = false;

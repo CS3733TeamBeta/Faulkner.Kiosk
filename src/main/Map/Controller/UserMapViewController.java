@@ -2,6 +2,7 @@ package main.Map.Controller;
 
 import com.jfoenix.controls.JFXComboBox;
 import javafx.animation.SequentialTransition;
+import javafx.scene.effect.Glow;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -86,6 +87,8 @@ public class UserMapViewController extends MapController
     DirectionFloorStep lastFloorStep  = null;
     DragIcon portal = null; //the thing a person can click on to transport them to the next step of directions
 
+    Timeline portalTimeline;
+
     public UserMapViewController() throws Exception
     {
         super();
@@ -127,6 +130,9 @@ public class UserMapViewController extends MapController
                     edgesOnFloor.getChildren().clear();
                     newRoute=null;
                     portal=null;
+                    portalTimeline.stop();
+                    portalTimeline=null;
+
                     hideDirections();
                 }
                 else
@@ -148,6 +154,34 @@ public class UserMapViewController extends MapController
         mapItems.toFront();
 
         return icon;
+    }
+
+    private void makePortal(DragIcon icon)
+    {
+        portalTimeline = new Timeline();
+        portalTimeline.setCycleCount(1000);
+
+        final KeyValue kvA = new KeyValue(icon.scaleXProperty(), 1.4);
+        final KeyFrame kfA = new KeyFrame(Duration.millis(900), kvA);
+
+        final KeyValue kv1 = new KeyValue(icon.scaleYProperty(), 1.4);
+        final KeyFrame kf1 = new KeyFrame(Duration.millis(900), kv1);
+
+        Glow glow = new Glow();
+        glow.setLevel(0);
+
+        icon.setEffect(glow);
+
+        final KeyValue kv2 = new KeyValue(glow.levelProperty(), 1);
+        final KeyFrame kf2 = new KeyFrame(Duration.millis(900), kv2);
+
+        portalTimeline.getKeyFrames().add(kfA);
+        portalTimeline.getKeyFrames().add(kf1);
+        portalTimeline.getKeyFrames().add(kf2);
+
+        portalTimeline.setAutoReverse(true);
+
+        portalTimeline.play();
     }
 
     @Override
@@ -303,7 +337,7 @@ public class UserMapViewController extends MapController
             hideDirections();
             // Ben, you might want to consider reset the direction panel here
             panel.setVisible(false);
-            searchPanel.welcomeScreen();
+            searchPanel.hideWelcomeScreen();
         });
 
         panel.setVisible(true);
@@ -415,29 +449,59 @@ public class UserMapViewController extends MapController
             lastFloorStep = floorStep;
         }
 
-        stepDrawing.setOnFinished(e->
+        if(!newRoute.getFloorSteps().getLast().equals(lastFloorStep)) //if its not the last floor step
         {
-            MapNode mapNode = floorStep.getNodesForThisFloor().getLast();
-            DragIcon icon = iconEntityMap.inverse().get(mapNode);
-
-            if(icon!=null)
+            stepDrawing.setOnFinished(e->
             {
-                portal = icon;
+                MapNode mapNode = floorStep.getNodesForThisFloor().getLast();
+                DragIcon icon = iconEntityMap.inverse().get(mapNode);
 
-                icon.addEventHandler(MouseEvent.MOUSE_CLICKED, event->
+                makePortal(icon);
+
+                if (icon != null)
                 {
-                    System.out.println("Handler called");
+                    portal = icon;
 
-                    if(newRoute!=null && lastFloorStep!=null)
+
+                    icon.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
                     {
-                        int index = newRoute.getFloorSteps().indexOf(lastFloorStep);
-                        DirectionFloorStep nextStep = newRoute.getFloorSteps().get(index+1);
+                        System.out.println("Handler called");
 
-                        userMapBoundary.changeFloor(nextStep.getFloor());
-                    }
-                });
-            }
-        });
+                        if (newRoute != null && lastFloorStep != null)
+                        {
+                            int index = newRoute.getFloorSteps().indexOf(lastFloorStep);
+                            DirectionFloorStep nextStep = newRoute.getFloorSteps().get(index + 1);
+
+                            userMapBoundary.changeFloor(nextStep.getFloor());
+                        }
+                    });
+                }
+            });
+        }
+        else
+        {
+            stepDrawing.setOnFinished(e-> //just pop a bit to show you're done!
+            {
+                portalTimeline = new Timeline();
+
+                MapNode mapNode = floorStep.getNodesForThisFloor().getLast();
+                DragIcon icon = iconEntityMap.inverse().get(mapNode);
+
+                final KeyValue kvA = new KeyValue(icon.scaleXProperty(), 1.4);
+                final KeyFrame kfA = new KeyFrame(Duration.millis(200), kvA);
+
+                final KeyValue kv1 = new KeyValue(icon.scaleYProperty(), 1.4);
+                final KeyFrame kf1 = new KeyFrame(Duration.millis(200), kv1);
+
+                portalTimeline.getKeyFrames().add(kfA);
+                portalTimeline.getKeyFrames().add(kf1);
+
+                portalTimeline.setAutoReverse(true);
+                portalTimeline.setCycleCount(2);
+                portalTimeline.play();
+
+            });
+        }
 
 
         stepDrawing.play();
@@ -448,6 +512,19 @@ public class UserMapViewController extends MapController
         searchPanel.setVisible(true);
         edgesOnFloor.getChildren().clear();
         newRoute=null;
+
+        if(portalTimeline!=null)
+        {
+            DragIcon iconFromPortal =portal;
+            MapNode n = iconEntityMap.get(iconFromPortal);
+            iconEntityMap.remove(iconFromPortal);
+
+            importMapNode(n);
+
+            portalTimeline.stop();
+            portalTimeline=null;
+        }
+
         portal=null;
 
         Timeline slideHideDirections = new Timeline();
