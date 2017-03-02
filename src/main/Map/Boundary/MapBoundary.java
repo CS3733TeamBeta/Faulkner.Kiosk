@@ -1,12 +1,6 @@
 package main.Map.Boundary;
 
-import main.Map.Entity.Hospital;
-import main.Map.Entity.NodeType;
-import main.Map.Entity.Floor;
-import main.Map.Entity.MapNode;
-import main.Map.Entity.NodeEdge;
-import main.Application.Database.DataCache;
-import com.jfoenix.controls.JFXComboBox;
+import main.Map.Entity.*;
 import javafx.collections.*;
 
 import java.util.HashSet;
@@ -22,14 +16,31 @@ public class MapBoundary extends Observable
 
     protected Floor currentFloor;
     private Floor kioskFloor;
+    protected Building currentBuilding;
 
+    Floor campusFloor;
     MapNode kiosk;
 
     protected Hospital h;
 
+    public void changeBuilding(Building b)
+    {
+        currentBuilding = b;
+
+        if(currentFloor.getFloorNumber()!=1) //if not already on campus floor
+        {
+            changeFloor(b.getFloor(1));
+        }
+    }
+
     public static enum UpdateType
     {
         FloorChange
+    }
+
+    public Building getCurrentBuilding()
+    {
+        return currentBuilding;
     }
 
     public void addNodeSetChangeHandler(SetChangeListener<MapNode> mapChangeListener)
@@ -49,8 +60,12 @@ public class MapBoundary extends Observable
 
         if(h.getCurrentKiosk()!=null)
         {
+            kiosk = getHospital().getCurrentKiosk();
             kioskFloor = h.getCurrentKiosk().getMyFloor();
+            currentBuilding = kioskFloor.getBuilding();
         }
+
+        campusFloor = h.getCampusFloor();
     }
 
     public void setInitialFloor()
@@ -61,7 +76,11 @@ public class MapBoundary extends Observable
             {
                 changeFloor(h.getCurrentKiosk().getMyFloor());
             }
-            else changeFloor(h.getBuildings().iterator().next().getFloor(1));
+            else{
+                changeFloor(h.getBuildings().iterator().next().getFloor(1));
+            }
+
+            currentBuilding = currentFloor.getBuilding();
         }
         catch (Exception e)
         {
@@ -71,20 +90,23 @@ public class MapBoundary extends Observable
 
     public void changeFloor(Floor f)
     {
-        currentFloor = f;
-
-        nodesOnMap.clear();
-
-        for(MapNode n: currentFloor.getFloorNodes())
+        if(currentFloor==null || !(f.getFloorNumber()==1 && currentFloor==campusFloor)) //if not already on campus floor
         {
-            if(shouldBeOnMap(n))
-            {
-                nodesOnMap.add(n);
-            }
-        }
+            currentFloor = f;
 
-        setChanged();
-        notifyObservers(UpdateType.FloorChange);
+            nodesOnMap.clear();
+
+            for(MapNode n: currentFloor.getFloorNodes())
+            {
+                if(shouldBeOnMap(n))
+                {
+                    nodesOnMap.add(n);
+                }
+            }
+
+            setChanged();
+            notifyObservers(UpdateType.FloorChange);
+        }
     }
 
     protected boolean shouldBeOnMap(MapNode n)
@@ -101,24 +123,15 @@ public class MapBoundary extends Observable
     {
         int nextFloorID = currentFloor.getFloorNumber() + incAmount;
 
-        if(kioskFloor==null)
+        if(currentBuilding==null)
         {
-            System.out.println("You have not specififed a kiosk");
+            System.out.println("You have not specififed a building");
         }
-        else if(nextFloorID<=kioskFloor.getBuilding().getFloors().size() &&( nextFloorID >0))
+        else if(nextFloorID<=currentBuilding.getFloors().size() &&( nextFloorID >0))
         {
             try
             {
-                if(nextFloorID==1)
-                {
-                    changeFloor(getHospital().getCampusFloor());
-                }
-                else
-                {
-                    changeFloor(kioskFloor.getBuilding().getFloor(nextFloorID));
-                }
-
-                return nextFloorID;
+                changeFloor(currentBuilding.getFloor(nextFloorID));
             }
             catch (Exception e)
             {
@@ -161,10 +174,15 @@ public class MapBoundary extends Observable
 
     }
 
+    public Floor getCampusFloor(){
+        return campusFloor;
+    }
+
     public Floor getCurrentFloor()
     {
         return currentFloor;
     }
+
 
     public ObservableSet<MapNode> mapElements()
     {

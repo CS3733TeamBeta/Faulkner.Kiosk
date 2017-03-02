@@ -42,7 +42,7 @@ public class CampusFloor extends Floor
     {
         try
         {
-            Floor ground = b.getFloor(1);
+            Floor ground = b.getBaseFloor();
 
             for(MapNode n: ground.getFloorNodes())
             {
