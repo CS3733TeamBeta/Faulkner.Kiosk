@@ -8,18 +8,13 @@ import Map.Entity.Office;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 /**
@@ -52,9 +47,6 @@ public class UserSearchPanel extends AnchorPane {
             throw new RuntimeException(exception);
         }
     }
-
-    @FXML
-    AnchorPane mainPane;
 
     @FXML
     Text welcomeGreeting;
@@ -128,13 +120,42 @@ public class UserSearchPanel extends AnchorPane {
             deptTable.setItems(boundary.getDepartments());
         }
 
-        navigateArrow.setOnMouseClicked(e -> {
-           if (welcome) {
-               hideWelcomeScreen();
-           } else {
-               welcomeScreen();
-           }
-            navigateArrow.setRotate(180);
+        docLocsCol.setCellFactory(col -> {
+            ComboBox<Destination> loc = new ComboBox<Destination>();
+
+            TableCell<Doctor, Destination> cell = new TableCell<Doctor, Destination>() {
+                @Override
+                public void updateItem(Destination item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        loc.setItems(getTableView().getItems().get(getIndex()).getDestinations());
+                        loc.setMaxWidth(docLocsCol.getMaxWidth());
+                        setGraphic(loc);
+                    }
+                }
+            };
+
+            return cell;
+        });
+
+        docNavigateCol.setCellFactory(col -> {
+            Button navigateButton = new Button("Go");
+            TableCell<Doctor, Doctor> cell = new TableCell<Doctor, Doctor>() {
+                @Override
+                public void updateItem(Doctor d, boolean empty) {
+                    super.updateItem(d, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        setGraphic(navigateButton);
+                    }
+                }
+            };
+
+            return cell;
         });
     }
 
@@ -169,6 +190,7 @@ public class UserSearchPanel extends AnchorPane {
         // Set all other tables false
         doctorTable.setVisible(false);
 
+        searchBar.clear();
         searchBar.setPromptText("Search for Departments");
     }
 
@@ -178,6 +200,15 @@ public class UserSearchPanel extends AnchorPane {
         initialize();
 
         welcome = true;
+
+        navigateArrow.setOnMouseClicked(e -> {
+            if (welcome) {
+                hideWelcomeScreen();
+            } else {
+                welcomeScreen();
+            }
+            navigateArrow.setRotate(180);
+        });
 
         translateTransition.setToY(350);
         translateTransition.play();
