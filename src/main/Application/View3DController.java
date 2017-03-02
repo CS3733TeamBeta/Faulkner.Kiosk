@@ -29,7 +29,10 @@ import static javafx.application.ConditionalFeature.FXML;
 public class View3DController {
 
     @FXML
-    private Button button;
+    private Button newBuildingButton;
+
+    @FXML
+    private Button resetCameraButton;
 
     @FXML
     private AnchorPane pane3D;
@@ -47,7 +50,7 @@ public class View3DController {
     private Group objects3D;
 
     private double mouseOldX, mouseOldY = 0;
-    private Rotate rotateX = new Rotate(0, 200, 200, 0, Rotate.X_AXIS);
+    private Rotate rotateX = new Rotate(30, 200, 200, 0, Rotate.X_AXIS);
     private Rotate rotateY = new Rotate(0, 200, 200, -200, Rotate.Y_AXIS);
     private Rotate rotateZ = new Rotate(0, 200, 200, 0, Rotate.Z_AXIS);
 
@@ -59,14 +62,21 @@ public class View3DController {
 
     PerspectiveCamera cam;
     @FXML
-    void buttonPush() {
+    void newBuildingButtonPress() {
         System.out.println("Adding Building");
         int boxHeight = 10;
         VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 200, (50 - boxHeight));
         objects3D.getChildren().add(visualbuilding.getGroup());
     }
 
-
+    @FXML
+    void resetCameraButtonPress() {
+        rotateX.setAngle(30);
+        rotateY.setAngle(0);
+        rotateZ.setAngle(0);
+        horizontalScroll.setValue(30);
+        verticalScroll.setValue(0);
+    }
 
     @FXML
     public void initialize(){
@@ -133,7 +143,8 @@ public class View3DController {
 
         subScene.setCamera(cam);
 
-        button.toFront();
+        resetCameraButton.toFront();
+        newBuildingButton.toFront();
 
 
 
