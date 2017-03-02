@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="775.0" prefWidth="1190.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Map.Controller.View3DController">
+   <children>
+      <Button fx:id="newBuildingButton" layoutX="797.0" layoutY="83.0" mnemonicParsing="false" onAction="#newBuildingButtonPress" text="New Building" AnchorPane.rightAnchor="25.0" />
+      <AnchorPane fx:id="pane3D" layoutX="14.0" layoutY="15.0" prefHeight="745.0" prefWidth="969.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="220.0" AnchorPane.topAnchor="15.0" />
+      <ScrollBar fx:id="verticalScroll" layoutX="783.0" layoutY="198.0" orientation="VERTICAL" value="50.0" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="10.0" />
+      <ScrollBar fx:id="horizontalScroll" layoutX="1002.0" layoutY="624.0" value="50.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="200.0" />
+      <Button fx:id="resetCameraButton" layoutX="789.0" layoutY="142.0" mnemonicParsing="false" onAction="#resetCameraButtonPress" text="Reset Camera" AnchorPane.rightAnchor="25.0" />
+      <JFXButton layoutX="1037.0" layoutY="441.0" prefHeight="28.0" prefWidth="118.0" style="-fx-background-color: #3F51B5;" text="New Building" textFill="WHITE" />
+   </children>
+</AnchorPane>

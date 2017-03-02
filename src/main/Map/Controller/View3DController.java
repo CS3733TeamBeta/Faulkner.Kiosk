@@ -1,4 +1,4 @@
-package main.Application;
+package main.Map.Controller;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -98,12 +98,14 @@ public class View3DController {
 
         objects3D.getTransforms().addAll(rotateX, rotateY, rotateZ);
 
+
         cam = new PerspectiveCamera();
         cam.setFieldOfView(50);
         cam.setFarClip(10000);
-        cam.setNearClip(0.01);
+        cam.setNearClip(0.1);
 
-        cam.getTransforms().addAll(new Rotate(75,Rotate.X_AXIS),new Translate(-200,-200,-60));
+
+        cam.getTransforms().addAll(new Rotate(75,Rotate.X_AXIS),new Translate(-300,-300,100));
 
         PointLight greenLight = new PointLight();
         greenLight.setColor(Color.WHITE);
@@ -137,7 +139,9 @@ public class View3DController {
 
         // THIS IS THE BUILDING STUFF
 
-        SubScene subScene = new SubScene(objects3D, 800, 800, true, SceneAntialiasing.BALANCED);
+        SubScene subScene = new SubScene(objects3D, pane3D.prefWidthProperty().doubleValue(), pane3D.prefHeightProperty().doubleValue(), true, SceneAntialiasing.BALANCED);
+        subScene.widthProperty().bind(pane3D.widthProperty());
+        subScene.heightProperty().bind(pane3D.heightProperty());
 
         pane3D.getChildren().add(subScene);
 
