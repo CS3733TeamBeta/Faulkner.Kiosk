@@ -112,6 +112,7 @@ public class UserSearchPanel extends AnchorPane {
         deptLocCol.setCellValueFactory(new PropertyValueFactory<Office, Destination>("destination"));
 
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            loadSearchMenu();
             if (deptTable.isVisible()) {
                 deptTable.setItems(boundary.setSearchListForDept(newValue));
             } else {
