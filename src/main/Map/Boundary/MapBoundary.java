@@ -102,6 +102,7 @@ public class MapBoundary extends Observable
             try
             {
                 changeFloor(currentBuilding.getFloor(nextFloorID));
+                return nextFloorID;
             }
             catch (Exception e)
             {

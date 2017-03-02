@@ -208,21 +208,11 @@ public class UserMapViewController extends MapController
 
         if (newFloorNum != -1)
         {
-            //   renderFloorMap();
             curFloorLabel.setText("Floor " + newFloorNum);
         }
 
         floorDownArrow.setVisible(true);
 
-       /* if(newFloorNum>boundary.getKioskBuilding().getFloors().size()-1)
-        {
-            floorUpArrow.setVisible(false);
-        }
-        else
-        {
-            floorUpArrow.setVisible(true);
-            floorDownArrow.setVisible(true);
-        }*/
 
         if (newRoute != null)
         {
