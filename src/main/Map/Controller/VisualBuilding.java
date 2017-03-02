@@ -18,6 +18,8 @@ public class VisualBuilding
     Box baseFloor;
     ArrayList<Box> floors;
     Box topFloor;
+    double opacity = 0.5;
+
 
     public VisualBuilding(double width, double height, double depth, double startingTranslationX, double startingTranslationY, double startingTranslationZ)
     {
@@ -29,7 +31,8 @@ public class VisualBuilding
         baseFloor.setTranslateY(startingTranslationY);
         baseFloor.setTranslateZ(startingTranslationZ);
 
-        baseFloor.setMaterial(new PhongMaterial(Color.RED));
+
+        baseFloor.setMaterial(new PhongMaterial(Color.rgb(255, 0, 0, opacity)));
 
         setUpFloor(baseFloor);
 
@@ -65,7 +68,7 @@ public class VisualBuilding
     {
         Box floor = new Box(baseFloor.getWidth(), baseFloor.getHeight(), baseFloor.getDepth());
 
-        floor.setMaterial(new PhongMaterial((Color.color(Math.random(), Math.random(), Math.random()))));
+        floor.setMaterial(new PhongMaterial((Color.color(Math.random(), Math.random(), Math.random(), opacity))));
 
         floor.setTranslateX(baseFloor.getTranslateX());
         floor.setTranslateY(baseFloor.getTranslateY());

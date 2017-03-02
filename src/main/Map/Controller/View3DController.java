@@ -61,6 +61,7 @@ public class View3DController {
     }
 
     PerspectiveCamera cam;
+
     @FXML
     void newBuildingButtonPress() {
         System.out.println("Adding Building");
@@ -97,6 +98,18 @@ public class View3DController {
         objects3D = new Group();
 
         objects3D.getTransforms().addAll(rotateX, rotateY, rotateZ);
+
+        System.out.println("Adding Building");
+        int boxHeight = 10;
+
+        VisualBuilding faulkner = new VisualBuilding(110, 110, 10, 200, 200, (50 - boxHeight));
+        objects3D.getChildren().add(faulkner.getGroup());
+
+        VisualBuilding house = new VisualBuilding(40, 50, 10, 100, 70, (50 - boxHeight));
+        objects3D.getChildren().add(house.getGroup());
+
+        VisualBuilding lot = new VisualBuilding(50, 80, 10, 90, 150, (50 - boxHeight));
+        objects3D.getChildren().add(lot.getGroup());
 
 
         cam = new PerspectiveCamera();
