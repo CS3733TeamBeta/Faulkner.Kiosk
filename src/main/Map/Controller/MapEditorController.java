@@ -89,38 +89,26 @@ public class MapEditorController extends MapController
 
 	public void setBuilding(Building b)
 	{
-		boundary = new AdminMapBoundary(b,  ApplicationController.getHospital());
+		boundary = new AdminMapBoundary(b, ApplicationController.getHospital());
+
 		adminBoundary = (AdminMapBoundary)boundary;
 
-		kioskSelector.setItems(boundary.getHospital().getKiosks());
-
-		kioskSelector.getSelectionModel().selectedItemProperty().addListener(
-				(o, old, newSelection)->
-				{
-					adminBoundary.setCurrentKiosk(newSelection);
-
-					iconEntityMap.inverse().get(newSelection).setType(newSelection.getType());
-					if(iconEntityMap.inverse().get(old) != null && old.getType() != null) {
-						iconEntityMap.inverse().get(old).setType(old.getType());
-					}
-				});
-
-		initBoundary();
+		adminBoundary.addEdgeSetChangeHandler(change ->
+		{
+			if (change.wasAdded()) {
+				onEdgeAdded(change.getElementAdded());
+			} else if (change.wasRemoved()) {
+				onEdgeRemoved(change.getElementRemoved());
+			}
+		});
 
 		for(Floor f: boundary.getCurrentFloor().getBuilding().getFloors()) //makes a floor tab for each floor in the building
 		{
 			makeFloorTab(f);
 		}
 
-		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
-				(ov, newvalue, oldvalue)->{
-					boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
-
-				});
-
 		FloorTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
 		FloorTabPane.getSelectionModel().select(0);
-		//int kioskIndex = boundary.getHospital().getKiosks().indexOf(boundary.getHospital().getCurrentKiosk());
 	}
 
 	public MapEditorController()
@@ -243,18 +231,6 @@ public class MapEditorController extends MapController
 
 		FloorTabPane.getTabs().clear();
 
-
-		adminBoundary.addEdgeSetChangeHandler(change ->
-		{
-			if (change.wasAdded()) {
-				onEdgeAdded(change.getElementAdded());
-			} else if (change.wasRemoved()) {
-				onEdgeRemoved(change.getElementRemoved());
-			}
-		});
-
-		adminBoundary.setInitialFloor();
-
 		buildRadialMenu(); //instantiates and populates the radial menu
 
 		menu.shownProperty().addListener((e, oldValue, newValue) -> //when the menu is closed, hide the target icon
@@ -316,11 +292,14 @@ public class MapEditorController extends MapController
 			} else if (dragInProgress) {
 				dragInProgress = false;
 			}
-			else if(dragInProgress)
-			{
-				dragInProgress = false;
-			}
 		});
+
+
+		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
+				(ov, oldvalue, newvalue) -> {
+					boundary.changeFloor(tabFloorMap.get(newvalue)); //called when floor tab is selected
+
+				});
 
 
 		target.setVisible(false); //hides target

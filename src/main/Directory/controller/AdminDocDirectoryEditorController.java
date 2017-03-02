@@ -255,6 +255,9 @@ public class AdminDocDirectoryEditorController {
                 Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
                 newDoc.setPhoneNum(phoneNum);
                 docBoundary.addDoctor(newDoc);
+
+                dataTable.getSelectionModel().select(newDoc);
+                dataTable.scrollTo(newDoc);
             }
 
             reset();

@@ -33,7 +33,7 @@ public class AdminMapBoundary extends MapBoundary
     @Override
     public void changeFloor(Floor f)
     {
-        super.changeFloor(f);
+        super.changeFloor(f, true);
 
         edges.clear();
 
