@@ -15,22 +15,27 @@ public class SendText {
     String address;
     String messageBody;
 
-    SendText(String address, String messageBody) {
+    SendText(String address, String messageBody) throws Exception{
         this.address = address;
         this.messageBody = messageBody;
         sendTextTo();
 
     }
 
-    public void sendTextTo() {
+    public void sendTextTo() throws Exception{
 
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
         //Phone num MUST be of syntax "3107404451"
-        Message message = Message.creator(new PhoneNumber("+1" + address),
-                new PhoneNumber("+14242958960"),
-                messageBody).create();
+        try {
+            Message message = Message.creator(new PhoneNumber("+1" + address),
+                    new PhoneNumber("+14242958960"),
+                    messageBody).create();
 
-        System.out.println(message.getSid());
+            System.out.println(message.getSid());
+        } catch (Exception e) {
+            System.out.println("Aha! Texts messed up!");
+            throw new Exception();
+        }
 
     }
 }
