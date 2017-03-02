@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXComboBox;
 import javafx.animation.SequentialTransition;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import main.Application.ApplicationController;
 import main.Map.Boundary.MapBoundary;
 import main.Map.Boundary.UserMapBoundary;
@@ -207,21 +208,11 @@ public class UserMapViewController extends MapController
 
         if (newFloorNum != -1)
         {
-            //   renderFloorMap();
             curFloorLabel.setText("Floor " + newFloorNum);
         }
 
         floorDownArrow.setVisible(true);
 
-       /* if(newFloorNum>boundary.getKioskBuilding().getFloors().size()-1)
-        {
-            floorUpArrow.setVisible(false);
-        }
-        else
-        {
-            floorUpArrow.setVisible(true);
-            floorDownArrow.setVisible(true);
-        }*/
 
         if (newRoute != null)
         {
@@ -328,7 +319,7 @@ public class UserMapViewController extends MapController
 
         directionPaneView();
 
-        boundary.setInitialFloor();
+        userMapBoundary.setInitFloor();
 
         curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
 
@@ -351,42 +342,70 @@ public class UserMapViewController extends MapController
         }
 
         panToCenter();
+        movePath.setFill(Color.BLACK);
+        movePath.toFront();
+        mapItems.getChildren().add(movePath);
+
+
     }
 
     private void directionPaneView()
     {
+
 
         panel.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 e -> showDirections());
 
         panel.addEventHandler(MouseEvent.MOUSE_EXITED,
                 e -> hideDirections());
+        panel.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                e -> followPath());
     }
 
     public void playDirections(Guidance g)
     {
-        //for(FloorStep floorStep: g.getFloorSteps()
-        //{
-       /* for(DirectionStep step : g.getSteps())
+        for (DirectionFloorStep floorStep : g.getFloorSteps())
         {
             SequentialTransition stepDrawing = new SequentialTransition();
 
-            //for(edge in step)//
-            /*{
-                Timeline tL = new Timeline();
-                Line l = new Line();
-                KeyValue moveLineY = new KeyValue(l.endXProperty(), end_x_of_edge);
-                KeyValue moveLineX = new KeyValue(l.endYProperty(), end_y_of_edge);
+            MapNode n = g.getPathNodes().iterator().next();
 
-                KeyFrame kf = new KeyFrame((Duration.millis(500)), moveLineX, moveLineY);
+            for (DirectionStep step : floorStep.getDirectionSteps())
+            {
+                for (NodeEdge edge : step.getStepEdges())
+                {
+                    Timeline tL = new Timeline();
+                    Line l = new Line();
 
-                tL.getKeyFrames().add(kf);
-                stepDrawing.getChildren().add(tL);
-             }*/
+                    l.setStrokeWidth(5);
+                    l.setStroke(Color.RED);
 
-        //stepDrawing.play();
-        ////switch floors
-        //}
+                    mapItems.getChildren().add(l);
+                    l.toBack();
+                    mapImage.toBack();
+
+                    l.setStartY(n.getPosY());
+                    l.setStartX(n.getPosX());
+                    l.setEndY(n.getPosY());
+                    l.setEndX(n.getPosX());
+
+                    KeyValue moveLineY = new KeyValue(l.endXProperty(), edge.getOtherNode(n).getPosX());
+                    KeyValue moveLineX = new KeyValue(l.endYProperty(), edge.getOtherNode(n).getPosY());
+
+                    KeyFrame kf = new KeyFrame((Duration.millis(500)), moveLineX, moveLineY);
+
+
+                    //tL.getKeyFrames(new KeyFrame(Duration.millis(0), new KeyValue(l.visibleProperty(), true)));
+
+                    tL.getKeyFrames().add(kf);
+                    stepDrawing.getChildren().add(tL);
+
+                    n=edge.getOtherNode(n);
+                }
+            }
+
+            stepDrawing.play();
+        }
     }
 
     private void hideDirections()
@@ -421,15 +440,13 @@ public class UserMapViewController extends MapController
     protected void findPathToNode(MapNode endPoint) throws PathFindingException
     {
         //followPath(newRoute);
+        newRoute = userMapBoundary.findPathToNode(endPoint);
         panel.fillGuidance(newRoute);
 
         showDirections();
         newRoute.printTextDirections();
-    }
 
-    public void setStage(Stage s)
-    {
-        primaryStage = s;
+        playDirections(newRoute);
     }
 
     private void panToCenter()
@@ -474,53 +491,41 @@ public class UserMapViewController extends MapController
         ApplicationController.getController().switchToLoginView();
     }
 
-    public void followPath (Guidance g) {
+    Circle movePath = new Circle(10);
 
+    public void followPath () {
 
-        Circle movePath = new Circle(10);
-        movePath.setFill(Color.BLACK);
-        movePath.toFront();
-        mapItems.getChildren().add(movePath);
+            int i = panel.getFollowIndex();
 
-        for (DirectionFloorStep fStep: g.getFloorSteps()) {
             SequentialTransition animation = new SequentialTransition();
-            MapNode n = g.getPathNodes().iterator().next();
+            MapNode n = newRoute.getPathNodes().get(i);
+            NodeEdge e = newRoute.getPathEdges().get(i);
+            if (newRoute.getFloorSteps().getLast().equals(n)) {
+                floorUpResetOpacity();
+            }
             movePath.setCenterX(n.getPosX());
             movePath.setCenterY(n.getPosY());
-            for (DirectionStep step: fStep.getDirectionSteps()) {
 
-                for (NodeEdge edge: step.getStepEdges()) {
-                    if(n.getType().equals(NodeType.Connector))
-                    {
-                        System.out.println("Found connector");
-                    }
+            Timeline tl = new Timeline();
 
+            double endX = e.getOtherNode(n).getPosX();
+            double endY = e.getOtherNode(n).getPosY();
 
-                    Timeline tl = new Timeline();
-
-
-
-                    double endX = edge.getOtherNode(n).getPosX();
-                    double endY = edge.getOtherNode(n).getPosY();
+            KeyValue moveX = new KeyValue(movePath.centerXProperty(), endX);
+            KeyValue moveY = new KeyValue(movePath.centerYProperty(), endY);
+            KeyFrame kf = new KeyFrame(Duration.seconds(3), moveX, moveY);
+            tl.getKeyFrames().add(kf);
+            animation.getChildren().add(tl);
 
 
-                    KeyValue moveX = new KeyValue(movePath.centerXProperty(), endX);
-                    KeyValue moveY = new KeyValue(movePath.centerYProperty(), endY);
-                    KeyFrame kf = new KeyFrame(Duration.seconds(3), moveX, moveY);
-                    tl.getKeyFrames().add(kf);
-                    animation.getChildren().add(tl);
-
-                    n = edge.getOtherNode(n);
-
-                }
-
-            }
             System.out.println("playing");
             animation.play();
-        }
 
     }
+
+
 }
+
 
 
      /*
