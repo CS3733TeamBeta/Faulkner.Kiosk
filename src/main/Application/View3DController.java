@@ -27,15 +27,29 @@ public class View3DController {
     private Button button;
 
     @FXML
-    private AnchorPane Pane3D;
+    private AnchorPane pane3D;
+
+    @FXML
+    private AnchorPane rootPane;
 
     @FXML
     void buttonPush() {
-        System.out.println("Button");
+        System.out.println("Adding Building");
+        int boxHeight = 10;
+        VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 200, (50 - boxHeight));
+        pane3D.getChildren().add(visualbuilding.getGroup());
+    }
+
+    public View3DController()
+    {
+
     }
 
     @FXML
-    protected void initialize()   {
+    public void initialize()   {
+
+        //rootPane = new AnchorPane();
+        //pane3D = new AnchorPane();
 
         final PerspectiveCamera cam = new PerspectiveCamera();
         cam.setFieldOfView(50);
@@ -60,29 +74,27 @@ public class View3DController {
         floor.setTranslateY(200);
         floor.setTranslateZ(50);
 
-        //Image img = new Image(this.getClass().getResourceAsStream("C:\\Users\\Devon\\Dropbox\\School\\college\\WPI - Senior Year\\C Term\\CS 3733\\git folder\\Faulkner.Kiosk\\src\\main\\resources\\map\\FloorMaps\\1_thefirstfloor.png"));
+        Image img = new Image(this.getClass().getResourceAsStream("/map/FloorMaps/1_thefirstfloor.png"));
 
         PhongMaterial material = new PhongMaterial(Color.WHITE);
         material.setSpecularPower(10000);
-        //material.setDiffuseMap(img);
+        material.setDiffuseMap(img);
 
         floor.setMaterial(material);
-        Pane3D.getChildren().add(floor);
-        Pane3D.getChildren().add(greenLight);
-        Pane3D.getChildren().add(whiteLight);
+        pane3D.getChildren().add(floor);
+        pane3D.getChildren().add(greenLight);
+        pane3D.getChildren().add(whiteLight);
 
         // THIS IS THE BUILDING STUFF
-        int boxHeight = 10;
-        VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 200, (floor.getTranslateZ()-boxHeight));
-        Pane3D.getChildren().add(visualbuilding.getGroup());
-
 
         // THIS IS THE BUILDING STUFF
+
+        buttonPush();
 
         final Rectangle rectangle = new Rectangle(400, 400, Color.TRANSPARENT);
         rectangle.setMouseTransparent(true);
         rectangle.setDepthTest(DepthTest.DISABLE);
-        Pane3D.getChildren().add(rectangle);
+        pane3D.getChildren().add(rectangle);
 
     }
 

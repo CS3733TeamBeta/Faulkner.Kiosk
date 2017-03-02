@@ -19,7 +19,7 @@ import java.io.IOException;
 public class Main3D extends Application
 {
 
-    protected static final String View3DPath = "/application/3DMapView.fxml";
+    public static final String View3DPath = "/application/3DMapView.fxml";
 
     @Override
     public void start(Stage primaryStage)
