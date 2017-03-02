@@ -379,8 +379,8 @@ public class UserMapViewController extends MapController
                 stepDrawing.getChildren().add(tL);
              }*/
 
-            //stepDrawing.play();
-           ////switch floors
+        //stepDrawing.play();
+        ////switch floors
         //}
     }
 
