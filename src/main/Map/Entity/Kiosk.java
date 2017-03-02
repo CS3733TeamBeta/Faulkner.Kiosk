@@ -3,6 +3,7 @@ package main.Map.Entity;
 import main.Application.popover.KioskEditController;
 import org.controlsfx.control.PopOver;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -15,10 +16,9 @@ public class Kiosk extends MapNode{
 
     UUID kioskID;
 
-    private final String popOverEditFXML = "/Map/Controller/Popover/KioskEditPopup.fxml";
+    private final String popOverEditFXML = "/Admin/Popup/KioskEditPopup.fxml";
 
     public Kiosk () {
-        this.kioskID = UUID.randomUUID();
         this.direction = "N";
     }
 
@@ -26,9 +26,8 @@ public class Kiosk extends MapNode{
 
     //public Kiosk (String direction) {this.direction = direction;}
 
-    public Kiosk (UUID uuid, MapNode m, String name, String direction)
+    public Kiosk (MapNode m, String name, String direction)
     {
-        this.kioskID = uuid;
         this.name = name;
         this.direction = direction;
 
@@ -37,6 +36,8 @@ public class Kiosk extends MapNode{
         this.setPosY(m.getPosY());
 
         this.setType(m.getType());
+
+        this.nodeUID = m.getNodeID();
     }
 
     @Override
@@ -56,10 +57,6 @@ public class Kiosk extends MapNode{
     public String toString()
     {
         return this.name;
-    }
-
-    public UUID getKioskID() {
-        return this.kioskID;
     }
 
     public String getName() {

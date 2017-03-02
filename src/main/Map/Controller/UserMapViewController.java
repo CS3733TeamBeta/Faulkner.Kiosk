@@ -1,24 +1,23 @@
 package main.Map.Controller;
 
+import com.jfoenix.controls.JFXComboBox;
+import com.sun.javafx.geom.Edge;
+import javafx.animation.SequentialTransition;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import main.Application.ApplicationController;
-import main.Directory.Doctor;
 import main.Map.Boundary.MapBoundary;
+import main.Map.Boundary.UserMapBoundary;
+import main.Map.Entity.*;
+import main.Map.Navigation.DirectionFloorStep;
+import main.Map.Navigation.DirectionStep;
 import main.Map.Navigation.Guidance;
 import main.Application.Exceptions.PathFindingException;
-import main.Map.Entity.Destination;
-import main.Map.Entity.Floor;
-import main.Map.Entity.MapNode;
-import main.Map.Entity.NodeEdge;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
@@ -34,97 +33,44 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.image.ImageView;
-import javafx.scene.control.TextField;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.function.Predicate;
+
+import static main.Application.ApplicationController.getHospital;
+
 /**
  * Created by jw97 on 2/16/2017.
  *
  */
 public class UserMapViewController extends MapController
 {
-
-    Boolean downArrow = true; // By default, the navigation arrow is to minimize the welcome page
-    ColorAdjust colorAdjust = new ColorAdjust();
-    int numClickDr = -1;
-    int numClickFood = -1;
-    int numClickBath = -1;
-    int numClickHelp = -1;
-
     Floor kioskFloor;
 
     Guidance newRoute;
 
     @FXML
-    AnchorPane mapPane;
+    private AnchorPane mapPane;
 
     @FXML
-    AnchorPane mainPane;
+    private AnchorPane mainPane;
 
     @FXML
-    AnchorPane searchMenu;
+    private ScrollPane scrollPane;
 
     @FXML
-    ImageView doctorIcon;
+    private Polygon floorUpArrow;
 
     @FXML
-    ImageView bathroomIcon;
+    private Polygon floorDownArrow;
+
 
     @FXML
-    ImageView foodIcon;
-
-    @FXML
-    ImageView helpIcon;
-
-    @FXML
-    ImageView navigateArrow;
-
-    @FXML
-    TextField searchBar;
-
-    @FXML
-    Text welcomeGreeting;
-
-    @FXML
-    TableView deptTable;
-
-    @FXML
-    TableColumn deptName;
-
-    @FXML
-    TableColumn deptPhoneNum;
-
-    @FXML
-    TableColumn deptLocation;
-
-    @FXML
-    TableView doctorTable;
-
-    @FXML
-    TableColumn docName;
-
-    @FXML
-    TableColumn jobTitle;
-
-    @FXML
-    TableColumn docDepts;
-
-    @FXML
-    ScrollPane scrollPane;
-
-    @FXML
-    Polygon floorUpArrow;
-
-    @FXML
-    Polygon floorDownArrow;
+    private JFXComboBox<Building> buildingDropdown;
 
     Stage primaryStage;
 
     UserDirectionsPanel panel = new UserDirectionsPanel(mapImage);
+    UserSearchPanel searchPanel = new UserSearchPanel();
 
     Group zoomGroup;
 
@@ -133,10 +79,15 @@ public class UserMapViewController extends MapController
 
     BiMap<MapNode, Text> nodeTextMap;
 
+    private UserMapBoundary userMapBoundary;
+
     public UserMapViewController() throws Exception
     {
         super();
-        boundary = new MapBoundary(ApplicationController.getHospital());
+
+        userMapBoundary = new UserMapBoundary(getHospital());
+        boundary = userMapBoundary;
+
         nodeTextMap = HashBiMap.create();
 
         initBoundary();
@@ -360,6 +311,10 @@ public class UserMapViewController extends MapController
 
         panel.mainPane.setPrefHeight(mainPane.getPrefHeight());
 
+        mainPane.getChildren().add(searchPanel);
+        searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
+        searchPanel.welcomeScreen();
+
         mainPane.getChildren().add(panel);
         panel.toFront();
         panel.relocate(mainPane.getPrefWidth() - 5, 0);
@@ -369,33 +324,54 @@ public class UserMapViewController extends MapController
             hideDirections();
             // Ben, you might want to consider reset the direction panel here
             panel.setVisible(false);
-            searchMenuUp();
+            searchPanel.welcomeScreen();
         });
 
-        panel.setVisible(false);
+        panel.setVisible(true);
+
         directionPaneView();
 
         boundary.setInitialFloor();
 
         curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
 
+        buildingDropdown.setItems(boundary.getHospital().getBuildings());
+        buildingDropdown.toFront();
+
+        buildingDropdown.selectionModelProperty().addListener(
+                (o, oldVal, newVal)->
+                {
+                    boundary.changeBuilding(newVal.getSelectedItem());
+                }
+        );
+
+        Kiosk kiosk = boundary.getHospital().getCurrentKiosk();
+
+        if(kiosk!=null)
+        {
+            userMapBoundary.changeBuilding(kiosk.getMyFloor().getBuilding());
+            buildingDropdown.getSelectionModel().select(boundary.getCurrentBuilding());
+        }
+
         panToCenter();
+        movePath.setFill(Color.BLACK);
+        movePath.toFront();
+        mapItems.getChildren().add(movePath);
+
+
     }
 
     private void directionPaneView()
     {
+
 
         panel.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 e -> showDirections());
 
         panel.addEventHandler(MouseEvent.MOUSE_EXITED,
                 e -> hideDirections());
-
-        numClickDr = -1;
-        numClickFood = -1;
-        numClickBath = -1;
-        numClickHelp = -1;
-        LoadTableData();
+        panel.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                e -> followPath());
     }
 
     public void playDirections(Guidance g)
@@ -419,8 +395,8 @@ public class UserMapViewController extends MapController
                 stepDrawing.getChildren().add(tL);
              }*/
 
-            //stepDrawing.play();
-           ////switch floors
+        //stepDrawing.play();
+        ////switch floors
         //}
     }
 
@@ -455,57 +431,8 @@ public class UserMapViewController extends MapController
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException
     {
-        if (newRoute != null) //hide stale path
-        {
-            for (NodeEdge n : newRoute.getPathEdges())
-            {
-                //   n.changeOpacity(0.0);
-                //  n.changeColor(Color.BLACK);
-            }
-        }
-
-        System.out.println("In path finding");
-        MapNode startPoint = boundary.getHospital().getCurrentKiosk();
-
-        if (startPoint == null)
-        {
-            System.out.println("ERROR: NO KIOSK NODE SET ON USERSIDE. SETTING ONE RANDOMLY.");
-            startPoint = boundary.getHospital().getCampusFloor().getFloorNodes().iterator().next();
-        }
-
-        if (endPoint == startPoint)
-        {
-            System.out.println("ERROR; CANNOT FIND PATH BETWEEN SAME NODES");
-            return;//TODO add error message of some kind
-        }
-
-        try
-        {
-            newRoute = new Guidance(startPoint, endPoint, "North");
-        } catch (PathFindingException e)
-        {
-            return;//TODO add error message throw
-        }
-
-        /*for(NodeEdge n: newRoute.getPathEdges())
-        {
-          //  n.changeOpacity(1.0);
-            //n.changeColor(Color.RED);
-        }
-        /*
-        for(Building b : model.getHospital().getBuildings()) {
-            for(Floor f : b.getFloors()) {
-                for (NodeEdge edge : f.getFloorEdges()) {
-                    if (newRoute.getPathEdges().contains(edge)) {
-                        edge.changeOpacity(1.0);
-                        edge.changeColor(Color.RED);
-                    } else {
-                        edge.changeOpacity(0.0);
-                        edge.changeColor(Color.BLACK);
-                    }
-                }
-            }
-        }*/
+        newRoute = new Guidance(getHospital().getCurrentKiosk(), endPoint);
+        //followPath(panel.getStepIndex());
         panel.fillGuidance(newRoute);
 
         showDirections();
@@ -515,223 +442,6 @@ public class UserMapViewController extends MapController
     public void setStage(Stage s)
     {
         primaryStage = s;
-    }
-
-    public void defaultProperty()
-    {
-        searchMenu.setStyle("-fx-background-color:  #f2f2f2;");
-        // Sets the color of the icons to black
-        ColorAdjust original = new ColorAdjust();
-        original.setContrast(0);
-        doctorIcon.setEffect(original);
-        bathroomIcon.setEffect(original);
-        foodIcon.setEffect(original);
-        helpIcon.setEffect(original);
-        // By default, only the departments table is shown
-        deptTable.setVisible(true);
-        // Set all other tables false
-        doctorTable.setVisible(false);
-        searchBar.setPromptText("Search for Departments");
-        // Title shown
-        welcomeGreeting.setVisible(true);
-        panel.setVisible(false);
-    }
-
-    public void searchMenuUp()
-    {
-        Timeline menuSlideDown = new Timeline();
-        KeyFrame keyFrame;
-        menuSlideDown.setCycleCount(1);
-        menuSlideDown.setAutoReverse(true);
-        if (downArrow)
-        { // Navigate down icon -> welcome page down (left with search bar)
-            KeyValue welcomeDown = new KeyValue(searchMenu.translateYProperty(), 180);
-            keyFrame = new KeyFrame(Duration.millis(600), welcomeDown);
-            welcomeGreeting.setVisible(false);
-            downArrow = false; // Changes to up icon
-            searchMenu.setStyle("-fx-background-color: transparent;");
-            panel.setVisible(true);
-        }
-        else
-        { // Navigate up icon -> show welcome page
-            panel.setVisible(false);
-            KeyValue welcomeUp = new KeyValue(searchMenu.translateYProperty(), 0);
-            keyFrame = new KeyFrame(Duration.millis(600), welcomeUp);
-            // Reset to default
-            //defaultProperty();
-            downArrow = true;
-            numClickDr = -1;
-            numClickFood = -1;
-            numClickBath = -1;
-            numClickHelp = -1;
-            searchBar.clear();
-        }
-        navigateArrow.setRotate(navigateArrow.getRotate() + 180); // Changes to direction of arrow icon
-        menuSlideDown.getKeyFrames().add(keyFrame);
-        menuSlideDown.play();
-    }
-
-    public void loadMenu()
-    {
-        //defaultProperty();
-        Timeline menuSlideUp = new Timeline();
-        menuSlideUp.setCycleCount(1);
-        menuSlideUp.setAutoReverse(true);
-        KeyValue menuUp = new KeyValue(searchMenu.translateYProperty(), -(mainPane.getHeight() - 350));
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), menuUp);
-        menuSlideUp.getKeyFrames().add(keyFrame);
-        menuSlideUp.play();
-    }
-
-    public void doctorSelected()
-    {
-        loadMenu();
-        numClickDr = numClickDr * (-1);
-        numClickHelp = -1;
-        numClickBath = -1;
-        numClickFood = -1;
-        DisplayCorrectTable();
-    }
-
-    public void bathroomSelected()
-    {
-        loadMenu();
-        numClickDr = -1;
-        numClickHelp = -1;
-        numClickBath = numClickBath * (-1);
-        numClickFood = -1;
-        DisplayCorrectTable();
-    }
-
-    public void foodSelected()
-    {
-        loadMenu();
-        numClickDr = -1;
-        numClickHelp = -1;
-        numClickBath = -1;
-        numClickFood = numClickFood * (-1);
-        DisplayCorrectTable();
-    }
-
-    public void helpSelected()
-    {
-        loadMenu();
-        numClickDr = -1;
-        numClickHelp = numClickHelp * (-1);
-        numClickBath = -1;
-        numClickFood = -1;
-        DisplayCorrectTable();
-    }
-
-    public void adminLogin() throws IOException
-    {
-        ApplicationController.getController().switchToLoginView();
-    }
-
-    private void LoadTableData()
-    {
-        docName.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
-        jobTitle.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
-        docDepts.setCellValueFactory(new PropertyValueFactory<Doctor, String>("suites"));
-
-        Collection<Doctor> doctrine = boundary.getHospital().getDoctors().values();
-        ObservableList<Doctor> doctors = FXCollections.observableArrayList(doctrine);
-        FilteredList<Doctor> filteredDoctor = new FilteredList<>(doctors);
-
-        searchBar.textProperty().addListener((observableValue, oldValue, newValue) ->
-        {
-            filteredDoctor.setPredicate((Predicate<? super Doctor>) profile ->
-            {
-                // By default, the entire directory is displayed
-                if (newValue == null || newValue.isEmpty())
-                {
-                    return true;
-                }
-                // Compare the name of the doctor with filter text
-                String lowerCaseFilter = newValue.toLowerCase();
-                // Checks if filter matches
-                if (profile.getName().toLowerCase().contains(lowerCaseFilter))
-                {
-                    return true;
-                }
-                // Filter does not match
-                return false;
-            });
-        });
-
-        SortedList<Doctor> sortedDoctor = new SortedList<Doctor>(filteredDoctor);
-        sortedDoctor.comparatorProperty().bind(deptTable.comparatorProperty());
-        doctorTable.setItems(sortedDoctor);
-
-
-        deptName.setCellValueFactory(new PropertyValueFactory<Destination, String>("name"));
-        deptPhoneNum.setCellValueFactory(new PropertyValueFactory<Destination, String>("phoneNum"));
-        deptLocation.setCellValueFactory(new PropertyValueFactory<Destination, String>("location"));
-        Collection<Destination> suiteVal = boundary.getHospital().getDestinations().values();
-        ObservableList<Destination> suites = FXCollections.observableArrayList(suiteVal);
-        FilteredList<Destination> filteredSuite = new FilteredList<>(suites);
-        searchBar.textProperty().addListener((observableValue, oldValue, newValue) ->
-        {
-            filteredSuite.setPredicate((Predicate<? super Destination>) profile ->
-            {
-                // By default, the entire directory is displayed
-                if (newValue == null || newValue.isEmpty())
-                {
-                    return true;
-                }
-                // Compare the name of the doctor with filter text
-                String lowerCaseFilter = newValue.toLowerCase();
-                // Checks if filter matches
-                if (profile.getName().toLowerCase().contains(lowerCaseFilter))
-                {
-                    return true;
-                }
-                // Filter does not match
-                return false;
-            });
-        });
-        SortedList<Destination> sortedSuite = new SortedList<Destination>(filteredSuite);
-        sortedSuite.comparatorProperty().bind(deptTable.comparatorProperty());
-        deptTable.setItems(sortedSuite);
-    }
-
-    public void DisplayCorrectTable()
-    {
-        defaultProperty();
-        if (numClickDr == 1)
-        {
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-            doctorIcon.setEffect(clicked);
-            searchBar.setPromptText("Search for doctors");
-            deptTable.setVisible(false);
-            doctorTable.setVisible(true);
-        }
-        if (numClickBath == 1)
-        {
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-            bathroomIcon.setEffect(clicked);
-            searchBar.setPromptText("Search for bathrooms");
-        }
-        if (numClickFood == 1)
-        {
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-            foodIcon.setEffect(clicked);
-            searchBar.setPromptText("Search for food");
-        }
-        if (numClickHelp == 1)
-        {
-            ColorAdjust clicked = new ColorAdjust();
-            clicked.setContrast(-10);
-            helpIcon.setEffect(clicked);
-            searchBar.setPromptText("Search for help");
-        }
-        if ((numClickDr == -1) && (numClickBath == -1) && (numClickFood == -1) && (numClickHelp == -1))
-        {
-            defaultProperty();
-        }
     }
 
     private void panToCenter()
@@ -770,7 +480,47 @@ public class UserMapViewController extends MapController
         scrollPane.setHvalue(middleX * scaleX);
         scrollPane.setVvalue(middleY * scaleY-.1);
     }
+
+    public void adminLogin() throws IOException
+    {
+        ApplicationController.getController().switchToLoginView();
+    }
+
+    Circle movePath = new Circle(10);
+
+    public void followPath () {
+
+            int i = panel.getFollowIndex();
+
+            SequentialTransition animation = new SequentialTransition();
+            MapNode n = newRoute.getPathNodes().get(i);
+            NodeEdge e = newRoute.getPathEdges().get(i);
+            if (newRoute.getFloorSteps().getLast().equals(n)) {
+                floorUpResetOpacity();
+            }
+            movePath.setCenterX(n.getPosX());
+            movePath.setCenterY(n.getPosY());
+
+            Timeline tl = new Timeline();
+
+            double endX = e.getOtherNode(n).getPosX();
+            double endY = e.getOtherNode(n).getPosY();
+
+            KeyValue moveX = new KeyValue(movePath.centerXProperty(), endX);
+            KeyValue moveY = new KeyValue(movePath.centerYProperty(), endY);
+            KeyFrame kf = new KeyFrame(Duration.seconds(3), moveX, moveY);
+            tl.getKeyFrames().add(kf);
+            animation.getChildren().add(tl);
+
+
+            System.out.println("playing");
+            animation.play();
+
+    }
+
+
 }
+
 
 
      /*

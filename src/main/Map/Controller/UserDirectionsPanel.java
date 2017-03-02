@@ -1,6 +1,8 @@
 package main.Map.Controller;
 
 
+import javafx.event.EventType;
+import main.Application.Exceptions.PathFindingException;
 import main.Map.Navigation.DirectionFloorStep;
 import main.Map.Navigation.DirectionStep;
 import main.Map.Navigation.Guidance;
@@ -21,6 +23,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
+import java.lang.invoke.LambdaConversionException;
+import java.lang.invoke.LambdaMetafactory;
 import java.util.ArrayList;
 
 public class UserDirectionsPanel extends AnchorPane
@@ -28,6 +32,7 @@ public class UserDirectionsPanel extends AnchorPane
 
     Guidance guidance;
     int stepIndex = 0;
+    int followIndex = -1;
     ImageView MapImage;
     ArrayList<StepChangedEventHandler> stepChangedEventHandlers;
 
@@ -105,6 +110,7 @@ public class UserDirectionsPanel extends AnchorPane
     {
         this.guidance = g;
         stepIndex = 0;
+        followIndex = -1;
 
         fillDirectionsList(stepIndex);
     }
@@ -117,12 +123,18 @@ public class UserDirectionsPanel extends AnchorPane
     public void fillDirectionsList(DirectionFloorStep step)
     {
         directionsListView.getItems().clear();
+
+        for (DirectionStep aDirectionStep: step.getDirectionSteps()) {
+            Label l = new Label((aDirectionStep.toString()));
+            directionsListView.getItems().add(l);
+        }
+        /*
         for(DirectionFloorStep s : guidance.getSteps()) {
             for (DirectionStep aStep : s.getDirectionSteps()) {
                 Label l = new Label(aStep.toString());
                 directionsListView.getItems().add(l);
             }
-        }
+        } */
     }
 
     @FXML
@@ -132,28 +144,30 @@ public class UserDirectionsPanel extends AnchorPane
     }
 
     @FXML
-    void onNextButtonClicked(MouseEvent event)
+    public void onNextButtonClicked()
     {
-        stepIndex++;
+        System.out.println("next");
 
-        if(stepIndex<guidance.getSteps().size())
+        if((followIndex) < guidance.getPathNodes().size()-1 && (followIndex >= -1))
         {
-            fillDirectionsList(guidance.getSteps().get(stepIndex));
-            onStepChanged(guidance.getSteps().get(stepIndex));
+            followIndex++;
+        } else {
+            return;
         }
     }
 
 
     @FXML
-    void onPreviousButtonClicked(MouseEvent event)
+    void onPreviousButtonClicked()
     {
-        stepIndex--;
 
-        if(stepIndex>0)
+        if((followIndex) > 0)
         {
-            fillDirectionsList(guidance.getSteps().get(stepIndex));
-            onStepChanged(guidance.getSteps().get(stepIndex));
+            followIndex--;
+        }else {
+            return;
         }
+
     }
 
 
@@ -177,5 +191,13 @@ public class UserDirectionsPanel extends AnchorPane
         };
 
         new Thread(sendEmail).start();
+    }
+
+    public int getFollowIndex () {
+        return this.followIndex;
+    }
+
+    public ArrayList<StepChangedEventHandler> getStepChangedEventHandlers () {
+        return stepChangedEventHandlers;
     }
 }

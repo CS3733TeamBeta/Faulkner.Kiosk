@@ -2,8 +2,11 @@ package main.Application.popover;
 
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
+import main.Application.ApplicationController;
 import main.Map.Entity.Destination;
 import org.controlsfx.control.PopOver;
+
+import java.sql.SQLException;
 
 /**
  * Controlled for popup that edits an office map node
@@ -34,6 +37,11 @@ public class DestinationEditController extends AbstractPopupController
     public void saveEdits()
     {
         destinationUnderEdit.setName(nameBox.getText());
+        try {
+            ApplicationController.getCache().getDbManager().updateDestination(destinationUnderEdit);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

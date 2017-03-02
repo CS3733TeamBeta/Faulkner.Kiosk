@@ -16,17 +16,21 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.*;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.*;
+import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -42,7 +46,8 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MapEditorController extends MapController
+public class
+MapEditorController extends MapController
 {
 	public ScrollPane scroll_pane;
 	@FXML AnchorPane mapPane;
@@ -56,6 +61,9 @@ public class MapEditorController extends MapController
 
 	@FXML
 	private TabPane FloorTabPane;
+
+	@FXML
+	private JFXComboBox<String> buildingSelector;
 
 	@FXML
 	private JFXComboBox<Kiosk> kioskSelector;
@@ -87,7 +95,20 @@ public class MapEditorController extends MapController
 		selectedIcons = new HashSet<>();
 
 		boundary = new AdminMapBoundary(ApplicationController.getHospital());
+
 		adminBoundary = (AdminMapBoundary)boundary;
+
+		/*
+		for(Building b : boundary.getHospital().getBuildings()) {
+			if(b.getName().equals("Faulkner")) {
+				for (Floor f : b.getFloors()) {
+					if (f.getFloorNumber() == 1) {
+						System.out.println("SETTING CAMPUS MAP TO FAULKNER");
+						boundary.getHospital().setCampusFloorToFloor(f);
+					}
+				}
+			}
+		}*/
 
 		edgeEntityMap = HashBiMap.create();
 		tabFloorMap = HashBiMap.create();
@@ -131,20 +152,19 @@ public class MapEditorController extends MapController
 	 * FXML initialize function
 	 */
 	@FXML
-	private void initialize()
-	{
+	private void initialize() {
 		kioskSelector.setItems(boundary.getHospital().getKiosks());
 
 		kioskSelector.getSelectionModel().selectedItemProperty().addListener(
-				(o, old, newSelection)->
-		{
-			adminBoundary.setCurrentKiosk(newSelection);
+				(o, old, newSelection) ->
+				{
+					adminBoundary.setCurrentKiosk(newSelection);
 
-			iconEntityMap.inverse().get(newSelection).setType(newSelection.getType());
-			if(iconEntityMap.inverse().get(old) != null && old.getType() != null) {
-				iconEntityMap.inverse().get(old).setType(old.getType());
-			}
-		});
+					iconEntityMap.inverse().get(newSelection).setType(newSelection.getType());
+					if (iconEntityMap.inverse().get(old) != null && old.getType() != null) {
+						iconEntityMap.inverse().get(old).setType(old.getType());
+					}
+				});
 
 		int kioskIndex = boundary.getHospital().getKiosks().indexOf(boundary.getHospital().getCurrentKiosk());
 
@@ -156,8 +176,7 @@ public class MapEditorController extends MapController
 		ObjectProperty<Point2D> mouseAnchor = new SimpleObjectProperty<>();
 
 		mapPane.setOnMousePressed(e -> {
-			if(!edgeEntityMap.containsKey(e.getPickResult().getIntersectedNode()) && !drawingEdgeLine.isVisible())
-			{
+			if (!edgeEntityMap.containsKey(e.getPickResult().getIntersectedNode()) && !drawingEdgeLine.isVisible()) {
 				mouseAnchor.set(new Point2D(e.getX(), e.getY()));
 				selectionRect.toFront();
 				selectionRect.setX(e.getX());
@@ -170,17 +189,14 @@ public class MapEditorController extends MapController
 		mapPane.setOnMouseDragged(e -> {
 			clearSelected();
 
-			if(!drawingEdgeLine.isVisible())
-			{
+			if (!drawingEdgeLine.isVisible()) {
 				selectionRect.setX(Math.min(e.getX(), mouseAnchor.get().getX()));
 				selectionRect.setY(Math.min(e.getY(), mouseAnchor.get().getY()));
 				selectionRect.setWidth(Math.abs(e.getX() - mouseAnchor.get().getX()));
 				selectionRect.setHeight(Math.abs(e.getY() - mouseAnchor.get().getY()));
 
 				dragInProgress = true;
-			}
-			else
-			{
+			} else {
 				selectionRect.setWidth(0);
 				selectionRect.setHeight(0);
 			}
@@ -192,12 +208,9 @@ public class MapEditorController extends MapController
 							.filter(r -> r.getBoundsInParent().intersects(selectionRect.getBoundsInParent()))
 							.collect(Collectors.toList()));
 
-			if(selectedIcons.size()>1)
-			{
+			if (selectedIcons.size() > 1) {
 				markSelected();
-			}
-			else
-			{
+			} else {
 				selectedIcons.clear();
 			}
 
@@ -220,14 +233,11 @@ public class MapEditorController extends MapController
 
 		initBoundary();
 
-		adminBoundary.addEdgeSetChangeHandler(change->
+		adminBoundary.addEdgeSetChangeHandler(change ->
 		{
-			if(change.wasAdded())
-			{
+			if (change.wasAdded()) {
 				onEdgeAdded(change.getElementAdded());
-			}
-			else if(change.wasRemoved())
-			{
+			} else if (change.wasRemoved()) {
 				onEdgeRemoved(change.getElementRemoved());
 			}
 		});
@@ -236,90 +246,91 @@ public class MapEditorController extends MapController
 
 		buildRadialMenu(); //instantiates and populates the radial menu
 
-		menu.shownProperty().addListener((e, oldValue, newValue)-> //when the menu is closed, hide the target icon
+		menu.shownProperty().addListener((e, oldValue, newValue) -> //when the menu is closed, hide the target icon
 		{
-			if(!newValue)
-			{
+			if (!newValue) {
 				target.setVisible(false);
 				drawingEdgeFrozen = false;
-			}
-			else
-			{
+			} else {
 				drawingEdgeFrozen = true;
 			}
 		});
 
-		root_pane.setOnKeyPressed(keyEvent-> { //handle escaping from edge creation
+		root_pane.setOnKeyPressed(keyEvent -> { //handle escaping from edge creation
 
-			if(keyEvent.getCode() == KeyCode.ESCAPE)
-			{
+			if (keyEvent.getCode() == KeyCode.ESCAPE) {
 				clearSelected();
-			}
-			else if(keyEvent.getCode() == KeyCode.BACK_SPACE)
-			{
+			} else if (keyEvent.getCode() == KeyCode.BACK_SPACE) {
 				System.out.println("Delete requested");
 
-				for(DragIcon icon : selectedIcons)
-				{
+				for (DragIcon icon : selectedIcons) {
 					adminBoundary.remove(iconEntityMap.get(icon));
 				}
 				selectedIcons.clear();
 			}
 
 			if (drawingEdge != null && keyEvent.getCode() == KeyCode.ESCAPE) {
-				if(drawingEdgeLine.isVisible()) //and the right pane has the drawing edge as child
+				if (drawingEdgeLine.isVisible()) //and the right pane has the drawing edge as child
 				{
 					drawingEdgeLine.setVisible(false);
 				}
 
 				makeIconDraggable(iconEntityMap.inverse().get(drawingEdge.getSource()));
 				drawingEdge = null;
-			}
-			else if(drawingEdge!=null && keyEvent.getCode() == KeyCode.A) //radial menu chain linking
+			} else if (drawingEdge != null && keyEvent.getCode() == KeyCode.A) //radial menu chain linking
 			{
-				Point2D location= new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
+				Point2D location = new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
 						MouseInfo.getPointerInfo().getLocation().getY());
 
 				showRadialMenu(mapPane.screenToLocal(location));
 			}
 		});
 
-		mapPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event->
+		mapPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event ->
 		{
 			Node clickedNode = event.getPickResult().getIntersectedNode();
 
-			if(event.getButton() != MouseButton.SECONDARY && !dragInProgress && !iconEntityMap.containsKey(clickedNode)
-					&& !edgeEntityMap.containsKey(clickedNode))
-			{
-				if(!drawingEdgeLine.isVisible()) //radial menu requested
+			if (event.getButton() != MouseButton.SECONDARY && !dragInProgress && !iconEntityMap.containsKey(clickedNode)
+					&& !edgeEntityMap.containsKey(clickedNode)) {
+				if (!drawingEdgeLine.isVisible()) //radial menu requested
 				{
 					showRadialMenu(new Point2D(event.getX(), event.getY()));
-				}
-				else //Chain Linking
+				} else //Chain Linking
 				{
 					chainLink(clickedNode, new Point2D(event.getX(), event.getY()));
 				}
-			}
-			else if(event.getButton() != MouseButton.SECONDARY && edgeEntityMap.containsKey(clickedNode)) //dropped in the middle of a line
+			} else if (event.getButton() != MouseButton.SECONDARY && edgeEntityMap.containsKey(clickedNode)) //dropped in the middle of a line
 			{
 				dropOnLine(clickedNode, new Point2D(event.getX(), event.getY()));
-			}
-			else if(dragInProgress)
-			{
+			} else if (dragInProgress) {
 				dragInProgress = false;
 			}
 		});
 
-		for(Floor f: boundary.getCurrentFloor().getBuilding().getFloors()) //makes a floor tab for each floor in the building
+		if(boundary.getCurrentFloor().getBuilding()!=null) {
+			for (Floor f : boundary.getCurrentFloor().getBuilding().getFloors()) //makes a floor tab for each floor in the building
+			{
+				makeFloorTab(f);
+			}
+		}
+		else
 		{
-			makeFloorTab(f);
+			makeCampusTab(boundary.getCurrentFloor());
 		}
 
 		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
-				(ov, newvalue, oldvalue)->{
+				(ov, newvalue, oldvalue) -> {
+					if(tabFloorMap.get(oldvalue).getFloorNumber() == 1){
+						System.out.println("Switching to campus floor");
+						boundary.changeFloor(boundary.getCampusFloor()); //called when floor tab is selected
+					}else {
+						System.out.println("Tab hit to switch to : " + tabFloorMap.get(oldvalue).getFloorNumber());
+						boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
+					}
 					boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
 
-		});
+
+				});
 
 		target.setVisible(false); //hides target
 		target.setFitWidth(14); //sets width
@@ -329,6 +340,20 @@ public class MapEditorController extends MapController
 
 		FloorTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
 		FloorTabPane.getSelectionModel().select(0);
+
+		LinkedList<String> buildings= new LinkedList<>();
+		for (Building b : boundary.getHospital().getBuildings()) {
+			buildings.add(b.getName());
+		}
+
+		if(buildings != null) {
+			buildingSelector.setItems(FXCollections.observableArrayList(buildings));
+			try {
+				buildingSelector.setValue(boundary.getCurrentFloor().getBuilding().getName());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	protected void markSelected()
@@ -484,6 +509,33 @@ public class MapEditorController extends MapController
 		updateEdgeLine(edge);
 	}
 
+	/*@FXML
+	public void switchBuilding(){
+		String currentBuilding = boundary.getCurrentFloor().getBuilding().getName();
+		String newBuilding = buildingSelector.getValue();
+		if(!newBuilding.equals(currentBuilding)){
+			for(Building b : boundary.getHospital().getBuildings()) {
+				if(b.getName().equals(newBuilding)) {
+					boundary.changeBuilding(b);
+					FloorTabPane.getTabs().clear();
+					tabFloorMap.clear();
+					for(Floor f : b.getFloors()){
+						System.out.println("adding floor to tabpane");
+						makeFloorTab(f);
+					}
+					FloorTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
+					FloorTabPane.getSelectionModel().select(0);
+					try {
+						boundary.changeFloor(boundary.getHospital().getCampusFloor());
+					}catch(Exception e){
+						System.out.println("ERROR IN SWITCHING FLOORS");
+					}
+
+				}
+			}
+		}
+	}*/
+
 	/**
 	 * Called when an edge is removed
 	 * @param edge The edge to remove
@@ -495,6 +547,13 @@ public class MapEditorController extends MapController
 		edgeEntityMap.remove(l);
 	}
 
+	public Tab makeCampusTab(Floor f)
+	{
+		Tab t = makeFloorTab(f);
+		t.setText("Campus");
+
+		return t;
+	}
 	/**
 	 * Adds a building to the tab pane/model
 	 *
@@ -833,8 +892,8 @@ public class MapEditorController extends MapController
 	}
 
 	@FXML
-	public void onDirectoryEditorSwitch(ActionEvent actionEvent) throws IOException
+	public void onDirectoryEditorSwitch() throws IOException
 	{
-		//SceneSwitcher.switchToModifyDirectoryView(this.getStage(), model.getHospital());
+		ApplicationController.getController().switchToModifyDirectoryView();
 	}
 }
