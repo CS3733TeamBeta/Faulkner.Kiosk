@@ -443,18 +443,21 @@ public class DatabaseManager {
 
     private void loadBuilding(Hospital h) throws SQLException
     {
-        s = conn.createStatement();
-        rs = s.executeQuery("SELECT * FROM BUILDING");
+        conn.setAutoCommit(false);
 
-        Building b;
+        s = conn.createStatement();
+        ResultSet rs = s.executeQuery("SELECT * FROM USER1.BUILDING ORDER BY NAME ASC");
 
         while(rs.next()) {
             String buildName = rs.getString(2);
-            b = new Building(UUID.fromString(rs.getString(1)), rs.getString(2));
+            Building b = new Building(UUID.fromString(rs.getString(1)), rs.getString(2));
             loadFloors(h, b);
-            if (buildName != "Campus") {
+            System.out.println("Loaded Building" + buildName);
+            if (!buildName.equals("Campus")) {
                 h.addBuilding(b);
+                System.out.println("Not Campus");
             }
+            System.out.println("Here");
 
         }
     }
@@ -469,24 +472,25 @@ public class DatabaseManager {
         UUID floor_id;
         Floor f;
 
-        while(floorRS.next()) {
+        while (floorRS.next()) {
             floor_id = UUID.fromString(floorRS.getString(1));
             f = new Floor(floor_id, floorRS.getInt(3));
-
-            if (b.getName() != "Campus") {
+            System.out.println("Loaded Floor" + floor_id);
+            //if (!b.getName().equals("Campus")) {
                 f.setImageLocation(floorRS.getString(4));
                 f.setBuilding(b);
 
                 loadNodes(h, f);
                 try {
                     b.addFloor(f);
+                    f.setBuilding(b);
                 } catch (Exception e) {
-                    e.getMessage();
+                    System.out.println(e.getMessage());
                 }
-            }
-            else {
-                loadNodes(h, f);
-            }
+            //}
+//            else {
+//                loadNodes(h, f);
+//            }
         }
     }
 
@@ -507,6 +511,7 @@ public class DatabaseManager {
 
         while(nodeRS.next()) {
             nodeid = UUID.fromString(nodeRS.getString(1));
+            System.out.println("Loaded Node " + nodeid);
             MapNode tempNode = new MapNode((nodeid),
                     nodeRS.getDouble(2),
                     nodeRS.getDouble(3),
@@ -546,21 +551,23 @@ public class DatabaseManager {
             destinations.put(UUID.fromString(destRS.getString(1)), tempDest);
         }
 
-        rs = s.executeQuery("SELECT * FROM KIOSK");
+        PreparedStatement kioskPS = conn.prepareStatement("SELECT * FROM KIOSK");
 
-        while(rs.next()){
-            UUID tempID = UUID.fromString(rs.getString(2));
+        ResultSet kioskRS = kioskPS.executeQuery();
+
+        while(kioskRS.next()){
+            UUID tempID = UUID.fromString(kioskRS.getString(2));
             if (nodes.containsKey(tempID)) {
                 // node to replace with kiosk
                 MapNode replacedNode = nodes.get(tempID);
 
                 // kiosk to replace node with
                 Kiosk tempKiosk = new Kiosk(replacedNode,
-                        rs.getString(1),
-                        rs.getString(3));
+                        kioskRS.getString(1),
+                        kioskRS.getString(3));
 
                 // if saved as default kiosk, then set as current kiosk
-                if (rs.getBoolean(4)) {
+                if (kioskRS.getBoolean(4)) {
                     h.setCurrentKiosk(tempKiosk);
                 }
 
@@ -576,7 +583,7 @@ public class DatabaseManager {
             }
         }
 
-        if (f.getBuilding().getName() == "Campus") {
+        if (f.getBuilding().getName().equals("Campus")) {
             for (MapNode n : nodes.values()) {
                 h.getCampusFloor().addNode(n);
             }
@@ -592,23 +599,25 @@ public class DatabaseManager {
     private void loadEdges(Hospital h) throws SQLException
     {
         // select all for edges table
-        rs = s.executeQuery("SELECT * FROM EDGE");
+        PreparedStatement edgesPS = conn.prepareStatement("SELECT * FROM EDGE");
+
+        ResultSet edgeRS = edgesPS.executeQuery();
 
 
-        while(rs.next()) {
+        while(edgeRS.next()) {
             // create new edge
-            NodeEdge tempEdge = new NodeEdge(UUID.fromString(rs.getString(1)),
-                    mapNodes.get(UUID.fromString(rs.getString(2))),
-                    mapNodes.get(UUID.fromString(rs.getString(3))),
-                    rs.getFloat(4));
+            NodeEdge tempEdge = new NodeEdge(UUID.fromString(edgeRS.getString(1)),
+                    mapNodes.get(UUID.fromString(edgeRS.getString(2))),
+                    mapNodes.get(UUID.fromString(edgeRS.getString(3))),
+                    edgeRS.getFloat(4));
 
-            tempEdge.setSource(mapNodes.get(UUID.fromString(rs.getString(2)))); //should be redundant?
-            tempEdge.setTarget(mapNodes.get(UUID.fromString(rs.getString(3)))); //should be redundant?
+            tempEdge.setSource(mapNodes.get(UUID.fromString(edgeRS.getString(2)))); //should be redundant?
+            tempEdge.setTarget(mapNodes.get(UUID.fromString(edgeRS.getString(3)))); //should be redundant?
 
             //System.out.println(mapNodes.get(UUID.fromString(rs.getString(2))).getEdges().contains(tempEdge));
 
             //stores all nodeEdges
-            this.edges.put(UUID.fromString(rs.getString(1)), tempEdge);
+            this.edges.put(UUID.fromString(edgeRS.getString(1)), tempEdge);
 
         }
     }
@@ -617,19 +626,21 @@ public class DatabaseManager {
     {
         PreparedStatement destDoc = conn.prepareStatement("select DEST_ID from DEST_DOC where doc_id = ?");
 
-        rs = s.executeQuery("select * from USER1.DOCTOR order by NAME");
+        PreparedStatement docPS = conn.prepareStatement("SELECT * FROM DOCTOR");
 
-        while(rs.next()) {
+        ResultSet docRS = docPS.executeQuery();
+
+        while(docRS.next()) {
             ObservableList<Destination> locations = FXCollections.observableArrayList();
 
             // create new Doctor
-            Doctor tempDoc = new Doctor(UUID.fromString(rs.getString(1)),
-                    rs.getString(2),
-                    rs.getString(3),
-                    rs.getString(5),
+            Doctor tempDoc = new Doctor(UUID.fromString(docRS.getString(1)),
+                    docRS.getString(2),
+                    docRS.getString(3),
+                    docRS.getString(5),
                     locations);
 
-            destDoc.setString(1, rs.getString(1));
+            destDoc.setString(1, docRS.getString(1));
             ResultSet results = destDoc.executeQuery();
             // create doctor - destination relationships within the objects
             while(results.next()) {
@@ -642,7 +653,7 @@ public class DatabaseManager {
 //                            rs.getString(3),
 //                            rs.getString(5),
 //                            locations));
-            doctors.put(rs.getString(2), tempDoc);
+            doctors.put(docRS.getString(2), tempDoc);
 
         }
 
@@ -656,17 +667,19 @@ public class DatabaseManager {
     {
         PreparedStatement destOff = conn.prepareStatement("select * from OFFICES where DEST_ID = ?");
 
+        PreparedStatement destPS = conn.prepareStatement("SELECT * FROM DESTINATION");
 
-        rs = s.executeQuery("SELECT * FROM USER1.DESTINATION");
-        while (rs.next()) {
 
-            destOff.setString(1, rs.getString(1));
+        ResultSet destRS = destPS.executeQuery();
+        while (destRS.next()) {
+
+            destOff.setString(1, destRS.getString(1));
             // set of offices with particular destination ID foreign key
             ResultSet offRS = destOff.executeQuery();
             while(offRS.next()) {
-                Office tempOff = new Office(UUID.fromString(rs.getString(1)),
+                Office tempOff = new Office(UUID.fromString(offRS.getString(1)),
                         offRS.getString(2),
-                        (destinations.get(UUID.fromString(rs.getString(1)))));
+                        (destinations.get(UUID.fromString(destRS.getString(1)))));
 
                 // add office to hospital offices list
                 //offices.put(offRS.getString(2), tempOff);
@@ -674,7 +687,7 @@ public class DatabaseManager {
                 //System.out.println("******************************" + tempOff.getName());
 
                 // add office to list of offices for a destination
-                destinations.get(UUID.fromString(rs.getString(1))).addOffice(tempOff);
+                destinations.get(UUID.fromString(destRS.getString(1))).addOffice(tempOff);
             }
         }
 
