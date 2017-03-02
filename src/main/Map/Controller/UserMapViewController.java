@@ -98,21 +98,7 @@ public class UserMapViewController extends MapController
             return;//TODO add error message throw
         }
 
-        for(Line l : edgesOnMap){
-            mapItems.getChildren().remove(l);
-        }
-        for(NodeEdge n: newRoute.getPathEdges())
-        {
-            MapNode one = n.getSource();
-            MapNode other = n.getTarget();
-            Line newLine = new Line(one.getPosX(), one.getPosY(), other.getPosX(), other.getPosY());
-            newLine.setOpacity(1.0);
-            newLine.setStroke(Color.RED);
-            edgesOnMap.add(newLine);
-            mapItems.getChildren().add(newLine);
-            newLine.toBack();
-        }
-        mapImage.toBack();
+        drawRouteEdges();
 
         /*
         for(Building b : model.getHospital().getBuildings()) {
@@ -132,6 +118,24 @@ public class UserMapViewController extends MapController
 
         showDirections();
         newRoute.printTextDirections();
+    }
+
+    public void drawRouteEdges(){
+        for(Line l : edgesOnMap){
+            mapItems.getChildren().remove(l);
+        }
+        for(NodeEdge n: newRoute.getPathEdges())
+        {
+            MapNode one = n.getSource();
+            MapNode other = n.getTarget();
+            Line newLine = new Line(one.getPosX(), one.getPosY(), other.getPosX(), other.getPosY());
+            newLine.setOpacity(1.0);
+            newLine.setStroke(Color.RED);
+            edgesOnMap.add(newLine);
+            mapItems.getChildren().add(newLine);
+            newLine.toBack();
+        }
+        mapImage.toBack();
     }
 
 
@@ -263,11 +267,7 @@ public class UserMapViewController extends MapController
 
         if (newRoute != null)
         {
-            for (NodeEdge n : newRoute.getPathEdges())
-            {
-                // n.changeOpacity(1.0);
-                // n.changeColor(Color.RED);
-            }
+            drawRouteEdges();
         }
     }
 
@@ -296,11 +296,7 @@ public class UserMapViewController extends MapController
 
         if (newRoute != null)
         {
-            for (NodeEdge n : newRoute.getPathEdges())
-            {
-                //n.changeOpacity(1.0);
-                // n.changeColor(Color.RED);
-            }
+            drawRouteEdges();
         }
     }
 
