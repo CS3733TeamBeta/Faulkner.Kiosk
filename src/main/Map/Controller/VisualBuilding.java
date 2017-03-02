@@ -1,5 +1,6 @@
 package main.Map.Controller;
 
+import main.Application.ApplicationController;
 import main.Map.Entity.Building;
 import main.Map.Entity.Floor;
 import main.Map.Entity.NodeEdge;
@@ -12,6 +13,7 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import jfxtras.labs.util.event.MouseControlUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class VisualBuilding
@@ -57,6 +59,20 @@ public class VisualBuilding
         floors = new ArrayList<>();
         baseFloor = new Box(width, height, depth);
         group = new Group();
+
+        group.addEventHandler(MouseEvent.MOUSE_CLICKED, e->
+        {
+            if(e.getClickCount()==2)
+            {
+                try
+                {
+                    ApplicationController.getController().switchToMapEditorView();
+                } catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
+        });
 
         baseFloor.setTranslateX(startingTranslationX);
         baseFloor.setTranslateY(startingTranslationY);

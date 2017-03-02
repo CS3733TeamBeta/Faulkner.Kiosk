@@ -5,6 +5,7 @@ import main.Application.Database.DataCache;
 import main.Directory.*;
 import main.Map.Controller.MapEditorController;
 import main.Map.Controller.UserMapViewController;
+import main.Map.Entity.Building;
 import main.Map.Entity.Hospital;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -30,7 +31,6 @@ public class ApplicationController extends Application
     protected static final String MapEditorViewPath = "/map/MapEditorView.fxml";
     protected static final String UserMapViewerPath = "/map/UserMapView.fxml";
     protected static final String View3DPath = "/map/3DMapView.fxml";
-
 
     Stage primaryStage;
 
@@ -77,14 +77,13 @@ public class ApplicationController extends Application
         return timeout;
     }
 
-    public void updateTimeout()
+    public void setTimeout(long timeout)
     {
+        this.timeout = timeout;
         idle.updateTimeout(); //updates timeout with latest value from application controller
     }
 
-
-
-    public void switchToScene(String pathToView) throws IOException
+    public Object switchToScene(String pathToView) throws IOException
     {
         Parent root;
 
@@ -95,7 +94,7 @@ public class ApplicationController extends Application
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
 
-        loader.getController();
+        return loader.getController();
     }
 
     /**
@@ -116,10 +115,11 @@ public class ApplicationController extends Application
        switchToScene(ModifyDirectoryViewPath);
     }
 
-    public void switchToMapEditorView() throws IOException
+    public void switchToMapEditorView(Building b) throws IOException
     {
         idle.stop();
-        switchToScene(MapEditorViewPath);
+        MapEditorController controller = (MapEditorController) switchToScene(MapEditorViewPath);
+        controller.setBuilding(b);
     }
 
     public void switchToUserMapView() throws IOException

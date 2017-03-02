@@ -13,10 +13,20 @@ import java.util.ArrayList;
  */
 public class AdminMapBoundary extends MapBoundary
 {
-    public AdminMapBoundary(Hospital h)
+    private Building currentBuilding;
+
+    public AdminMapBoundary(Building b, Hospital h)
     {
         super(h);
+
+        currentBuilding =b;
     }
+
+    public Building getCurrentBuilding()
+    {
+        return currentBuilding;
+    }
+
     /**Changes the floor and adds all of the floor's edges too**/
     @Override
     public void changeFloor(Floor f)
