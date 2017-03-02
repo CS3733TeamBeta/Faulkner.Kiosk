@@ -5,20 +5,20 @@ import Directory.Boundary.AdminDeptDirectoryBoundary;
 import Map.Entity.Destination;
 import Map.Entity.Office;
 import com.jfoenix.controls.JFXTextField;
-import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
@@ -30,6 +30,7 @@ import java.io.IOException;
  * Created by jw97 on 2/27/2017.
  */
 public class AdminDeptDirectoryEditor extends AnchorPane {
+    TranslateTransition directorySlide = new TranslateTransition(Duration.millis(600), this);
     Boolean deptDirectoryUp = false;
     private AdminDeptDirectoryBoundary deptBoundary;
     ObservableList<Destination> existingLoc;
@@ -108,39 +109,38 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
         editDeptFields.setVisible(false);
     }
 
-    private KeyFrame hideDirectory() {
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), new KeyValue(mainDirectoryPane.translateYProperty(),
-                -(mainDirectoryPane.getHeight() - 80)));
+    public void hideDirectory() {
         deptDirectoryUp = false;
 
-        return keyFrame;
+        directorySlide.setToY(0);
+        directorySlide.play();
     }
 
-    private KeyFrame showDirectory() {
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), new KeyValue(mainDirectoryPane.translateYProperty(),
-                (mainDirectoryPane.getHeight() - 700)));
+    public void showDirectory() {
         deptDirectoryUp = true;
 
-        return keyFrame;
+        directorySlide.setToY(-620);
+        directorySlide.play();
     }
 
 
     @FXML
     private void changeDirectory() {
-        Timeline directorySlide = new Timeline();
-        KeyFrame keyFrame;
-        directorySlide.setCycleCount(1);
-        directorySlide.setAutoReverse(true);
-
         if (deptDirectoryUp) {
-            keyFrame = hideDirectory();
+            hideDirectory();
         } else {
             reset();
-            keyFrame = showDirectory();
+            showDirectory();
         }
 
-        directorySlide.getKeyFrames().add(keyFrame);
-        directorySlide.play();
+        deptDataTable.getScene().addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent evt) {
+                if (evt.getCode() == KeyCode.ESCAPE) {
+                    hideDirectory();
+                }
+            }
+        });
     }
 
     @FXML
