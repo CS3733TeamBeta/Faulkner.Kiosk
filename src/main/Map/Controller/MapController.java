@@ -12,10 +12,10 @@ import javafx.scene.image.ImageView;
  */
 public abstract class MapController
 {
-
     protected BiMap<DragIcon, MapNode> iconEntityMap;
 
     protected Group mapItems = new Group();
+
     protected MapBoundary boundary;
 
     protected ImageView mapImage;

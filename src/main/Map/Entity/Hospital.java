@@ -121,7 +121,7 @@ public class Hospital{
         return offices.contains(off);
     }
 
-    public Collection<Building> getBuildings()
+    public ObservableList<Building> getBuildings()
     {
         return buildings;
     }
