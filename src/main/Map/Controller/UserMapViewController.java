@@ -1,10 +1,15 @@
 package main.Map.Controller;
 
 import com.jfoenix.controls.JFXComboBox;
+import javafx.animation.SequentialTransition;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import main.Application.ApplicationController;
 import main.Map.Boundary.MapBoundary;
 import main.Map.Boundary.UserMapBoundary;
 import main.Map.Entity.*;
+import main.Map.Navigation.DirectionFloorStep;
+import main.Map.Navigation.DirectionStep;
 import main.Map.Navigation.Guidance;
 import main.Application.Exceptions.PathFindingException;
 import com.google.common.collect.BiMap;
@@ -303,14 +308,13 @@ public class UserMapViewController extends MapController
 
         panel.mainPane.setPrefHeight(mainPane.getPrefHeight());
 
+        mainPane.getChildren().add(searchPanel);
+        searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
+        searchPanel.welcomeScreen();
+
         mainPane.getChildren().add(panel);
         panel.toFront();
         panel.relocate(mainPane.getPrefWidth() - 5, 0);
-
-        mainPane.getChildren().add(searchPanel);
-        searchPanel.toFront();
-        searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
-        searchPanel.relocate(0, mainPane.getHeight() + 350);
 
         panel.setCloseHandler(event ->
         {
@@ -320,7 +324,8 @@ public class UserMapViewController extends MapController
             searchPanel.welcomeScreen();
         });
 
-        panel.setVisible(false);
+        panel.setVisible(true);
+
         directionPaneView();
 
         boundary.setInitialFloor();
@@ -379,8 +384,8 @@ public class UserMapViewController extends MapController
                 stepDrawing.getChildren().add(tL);
              }*/
 
-            //stepDrawing.play();
-           ////switch floors
+        //stepDrawing.play();
+        ////switch floors
         //}
     }
 
@@ -415,6 +420,7 @@ public class UserMapViewController extends MapController
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException
     {
+        //followPath(newRoute);
         panel.fillGuidance(newRoute);
 
         showDirections();
@@ -466,6 +472,53 @@ public class UserMapViewController extends MapController
     public void adminLogin() throws IOException
     {
         ApplicationController.getController().switchToLoginView();
+    }
+
+    public void followPath (Guidance g) {
+
+
+        Circle movePath = new Circle(10);
+        movePath.setFill(Color.BLACK);
+        movePath.toFront();
+        mapItems.getChildren().add(movePath);
+
+        for (DirectionFloorStep fStep: g.getFloorSteps()) {
+            SequentialTransition animation = new SequentialTransition();
+            MapNode n = g.getPathNodes().iterator().next();
+            movePath.setCenterX(n.getPosX());
+            movePath.setCenterY(n.getPosY());
+            for (DirectionStep step: fStep.getDirectionSteps()) {
+
+                for (NodeEdge edge: step.getStepEdges()) {
+                    if(n.getType().equals(NodeType.Connector))
+                    {
+                        System.out.println("Found connector");
+                    }
+
+
+                    Timeline tl = new Timeline();
+
+
+
+                    double endX = edge.getOtherNode(n).getPosX();
+                    double endY = edge.getOtherNode(n).getPosY();
+
+
+                    KeyValue moveX = new KeyValue(movePath.centerXProperty(), endX);
+                    KeyValue moveY = new KeyValue(movePath.centerYProperty(), endY);
+                    KeyFrame kf = new KeyFrame(Duration.seconds(3), moveX, moveY);
+                    tl.getKeyFrames().add(kf);
+                    animation.getChildren().add(tl);
+
+                    n = edge.getOtherNode(n);
+
+                }
+
+            }
+            System.out.println("playing");
+            animation.play();
+        }
+
     }
 }
 

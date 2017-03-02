@@ -77,7 +77,7 @@ public class MapBoundary extends Observable
                 changeFloor(h.getCurrentKiosk().getMyFloor());
             }
             else{
-                changeFloor(h.getBuildings().iterator().next().getFloor(1));
+                changeFloor(h.getBuildings().iterator().next().getBaseFloor());
             }
 
             currentBuilding = currentFloor.getBuilding();
@@ -88,9 +88,9 @@ public class MapBoundary extends Observable
         }
     }
 
-    public void changeFloor(Floor f)
+    protected void changeFloor(Floor f, boolean ignoreCampus)
     {
-        if(currentFloor==null || !(f.getFloorNumber()==1 && currentFloor==campusFloor)) //if not already on campus floor
+        if(currentFloor==null || ignoreCampus || !(f.getFloorNumber()==1 && currentFloor==campusFloor)) //if not already on campus floor
         {
             currentFloor = f;
 
@@ -107,6 +107,11 @@ public class MapBoundary extends Observable
             setChanged();
             notifyObservers(UpdateType.FloorChange);
         }
+    }
+
+    public void changeFloor(Floor f)
+    {
+       changeFloor(f, false);
     }
 
     protected boolean shouldBeOnMap(MapNode n)

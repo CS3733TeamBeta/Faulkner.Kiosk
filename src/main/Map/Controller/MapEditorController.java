@@ -46,7 +46,8 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MapEditorController extends MapController
+public class
+MapEditorController extends MapController
 {
 	public ScrollPane scroll_pane;
 	@FXML AnchorPane mapPane;
@@ -306,9 +307,15 @@ public class MapEditorController extends MapController
 			}
 		});
 
-		for(Floor f: boundary.getCurrentFloor().getBuilding().getFloors()) //makes a floor tab for each floor in the building
+		if(boundary.getCurrentFloor().getBuilding()!=null) {
+			for (Floor f : boundary.getCurrentFloor().getBuilding().getFloors()) //makes a floor tab for each floor in the building
+			{
+				makeFloorTab(f);
+			}
+		}
+		else
 		{
-			makeFloorTab(f);
+			makeCampusTab(boundary.getCurrentFloor());
 		}
 
 		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
@@ -338,6 +345,7 @@ public class MapEditorController extends MapController
 		for (Building b : boundary.getHospital().getBuildings()) {
 			buildings.add(b.getName());
 		}
+
 		if(buildings != null) {
 			buildingSelector.setItems(FXCollections.observableArrayList(buildings));
 			try {
@@ -501,7 +509,7 @@ public class MapEditorController extends MapController
 		updateEdgeLine(edge);
 	}
 
-	@FXML
+	/*@FXML
 	public void switchBuilding(){
 		String currentBuilding = boundary.getCurrentFloor().getBuilding().getName();
 		String newBuilding = buildingSelector.getValue();
@@ -526,7 +534,7 @@ public class MapEditorController extends MapController
 				}
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Called when an edge is removed
@@ -539,6 +547,13 @@ public class MapEditorController extends MapController
 		edgeEntityMap.remove(l);
 	}
 
+	public Tab makeCampusTab(Floor f)
+	{
+		Tab t = makeFloorTab(f);
+		t.setText("Campus");
+
+		return t;
+	}
 	/**
 	 * Adds a building to the tab pane/model
 	 *
