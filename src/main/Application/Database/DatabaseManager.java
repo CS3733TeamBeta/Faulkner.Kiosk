@@ -466,6 +466,7 @@ public class DatabaseManager {
             floor_id = UUID.fromString(floorRS.getString(1));
             f = new Floor(floor_id, floorRS.getInt(3));
             f.setImageLocation(floorRS.getString(4));
+            f.setBuilding(b);
 
             loadNodes(h, f);
             try {
