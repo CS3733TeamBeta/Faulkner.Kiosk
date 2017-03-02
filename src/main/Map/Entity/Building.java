@@ -70,31 +70,7 @@ public class Building {
      * @throws Exception if the floor already exists
      */
     public void addFloor(Floor f) throws Exception {
-        boolean floorExists;
-
-        if(f.floorNumber == 1) //@TODO sketchy (but will never do this lol)
-        {
-            buildingFloors.add(f);
-        }
-        else
-        {
-            try
-            {
-                getFloor(f.getFloorNumber());
-                floorExists = true;
-            } catch (Exception e)
-            {
-                floorExists = false;
-            }
-            if (!floorExists)
-            {
-                buildingFloors.add(f);
-            }
-            else
-            {
-                throw new Exception("Floor already exists");
-            }
-        }
+        buildingFloors.add(f);
 
         f.setBuilding(this);
     }
@@ -126,15 +102,7 @@ public class Building {
 
     public Floor getBaseFloor()
     {
-        for (Floor f : buildingFloors)
-        {
-            if (f.getFloorNumber() == 1)
-            {
-                return f;
-            }
-        }
-
-        return null;
+        return buildingFloors.iterator().next();
     }
 
     public Collection<Floor> getFloors()

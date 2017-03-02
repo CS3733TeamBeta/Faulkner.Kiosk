@@ -16,7 +16,7 @@ public class Kiosk extends MapNode{
 
     UUID kioskID;
 
-    private final String popOverEditFXML = "/Admin/Popup/KioskEditPopup.fxml";
+    private final String popOverEditFXML = "/Popup/KioskEditPopup.fxml";
 
     public Kiosk () {
         this.direction = "N";

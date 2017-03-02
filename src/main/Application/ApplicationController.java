@@ -6,6 +6,7 @@ import main.Directory.controller.AdminDocDirectoryEditorController;
 import main.Application.Database.DataCache;
 import main.Map.Controller.MapEditorController;
 import main.Map.Controller.UserMapViewController;
+import main.Map.Entity.Building;
 import main.Map.Entity.Hospital;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -27,10 +28,13 @@ public class ApplicationController extends Application
 
     DataCache dataCache;
 
+    Building lastBuildingUnderEdit;
+
     protected static final String AdminLoginViewPath = "/application/AdminLoginView.fxml";
     protected static final String ModifyDirectoryViewPath = "/directory/AdminDocDirectoryEditor.fxml";
     protected static final String MapEditorViewPath = "/map/MapEditorView.fxml";
     protected static final String UserMapViewerPath = "/map/UserMapView.fxml";
+    protected static final String View3DPath = "/map/3DMapView.fxml";
 
     Stage primaryStage;
 
@@ -49,6 +53,16 @@ public class ApplicationController extends Application
     public static Hospital getHospital()
     {
         return controller.dataCache.getHospital();
+    }
+
+    public void stashBuildingEdit(Building b)
+    {
+        lastBuildingUnderEdit = b;
+    }
+
+    public Building popBuildingEdit()
+    {
+        return lastBuildingUnderEdit;
     }
 
     IdleTimer idle = new IdleTimer();
@@ -82,17 +96,13 @@ public class ApplicationController extends Application
         return timeout;
     }
 
-    public void updateTimeout()
+    public void setTimeout(long timeout)
     {
+        this.timeout = timeout;
         idle.updateTimeout(); //updates timeout with latest value from application controller
     }
 
-    public void resetController() throws Exception
-    {
-       loader.setController(new UserMapViewController());
-    }
-
-    public void switchToScene(String pathToView) throws IOException
+    public Object switchToScene(String pathToView) throws IOException
     {
         Parent root;
 
@@ -103,7 +113,7 @@ public class ApplicationController extends Application
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
 
-        loader.getController();
+        return loader.getController();
     }
 
     /**
@@ -115,15 +125,26 @@ public class ApplicationController extends Application
        switchToScene(AdminLoginViewPath);
     }
 
+    public void switchToVisualBuildingEditor() throws IOException
+    {
+        switchToScene(View3DPath);
+    }
 
     public void switchToModifyDirectoryView() throws IOException {
        switchToScene(ModifyDirectoryViewPath);
     }
 
-    public void switchToMapEditorView() throws IOException
+    public void switchToMapEditorView(Building b) throws IOException
     {
         idle.stop();
-        switchToScene(MapEditorViewPath);
+        lastBuildingUnderEdit = b;
+        MapEditorController controller = (MapEditorController) switchToScene(MapEditorViewPath);
+        controller.setBuilding(b);
+    }
+
+    public void switchToSavedMapEditorView() throws IOException
+    {
+        switchToMapEditorView(lastBuildingUnderEdit);
     }
 
     public void switchToUserMapView() throws IOException
