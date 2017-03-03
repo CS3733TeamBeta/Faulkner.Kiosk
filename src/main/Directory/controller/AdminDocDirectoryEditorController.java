@@ -258,6 +258,8 @@ public class AdminDocDirectoryEditorController {
             newDoc.setPhoneNum(phoneNum);
             docBoundary.addDoctor(newDoc);
 
+            searchBar.clear();
+
             dataTable.requestFocus();
             dataTable.getSelectionModel().select(newDoc);
             int i = dataTable.getSelectionModel().getSelectedIndex();
@@ -265,7 +267,6 @@ public class AdminDocDirectoryEditorController {
             dataTable.scrollTo(i);
 
             reset();
-            searchBar.clear();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
             alert.setTitle("Action denied.");
