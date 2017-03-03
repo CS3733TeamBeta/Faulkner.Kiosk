@@ -1,5 +1,7 @@
 package main.Application.Database;
 
+import javafx.collections.ListChangeListener;
+import main.Directory.Entity.Doctor;
 import main.Map.Entity.Hospital;
 
 import java.sql.SQLException;

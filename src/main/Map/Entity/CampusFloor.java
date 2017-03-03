@@ -4,8 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -73,5 +71,9 @@ public class CampusFloor extends Floor
     public String toString()
     {
         return "Campus";
+    }
+
+    public void setFloorID(UUID id) {
+        this.floorID = id;
     }
 }

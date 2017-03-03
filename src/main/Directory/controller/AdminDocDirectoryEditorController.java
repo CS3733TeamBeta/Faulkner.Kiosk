@@ -62,8 +62,7 @@ public class AdminDocDirectoryEditorController {
 
     Hospital hospital;
     AdminDocDirectoryBoundary docBoundary;
-    ObservableList<Destination> existingLoc =
-            FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
+    ObservableList<Destination> existingLoc;
     AdminDeptDirectoryEditor deptPane = new AdminDeptDirectoryEditor();
 
     public AdminDocDirectoryEditorController() throws Exception
@@ -85,6 +84,7 @@ public class AdminDocDirectoryEditorController {
 
         // Adding a listener to the search bar, filtering through the data as the user types
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            dataTable.getSelectionModel().clearSelection();
             dataTable.setItems(docBoundary.setSearchList(newValue));
         });
 
@@ -94,12 +94,14 @@ public class AdminDocDirectoryEditorController {
 
         searchForLoc.getItems().clear();
 
+        existingLoc = FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
+
         searchForLoc.getItems().addAll(existingLoc);
 
         searchForLoc.setOnAction(e -> {
             Destination d = searchForLoc.getSelectionModel().getSelectedItem();
             if (d != null) {
-                if (!locAssigned.getItems().contains(d)) {
+                if (!(locAssigned.getItems().contains(d))) {
                     locAssigned.getItems().add(d);
                 }
             }
@@ -146,6 +148,7 @@ public class AdminDocDirectoryEditorController {
             if (d != null) {
                 docBoundary.removeDoctor(d);
                 reset();
+                searchBar.clear();
             }
 
             Destination dest = locAssigned.getSelectionModel().getSelectedItem();
@@ -167,8 +170,6 @@ public class AdminDocDirectoryEditorController {
         phoneNum2.clear();
         phoneNum3.clear();
 
-        searchBar.clear();
-
         locAssigned.getItems().clear();
 
         searchForLoc.setValue(null);
@@ -186,16 +187,6 @@ public class AdminDocDirectoryEditorController {
             return false;
         }
 
-        if (phoneNum1.getText().length() > 0 ||
-                phoneNum2.getText().length() > 0 ||
-                phoneNum3.getText().length() > 0) {
-            if (!((phoneNum1.getText().length() == 3) &&
-                    (phoneNum2.getText().length() == 3) &&
-                    (phoneNum3.getText().length() == 4))) {
-                return false;
-            }
-        }
-
         if (startTime.getText() == null || (startTime.getText().isEmpty())){
             return false;
         }
@@ -203,7 +194,6 @@ public class AdminDocDirectoryEditorController {
         if (endTime.getText() == null || (endTime.getText().isEmpty())){
             return false;
         }
-
 
         if (locAssigned.getItems().isEmpty()) {
             return false;
@@ -224,7 +214,7 @@ public class AdminDocDirectoryEditorController {
             lastName.setText(selectedDoc.splitName()[0]);
             description.setText(selectedDoc.getDescription());
 
-            if (!selectedDoc.getPhoneNum().equals("N/A")) {
+            if (!selectedDoc.getPhoneNum().equals("N/A") && !selectedDoc.getPhoneNum().equals("")) {
                 phoneNum1.setText(selectedDoc.splitPhoneNum()[0]);
                 phoneNum2.setText(selectedDoc.splitPhoneNum()[1]);
                 phoneNum3.setText(selectedDoc.splitPhoneNum()[2]);
@@ -233,46 +223,65 @@ public class AdminDocDirectoryEditorController {
             startTime.setText(selectedDoc.splitHours()[0]);
             endTime.setText(selectedDoc.splitHours()[1]);
 
-            locAssigned.setItems(docBoundary.getDocLoc(selectedDoc));
+            for (Destination d: selectedDoc.getDestinations()) {
+                locAssigned.getItems().add(d);
+            }
         }
+    }
+
+    private boolean phoneNumValidation() {
+        if ((phoneNum1.getText() == null || phoneNum1.getText().isEmpty()) &&
+                (phoneNum2.getText() == null || phoneNum2.getText().isEmpty()) &&
+                (phoneNum3.getText() == null || phoneNum3.getText().isEmpty())) {
+            return true;
+        }
+
+        if ((phoneNum1.getText().length() == 3 &&
+                phoneNum2.getText().length() == 3 &&
+                phoneNum3.getText().length() == 4)) {
+            return true;
+        }
+
+        return false;
     }
 
     @FXML
     private void saveProfile() {
-        if (isProcessable()) {
+        if (isProcessable() && phoneNumValidation()) {
             String name = lastName.getText() + ", " + firstName.getText();
             String d = description.getText();
-            String phoneNum = "N/A";
             String hrs = startTime.getText() + " - " + endTime.getText();
-            if (phoneNum1.getText() != null || !phoneNum1.getText().isEmpty()) {
-                phoneNum = phoneNum1.getText() + "-" + phoneNum2.getText() + "-" + phoneNum3.getText();
+
+            ObservableList<Destination> destinations = FXCollections.observableArrayList();
+
+            for (Destination dest : locAssigned.getItems()) {
+                destinations.add(dest);
+            }
+
+            Doctor newDoc = new Doctor(name, d, hrs, destinations);
+
+            if (phoneNum1.getText().length() > 0) {
+                String phoneNum = phoneNum1.getText() + "-" + phoneNum2.getText() + "-" + phoneNum3.getText();
+                newDoc.setPhoneNum(phoneNum);
             }
 
             if (dataTable.getSelectionModel().getSelectedItem() != null) {
                 docBoundary.removeDoctor(dataTable.getSelectionModel().getSelectedItem());
-                try {
-                    ApplicationController.getCache().getDbManager().delDocFromDB(dataTable.getSelectionModel().getSelectedItem());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+
+                //dataTable.getSelectionModel().clearSelection();
             }
 
-            Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
-            newDoc.setPhoneNum(phoneNum);
-            docBoundary.addDoctor(newDoc);
-            try {
-                ApplicationController.getCache().getDbManager().addDocToDB(newDoc);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            docBoundary.addDoc(newDoc);
+
+            searchBar.clear();
+
+            reset();
 
             dataTable.requestFocus();
             dataTable.getSelectionModel().select(newDoc);
             int i = dataTable.getSelectionModel().getSelectedIndex();
             dataTable.getFocusModel().focus(i);
             dataTable.scrollTo(i);
-
-            reset();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
             alert.setTitle("Action denied.");

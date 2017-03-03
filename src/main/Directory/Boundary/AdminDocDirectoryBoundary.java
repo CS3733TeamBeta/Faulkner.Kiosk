@@ -1,11 +1,11 @@
 package main.Directory.Boundary;
 
-import main.Directory.Boundary.AbstractDirectoryBoundary;
-import main.Directory.Entity.Doctor;
-import main.Map.Entity.Destination;
-import main.Map.Entity.Hospital;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import main.Application.ApplicationController;
+import main.Directory.Entity.Doctor;
+import main.Map.Entity.Hospital;
+
+import java.sql.SQLException;
 
 /**
  * Created by jw97 on 2/25/2017.
@@ -20,20 +20,24 @@ public class AdminDocDirectoryBoundary extends AbstractDirectoryBoundary
         return setSearchList(h.getDoctors(), newValue);
     }
 
-    public void addDoctor (Doctor d) {
+    public void addDoc (Doctor d) {
         h.addDoctor(d);
+
+        try {
+            ApplicationController.getCache().getDbManager().addDocToDB(d);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void removeDoctor(Doctor d) {
         h.removeDoctor(d);
-    }
 
-    public ObservableList<Destination> getDocLoc(Doctor d) {
-        ObservableList<Destination> locations;
-
-        locations = d.getDestinations();
-
-        return locations;
+        try {
+            ApplicationController.getCache().getDbManager().delDocFromDB(d);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -35,7 +35,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * Created by jw97 on 2/16/2017.
@@ -69,7 +68,7 @@ public class UserMapViewController extends MapController
     Stage primaryStage;
 
     UserDirectionsPanel panel;
-    UserSearchPanel searchPanel = new UserSearchPanel();
+    UserSearchPanel searchPanel = new UserSearchPanel(this);
 
     Group zoomGroup;
 
@@ -94,6 +93,7 @@ public class UserMapViewController extends MapController
         super();
 
         userMapBoundary = new UserMapBoundary(ApplicationController.getHospital());
+
         boundary = userMapBoundary;
 
         nodeTextMap = HashBiMap.create();
@@ -208,7 +208,6 @@ public class UserMapViewController extends MapController
             groupBounds = group.getLayoutBounds();
         }
     }
-
 
     @FXML
     private void floorDownResetOpacity()
@@ -344,7 +343,9 @@ public class UserMapViewController extends MapController
 
         mainPane.getChildren().add(searchPanel);
         searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
+        searchPanel.relocate(mainPane.getLayoutX(), 350);
         searchPanel.welcomeScreen();
+        searchPanel.addNavigation();
 
         panel.setCloseHandler(event ->
         {
@@ -404,7 +405,11 @@ public class UserMapViewController extends MapController
 
             curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
         });
+    }
 
+    public void setDestination(Destination selectedDest) throws Exception {
+        findPathToNode(selectedDest);
+        searchPanel.hideWelcomeScreen();
     }
 
     private void directionPaneView()
@@ -572,6 +577,7 @@ public class UserMapViewController extends MapController
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException
     {
+
         edgesOnFloor.getChildren().clear();
         lastFloorStep = null;
 
@@ -579,7 +585,7 @@ public class UserMapViewController extends MapController
         //followPath(newRoute);
         directionStepIndex = 0;
         newRoute = userMapBoundary.findPathToNode(endPoint);
-        panel.fillGuidance(newRoute);
+        //panel.fillGuidance(newRoute);
 
         newRoute.printTextDirections();
 

@@ -37,9 +37,6 @@
             <Font name="System Bold" size="20.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="firstName" layoutX="733.0" layoutY="140.0" promptText="First name" AnchorPane.rightAnchor="329.0" />
-      <JFXTextField fx:id="lastName" layoutX="885.0" layoutY="140.0" promptText="Last name" AnchorPane.rightAnchor="175.0" />
-      <JFXTextField fx:id="description" layoutX="1041.0" layoutY="140.0" prefHeight="25.0" prefWidth="109.0" promptText="Description" AnchorPane.rightAnchor="50.0" />
       <Label layoutX="731.0" layoutY="116.0" text="Name *" AnchorPane.rightAnchor="423.0">
          <font>
             <Font name="System Bold" size="13.0" />
@@ -125,5 +122,12 @@
       <JFXButton fx:id="mapBuilder" layoutX="750.0" layoutY="564.0" maxHeight="60.0" onAction="#onMapBuilderSwitch" prefHeight="26.0" prefWidth="420.0" style="-fx-background-color: #3F51B5;" text="Go To Map Builder" textFill="WHITE" AnchorPane.bottomAnchor="110.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="564.0" />
       <JFXListView fx:id="locAssigned" layoutX="730.0" layoutY="317.0" prefHeight="185.0" prefWidth="420.0" AnchorPane.rightAnchor="50.0" />
       <ComboBox fx:id="searchForLoc" layoutX="895.0" layoutY="272.0" prefHeight="25.0" prefWidth="200.0" promptText="Add a location" />
+      <HBox layoutX="729.0" layoutY="142.0" prefHeight="28.0" prefWidth="421.0" spacing="20.0" AnchorPane.leftAnchor="729.0" AnchorPane.rightAnchor="50.0">
+         <children>
+            <JFXTextField fx:id="firstName" promptText="First name" />
+            <JFXTextField fx:id="lastName" promptText="Last name" />
+            <JFXTextField fx:id="description" prefHeight="25.0" prefWidth="109.0" promptText="Description" />
+         </children>
+      </HBox>
    </children>
 </AnchorPane>
