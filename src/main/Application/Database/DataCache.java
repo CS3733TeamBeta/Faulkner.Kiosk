@@ -1,5 +1,7 @@
 package main.Application.Database;
 
+import javafx.collections.ListChangeListener;
+import main.Directory.Entity.Doctor;
 import main.Map.Entity.Hospital;
 
 import java.sql.SQLException;
@@ -41,11 +43,37 @@ public class DataCache
 
     public Hospital getHospital()
     {
+
+        System.out.println("Hospital*********************************************");
         try
         {
            if(h==null) h = db.loadData();
-        } catch (SQLException e)
-        {
+
+            h.getDoctors().addListener((ListChangeListener<Doctor>) e-> {
+                while (e.next()) {
+                        if (e.wasAdded()) {
+                            System.out.println("Added!*******");
+                            for (Doctor doc : e.getAddedSubList()) {
+                                try {
+                                    db.addDocToDB(doc);
+                                } catch (SQLException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        } else if (e.wasRemoved()) {
+
+                            System.out.println("Removed!**********");
+                            for (Doctor doc : e.getRemoved()) {
+                                try {
+                                    db.delDocFromDB(doc);
+                                } catch (SQLException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                });
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 

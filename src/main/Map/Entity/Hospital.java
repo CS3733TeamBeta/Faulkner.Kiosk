@@ -21,6 +21,7 @@ public class Hospital{
     private ObservableList<Office> offices;
 
     CampusFloor CampusFloor;
+    Building campusBuilding;
 
     private Kiosk currentKiosk = null;
     protected ObservableList<Kiosk> kiosks;
@@ -31,7 +32,19 @@ public class Hospital{
         offices = FXCollections.observableArrayList();
         doctors = FXCollections.observableArrayList();
 
+        campusBuilding = new Building("Campus");
         CampusFloor  = new CampusFloor();
+
+        try
+        {
+            campusBuilding.addFloor(CampusFloor);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        CampusFloor.setBuilding(campusBuilding);
+
         kiosks = FXCollections.observableArrayList(new ArrayList<Kiosk>());
     }
 
@@ -58,6 +71,7 @@ public class Hospital{
     }
 
     public void addDoctor(Doctor doc) {
+        System.out.println("ADDING DOCTOR******************************************");
         doctors.add(doc);
 
         doc.addObserver((observer, args)->
@@ -65,7 +79,19 @@ public class Hospital{
             int i = doctors.indexOf(doc);
 
             doctors.remove(doc);
+            try {
+                ApplicationController.getCache().getDbManager().delDocFromDB(doc);
+                System.out.println("Removed Doctor");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             doctors.add(i, doc);
+            try {
+                ApplicationController.getCache().getDbManager().addDocToDB(doc);
+                System.out.println("Added Doctor");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         });
     }
 

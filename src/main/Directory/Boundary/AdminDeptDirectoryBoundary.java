@@ -26,17 +26,4 @@ public class AdminDeptDirectoryBoundary extends AbstractDirectoryBoundary {
         h.removeOffice(office);
     }
 
-    public void editDept(Office office, String name, Destination destination) {
-        if (h.containsOffice(office)) {
-
-            if (!office.getName().equals(name)) {
-                office.setName(name);
-            }
-
-            if (office.getDestination() != destination) {
-                office.setDestination(destination);
-            }
-        }
-
-    }
   }

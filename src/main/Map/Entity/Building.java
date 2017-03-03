@@ -48,53 +48,14 @@ public class Building {
     {
         return hospital;
     }
-
-    public Floor newFloor()
-    {
-        Floor f = new Floor(buildingFloors.size() + 1);
-
-        try
-        {
-            addFloor(f);
-        }
-        catch (Exception e)
-        {
-
-        }
-
-        return f;
-    }
+ 
     /**
      * Adds a floor to this building, throwing an exception if the floor already exists
      * @param f the floor to be added
      * @throws Exception if the floor already exists
      */
     public void addFloor(Floor f) throws Exception {
-        boolean floorExists;
-
-        if(f.floorNumber == 1) //@TODO sketchy (but will never do this lol)
-        {
-            buildingFloors.add(f);
-        }
-        else
-        {
-            try
-            {
-                getFloor(f.getFloorNumber());
-                floorExists = true;
-            } catch (Exception e)
-            {
-                floorExists = false;
-            }
-            if (!floorExists)
-            {
-                buildingFloors.add(f);
-            }
-            else
-            {
-                throw new Exception("Floor already exists");
-            }
-        }
+        buildingFloors.add(f);
 
         f.setBuilding(this);
     }
@@ -126,9 +87,9 @@ public class Building {
 
     public Floor getBaseFloor()
     {
-        for (Floor f : buildingFloors)
+        for(Floor f: buildingFloors)
         {
-            if (f.getFloorNumber() == 1)
+            if(f.getFloorNumber()==1)
             {
                 return f;
             }

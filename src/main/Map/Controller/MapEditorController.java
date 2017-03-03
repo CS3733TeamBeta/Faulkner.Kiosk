@@ -1,5 +1,6 @@
 package main.Map.Controller;
 
+import javafx.scene.control.Label;
 import main.Application.ApplicationController;
 import main.Map.Boundary.AdminMapBoundary;
 import main.Map.Entity.*;
@@ -46,24 +47,17 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class
-MapEditorController extends MapController
+public class MapEditorController extends MapController
 {
 	public ScrollPane scroll_pane;
 	@FXML AnchorPane mapPane;
 	@FXML AnchorPane root_pane;
 
 	@FXML
-	Button newBuildingButton;
-
-	@FXML
 	Button newFloorButton;
 
 	@FXML
 	private TabPane FloorTabPane;
-
-	@FXML
-	private JFXComboBox<String> buildingSelector;
 
 	@FXML
 	private JFXComboBox<Kiosk> kioskSelector;
@@ -85,30 +79,85 @@ MapEditorController extends MapController
 
 	HashSet<DragIcon> selectedIcons;
 
+	@FXML
+	Label buildingLabel;
+
 	boolean drawingEdgeFrozen = false;
 	boolean dragInProgress = false;
+
+	public void setBuilding(Building b)
+	{
+		if(b.getName().equals("Campus"))
+		{
+			newFloorButton.setVisible(false);
+			buildingLabel.setText("Campus Map");
+		}
+		else
+		{
+			buildingLabel.setText(b.getName() + " Building");
+		}
+
+		boundary = new AdminMapBoundary(b, ApplicationController.getHospital());
+		initBoundary();
+
+		adminBoundary = (AdminMapBoundary)boundary;
+
+		adminBoundary.addEdgeSetChangeHandler(change ->
+		{
+			if (change.wasAdded()) {
+				onEdgeAdded(change.getElementAdded());
+			} else if (change.wasRemoved()) {
+				onEdgeRemoved(change.getElementRemoved());
+			}
+		});
+
+		for(Floor f: boundary.getCurrentBuilding().getFloors()) //makes a floor tab for each floor in the building
+		{
+			makeFloorTab(f);
+		}
+
+		FloorTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
+
+		FloorTabPane.getSelectionModel().select(0);
+
+		kioskSelector.setItems(boundary.getHospital().getKiosks());
+
+		if(ApplicationController.getHospital().getCurrentKiosk()!=null)
+		{
+			kioskSelector.getSelectionModel().select(ApplicationController.getHospital().getCurrentKiosk());
+		}
+
+		kioskSelector.getSelectionModel().selectedItemProperty().addListener(
+				(obs, old, newVal)->
+				{
+					DragIcon oldIcon = iconEntityMap.inverse().get(old);
+					DragIcon newIcon = iconEntityMap.inverse().get(newVal);
+
+					ApplicationController.getHospital().setCurrentKiosk(newVal);
+
+					if(oldIcon!=null)
+					{
+						oldIcon.setType(old.getType());
+					}
+
+					newIcon.setType(newVal.getType());
+				}
+		);
+
+		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
+				(ov, oldvalue, newvalue) -> {
+					boundary.changeFloor(tabFloorMap.get(newvalue)); //called when floor tab is selected
+
+				});
+
+		adminBoundary.changeFloor(adminBoundary.getCurrentFloor());
+	}
 
 	public MapEditorController()
 	{
 		super();
 
 		selectedIcons = new HashSet<>();
-
-		boundary = new AdminMapBoundary(ApplicationController.getHospital());
-
-		adminBoundary = (AdminMapBoundary)boundary;
-
-		/*
-		for(Building b : boundary.getHospital().getBuildings()) {
-			if(b.getName().equals("Faulkner")) {
-				for (Floor f : b.getFloors()) {
-					if (f.getFloorNumber() == 1) {
-						System.out.println("SETTING CAMPUS MAP TO FAULKNER");
-						boundary.getHospital().setCampusFloorToFloor(f);
-					}
-				}
-			}
-		}*/
 
 		edgeEntityMap = HashBiMap.create();
 		tabFloorMap = HashBiMap.create();
@@ -152,22 +201,8 @@ MapEditorController extends MapController
 	 * FXML initialize function
 	 */
 	@FXML
-	private void initialize() {
-		kioskSelector.setItems(boundary.getHospital().getKiosks());
-
-		kioskSelector.getSelectionModel().selectedItemProperty().addListener(
-				(o, old, newSelection) ->
-				{
-					adminBoundary.setCurrentKiosk(newSelection);
-
-					iconEntityMap.inverse().get(newSelection).setType(newSelection.getType());
-					if (iconEntityMap.inverse().get(old) != null && old.getType() != null) {
-						iconEntityMap.inverse().get(old).setType(old.getType());
-					}
-				});
-
-		int kioskIndex = boundary.getHospital().getKiosks().indexOf(boundary.getHospital().getCurrentKiosk());
-
+	private void initialize()
+	{
 		Rectangle selectionRect = new Rectangle();
 		selectionRect.setFill(Color.GREY);
 		selectionRect.setOpacity(.3);
@@ -176,7 +211,8 @@ MapEditorController extends MapController
 		ObjectProperty<Point2D> mouseAnchor = new SimpleObjectProperty<>();
 
 		mapPane.setOnMousePressed(e -> {
-			if (!edgeEntityMap.containsKey(e.getPickResult().getIntersectedNode()) && !drawingEdgeLine.isVisible()) {
+			if(!edgeEntityMap.containsKey(e.getPickResult().getIntersectedNode()) && !drawingEdgeLine.isVisible())
+			{
 				mouseAnchor.set(new Point2D(e.getX(), e.getY()));
 				selectionRect.toFront();
 				selectionRect.setX(e.getX());
@@ -189,14 +225,17 @@ MapEditorController extends MapController
 		mapPane.setOnMouseDragged(e -> {
 			clearSelected();
 
-			if (!drawingEdgeLine.isVisible()) {
+			if(!drawingEdgeLine.isVisible())
+			{
 				selectionRect.setX(Math.min(e.getX(), mouseAnchor.get().getX()));
 				selectionRect.setY(Math.min(e.getY(), mouseAnchor.get().getY()));
 				selectionRect.setWidth(Math.abs(e.getX() - mouseAnchor.get().getX()));
 				selectionRect.setHeight(Math.abs(e.getY() - mouseAnchor.get().getY()));
 
 				dragInProgress = true;
-			} else {
+			}
+			else
+			{
 				selectionRect.setWidth(0);
 				selectionRect.setHeight(0);
 			}
@@ -208,9 +247,12 @@ MapEditorController extends MapController
 							.filter(r -> r.getBoundsInParent().intersects(selectionRect.getBoundsInParent()))
 							.collect(Collectors.toList()));
 
-			if (selectedIcons.size() > 1) {
+			if(selectedIcons.size()>1)
+			{
 				markSelected();
-			} else {
+			}
+			else
+			{
 				selectedIcons.clear();
 			}
 
@@ -230,19 +272,6 @@ MapEditorController extends MapController
 		drawingEdgeLine.setVisible(false);
 
 		FloorTabPane.getTabs().clear();
-
-		initBoundary();
-
-		adminBoundary.addEdgeSetChangeHandler(change ->
-		{
-			if (change.wasAdded()) {
-				onEdgeAdded(change.getElementAdded());
-			} else if (change.wasRemoved()) {
-				onEdgeRemoved(change.getElementRemoved());
-			}
-		});
-
-		adminBoundary.setInitialFloor();
 
 		buildRadialMenu(); //instantiates and populates the radial menu
 
@@ -307,53 +336,11 @@ MapEditorController extends MapController
 			}
 		});
 
-		if(boundary.getCurrentFloor().getBuilding()!=null) {
-			for (Floor f : boundary.getCurrentFloor().getBuilding().getFloors()) //makes a floor tab for each floor in the building
-			{
-				makeFloorTab(f);
-			}
-		}
-		else
-		{
-			makeCampusTab(boundary.getCurrentFloor());
-		}
-
-		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
-				(ov, newvalue, oldvalue) -> {
-					if(tabFloorMap.get(oldvalue).getFloorNumber() == 1){
-						System.out.println("Switching to campus floor");
-						boundary.changeFloor(boundary.getCampusFloor()); //called when floor tab is selected
-					}else {
-						System.out.println("Tab hit to switch to : " + tabFloorMap.get(oldvalue).getFloorNumber());
-						boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
-					}
-					boundary.changeFloor(tabFloorMap.get(oldvalue)); //called when floor tab is selected
-
-
-				});
-
 		target.setVisible(false); //hides target
 		target.setFitWidth(14); //sets width
 		target.setFitHeight(14); //sets height
 
 		mapPane.getChildren().add(target); //adds to map pane
-
-		FloorTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
-		FloorTabPane.getSelectionModel().select(0);
-
-		LinkedList<String> buildings= new LinkedList<>();
-		for (Building b : boundary.getHospital().getBuildings()) {
-			buildings.add(b.getName());
-		}
-
-		if(buildings != null) {
-			buildingSelector.setItems(FXCollections.observableArrayList(buildings));
-			try {
-				buildingSelector.setValue(boundary.getCurrentFloor().getBuilding().getName());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	protected void markSelected()
@@ -509,33 +496,6 @@ MapEditorController extends MapController
 		updateEdgeLine(edge);
 	}
 
-	/*@FXML
-	public void switchBuilding(){
-		String currentBuilding = boundary.getCurrentFloor().getBuilding().getName();
-		String newBuilding = buildingSelector.getValue();
-		if(!newBuilding.equals(currentBuilding)){
-			for(Building b : boundary.getHospital().getBuildings()) {
-				if(b.getName().equals(newBuilding)) {
-					boundary.changeBuilding(b);
-					FloorTabPane.getTabs().clear();
-					tabFloorMap.clear();
-					for(Floor f : b.getFloors()){
-						System.out.println("adding floor to tabpane");
-						makeFloorTab(f);
-					}
-					FloorTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
-					FloorTabPane.getSelectionModel().select(0);
-					try {
-						boundary.changeFloor(boundary.getHospital().getCampusFloor());
-					}catch(Exception e){
-						System.out.println("ERROR IN SWITCHING FLOORS");
-					}
-
-				}
-			}
-		}
-	}*/
-
 	/**
 	 * Called when an edge is removed
 	 * @param edge The edge to remove
@@ -547,13 +507,6 @@ MapEditorController extends MapController
 		edgeEntityMap.remove(l);
 	}
 
-	public Tab makeCampusTab(Floor f)
-	{
-		Tab t = makeFloorTab(f);
-		t.setText("Campus");
-
-		return t;
-	}
 	/**
 	 * Adds a building to the tab pane/model
 	 *
@@ -576,7 +529,14 @@ MapEditorController extends MapController
 			}
 		});
 
-		listView.setItems(f.getChildren());
+		if(f instanceof CampusFloor)
+		{
+			listView.setItems(((CampusFloor)f).getCampusNodes());
+		}
+		else
+		{
+			listView.setItems(f.getChildren());
+		}
 
 		listView.getSelectionModel().selectedItemProperty().addListener((o, oldSelection, newSelection)->
 		{
@@ -888,7 +848,7 @@ MapEditorController extends MapController
 	{
 		//DataCache.getInstance().save();
 
-		ApplicationController.getController().switchToUserMapView();
+		ApplicationController.getController().switchToVisualBuildingEditor();
 	}
 
 	@FXML

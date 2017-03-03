@@ -20,7 +20,7 @@ public class MapNode extends Observable
     double posX;
     double posY;
 
-    private final String popOverEditFXML = "/Map/Controller/Popover/NodeEditPopup.fxml";
+    private final String popOverEditFXML = "/Popover/NodeEditPopup.fxml";
 
     protected ArrayList<DeleteRequestedHandler> deleteEventHandlers = null;
 
@@ -179,15 +179,6 @@ public class MapNode extends Observable
             label = "Elevator";
             this.setType(NodeType.Elevator);
         }
-    }
-
-    /**
-     *
-     * @return whether or not this node is an elevator
-     */
-    public boolean getIsElevator()
-    {
-        return this.isElevator;
     }
 
     /**
