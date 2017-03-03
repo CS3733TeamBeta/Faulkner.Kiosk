@@ -1,7 +1,11 @@
 package main.Map.Controller;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.input.MouseButton;
 import main.Application.ApplicationController;
+import main.Application.popover.BuildingPopupController;
 import main.Map.Entity.Building;
+import main.Map.Entity.Destination;
 import main.Map.Entity.Floor;
 import main.Map.Entity.NodeEdge;
 import javafx.scene.Cursor;
@@ -12,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import jfxtras.labs.util.event.MouseControlUtil;
+import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,10 +75,37 @@ public class VisualBuilding
             {
                 try
                 {
-                    ApplicationController.getController().switchToMapEditorView(b);
+                    if(b!=null)
+                    {
+                        ApplicationController.getController().switchToMapEditorView(b);
+                    }
                 } catch (IOException e1)
                 {
                     e1.printStackTrace();
+                }
+            }
+            else if(e.getButton() == MouseButton.SECONDARY)
+            {
+                if(b!=null)
+                {
+                    PopOver popOver = new PopOver();
+
+                    BuildingPopupController controller = new BuildingPopupController(b);
+                    FXMLLoader loader = new FXMLLoader(Destination.class.getResource("/Popover/BuildingEditor.fxml"));
+
+                    loader.setController(controller);
+
+                    controller.setPopover(popOver);
+
+                    try
+                    {
+                        popOver.setContentNode(loader.load());
+                    } catch (IOException e1)
+                    {
+                        e1.printStackTrace();
+                    }
+
+                    popOver.show(getGroup());
                 }
             }
         });

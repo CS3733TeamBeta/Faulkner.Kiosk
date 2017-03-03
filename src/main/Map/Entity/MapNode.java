@@ -182,15 +182,6 @@ public class MapNode extends Observable
     }
 
     /**
-     *
-     * @return whether or not this node is an elevator
-     */
-    public boolean getIsElevator()
-    {
-        return this.isElevator;
-    }
-
-    /**
      * Sets the X position of this node to be the given position
      * @param posX The desired position, as a double
      */

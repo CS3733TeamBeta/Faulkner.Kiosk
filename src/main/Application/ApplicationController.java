@@ -138,6 +138,7 @@ public class ApplicationController extends Application
     {
         idle.stop();
         lastBuildingUnderEdit = b;
+        System.out.println(b.getBaseFloor());
         MapEditorController controller = (MapEditorController) switchToScene(MapEditorViewPath);
         controller.setBuilding(b);
     }
