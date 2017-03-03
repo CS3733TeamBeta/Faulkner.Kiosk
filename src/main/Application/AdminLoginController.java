@@ -48,7 +48,8 @@ public class AdminLoginController
     private void clickedLogin() throws IOException
     {
         //if(credentials.get(txtUsername.getText()) txtUsername.getText(), txtPassword.getText())) {
-        ApplicationController.getController().switchToMapEditorView();
+        ///ApplicationController.getController().switchToMapEditorView();
+        ApplicationController.getController().switchToVisualBuildingEditor();
        // }
     }
 
@@ -59,7 +60,8 @@ public class AdminLoginController
     }
 
     @FXML
-    protected void initialize()   {
+    protected void initialize()
+    {
 
     }
 }

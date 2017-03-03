@@ -77,6 +77,10 @@ public class DataCache
                 }
             });
 
+           if(h==null)
+           {
+               h = db.loadData();
+           }
         } catch (SQLException e)
         {
             e.printStackTrace();

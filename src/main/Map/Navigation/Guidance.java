@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.LinkedList;
 import java.awt.Point;
 
-
 import main.Map.Entity.*;
 import main.Application.Exceptions.*;
 import javafx.embed.swing.SwingFXUtils;
@@ -55,7 +54,6 @@ public class Guidance extends Path {
             storeImg = createResizedCopy(ImageIO.read(new File("src/main/resources/icons/store.png")), imgRescaleSize, imgRescaleSize, true);
             currentKioskImg = createResizedCopy(ImageIO.read(new File("src/main/resources/icons/star.png")), imgRescaleSize, imgRescaleSize, true);
             kioskImg = createResizedCopy(ImageIO.read(new File("src/main/resources/icons/kiosk.png")), imgRescaleSize, imgRescaleSize, true);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -91,8 +89,6 @@ public class Guidance extends Path {
         floorSteps = new LinkedList<DirectionFloorStep>();
         TextDirectionsCreator tdc = new TextDirectionsCreator(pathNodes, pathEdges, kioskDirection, false);
         floorSteps = tdc.getDirectionFloorSteps();
-
-
     }
 
     public LinkedList<DirectionFloorStep> getSteps()

@@ -15,11 +15,7 @@ public class MapBoundary extends Observable
     protected ObservableSet<NodeEdge> edges = FXCollections.observableSet(new HashSet<NodeEdge>());
 
     protected Floor currentFloor;
-    private Floor kioskFloor;
-    protected Building currentBuilding;
-
-    Floor campusFloor;
-    MapNode kiosk;
+    private Building currentBuilding;
 
     protected Hospital h;
 
@@ -57,62 +53,31 @@ public class MapBoundary extends Observable
     {
         this.h = h;
         nodesOnMap = FXCollections.observableSet(new HashSet<MapNode>());
-
-        if(h.getCurrentKiosk()!=null)
-        {
-            kiosk = getHospital().getCurrentKiosk();
-            kioskFloor = h.getCurrentKiosk().getMyFloor();
-            currentBuilding = kioskFloor.getBuilding();
-        }
-
-        campusFloor = h.getCampusFloor();
-    }
-
-    public void setInitialFloor()
-    {
-        try
-        {
-            if(h.getCurrentKiosk()!=null)
-            {
-                changeFloor(h.getCurrentKiosk().getMyFloor());
-            }
-            else{
-                changeFloor(h.getBuildings().iterator().next().getBaseFloor());
-            }
-
-            currentBuilding = currentFloor.getBuilding();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    protected void changeFloor(Floor f, boolean ignoreCampus)
-    {
-        if(currentFloor==null || ignoreCampus || !(f.getFloorNumber()==1 && currentFloor==campusFloor)) //if not already on campus floor
-        {
-            currentFloor = f;
-
-            nodesOnMap.clear();
-
-            for(MapNode n: currentFloor.getFloorNodes())
-            {
-                if(shouldBeOnMap(n))
-                {
-                    nodesOnMap.add(n);
-                }
-            }
-
-            setChanged();
-            notifyObservers(UpdateType.FloorChange);
-        }
     }
 
     public void changeFloor(Floor f)
     {
-       changeFloor(f, false);
+        currentFloor = f;
+
+        nodesOnMap.clear();
+
+        if(f==null)
+        {
+            System.out.println("Floor is null");
+        }
+
+        for(MapNode n: currentFloor.getFloorNodes())
+        {
+            if(shouldBeOnMap(n))
+            {
+                nodesOnMap.add(n);
+            }
+        }
+
+        setChanged();
+        notifyObservers(UpdateType.FloorChange);
     }
+
 
     protected boolean shouldBeOnMap(MapNode n)
     {
@@ -137,6 +102,7 @@ public class MapBoundary extends Observable
             try
             {
                 changeFloor(currentBuilding.getFloor(nextFloorID));
+                return nextFloorID;
             }
             catch (Exception e)
             {
@@ -167,20 +133,6 @@ public class MapBoundary extends Observable
     {
         int result = incrementFloor(1);
         return result;
-    }
-
-    public void switchFloor()
-    {
-
-    }
-
-    public void refreshNodes()
-    {
-
-    }
-
-    public Floor getCampusFloor(){
-        return campusFloor;
     }
 
     public Floor getCurrentFloor()

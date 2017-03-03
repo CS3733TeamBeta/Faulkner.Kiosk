@@ -1,5 +1,11 @@
 package main.Map.Controller;
 
+import javafx.animation.*;
+import javafx.geometry.Insets;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import com.jfoenix.controls.JFXButton;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -29,6 +35,9 @@ import java.io.IOException;
  */
 public class UserSearchPanel extends AnchorPane {
     TranslateTransition translateTransition = new TranslateTransition(Duration.millis(600), this);
+    //FadeTransition backgroundFade = new FadeTransition(Duration.millis(400), this.getBackground());
+   // FillTransition fade = new FillTransition(Duration.millis(500), this.getBackground().getFills().get(0));
+
     UserDirectoryBoundary boundary;
     ColorAdjust original = new ColorAdjust();
     Boolean welcome = true;
@@ -104,6 +113,10 @@ public class UserSearchPanel extends AnchorPane {
 
     Destination selectedDest;
     int index;
+
+    AnchorPane pane;
+
+    boolean transparent = false;
 
     private void initialize() {
         docNameCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
@@ -213,6 +226,8 @@ public class UserSearchPanel extends AnchorPane {
 
             return cell;
         });
+
+        pane = this;
     }
 
     private void selectionMode(ImageView icon) {
@@ -244,6 +259,24 @@ public class UserSearchPanel extends AnchorPane {
     }
 
     public void welcomeScreen() {
+
+        final Animation animation = new Transition() {
+
+            {
+                setCycleDuration(Duration.millis(500));
+                setInterpolator(Interpolator.LINEAR);
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                Color vColor = new Color(1, 1, 1, frac);
+                pane.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
+            }
+        };
+        animation.play();
+
+        transparent = false;
+
         welcomeGreeting.setVisible(true);
         defaultProperty();
         initialize();
@@ -269,6 +302,27 @@ public class UserSearchPanel extends AnchorPane {
         navigateArrow.setRotate(0);
         welcomeGreeting.setVisible(true);
         this.setStyle("-fx-background-color:  #f2f2f2;");
+
+        if(transparent)
+        {
+            final Animation animation = new Transition() {
+
+                {
+                    setCycleDuration(Duration.millis(500));
+                    setInterpolator(Interpolator.LINEAR);
+                }
+
+                @Override
+                protected void interpolate(double frac) {
+                    Color vColor = new Color(1, 1, 1, frac);
+                    pane.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
+                }
+            };
+            animation.play();
+
+            transparent=false;
+        }
+
         translateTransition.setToY(0);
         translateTransition.play();
     }
@@ -277,6 +331,28 @@ public class UserSearchPanel extends AnchorPane {
     private void hideWelcomeScreen() {
         navigateArrow.setRotate(180);
         this.setStyle("-fx-background-color:  transparent;");
+    public void hideWelcomeScreen() {
+
+        if(!transparent)
+        {
+            final Animation animation = new Transition() {
+
+                {
+                    setCycleDuration(Duration.millis(500));
+                    setInterpolator(Interpolator.LINEAR);
+                }
+
+                @Override
+                protected void interpolate(double frac) {
+                    Color vColor = new Color(1, 1, 1, .8 - (frac-.2));
+                    pane.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
+                }
+            };
+
+            animation.play();
+            transparent = true;
+        }
+
         welcomeGreeting.setVisible(false);
         welcome = false;
         translateTransition.setToY(350 + 175);
@@ -318,8 +394,8 @@ public class UserSearchPanel extends AnchorPane {
     @FXML
     private void helpSelected()
     {
+        selectionMode(helpIcon);
         numClickHelp = numClickHelp * (-1);
-        isDeSelected(numClickHelp, helpIcon);
         displayTable();
     }
 
