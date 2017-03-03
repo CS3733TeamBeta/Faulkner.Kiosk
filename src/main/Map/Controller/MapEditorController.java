@@ -847,7 +847,6 @@ public class MapEditorController extends MapController
 	public void saveInfoAndExit() throws IOException, SQLException
 	{
 		//DataCache.getInstance().save();
-
 		ApplicationController.getController().switchToVisualBuildingEditor();
 	}
 
