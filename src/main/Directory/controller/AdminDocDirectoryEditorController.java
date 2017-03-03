@@ -118,6 +118,7 @@ public class AdminDocDirectoryEditorController {
         deptPane.relocate(mainDirectoryPane.getLayoutX(), mainDirectoryPane.getHeight() + 620);
 
         showDelOption();
+        searchBar.clear();
     }
 
     public void setPhoneNumConstraint(TextField textField, int length) {
@@ -168,8 +169,6 @@ public class AdminDocDirectoryEditorController {
         phoneNum1.clear();
         phoneNum2.clear();
         phoneNum3.clear();
-
-        searchBar.clear();
 
         locAssigned.getItems().clear();
 
@@ -266,6 +265,7 @@ public class AdminDocDirectoryEditorController {
             dataTable.scrollTo(i);
 
             reset();
+            searchBar.clear();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
             alert.setTitle("Action denied.");

@@ -50,7 +50,7 @@ public class DataCache
            if(h==null) h = db.loadData();
 
             h.getDoctors().addListener((ListChangeListener<Doctor>) e-> {
-                while (e.next()) {
+                    System.out.print("**********************");
                         if (e.wasAdded()) {
                             System.out.println("Added!*******");
                             for (Doctor doc : e.getAddedSubList()) {
@@ -71,7 +71,6 @@ public class DataCache
                                 }
                             }
                         }
-                    }
                 });
         } catch (SQLException e) {
             e.printStackTrace();
