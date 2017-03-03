@@ -110,6 +110,21 @@ public class UserSearchPanel extends AnchorPane {
     @FXML
     TableColumn<Doctor, Doctor> docNavigateCol;
 
+    @FXML
+    AnchorPane scnInstructions;
+
+    @FXML
+    TextArea txtHelp;
+
+    @FXML
+    Button btnAcknowledgments;
+
+    @FXML
+    AnchorPane scnAcknowledgements;
+
+    @FXML
+            TextArea txtThankYou;
+
     Destination selectedDest;
     int index;
 
@@ -249,6 +264,7 @@ public class UserSearchPanel extends AnchorPane {
 
         doctorTable.setVisible(false);
 
+
         searchBar.clear();
         searchBar.setPromptText("Search for Departments");
     }
@@ -364,8 +380,12 @@ public class UserSearchPanel extends AnchorPane {
 
 
     @FXML
-    private void doctorSelected() {
+    private void doctorSelected()
+    {
         numClickDr = numClickDr * (-1);
+        numClickBath = -1;
+        numClickFood = -1;
+        numClickHelp = -1;
         isDeSelected(numClickDr, doctorIcon);
         displayTable();
     }
@@ -373,7 +393,10 @@ public class UserSearchPanel extends AnchorPane {
     @FXML
     private void bathroomSelected()
     {
+        numClickDr = -1;
         numClickBath = numClickBath * (-1);
+        numClickFood = -1;
+        numClickHelp = -1;
         isDeSelected(numClickBath, bathroomIcon);
         displayTable();
     }
@@ -381,7 +404,10 @@ public class UserSearchPanel extends AnchorPane {
     @FXML
     private void foodSelected()
     {
+        numClickDr = -1;
+        numClickBath = -1;
         numClickFood = numClickFood * (-1);
+        numClickHelp = -1;
         isDeSelected(numClickFood, foodIcon);
         displayTable();
     }
@@ -389,8 +415,11 @@ public class UserSearchPanel extends AnchorPane {
     @FXML
     private void helpSelected()
     {
-        selectionMode(helpIcon);
+        numClickDr = -1;
+        numClickBath = -1;
+        numClickFood = -1;
         numClickHelp = numClickHelp * (-1);
+        isDeSelected(numClickHelp, helpIcon);
         displayTable();
     }
 
@@ -415,6 +444,9 @@ public class UserSearchPanel extends AnchorPane {
         if (numClickHelp == 1)
         {
             searchBar.setPromptText("Search for help");
+            deptTable.setVisible(false);
+            doctorTable.setVisible(false);
+            scnInstructions.setVisible(true);
         }
         if ((numClickDr == -1) && (numClickBath == -1) && (numClickFood == -1) && (numClickHelp == -1))
         {
