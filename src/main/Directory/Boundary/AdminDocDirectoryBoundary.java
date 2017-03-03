@@ -22,6 +22,12 @@ public class AdminDocDirectoryBoundary extends AbstractDirectoryBoundary
 
     public void addDoc (Doctor d) {
         h.addDoctor(d);
+
+        try {
+            ApplicationController.getCache().getDbManager().addDocToDB(d);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void removeDoctor(Doctor d) {
