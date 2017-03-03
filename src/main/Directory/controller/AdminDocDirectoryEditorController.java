@@ -62,8 +62,7 @@ public class AdminDocDirectoryEditorController {
 
     Hospital hospital;
     AdminDocDirectoryBoundary docBoundary;
-    ObservableList<Destination> existingLoc =
-            FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
+    ObservableList<Destination> existingLoc;
     AdminDeptDirectoryEditor deptPane = new AdminDeptDirectoryEditor();
 
     public AdminDocDirectoryEditorController() throws Exception
@@ -93,6 +92,7 @@ public class AdminDocDirectoryEditorController {
         }
 
         searchForLoc.getItems().clear();
+        existingLoc = FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
 
         searchForLoc.getItems().addAll(existingLoc);
 

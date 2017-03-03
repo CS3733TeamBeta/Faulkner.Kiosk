@@ -126,6 +126,13 @@ public class UserSearchPanel extends AnchorPane {
             }
         });
 
+        if (boundary.getDoctors() != null) {
+            doctorTable.setItems(boundary.getDoctors());
+        }
+
+        if (boundary.getDepartments() != null) {
+            deptTable.setItems(boundary.getDepartments());
+        }
 
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
             loadSearchMenu();
@@ -135,14 +142,6 @@ public class UserSearchPanel extends AnchorPane {
                 doctorTable.setItems(boundary.setSearchListForDoc(newValue));
             }
         });
-
-        if (boundary.getDoctors() != null) {
-            doctorTable.setItems(boundary.getDoctors());
-        }
-
-        if (boundary.getDepartments() != null) {
-            deptTable.setItems(boundary.getDepartments());
-        }
 
         docLocsCol.setCellFactory(col -> {
             ComboBox<Destination> loc = new ComboBox<Destination>();
