@@ -67,9 +67,18 @@ public class View3DController {
     private Rotate rotateY = new Rotate(0, 200, 200, -200, Rotate.Y_AXIS);
     private Rotate rotateZ = new Rotate(0, 200, 200, 0, Rotate.Z_AXIS);
 
+    PhongMaterial defaultMaterial = new PhongMaterial(Color.rgb(255, 255, 255, .95));
+    PhongMaterial hoverMaterial = new PhongMaterial(Color.rgb(255, 255, 255, 1));
+
     public View3DController()
     {
+        Image img = new Image(this.getClass().getResourceAsStream("/map/FloorMaps/1_thefirstfloor.png"));
 
+        defaultMaterial.setSpecularPower(10000);
+        defaultMaterial.setDiffuseMap(img);
+
+        hoverMaterial.setSpecularPower(10000);
+        hoverMaterial.setDiffuseMap(img);
     }
 
     PerspectiveCamera cam;
@@ -153,13 +162,13 @@ public class View3DController {
         greenLight.setColor(Color.WHITE);
         greenLight.setTranslateX(200);
         greenLight.setTranslateY(200);
-        greenLight.setTranslateZ(-200);
+        greenLight.setTranslateZ(-400);
 
         PointLight whiteLight = new PointLight();
         greenLight.setColor(Color.WHITE);
-        greenLight.setTranslateX(300);
-        greenLight.setTranslateY(700);
-        greenLight.setTranslateZ(-400);
+        greenLight.setTranslateX(400);
+        greenLight.setTranslateY(200);
+        greenLight.setTranslateZ(-600);
 
         final Box floor = new Box(500, 360, 1);
         floor.setTranslateX(200);
@@ -182,13 +191,11 @@ public class View3DController {
                     }
                 });
 
-        Image img = new Image(this.getClass().getResourceAsStream("/map/FloorMaps/1_thefirstfloor.png"));
+        floor.setOnMouseEntered(e-> floor.setMaterial(hoverMaterial));
+        floor.setOnMouseExited(e-> floor.setMaterial(defaultMaterial));
 
-        PhongMaterial material = new PhongMaterial(Color.WHITE);
-        material.setSpecularPower(10000);
-        material.setDiffuseMap(img);
+        floor.setMaterial(defaultMaterial);
 
-        floor.setMaterial(material);
         objects3D.getChildren().add(floor);
         objects3D.getChildren().add(greenLight);
         objects3D.getChildren().add(whiteLight);
