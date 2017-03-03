@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * Created by benhylak on 2/23/17.
@@ -18,6 +19,8 @@ public class CampusFloor extends Floor
     {
         super(1); //sorta hacky but should do the trick...
         campusNodes = FXCollections.observableList(new ArrayList<MapNode>());
+        setFloorUUID(UUID.fromString("00000000-0000-00c1-0000-000000000000"));
+
     }
 
     @Override

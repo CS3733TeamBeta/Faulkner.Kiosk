@@ -36,8 +36,6 @@ public class Hospital{
         campusBuilding = new Building("Campus");
         CampusFloor  = new CampusFloor();
 
-        CampusFloor.setFloorUUID(UUID.fromString("00000000-0000-00c1-0000-000000000000"));
-
         try
         {
             campusBuilding.addFloor(CampusFloor);
