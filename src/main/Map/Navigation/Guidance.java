@@ -344,7 +344,6 @@ public class Guidance extends Path {
         for(int i = 1; i <= this.floorSteps.size(); i++){
             DirectionFloorStep d = floorSteps.get(i-1);
             System.out.println("Creating info for floor " + d.getFloor().getFloorNumber());
-            d.getFloor().initImage();
             try {
                 d.getFloor().getImage();
                 javafx.scene.image.Image realBaseImage = d.getFloor().getImage();

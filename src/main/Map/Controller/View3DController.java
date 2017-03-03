@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.*;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -22,6 +23,7 @@ import main.Map.Entity.Building;
 import javax.swing.text.View;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 import static javafx.application.ConditionalFeature.FXML;
 
@@ -40,9 +42,6 @@ public class View3DController {
     private AnchorPane pane3D;
 
     @FXML
-    private AnchorPane rootPane;
-
-    @FXML
     private ScrollBar verticalScroll;
 
     @FXML
@@ -51,11 +50,9 @@ public class View3DController {
 
     private Group objects3D;
 
-    private double mouseOldX, mouseOldY = 0;
     private Rotate rotateX = new Rotate(30, 200, 200, 0, Rotate.X_AXIS);
     private Rotate rotateY = new Rotate(0, 200, 200, -200, Rotate.Y_AXIS);
     private Rotate rotateZ = new Rotate(0, 200, 200, 0, Rotate.Z_AXIS);
-
 
     public View3DController()
     {
@@ -145,6 +142,21 @@ public class View3DController {
         floor.setTranslateY(200);
         floor.setTranslateZ(50);
 
+        floor.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                e->
+                {
+                    if(e.getClickCount()==2)
+                    {
+                        try
+                        {
+                            ApplicationController.getController().switchToMapEditorView(ApplicationController.getHospital().getCampusFloor()
+                            .getBuilding());
+                        } catch (IOException e1)
+                        {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
         Image img = new Image(this.getClass().getResourceAsStream("/map/FloorMaps/1_thefirstfloor.png"));
 
         PhongMaterial material = new PhongMaterial(Color.WHITE);
@@ -170,8 +182,5 @@ public class View3DController {
 
         resetCameraButton.toFront();
         newBuildingButton.toFront();
-
-
-
     }
 }

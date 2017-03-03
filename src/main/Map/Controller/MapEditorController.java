@@ -53,9 +53,6 @@ public class MapEditorController extends MapController
 	@FXML AnchorPane root_pane;
 
 	@FXML
-	Button newBuildingButton;
-
-	@FXML
 	Button newFloorButton;
 
 	@FXML
@@ -107,12 +104,6 @@ public class MapEditorController extends MapController
 
 		FloorTabPane.getTabs().sort(Comparator.comparing(Tab::getText)); //puts the tabs in order
 
-		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
-				(ov, oldvalue, newvalue) -> {
-					boundary.changeFloor(tabFloorMap.get(newvalue)); //called when floor tab is selected
-
-				});
-
 		FloorTabPane.getSelectionModel().select(0);
 
 		kioskSelector.setItems(boundary.getHospital().getKiosks());
@@ -138,6 +129,14 @@ public class MapEditorController extends MapController
 					newIcon.setType(newVal.getType());
 				}
 		);
+
+		FloorTabPane.getSelectionModel().selectedItemProperty().addListener(
+				(ov, oldvalue, newvalue) -> {
+					boundary.changeFloor(tabFloorMap.get(newvalue)); //called when floor tab is selected
+
+				});
+
+		adminBoundary.changeFloor(adminBoundary.getCurrentFloor());
 	}
 
 	public MapEditorController()
@@ -516,7 +515,14 @@ public class MapEditorController extends MapController
 			}
 		});
 
-		listView.setItems(f.getChildren());
+		if(f instanceof CampusFloor)
+		{
+			listView.setItems(((CampusFloor)f).getCampusNodes());
+		}
+		else
+		{
+			listView.setItems(f.getChildren());
+		}
 
 		listView.getSelectionModel().selectedItemProperty().addListener((o, oldSelection, newSelection)->
 		{
