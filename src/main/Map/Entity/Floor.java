@@ -55,6 +55,11 @@ public class Floor extends Observable implements Comparable
     }
 
 
+    public void setFloorUUID(UUID id)
+    {
+        floorID = id;
+    }
+
     int floorNumber;
 
     public Floor(int floorNumber) {

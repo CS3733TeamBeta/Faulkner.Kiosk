@@ -8,6 +8,7 @@ import main.Directory.Entity.Doctor;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 
 /**
@@ -34,6 +35,8 @@ public class Hospital{
 
         campusBuilding = new Building("Campus");
         CampusFloor  = new CampusFloor();
+
+        CampusFloor.setFloorUUID(UUID.fromString("00000000-0000-00c1-0000-000000000000"));
 
         try
         {

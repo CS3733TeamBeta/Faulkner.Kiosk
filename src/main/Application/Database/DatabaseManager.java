@@ -453,12 +453,11 @@ public class DatabaseManager {
             Building b = new Building(UUID.fromString(rs.getString(1)), rs.getString(2));
             loadFloors(h, b);
             System.out.println("Loaded Building" + buildName);
+
             if (!buildName.equals("Campus")) {
                 h.addBuilding(b);
                 System.out.println("Not Campus");
             }
-            System.out.println("Here");
-
         }
     }
 
