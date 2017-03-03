@@ -3,11 +3,11 @@ package main.Map.Entity;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import main.Directory.Entity.Doctor;
 import main.Application.ApplicationController;
+import main.Directory.Entity.Doctor;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 
 /**
@@ -61,25 +61,25 @@ public class Hospital{
         System.out.println("ADDING DOCTOR******************************************");
         doctors.add(doc);
 
-        doc.addObserver((observer, args)->
-        {
-            int i = doctors.indexOf(doc);
-
-            doctors.remove(doc);
-            try {
-                ApplicationController.getCache().getDbManager().delDocFromDB(doc);
-                System.out.println("Removed Doctor");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            doctors.add(i, doc);
-            try {
-                ApplicationController.getCache().getDbManager().addDocToDB(doc);
-                System.out.println("Added Doctor");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
+//        doc.addObserver((observer, args)->
+//        {
+//            int i = doctors.indexOf(doc);
+//
+//            doctors.remove(doc);
+////            try {
+////                ApplicationController.getCache().getDbManager().delDocFromDB(doc);
+////                System.out.println("Removed Doctor");
+////            } catch (SQLException e) {
+////                e.printStackTrace();
+////            }
+//            doctors.add(i, doc);
+////            try {
+////                ApplicationController.getCache().getDbManager().addDocToDB(doc);
+////                System.out.println("Added Doctor");
+////            } catch (SQLException e) {
+////                e.printStackTrace();
+////            }
+//        });
     }
 
     //Alter Doctor HashMap: doctors
@@ -101,13 +101,13 @@ public class Hospital{
     public void addOffice(Office off) {
         offices.add(off);
 
-        off.addObserver((observer, args)->
-        {
-            int i = offices.indexOf(off);
-
-            offices.remove(off);
-            offices.add(i, off);
-        });
+//        off.addObserver((observer, args)->
+//        {
+//            int i = offices.indexOf(off);
+//
+//            offices.remove(off);
+//            offices.add(i, off);
+//        });
     }
     public void removeOffice(Office off) {
         offices.remove(off);

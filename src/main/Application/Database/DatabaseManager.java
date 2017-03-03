@@ -707,6 +707,10 @@ public class DatabaseManager {
         insertDoc.setString(5, d.getHours());
         insertDoc.executeUpdate();
         conn.commit();
+
+        for (Destination dest : d.getDestinations()) {
+            addDestToDoc(d, dest);
+        }
     }
 
     public void updateDoctor(Doctor d) throws SQLException {
