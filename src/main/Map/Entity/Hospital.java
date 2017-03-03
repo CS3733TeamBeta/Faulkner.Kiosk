@@ -8,7 +8,6 @@ import main.Directory.Entity.Doctor;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.UUID;
 
 
 /**
@@ -39,6 +38,7 @@ public class Hospital{
         try
         {
             campusBuilding.addFloor(CampusFloor);
+            campusBuilding.setHospital(this);
         } catch (Exception e)
         {
             e.printStackTrace();
