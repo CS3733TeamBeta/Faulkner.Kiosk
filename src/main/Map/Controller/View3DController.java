@@ -23,6 +23,7 @@ import main.Application.ApplicationController;
 import main.Map.Controller.VisualBuilding;
 import javafx.scene.control.ScrollBar;
 import main.Map.Entity.Building;
+import main.Map.Entity.Kiosk;
 
 import javax.swing.text.View;
 import java.awt.*;
@@ -53,7 +54,7 @@ public class View3DController {
     private ScrollBar horizontalScroll;
 
     @FXML
-    private JFXComboBox kioskSelection;
+    private JFXComboBox<Kiosk> kioskSelection;
 
     @FXML
     private JFXComboBox selectTimeout;
@@ -233,7 +234,10 @@ public class View3DController {
             kioskSelection.getSelectionModel().select(getHospital().getCurrentKiosk());
         }
 
-
+        kioskSelection.setOnAction(e->
+        {
+            ApplicationController.getHospital().setCurrentKiosk(kioskSelection.getValue());
+        });
     }
 
     @FXML
