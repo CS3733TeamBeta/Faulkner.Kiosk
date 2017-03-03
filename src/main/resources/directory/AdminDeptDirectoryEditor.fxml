@@ -41,7 +41,7 @@
       <HBox fx:id="editDeptFields" layoutX="100.0" layoutY="125.0" prefHeight="28.0" prefWidth="250.0" spacing="40.0" visible="false" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0">
          <children>
             <TextField fx:id="deptNameField" prefHeight="25.0" prefWidth="653.0" promptText="Department Name" />
-            <ComboBox fx:id="locAssignedField" editable="true" prefHeight="25.0" prefWidth="218.0" promptText="Assign to a location" />
+            <ComboBox fx:id="locAssignedField" prefHeight="25.0" prefWidth="218.0" promptText="Assign to a location" />
             <Button fx:id="editorButton" mnemonicParsing="false" onAction="#deptEditOperation" text="Add">
                <HBox.margin>
                   <Insets />
@@ -49,6 +49,6 @@
             </Button>
          </children>
       </HBox>
-      <Rectangle fx:id="deptTab" onMouseClicked="#changeDirectory" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="80.0" layoutX="21.0" layoutY="-57.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="1201.0" AnchorPane.bottomAnchor="620.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Rectangle fx:id="deptTab" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="80.0" layoutX="21.0" layoutY="-57.0" onMouseClicked="#changeDirectory" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="1201.0" AnchorPane.bottomAnchor="620.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </fx:root>
