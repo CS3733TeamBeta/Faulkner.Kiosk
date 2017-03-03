@@ -340,7 +340,7 @@ public class UserMapViewController extends MapController
         mainPane.getChildren().add(panel);
 
         panel.toFront();
-        panel.relocate(mainPane.getPrefWidth() - 5, 0);
+        panel.relocate(mainPane.getPrefWidth(), 0);
 
         mainPane.getChildren().add(searchPanel);
         searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
@@ -561,7 +561,7 @@ public class UserMapViewController extends MapController
         slideHideDirections.setCycleCount(1);
         slideHideDirections.setAutoReverse(true);
 
-        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), -panel.getWidth() + 5);
+        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), -panel.getWidth());
         keyFrame = new KeyFrame(Duration.millis(600), hideDirections);
 
         System.out.println("Show directions");
