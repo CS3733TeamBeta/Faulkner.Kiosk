@@ -130,8 +130,12 @@ public class UserMapViewController extends MapController
                     edgesOnFloor.getChildren().clear();
                     newRoute=null;
                     portal=null;
-                    portalTimeline.stop();
-                    portalTimeline=null;
+
+                    if(portalTimeline!=null)
+                    {
+                        portalTimeline.stop();
+                        portalTimeline = null;
+                    }
 
                     hideDirections();
                 }
