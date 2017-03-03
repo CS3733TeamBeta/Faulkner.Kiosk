@@ -6,11 +6,9 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
-import com.jfoenix.controls.JFXButton;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.input.MouseButton;
 import javafx.util.Callback;
 import main.Application.ApplicationController;
 import main.Directory.Boundary.UserDirectoryBoundary;
@@ -40,6 +38,7 @@ public class UserSearchPanel extends AnchorPane {
 
     UserDirectoryBoundary boundary;
     ColorAdjust original = new ColorAdjust();
+    ColorAdjust clicked = new ColorAdjust();
     Boolean welcome = true;
 
     int numClickDr = -1;
@@ -113,8 +112,6 @@ public class UserSearchPanel extends AnchorPane {
 
     Destination selectedDest;
     int index;
-
-    AnchorPane pane;
 
     boolean transparent = false;
 
@@ -194,7 +191,7 @@ public class UserSearchPanel extends AnchorPane {
                     };
 
                     navigateButton.setOnAction(e -> {
-                        //findpath method with the destination
+                        //findPathToNode
                     });
 
                     return cell;
@@ -226,8 +223,6 @@ public class UserSearchPanel extends AnchorPane {
 
             return cell;
         });
-
-        pane = this;
     }
 
     private void selectionMode(ImageView icon) {
@@ -304,7 +299,6 @@ public class UserSearchPanel extends AnchorPane {
         welcomeGreeting.setVisible(true);
         this.setStyle("-fx-background-color:  #f2f2f2;");
 
-        /*
         if(transparent)
         {
             final Animation animation = new Transition() {
@@ -324,7 +318,7 @@ public class UserSearchPanel extends AnchorPane {
 
             transparent=false;
         }
-        */
+
 
         translateTransition.setToY(0);
         translateTransition.play();
@@ -346,7 +340,7 @@ public class UserSearchPanel extends AnchorPane {
                 @Override
                 protected void interpolate(double frac) {
                     Color vColor = new Color(1, 1, 1, .8 - (frac-.2));
-                    pane.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
+                    setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
                 }
             };
 

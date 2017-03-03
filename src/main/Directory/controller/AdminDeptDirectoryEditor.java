@@ -190,6 +190,10 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
             String deptName = deptNameField.getText();
             Destination assignedDest = new Destination();
 
+            if (deptDataTable.getSelectionModel().getSelectedItem() != null) {
+                deptBoundary.removeDept(deptDataTable.getSelectionModel().getSelectedItem());
+            }
+
             Office newOffice = new Office(deptName, assignedDest);
 
             deptBoundary.addDept(newOffice);

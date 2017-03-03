@@ -43,46 +43,37 @@ public class DataCache
 
     public Hospital getHospital()
     {
+
+        System.out.println("Hospital*********************************************");
         try
         {
            if(h==null) h = db.loadData();
 
-            h.getDoctors().addListener((ListChangeListener<Doctor>) e->
-            {
-                if(e.wasAdded())
-                {
-                    System.out.println("Added!*******");
-                    for(Doctor d: e.getAddedSubList())
-                    {
-                        try
-                        {
-                            db.addDocToDB(d);
-                        } catch (SQLException e1)
-                        {
-                            e1.printStackTrace();
+            h.getDoctors().addListener((ListChangeListener<Doctor>) e-> {
+                while (e.next()) {
+                        if (e.wasAdded()) {
+                            System.out.println("Added!*******");
+                            for (Doctor doc : e.getAddedSubList()) {
+                                try {
+                                    db.addDocToDB(doc);
+                                } catch (SQLException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        } else if (e.wasRemoved()) {
+
+                            System.out.println("Removed!**********");
+                            for (Doctor doc : e.getRemoved()) {
+                                try {
+                                    db.delDocFromDB(doc);
+                                } catch (SQLException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
                         }
                     }
-                } else if (e.wasRemoved()) {
-
-                    System.out.println("Removed!**********");
-                    for (Doctor d: e.getRemoved()) {
-                        try
-                        {
-                            db.delDocFromDB(d);
-                        } catch (SQLException e1)
-                        {
-                            e1.printStackTrace();
-                        }
-                    }
-                }
-            });
-
-           if(h==null)
-           {
-               h = db.loadData();
-           }
-        } catch (SQLException e)
-        {
+                });
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 

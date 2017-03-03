@@ -18,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import sun.security.krb5.internal.crypto.Des;
 
 import java.io.IOException;
 
@@ -93,13 +94,18 @@ public class AdminDocDirectoryEditorController {
             dataTable.setItems(docBoundary.getDoctors());
         }
 
-        searchForLoc.setItems(existingLoc);
-        searchForLoc.valueProperty().addListener(new ChangeListener<Destination>() {
-            @Override public void changed(ObservableValue ov, Destination t, Destination d1) {
-                if (!locAssigned.getItems().contains(d1)) {
-                    locAssigned.getItems().add(d1);
+        searchForLoc.getItems().clear();
+
+        searchForLoc.getItems().addAll(existingLoc);
+
+        searchForLoc.setOnAction(e -> {
+            Destination d = searchForLoc.getSelectionModel().getSelectedItem();
+            if (d != null) {
+                if (!locAssigned.getItems().contains(d)) {
+                    locAssigned.getItems().add(d);
                 }
-            }});
+            }
+        });
 
 
         setPhoneNumConstraint(phoneNum1, 3);
@@ -243,6 +249,10 @@ public class AdminDocDirectoryEditorController {
             String hrs = startTime.getText() + " - " + endTime.getText();
             if (phoneNum1.getText() != null || !phoneNum1.getText().isEmpty()) {
                 phoneNum = phoneNum1.getText() + "-" + phoneNum2.getText() + "-" + phoneNum3.getText();
+            }
+
+            if (dataTable.getSelectionModel().getSelectedItem() != null) {
+                docBoundary.removeDoctor(dataTable.getSelectionModel().getSelectedItem());
             }
 
             Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
