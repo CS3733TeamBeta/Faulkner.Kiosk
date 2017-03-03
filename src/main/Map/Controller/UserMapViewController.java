@@ -35,7 +35,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * Created by jw97 on 2/16/2017.
@@ -209,7 +208,6 @@ public class UserMapViewController extends MapController
         }
     }
 
-
     @FXML
     private void floorDownResetOpacity()
     {
@@ -344,7 +342,9 @@ public class UserMapViewController extends MapController
 
         mainPane.getChildren().add(searchPanel);
         searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
+        searchPanel.relocate(mainPane.getLayoutX(), 350);
         searchPanel.welcomeScreen();
+        searchPanel.addNavigation();
 
         panel.setCloseHandler(event ->
         {

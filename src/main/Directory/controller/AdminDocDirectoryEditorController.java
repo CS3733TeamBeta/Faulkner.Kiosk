@@ -62,8 +62,7 @@ public class AdminDocDirectoryEditorController {
 
     Hospital hospital;
     AdminDocDirectoryBoundary docBoundary;
-    ObservableList<Destination> existingLoc =
-            FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
+    ObservableList<Destination> existingLoc;
     AdminDeptDirectoryEditor deptPane = new AdminDeptDirectoryEditor();
 
     public AdminDocDirectoryEditorController() throws Exception
@@ -93,6 +92,7 @@ public class AdminDocDirectoryEditorController {
         }
 
         searchForLoc.getItems().clear();
+        existingLoc = FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
 
         searchForLoc.getItems().addAll(existingLoc);
 
@@ -240,6 +240,7 @@ public class AdminDocDirectoryEditorController {
     @FXML
     private void saveProfile() {
         if (isProcessable()) {
+
             String name = lastName.getText() + ", " + firstName.getText();
             String d = description.getText();
             String phoneNum = "N/A";
@@ -259,12 +260,14 @@ public class AdminDocDirectoryEditorController {
 
             Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
             newDoc.setPhoneNum(phoneNum);
-            docBoundary.addDoctor(newDoc);
+            docBoundary.addDoc(newDoc);
             try {
                 ApplicationController.getCache().getDbManager().addDocToDB(newDoc);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
+            searchBar.clear();
 
             dataTable.requestFocus();
             dataTable.getSelectionModel().select(newDoc);

@@ -126,6 +126,13 @@ public class UserSearchPanel extends AnchorPane {
             }
         });
 
+        if (boundary.getDoctors() != null) {
+            doctorTable.setItems(boundary.getDoctors());
+        }
+
+        if (boundary.getDepartments() != null) {
+            deptTable.setItems(boundary.getDepartments());
+        }
 
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
             loadSearchMenu();
@@ -135,14 +142,6 @@ public class UserSearchPanel extends AnchorPane {
                 doctorTable.setItems(boundary.setSearchListForDoc(newValue));
             }
         });
-
-        if (boundary.getDoctors() != null) {
-            doctorTable.setItems(boundary.getDoctors());
-        }
-
-        if (boundary.getDepartments() != null) {
-            deptTable.setItems(boundary.getDepartments());
-        }
 
         docLocsCol.setCellFactory(col -> {
             ComboBox<Destination> loc = new ComboBox<Destination>();
@@ -156,6 +155,7 @@ public class UserSearchPanel extends AnchorPane {
                     } else {
                         loc.setItems(getTableView().getItems().get(this.getIndex()).getDestinations());
                         loc.setMaxWidth(docLocsCol.getMaxWidth());
+                        loc.setPromptText("Select a location");
                         setGraphic(loc);
                     }
                 }
@@ -163,9 +163,9 @@ public class UserSearchPanel extends AnchorPane {
 
             loc.valueProperty().addListener(new ChangeListener<Destination>() {
                 @Override public void changed(ObservableValue ov, Destination d, Destination d1) {
-                    Destination selectedDest = d1;
+                    Destination candidate = d1;
                     int index = cell.getIndex();
-                    generateButtonCells(index, selectedDest);
+                    generateButtonCells(index, candidate);
                 }
             });
 
@@ -174,6 +174,7 @@ public class UserSearchPanel extends AnchorPane {
 
         deptTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
+                Destination candidate = newSelection.getDestination();
                 deptNavigateCol.setCellFactory(col -> {
                     Button navigateButton = new Button("Go");
                     TableCell<Office, Office> cell = new TableCell<Office, Office>() {
@@ -191,7 +192,8 @@ public class UserSearchPanel extends AnchorPane {
                     };
 
                     navigateButton.setOnAction(e -> {
-                        //findPathToNode
+                        selectedDest = candidate;
+                        hideWelcomeScreen();
                     });
 
                     return cell;
@@ -200,7 +202,7 @@ public class UserSearchPanel extends AnchorPane {
         });
     }
 
-    private void generateButtonCells(int index, Destination selectedDest) {
+    private void generateButtonCells(int index, Destination candidate) {
         docNavigateCol.setCellFactory(col -> {
             Button navigateButton = new Button("Go");
             TableCell<Doctor, Doctor> cell = new TableCell<Doctor, Doctor>() {
@@ -218,11 +220,16 @@ public class UserSearchPanel extends AnchorPane {
             };
 
             navigateButton.setOnAction(e -> {
-                //findpath method with the destination
+                selectedDest = candidate;
+                hideWelcomeScreen();
             });
 
             return cell;
         });
+    }
+
+    public Destination getSelectedDest() {
+        return this.selectedDest;
     }
 
     private void selectionMode(ImageView icon) {
@@ -280,15 +287,8 @@ public class UserSearchPanel extends AnchorPane {
         welcome = true;
         navigateArrow.setRotate(0);
 
-        navigateArrow.setOnMouseClicked(e -> {
-            if (welcome) {
-                hideWelcomeScreen();
-            } else {
-                welcomeScreen();
-            }
-        });
-
-        translateTransition.setToY(350);
+        //translateTransition.setToY(350);
+        translateTransition.setToY(0);
         translateTransition.play();
     }
 
@@ -320,7 +320,7 @@ public class UserSearchPanel extends AnchorPane {
         }
 
 
-        translateTransition.setToY(0);
+        translateTransition.setToY(-350);
         translateTransition.play();
     }
 
@@ -350,8 +350,19 @@ public class UserSearchPanel extends AnchorPane {
 
         welcomeGreeting.setVisible(false);
         welcome = false;
-        translateTransition.setToY(350 + 175);
+        //translateTransition.setToY(350 + 175);
+        translateTransition.setToY(175);
         translateTransition.play();
+    }
+
+    public void addNavigation() {
+        navigateArrow.setOnMouseClicked(e -> {
+            if (welcome) {
+                hideWelcomeScreen();
+            } else {
+                welcomeScreen();
+            }
+        });
     }
 
     private void isDeSelected(int n, ImageView icon) {

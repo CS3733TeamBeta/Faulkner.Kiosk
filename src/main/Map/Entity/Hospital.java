@@ -3,9 +3,8 @@ package main.Map.Entity;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import main.Application.ApplicationController;
 import main.Directory.Entity.Doctor;
-
+import main.Application.ApplicationController;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -73,7 +72,10 @@ public class Hospital{
 
     public void addDoctor(Doctor doc) {
         System.out.println("ADDING DOCTOR******************************************");
-        doctors.add(doc);
+
+        if (!this.doctors.contains(doc)) {
+            doctors.add(doc);
+        }
 
 //        doc.addObserver((observer, args)->
 //        {
