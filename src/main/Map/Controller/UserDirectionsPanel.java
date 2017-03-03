@@ -41,11 +41,16 @@ public class UserDirectionsPanel extends AnchorPane
     ImageView MapImage;
     ArrayList<StepChangedEventHandler> stepChangedEventHandlers;
 
+    DirectionFloorStep currentStep;
+
     @FXML
     Text startName;
 
     @FXML
     Text endName;
+
+    @FXML
+    Label floorLabel;
 
     public UserDirectionsPanel(ImageView mapImage)
     {
@@ -180,6 +185,8 @@ public class UserDirectionsPanel extends AnchorPane
 
 
         fillDirectionsList(stepIndex);
+
+        currentStep = g.getFloorSteps().getFirst();
     }
 
     public void fillDirectionsList(int index)
@@ -206,27 +213,41 @@ public class UserDirectionsPanel extends AnchorPane
     @FXML
     public void onNextButtonClicked()
     {
-        System.out.println("next");
+        int nextIndex = guidance.getFloorSteps().indexOf(currentStep) +1;
 
-        if((followIndex) < guidance.getPathNodes().size()-1 && (followIndex >= -1))
+        if(nextIndex<guidance.getFloorSteps().size())
         {
-            followIndex++;
-        } else {
-            return;
+            DirectionFloorStep nextStep =guidance.getFloorSteps().get(nextIndex);
+            setFloorStep(nextStep);
+            notifyStepChanged(new StepChangedEvent(nextStep));
         }
+    }
+
+    public void notifyStepChanged(StepChangedEvent e)
+    {
+        for(StepChangedEventHandler h: stepChangedEventHandlers)
+        {
+            h.handle(e);
+        }
+    }
+    public void setFloorStep(DirectionFloorStep floorStep)
+    {
+        currentStep = floorStep;
+        floorLabel.setText("Floor " + floorStep.getFloor().getFloorNumber());
+        fillDirectionsList(currentStep);
     }
 
     @FXML
     void onPreviousButtonClicked()
     {
+        int prevIndex = guidance.getFloorSteps().indexOf(currentStep)-1;
 
-        if((followIndex) > 0)
+        if(prevIndex>-1)
         {
-            followIndex--;
-        }else {
-            return;
+            DirectionFloorStep prevStep =guidance.getFloorSteps().get(prevIndex);
+            setFloorStep(prevStep);
+            notifyStepChanged(new StepChangedEvent(prevStep));
         }
-
     }
 
 
