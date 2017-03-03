@@ -175,6 +175,7 @@ public class UserSearchPanel extends AnchorPane {
         deptTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 Destination candidate = newSelection.getDestination();
+
                 deptNavigateCol.setCellFactory(col -> {
                     Button navigateButton = new Button("Go");
                     TableCell<Office, Office> cell = new TableCell<Office, Office>() {
@@ -214,6 +215,8 @@ public class UserSearchPanel extends AnchorPane {
                     } else {
                         if (this.getIndex() == index) {
                             setGraphic(navigateButton);
+                        } else {
+                            setGraphic(null);
                         }
                     }
                 }

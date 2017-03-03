@@ -368,6 +368,8 @@ public class DatabaseManager {
                     docRS.getString(5),
                     locations);
 
+            tempDoc.setPhoneNum(docRS.getString(4)); // sets phone number
+
             destDoc.setString(1, docRS.getString(1));
             ResultSet results = destDoc.executeQuery();
             // create doctor - destination relationships within the objects
