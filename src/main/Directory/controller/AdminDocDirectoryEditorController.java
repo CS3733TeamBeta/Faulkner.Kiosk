@@ -1,14 +1,7 @@
 package main.Directory.controller;
 
-import main.Application.ApplicationController;
-import main.Directory.Boundary.AdminDocDirectoryBoundary;
-import main.Directory.Entity.Doctor;
-import main.Map.Entity.Destination;
-import main.Map.Entity.Hospital;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,8 +11,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import main.Application.ApplicationController;
+import main.Directory.Boundary.AdminDocDirectoryBoundary;
+import main.Directory.Entity.Doctor;
+import main.Map.Entity.Destination;
+import main.Map.Entity.Hospital;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Created by jw97 on 2/27/2017.
@@ -66,7 +65,6 @@ public class AdminDocDirectoryEditorController {
     ObservableList<Destination> existingLoc =
             FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
     AdminDeptDirectoryEditor deptPane = new AdminDeptDirectoryEditor();
-    Boolean editMode = false;
 
     public AdminDocDirectoryEditorController() throws Exception
     {
@@ -94,13 +92,18 @@ public class AdminDocDirectoryEditorController {
             dataTable.setItems(docBoundary.getDoctors());
         }
 
-        searchForLoc.setItems(existingLoc);
-        searchForLoc.valueProperty().addListener(new ChangeListener<Destination>() {
-            @Override public void changed(ObservableValue ov, Destination t, Destination d1) {
-                if (!locAssigned.getItems().contains(d1)) {
-                    locAssigned.getItems().add(d1);
+        searchForLoc.getItems().clear();
+
+        searchForLoc.getItems().addAll(existingLoc);
+
+        searchForLoc.setOnAction(e -> {
+            Destination d = searchForLoc.getSelectionModel().getSelectedItem();
+            if (d != null) {
+                if (!locAssigned.getItems().contains(d)) {
+                    locAssigned.getItems().add(d);
                 }
-            }});
+            }
+        });
 
 
         setPhoneNumConstraint(phoneNum1, 3);
@@ -111,6 +114,8 @@ public class AdminDocDirectoryEditorController {
         deptPane.prefWidthProperty().bind(mainDirectoryPane.widthProperty());
         deptPane.toFront();
         deptPane.relocate(mainDirectoryPane.getLayoutX(), mainDirectoryPane.getHeight() + 620);
+
+        showDelOption();
     }
 
     public void setPhoneNumConstraint(TextField textField, int length) {
@@ -134,29 +139,25 @@ public class AdminDocDirectoryEditorController {
         MenuItem delete = new MenuItem("Delete");
         ContextMenu options = new ContextMenu();
         options.getItems().add(delete);
-        dataTable.setContextMenu(options);
-        locAssigned.setContextMenu(options);
 
         delete.setOnAction((ActionEvent event) -> {
-            if (event.getSource() == "dataTable") {
-                Doctor d = dataTable.getSelectionModel().getSelectedItem();
+            Doctor d = dataTable.getSelectionModel().getSelectedItem();
 
+            if (d != null) {
                 docBoundary.removeDoctor(d);
-            } else {
-                Destination d = locAssigned.getSelectionModel().getSelectedItem();
-
-                locAssigned.getItems().remove(d);
+                reset();
             }
 
+            Destination dest = locAssigned.getSelectionModel().getSelectedItem();
+            locAssigned.getItems().remove(dest);
         });
+
+        dataTable.setContextMenu(options);
+        locAssigned.setContextMenu(options);
     }
 
     @FXML
     private void reset() {
-        editMode = false;
-
-        dataTable.getSelectionModel().clearSelection();
-
         firstName.clear();
         lastName.clear();
 
@@ -174,7 +175,6 @@ public class AdminDocDirectoryEditorController {
 
         startTime.clear();
         endTime.clear();
-        showDelOption();
     }
 
     private Boolean isProcessable() {
@@ -215,10 +215,11 @@ public class AdminDocDirectoryEditorController {
 
     @FXML
     private void displaySelectedDocInfo() {
+        reset();
+
         Doctor selectedDoc = dataTable.getSelectionModel().getSelectedItem();
 
         if (selectedDoc != null) {
-            editMode = true;
             firstName.setText(selectedDoc.splitName()[1]);
             lastName.setText(selectedDoc.splitName()[0]);
             description.setText(selectedDoc.getDescription());
@@ -239,7 +240,6 @@ public class AdminDocDirectoryEditorController {
     @FXML
     private void saveProfile() {
         if (isProcessable()) {
-
             String name = lastName.getText() + ", " + firstName.getText();
             String d = description.getText();
             String phoneNum = "N/A";
@@ -248,20 +248,31 @@ public class AdminDocDirectoryEditorController {
                 phoneNum = phoneNum1.getText() + "-" + phoneNum2.getText() + "-" + phoneNum3.getText();
             }
 
-            if (editMode) {
-                Doctor toEdit = dataTable.getSelectionModel().getSelectedItem();
-                docBoundary.editDoctor(toEdit, name, d, hrs, locAssigned.getItems(), phoneNum);
-            } else {
-                Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
-                newDoc.setPhoneNum(phoneNum);
-                docBoundary.addDoctor(newDoc);
-
-                dataTable.getSelectionModel().select(newDoc);
-                dataTable.scrollTo(newDoc);
+            if (dataTable.getSelectionModel().getSelectedItem() != null) {
+                docBoundary.removeDoctor(dataTable.getSelectionModel().getSelectedItem());
+                try {
+                    ApplicationController.getCache().getDbManager().delDocFromDB(dataTable.getSelectionModel().getSelectedItem());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
 
-            reset();
+            Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
+            newDoc.setPhoneNum(phoneNum);
+            docBoundary.addDoctor(newDoc);
+            try {
+                ApplicationController.getCache().getDbManager().addDocToDB(newDoc);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
+            dataTable.requestFocus();
+            dataTable.getSelectionModel().select(newDoc);
+            int i = dataTable.getSelectionModel().getSelectedIndex();
+            dataTable.getFocusModel().focus(i);
+            dataTable.scrollTo(i);
+
+            reset();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
             alert.setTitle("Action denied.");

@@ -120,22 +120,6 @@ public class NodeEdge
     }
 
     /**
-     * Calculates and returns the center point of a given DragIcon
-     * @param dragIcon
-     * @return the center point of the DragIcon as a Point2D
-     */
-    public Point2D getNodeCenterPoint(DragIcon dragIcon) {
-        Bounds boundsInScene = dragIcon.getBoundsInLocal();
-
-        Point2D centerPoint = new Point2D(
-                boundsInScene.getMinX() + (boundsInScene.getWidth() / 2),
-                boundsInScene.getMinY() + (boundsInScene.getHeight() / 2)
-        );
-
-        return centerPoint;
-    }
-
-    /**
      * Updates the cost of this NodeEdge to be calculated using the distance between the two MapNodes in this NodeEdge
      */
     public void updateCost() {

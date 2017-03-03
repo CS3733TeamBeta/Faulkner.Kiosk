@@ -130,8 +130,12 @@ public class UserMapViewController extends MapController
                     edgesOnFloor.getChildren().clear();
                     newRoute=null;
                     portal=null;
-                    portalTimeline.stop();
-                    portalTimeline=null;
+
+                    if(portalTimeline!=null)
+                    {
+                        portalTimeline.stop();
+                        portalTimeline = null;
+                    }
 
                     hideDirections();
                 }
@@ -233,6 +237,7 @@ public class UserMapViewController extends MapController
     @FXML
     private void clickedDownArrow()
     {
+        int newFloorNum = boundary.changeToPreviousFloor();
 
         Floor oldFloor = boundary.getCurrentFloor();
 
@@ -324,13 +329,13 @@ public class UserMapViewController extends MapController
 
         panel.mainPane.setPrefHeight(mainPane.getPrefHeight());
 
+        mainPane.getChildren().add(panel);
+        panel.toBack();
+        panel.relocate(mainPane.getPrefWidth() - 5, 0);
+
         mainPane.getChildren().add(searchPanel);
         searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
         searchPanel.welcomeScreen();
-
-        mainPane.getChildren().add(panel);
-        panel.toFront();
-        panel.relocate(mainPane.getPrefWidth() - 5, 0);
 
         panel.setCloseHandler(event ->
         {
@@ -351,12 +356,11 @@ public class UserMapViewController extends MapController
         buildingDropdown.setItems(boundary.getHospital().getBuildings());
         buildingDropdown.toFront();
 
-        buildingDropdown.selectionModelProperty().addListener(
-                (o, oldVal, newVal)->
-                {
-                    boundary.changeBuilding(newVal.getSelectedItem());
-                }
-        );
+        buildingDropdown.setOnAction(e->
+        {
+            System.out.println("Change requested");
+            boundary.changeBuilding(buildingDropdown.getSelectionModel().getSelectedItem());
+        });
 
         Kiosk kiosk = boundary.getHospital().getCurrentKiosk();
 

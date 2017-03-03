@@ -6,11 +6,16 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.util.Callback;
 import main.Application.ApplicationController;
 import main.Directory.Boundary.UserDirectoryBoundary;
 import main.Map.Entity.Destination;
 import main.Map.Entity.Office;
 import main.Directory.Entity.Doctor;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -33,12 +38,13 @@ public class UserSearchPanel extends AnchorPane {
 
     UserDirectoryBoundary boundary;
     ColorAdjust original = new ColorAdjust();
+    ColorAdjust clicked = new ColorAdjust();
     Boolean welcome = true;
 
-    int numClickDr;
-    int numClickFood;
-    int numClickBath;
-    int numClickHelp;
+    int numClickDr = -1;
+    int numClickFood = -1;
+    int numClickBath = -1;
+    int numClickHelp = -1;
 
     public UserSearchPanel() throws Exception {
         boundary = new UserDirectoryBoundary(ApplicationController.getHospital());
@@ -84,7 +90,7 @@ public class UserSearchPanel extends AnchorPane {
     TableColumn<Office, String> deptNameCol;
 
     @FXML
-    TableColumn<Office, Destination> deptLocCol;
+    TableColumn<Office, String> deptLocCol;
 
     @FXML
     TableColumn<Office, Office> deptNavigateCol;
@@ -104,7 +110,8 @@ public class UserSearchPanel extends AnchorPane {
     @FXML
     TableColumn<Doctor, Doctor> docNavigateCol;
 
-    AnchorPane pane;
+    Destination selectedDest;
+    int index;
 
     boolean transparent = false;
 
@@ -113,7 +120,12 @@ public class UserSearchPanel extends AnchorPane {
         jobTitleCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
 
         deptNameCol.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
-        deptLocCol.setCellValueFactory(new PropertyValueFactory<Office, Destination>("destination"));
+        deptLocCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Office, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Office, String> p) {
+                return new ReadOnlyObjectWrapper(p.getValue().getDestination().getName());
+            }
+        });
+
 
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
             loadSearchMenu();
@@ -142,16 +154,53 @@ public class UserSearchPanel extends AnchorPane {
                     if (empty) {
                         setGraphic(null);
                     } else {
-                        loc.setItems(getTableView().getItems().get(getIndex()).getDestinations());
+                        loc.setItems(getTableView().getItems().get(this.getIndex()).getDestinations());
                         loc.setMaxWidth(docLocsCol.getMaxWidth());
                         setGraphic(loc);
                     }
                 }
             };
 
+            loc.valueProperty().addListener(new ChangeListener<Destination>() {
+                @Override public void changed(ObservableValue ov, Destination d, Destination d1) {
+                    Destination selectedDest = d1;
+                    int index = cell.getIndex();
+                    generateButtonCells(index, selectedDest);
+                }
+            });
+
             return cell;
         });
 
+        deptTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                deptNavigateCol.setCellFactory(col -> {
+                    Button navigateButton = new Button("Go");
+                    TableCell<Office, Office> cell = new TableCell<Office, Office>() {
+                        @Override
+                        public void updateItem(Office o, boolean empty) {
+                            super.updateItem(o, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                if (this.getIndex() == deptTable.getSelectionModel().getSelectedIndex()) {
+                                    setGraphic(navigateButton);
+                                }
+                            }
+                        }
+                    };
+
+                    navigateButton.setOnAction(e -> {
+                        //findPathToNode
+                    });
+
+                    return cell;
+                });
+            }
+        });
+    }
+
+    private void generateButtonCells(int index, Destination selectedDest) {
         docNavigateCol.setCellFactory(col -> {
             Button navigateButton = new Button("Go");
             TableCell<Doctor, Doctor> cell = new TableCell<Doctor, Doctor>() {
@@ -161,15 +210,19 @@ public class UserSearchPanel extends AnchorPane {
                     if (empty) {
                         setGraphic(null);
                     } else {
-                        setGraphic(navigateButton);
+                        if (this.getIndex() == index) {
+                            setGraphic(navigateButton);
+                        }
                     }
                 }
             };
 
+            navigateButton.setOnAction(e -> {
+                //findpath method with the destination
+            });
+
             return cell;
         });
-
-        pane = this;
     }
 
     private void selectionMode(ImageView icon) {
@@ -181,7 +234,7 @@ public class UserSearchPanel extends AnchorPane {
         icon.setEffect(clicked);
     }
 
-
+    @FXML
     private void defaultProperty() {
         original.setContrast(0);
         this.setStyle("-fx-background-color:  #f2f2f2;");
@@ -191,11 +244,6 @@ public class UserSearchPanel extends AnchorPane {
         bathroomIcon.setEffect(original);
         foodIcon.setEffect(original);
         helpIcon.setEffect(original);
-
-        numClickDr = -1;
-        numClickFood = -1;
-        numClickBath = -1;
-        numClickHelp = -1;
 
         deptTable.setVisible(true);
 
@@ -217,9 +265,10 @@ public class UserSearchPanel extends AnchorPane {
             @Override
             protected void interpolate(double frac) {
                 Color vColor = new Color(1, 1, 1, frac);
-                pane.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
+                setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
             }
         };
+
         animation.play();
 
         transparent = false;
@@ -229,6 +278,7 @@ public class UserSearchPanel extends AnchorPane {
         initialize();
 
         welcome = true;
+        navigateArrow.setRotate(0);
 
         navigateArrow.setOnMouseClicked(e -> {
             if (welcome) {
@@ -236,8 +286,6 @@ public class UserSearchPanel extends AnchorPane {
             } else {
                 welcomeScreen();
             }
-
-            navigateArrow.setRotate(180);
         });
 
         translateTransition.setToY(350);
@@ -246,6 +294,10 @@ public class UserSearchPanel extends AnchorPane {
 
 
     private void loadSearchMenu() {
+        this.toFront();
+        navigateArrow.setRotate(0);
+        welcomeGreeting.setVisible(true);
+        this.setStyle("-fx-background-color:  #f2f2f2;");
 
         if(transparent)
         {
@@ -259,7 +311,7 @@ public class UserSearchPanel extends AnchorPane {
                 @Override
                 protected void interpolate(double frac) {
                     Color vColor = new Color(1, 1, 1, frac);
-                    pane.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
+                    setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
                 }
             };
             animation.play();
@@ -267,12 +319,14 @@ public class UserSearchPanel extends AnchorPane {
             transparent=false;
         }
 
+
         translateTransition.setToY(0);
         translateTransition.play();
     }
 
-    @FXML
     public void hideWelcomeScreen() {
+        navigateArrow.setRotate(180);
+        this.setStyle("-fx-background-color:  transparent;");
 
         if(!transparent)
         {
@@ -286,7 +340,7 @@ public class UserSearchPanel extends AnchorPane {
                 @Override
                 protected void interpolate(double frac) {
                     Color vColor = new Color(1, 1, 1, .8 - (frac-.2));
-                    pane.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
+                    setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
                 }
             };
 
@@ -300,27 +354,35 @@ public class UserSearchPanel extends AnchorPane {
         translateTransition.play();
     }
 
+    private void isDeSelected(int n, ImageView icon) {
+        if (n < 0) {
+            defaultProperty();
+        } else {
+            selectionMode(icon);
+        }
+    }
+
 
     @FXML
     private void doctorSelected() {
-        selectionMode(doctorIcon);
         numClickDr = numClickDr * (-1);
+        isDeSelected(numClickDr, doctorIcon);
         displayTable();
     }
 
     @FXML
     private void bathroomSelected()
     {
-        selectionMode(bathroomIcon);
         numClickBath = numClickBath * (-1);
+        isDeSelected(numClickBath, bathroomIcon);
         displayTable();
     }
 
     @FXML
     private void foodSelected()
     {
-        selectionMode(foodIcon);
         numClickFood = numClickFood * (-1);
+        isDeSelected(numClickFood, foodIcon);
         displayTable();
     }
 

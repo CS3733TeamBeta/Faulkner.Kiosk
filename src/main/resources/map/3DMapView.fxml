@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="775.0" prefWidth="1190.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Map.Controller.View3DController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="775.0" prefWidth="1190.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Map.Controller.View3DController">
    <children>
       <AnchorPane fx:id="pane3D" layoutX="14.0" layoutY="15.0" prefHeight="745.0" prefWidth="969.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="15.0" />
       <ScrollBar fx:id="verticalScroll" layoutX="783.0" layoutY="198.0" max="120.0" min="-30.0" orientation="VERTICAL" value="40.0" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="280.0" AnchorPane.topAnchor="10.0" />
@@ -33,12 +33,12 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <JFXComboBox prefHeight="70.0" prefWidth="120.0" GridPane.columnIndex="1">
+            <JFXComboBox fx:id="kioskSelection" prefHeight="70.0" prefWidth="120.0" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets bottom="20.0" top="20.0" />
                </GridPane.margin>
             </JFXComboBox>
-            <JFXComboBox prefHeight="27.0" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <JFXComboBox fx:id="selectTimeout" onAction="#timeOutSelection" prefHeight="27.0" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="Primary Kiosk:" />
             <Label text="Session Timeout:" GridPane.rowIndex="1" />
             <Label text="Path Algorithm:" GridPane.rowIndex="2" />
@@ -46,7 +46,7 @@
          </children>
       </GridPane>
       <JFXButton fx:id="resetCameraButton" layoutX="952.0" layoutY="385.0" onAction="#resetCameraButtonPress" prefHeight="27.0" prefWidth="220.0" style="-fx-background-color: #3F51B5;" text="Reset Camera" textFill="WHITE" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="385.0" />
-      <JFXButton layoutX="946.0" layoutY="591.0" prefHeight="27.0" prefWidth="220.0" style="-fx-background-color: #3F51B5;" text="Log Out" textFill="WHITE" AnchorPane.rightAnchor="30.0" />
+      <JFXButton fx:id="logOutButton" layoutX="946.0" layoutY="591.0" onAction="#logOut" prefHeight="27.0" prefWidth="220.0" style="-fx-background-color: #3F51B5;" text="Log Out" textFill="WHITE" AnchorPane.rightAnchor="30.0" />
       <JFXButton layoutX="999.0" layoutY="723.0" prefHeight="27.0" prefWidth="121.0" style="-fx-background-color: #3F51B5;" text="Factory Reset" textFill="WHITE" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="30.0" />
       <JFXButton fx:id="newBuildingButton" layoutX="952.0" layoutY="345.0" onAction="#newBuildingButtonPress" prefHeight="28.0" prefWidth="220.0" style="-fx-background-color: #3F51B5;" text="New Building" textFill="WHITE" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="345.0" />
       <JFXButton layoutX="952.0" layoutY="425.0" prefHeight="27.0" prefWidth="220.0" style="-fx-background-color: #3F51B5;" text="Add Admin Account" textFill="WHITE" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="425.0" />
