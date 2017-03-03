@@ -48,7 +48,7 @@ public class Building {
     {
         return hospital;
     }
-
+ 
     /**
      * Adds a floor to this building, throwing an exception if the floor already exists
      * @param f the floor to be added

@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.*;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -66,6 +67,17 @@ public class View3DController {
         System.out.println("Adding Building");
         int boxHeight = 10;
         VisualBuilding visualbuilding = new VisualBuilding(80, 80, 10, 200, 300, (50 - boxHeight));
+        visualbuilding.createNewFloor();
+
+        visualbuilding.getGroup().addEventHandler(MouseEvent.MOUSE_CLICKED,
+                e->
+                {
+                    if(e.getButton() == MouseButton.SECONDARY)
+                    {
+                        objects3D.getChildren().remove(visualbuilding.getGroup());
+                    }
+                });
+
         objects3D.getChildren().add(visualbuilding.getGroup());
     }
 
@@ -157,6 +169,7 @@ public class View3DController {
                         }
                     }
                 });
+
         Image img = new Image(this.getClass().getResourceAsStream("/map/FloorMaps/1_thefirstfloor.png"));
 
         PhongMaterial material = new PhongMaterial(Color.WHITE);

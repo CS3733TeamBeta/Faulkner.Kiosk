@@ -32,7 +32,7 @@ public class Hospital{
         offices = FXCollections.observableArrayList();
         doctors = FXCollections.observableArrayList();
 
-        campusBuilding = new Building();
+        campusBuilding = new Building("Campus");
         CampusFloor  = new CampusFloor();
 
         try

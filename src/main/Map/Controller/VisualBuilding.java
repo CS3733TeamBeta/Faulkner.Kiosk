@@ -70,7 +70,10 @@ public class VisualBuilding
             {
                 try
                 {
-                    ApplicationController.getController().switchToMapEditorView(b);
+                    if(b!=null)
+                    {
+                        ApplicationController.getController().switchToMapEditorView(b);
+                    }
                 } catch (IOException e1)
                 {
                     e1.printStackTrace();

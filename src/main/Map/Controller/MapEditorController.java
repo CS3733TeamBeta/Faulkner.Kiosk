@@ -1,5 +1,6 @@
 package main.Map.Controller;
 
+import javafx.scene.control.Label;
 import main.Application.ApplicationController;
 import main.Map.Boundary.AdminMapBoundary;
 import main.Map.Entity.*;
@@ -78,11 +79,24 @@ public class MapEditorController extends MapController
 
 	HashSet<DragIcon> selectedIcons;
 
+	@FXML
+	Label buildingLabel;
+
 	boolean drawingEdgeFrozen = false;
 	boolean dragInProgress = false;
 
 	public void setBuilding(Building b)
 	{
+		if(b.getName().equals("Campus"))
+		{
+			newFloorButton.setVisible(false);
+			buildingLabel.setText("Campus Map");
+		}
+		else
+		{
+			buildingLabel.setText(b.getName() + " Building");
+		}
+
 		boundary = new AdminMapBoundary(b, ApplicationController.getHospital());
 		initBoundary();
 
@@ -834,7 +848,7 @@ public class MapEditorController extends MapController
 	{
 		//DataCache.getInstance().save();
 
-		ApplicationController.getController().switchToUserMapView();
+		ApplicationController.getController().switchToVisualBuildingEditor();
 	}
 
 	@FXML
