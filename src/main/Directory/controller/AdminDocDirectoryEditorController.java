@@ -146,6 +146,7 @@ public class AdminDocDirectoryEditorController {
             if (d != null) {
                 docBoundary.removeDoctor(d);
                 reset();
+                searchBar.clear();
             }
 
             Destination dest = locAssigned.getSelectionModel().getSelectedItem();
@@ -167,8 +168,6 @@ public class AdminDocDirectoryEditorController {
         phoneNum2.clear();
         phoneNum3.clear();
 
-        searchBar.clear();
-
         locAssigned.getItems().clear();
 
         searchForLoc.setValue(null);
@@ -184,16 +183,6 @@ public class AdminDocDirectoryEditorController {
 
         if (lastName.getText() == null || (lastName.getText().isEmpty())){
             return false;
-        }
-
-        if (phoneNum1.getText().length() > 0 ||
-                phoneNum2.getText().length() > 0 ||
-                phoneNum3.getText().length() > 0) {
-            if (!((phoneNum1.getText().length() == 3) &&
-                    (phoneNum2.getText().length() == 3) &&
-                    (phoneNum3.getText().length() == 4))) {
-                return false;
-            }
         }
 
         if (startTime.getText() == null || (startTime.getText().isEmpty())){
@@ -224,7 +213,7 @@ public class AdminDocDirectoryEditorController {
             lastName.setText(selectedDoc.splitName()[0]);
             description.setText(selectedDoc.getDescription());
 
-            if (!selectedDoc.getPhoneNum().equals("N/A")) {
+            if (!selectedDoc.getPhoneNum().equals("--") && !selectedDoc.getPhoneNum().equals("")) {
                 phoneNum1.setText(selectedDoc.splitPhoneNum()[0]);
                 phoneNum2.setText(selectedDoc.splitPhoneNum()[1]);
                 phoneNum3.setText(selectedDoc.splitPhoneNum()[2]);
@@ -233,32 +222,39 @@ public class AdminDocDirectoryEditorController {
             startTime.setText(selectedDoc.splitHours()[0]);
             endTime.setText(selectedDoc.splitHours()[1]);
 
-            locAssigned.setItems(docBoundary.getDocLoc(selectedDoc));
+            for (Destination d: selectedDoc.getDestinations()) {
+                locAssigned.getItems().add(d);
+            }
         }
     }
 
     @FXML
     private void saveProfile() {
         if (isProcessable()) {
-
             String name = lastName.getText() + ", " + firstName.getText();
             String d = description.getText();
             String phoneNum = "N/A";
             String hrs = startTime.getText() + " - " + endTime.getText();
-            if (phoneNum1.getText() != null || !phoneNum1.getText().isEmpty()) {
+
+            if ((phoneNum1.getText() != null || !phoneNum1.getText().isEmpty()) &&
+                    (phoneNum1.getText() != null || !phoneNum1.getText().isEmpty()) &&
+                            (phoneNum1.getText() != null || !phoneNum1.getText().isEmpty())) {
                 phoneNum = phoneNum1.getText() + "-" + phoneNum2.getText() + "-" + phoneNum3.getText();
             }
 
             if (dataTable.getSelectionModel().getSelectedItem() != null) {
                 docBoundary.removeDoctor(dataTable.getSelectionModel().getSelectedItem());
-                try {
-                    ApplicationController.getCache().getDbManager().delDocFromDB(dataTable.getSelectionModel().getSelectedItem());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+
+                dataTable.getSelectionModel().clearSelection();
             }
 
-            Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
+            ObservableList<Destination> destinations = FXCollections.observableArrayList();
+
+            for (Destination dest : locAssigned.getItems()) {
+                destinations.add(dest);
+            }
+
+            Doctor newDoc = new Doctor(name, d, hrs, destinations);
             newDoc.setPhoneNum(phoneNum);
             docBoundary.addDoc(newDoc);
             try {

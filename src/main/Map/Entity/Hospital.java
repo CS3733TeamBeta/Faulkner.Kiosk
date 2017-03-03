@@ -115,7 +115,9 @@ public class Hospital{
 
     //Alter Office HashMap: offices
     public void addOffice(Office off) {
-        offices.add(off);
+        if (!this.offices.contains(off)) {
+            offices.add(off);
+        }
 
 //        off.addObserver((observer, args)->
 //        {
@@ -126,7 +128,9 @@ public class Hospital{
 //        });
     }
     public void removeOffice(Office off) {
-        offices.remove(off);
+        if (this.offices.contains(off)) {
+            offices.remove(off);
+        }
     }
     public ObservableList<Office> getOffices() {
         return this.offices;

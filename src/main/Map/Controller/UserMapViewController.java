@@ -68,7 +68,7 @@ public class UserMapViewController extends MapController
     Stage primaryStage;
 
     UserDirectionsPanel panel;
-    UserSearchPanel searchPanel = new UserSearchPanel();
+    UserSearchPanel searchPanel = new UserSearchPanel(this);
 
     Group zoomGroup;
 
@@ -93,6 +93,7 @@ public class UserMapViewController extends MapController
         super();
 
         userMapBoundary = new UserMapBoundary(ApplicationController.getHospital());
+
         boundary = userMapBoundary;
 
         nodeTextMap = HashBiMap.create();
@@ -404,11 +405,11 @@ public class UserMapViewController extends MapController
 
             curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
         });
+    }
 
-        if (searchPanel.getSelectedDest() != null) {
-            findPathToNode(searchPanel.getSelectedDest());
-        }
-
+    public void setDestination(Destination selectedDest) throws Exception {
+        findPathToNode(selectedDest);
+        searchPanel.hideWelcomeScreen();
     }
 
     private void directionPaneView()
@@ -576,6 +577,7 @@ public class UserMapViewController extends MapController
 
     protected void findPathToNode(MapNode endPoint) throws PathFindingException
     {
+
         edgesOnFloor.getChildren().clear();
         lastFloorStep = null;
 
@@ -583,7 +585,7 @@ public class UserMapViewController extends MapController
         //followPath(newRoute);
         directionStepIndex = 0;
         newRoute = userMapBoundary.findPathToNode(endPoint);
-        panel.fillGuidance(newRoute);
+        //panel.fillGuidance(newRoute);
 
         newRoute.printTextDirections();
 
