@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
@@ -13,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.9" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #f2f2f2;" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.9" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #f2f2f2;" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox prefHeight="200.0" prefWidth="100.0" />
       <HBox layoutX="25.0" layoutY="168.0" prefHeight="138.0" prefWidth="1075.0" spacing="46.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="180.0">
@@ -129,5 +130,6 @@
             <Image url="@/icons/magnifying_glass.png" />
          </image>
       </ImageView>
+      <TextArea fx:id="helpText" layoutX="240.0" layoutY="371.0" opacity="0.79" prefHeight="298.0" prefWidth="812.0" text="Are you looking for help? By default you will be able to view and search through our directory of departments. &#10;Try selecting one of the other icons above to change to a doctor or facilities related search. If you still can’t find&#10;what you’re looking for, try typing it into the search bar at the top of the panel.&#10;&#10;Acknowledgments:&#10;&#10;Thank you Brigham and Women’s Faulkner Hospital and their representative, Andrew Shinn, for contributing their&#10; time and input toward our project. Also thank you to professor Wong and our awesome TA’s, Matthew and Cory for&#10; answering our questions and helping us throughout this entire project.&#10;&#10;From all of us in Team Beta:&#10;Ben Hylak - Software Lead,&#10;Joan Wong - Assistant Software Lead,&#10;Sophia Gudenrath - Project Manager,&#10;Luke Zebrowski - Product Owner,&#10;Devon Bray - Documentation Analyst,&#10;Sam Pridotkas - Test Engineer,&#10;Brandon Knox - Software Engineer,&#10;Paris Lopez - Software Engineer,&#10;Ian Johnson - Software Engineer,&#10;Patrick Polley - Software Engineer&#10;&#10;WPI Computer Science Department, CS3733 Software Engineering" />
    </children>
 </fx:root>

@@ -39,6 +39,9 @@ public class UserSearchPanel extends AnchorPane {
     //FadeTransition backgroundFade = new FadeTransition(Duration.millis(400), this.getBackground());
    // FillTransition fade = new FillTransition(Duration.millis(500), this.getBackground().getFills().get(0));
 
+    @FXML
+    TextArea helpText;
+
     UserDirectoryBoundary boundary;
     ColorAdjust original = new ColorAdjust();
     ColorAdjust clicked = new ColorAdjust();
@@ -123,6 +126,9 @@ public class UserSearchPanel extends AnchorPane {
     boolean transparent = false;
 
     private void initialize() {
+
+        helpText.setVisible(false);
+
         docNameCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         jobTitleCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
 
@@ -262,6 +268,7 @@ public class UserSearchPanel extends AnchorPane {
         original.setContrast(0);
         this.setStyle("-fx-background-color:  #f2f2f2;");
 
+        helpText.setVisible(false);
         // Sets the color of the icons to black
         doctorIcon.setEffect(original);
         bathroomIcon.setEffect(original);
@@ -389,7 +396,6 @@ public class UserSearchPanel extends AnchorPane {
         }
     }
 
-
     @FXML
     private void doctorSelected() {
         numClickDr = numClickDr * (-1);
@@ -418,6 +424,7 @@ public class UserSearchPanel extends AnchorPane {
     {
         selectionMode(helpIcon);
         numClickHelp = numClickHelp * (-1);
+
         displayTable();
     }
 
@@ -425,17 +432,20 @@ public class UserSearchPanel extends AnchorPane {
     {
         if (numClickDr == 1)
         {
+            helpText.setVisible(false);
             searchBar.setPromptText("Search for doctors");
             deptTable.setVisible(false);
             doctorTable.setVisible(true);
         }
         if (numClickBath == 1)
         {
+            helpText.setVisible(false);
             searchBar.setPromptText("Search for bathrooms");
         }
 
         if (numClickFood == 1)
         {
+            helpText.setVisible(false);
             searchBar.setPromptText("Search for food");
         }
 
@@ -443,6 +453,7 @@ public class UserSearchPanel extends AnchorPane {
         {
             searchBar.setPromptText("Search for help");
         }
+
         if ((numClickDr == -1) && (numClickBath == -1) && (numClickFood == -1) && (numClickHelp == -1))
         {
             defaultProperty();
