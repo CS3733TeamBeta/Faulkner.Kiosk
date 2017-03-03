@@ -24,6 +24,7 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Created by jw97 on 2/27/2017.
@@ -188,13 +189,19 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
     private void deptEditOperation() {
         if (editorProcessable()) {
             String deptName = deptNameField.getText();
-            Destination assignedDest = new Destination();
+            Destination assignedDest = locAssignedField.getValue();
 
             if (deptDataTable.getSelectionModel().getSelectedItem() != null) {
                 deptBoundary.removeDept(deptDataTable.getSelectionModel().getSelectedItem());
             }
 
             Office newOffice = new Office(deptName, assignedDest);
+
+            try {
+                ApplicationController.getCache().getDbManager().addOfficeToDB(newOffice);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
             deptBoundary.addDept(newOffice);
 

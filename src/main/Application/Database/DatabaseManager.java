@@ -474,20 +474,20 @@ public class DatabaseManager {
 
         while (floorRS.next()) {
             floor_id = UUID.fromString(floorRS.getString(1));
-            f = new Floor(floor_id, floorRS.getInt(3));
-            System.out.println("Loaded Floor" + floor_id);
-            //if (!b.getName().equals("Campus")) {
-                f.setImageLocation(floorRS.getString(4));
-                f.setBuilding(b);
-
-                loadNodes(h, f);
-                try {
-                    b.addFloor(f);
+            if (!b.getName().equals("Campus")) {
+                f = new Floor(floor_id, floorRS.getInt(3));
+                System.out.println("Loaded Floor" + floor_id);
+                    f.setImageLocation(floorRS.getString(4));
                     f.setBuilding(b);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            //}
+
+                    loadNodes(h, f);
+                    try {
+                        b.addFloor(f);
+                        f.setBuilding(b);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+            }
 //            else {
 //                loadNodes(h, f);
 //            }

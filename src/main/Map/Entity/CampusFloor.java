@@ -4,8 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * Created by benhylak on 2/23/17.
@@ -23,6 +22,7 @@ public class CampusFloor extends Floor
     @Override
     public void addNode(MapNode n)
     {
+        n.setFloor(this);
         campusNodes.add(n);
         super.addNode(n);
     }
@@ -70,5 +70,9 @@ public class CampusFloor extends Floor
     public String toString()
     {
         return "Campus";
+    }
+
+    public void setFloorID(UUID id) {
+        this.floorID = id;
     }
 }
