@@ -7,8 +7,6 @@ import main.Map.Entity.Destination;
 import main.Map.Entity.Hospital;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,7 +16,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import sun.security.krb5.internal.crypto.Des;
 
 import java.io.IOException;
 

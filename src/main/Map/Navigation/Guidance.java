@@ -11,7 +11,6 @@ import java.awt.Point;
 import main.Map.Entity.*;
 import main.Application.Exceptions.*;
 import javafx.embed.swing.SwingFXUtils;
-import sun.security.krb5.internal.crypto.Des;
 
 import javax.imageio.ImageIO;
 
