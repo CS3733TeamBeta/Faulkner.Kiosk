@@ -205,7 +205,6 @@ public class UserMapViewController extends MapController
         }
     }
 
-
     @FXML
     private void floorDownResetOpacity()
     {
