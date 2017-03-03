@@ -83,6 +83,7 @@ public class UserMapBoundary extends MapBoundary
             return null;
         }
 
+
         return currentGuidance;
     }
 

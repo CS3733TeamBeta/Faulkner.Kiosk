@@ -587,6 +587,8 @@ public class UserMapViewController extends MapController
         newRoute = userMapBoundary.findPathToNode(endPoint);
         //panel.fillGuidance(newRoute);
 
+        panel.fillGuidance(newRoute);
+
         newRoute.printTextDirections();
 
         if(newRoute!=null)
