@@ -21,6 +21,7 @@ public class Hospital{
     private ObservableList<Office> offices;
 
     CampusFloor CampusFloor;
+    Building campusBuilding;
 
     private Kiosk currentKiosk = null;
     protected ObservableList<Kiosk> kiosks;
@@ -31,7 +32,19 @@ public class Hospital{
         offices = FXCollections.observableArrayList();
         doctors = FXCollections.observableArrayList();
 
+        campusBuilding = new Building("Campus");
         CampusFloor  = new CampusFloor();
+
+        try
+        {
+            campusBuilding.addFloor(CampusFloor);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        CampusFloor.setBuilding(campusBuilding);
+
         kiosks = FXCollections.observableArrayList(new ArrayList<Kiosk>());
     }
 

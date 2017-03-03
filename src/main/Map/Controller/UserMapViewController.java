@@ -130,8 +130,12 @@ public class UserMapViewController extends MapController
                     edgesOnFloor.getChildren().clear();
                     newRoute=null;
                     portal=null;
-                    portalTimeline.stop();
-                    portalTimeline=null;
+
+                    if(portalTimeline!=null)
+                    {
+                        portalTimeline.stop();
+                        portalTimeline = null;
+                    }
 
                     hideDirections();
                 }
@@ -352,12 +356,11 @@ public class UserMapViewController extends MapController
         buildingDropdown.setItems(boundary.getHospital().getBuildings());
         buildingDropdown.toFront();
 
-        buildingDropdown.selectionModelProperty().addListener(
-                (o, oldVal, newVal)->
-                {
-                    boundary.changeBuilding(newVal.getSelectedItem());
-                }
-        );
+        buildingDropdown.setOnAction(e->
+        {
+            System.out.println("Change requested");
+            boundary.changeBuilding(buildingDropdown.getSelectionModel().getSelectedItem());
+        });
 
         Kiosk kiosk = boundary.getHospital().getCurrentKiosk();
 

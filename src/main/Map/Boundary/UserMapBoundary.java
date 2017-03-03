@@ -22,13 +22,19 @@ public class UserMapBoundary extends MapBoundary
 
     public void setInitFloor()
     {
-        if(kioskFloor!=null)
+        if(kioskFloor!=null && kioskFloor.getFloorNumber()!=1)
         {
             changeFloor(kioskFloor);
         }
         else
         {
-            Building b = ApplicationController.getHospital().getBuildings().iterator().next();
+            Building b;
+
+            if(kioskFloor==null)
+            {
+                b = ApplicationController.getHospital().getBuildings().iterator().next();
+            }
+            else b = kioskFloor.getBuilding();
 
             currentBuilding =b;
 
