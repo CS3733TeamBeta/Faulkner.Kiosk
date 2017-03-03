@@ -1,6 +1,9 @@
 package main.Map.Controller;
+import com.jfoenix.controls.JFXComboBox;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.*;
 import javafx.scene.control.Button;
@@ -20,6 +23,7 @@ import main.Application.ApplicationController;
 import main.Map.Controller.VisualBuilding;
 import javafx.scene.control.ScrollBar;
 import main.Map.Entity.Building;
+import main.Map.Entity.Kiosk;
 
 import javax.swing.text.View;
 import java.awt.*;
@@ -27,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 import static javafx.application.ConditionalFeature.FXML;
+import static main.Application.ApplicationController.getHospital;
 
 /**
  * Created by Devon on 3/1/2017.
@@ -47,6 +52,13 @@ public class View3DController {
 
     @FXML
     private ScrollBar horizontalScroll;
+
+    @FXML
+    private JFXComboBox<Kiosk> kioskSelection;
+
+    @FXML
+    private JFXComboBox selectTimeout;
+
 
 
     private Group objects3D;
@@ -114,7 +126,7 @@ public class View3DController {
         int boxHeight = 10;
 
 
-        for(Building b: ApplicationController.getHospital().getBuildings())
+        for(Building b: getHospital().getBuildings())
         {
             System.out.println("Parsing " + b.getName());
             objects3D.getChildren().add(VisualBuilding.BuildingFactory(b).getGroup());
@@ -161,7 +173,7 @@ public class View3DController {
                     {
                         try
                         {
-                            ApplicationController.getController().switchToMapEditorView(ApplicationController.getHospital().getCampusFloor()
+                            ApplicationController.getController().switchToMapEditorView(getHospital().getCampusFloor()
                             .getBuilding());
                         } catch (IOException e1)
                         {
@@ -195,5 +207,60 @@ public class View3DController {
 
         resetCameraButton.toFront();
         newBuildingButton.toFront();
+
+        ObservableList<String> timeOuts = FXCollections.observableArrayList();
+        timeOuts.addAll("10 seconds", "30 seconds", "1 minute", "2 minutes", "5 minutes");
+        selectTimeout.setItems(timeOuts);
+        if (ApplicationController.getController().getTimeout() == 10) {
+            selectTimeout.setPromptText("10 seconds");
+        }
+        if (ApplicationController.getController().getTimeout() == 30) {
+            selectTimeout.setPromptText("30 seconds");
+        }
+        if (ApplicationController.getController().getTimeout() == 60) {
+            selectTimeout.setPromptText("1 minute");
+        }
+        if (ApplicationController.getController().getTimeout() == 120) {
+            selectTimeout.setPromptText("2 minutes");
+        }
+        if (ApplicationController.getController().getTimeout() == 300) {
+            selectTimeout.setPromptText("5 minutes");
+        }
+
+        kioskSelection.setItems(getHospital().getKiosks());
+
+        if(getHospital().getCurrentKiosk()!=null)
+        {
+            kioskSelection.getSelectionModel().select(getHospital().getCurrentKiosk());
+        }
+
+        kioskSelection.setOnAction(e->
+        {
+            ApplicationController.getHospital().setCurrentKiosk(kioskSelection.getValue());
+        });
+    }
+
+    @FXML
+    public void timeOutSelection () {
+        if (selectTimeout.getValue().equals("10 seconds")) {
+            ApplicationController.getController().setTimeout(10);
+        }
+        if (selectTimeout.getValue().equals("30 seconds")) {
+            ApplicationController.getController().setTimeout(30);
+        }
+        if (selectTimeout.getValue().equals("1 minute")) {
+            ApplicationController.getController().setTimeout(60);
+        }
+        if (selectTimeout.getValue().equals("2 minutes")) {
+            ApplicationController.getController().setTimeout(120);
+        }
+        if (selectTimeout.getValue().equals("5 minutes")) {
+            ApplicationController.getController().setTimeout(300);
+        }
+    }
+
+    @FXML
+    public void logOut () throws IOException {
+        ApplicationController.getController().switchToUserMapView();
     }
 }
