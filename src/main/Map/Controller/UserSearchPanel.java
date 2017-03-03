@@ -270,9 +270,10 @@ public class UserSearchPanel extends AnchorPane {
             @Override
             protected void interpolate(double frac) {
                 Color vColor = new Color(1, 1, 1, frac);
-                pane.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
+                setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
             }
         };
+
         animation.play();
 
         transparent = false;
@@ -303,6 +304,7 @@ public class UserSearchPanel extends AnchorPane {
         welcomeGreeting.setVisible(true);
         this.setStyle("-fx-background-color:  #f2f2f2;");
 
+        /*
         if(transparent)
         {
             final Animation animation = new Transition() {
@@ -315,23 +317,22 @@ public class UserSearchPanel extends AnchorPane {
                 @Override
                 protected void interpolate(double frac) {
                     Color vColor = new Color(1, 1, 1, frac);
-                    pane.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
+                    setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
                 }
             };
             animation.play();
 
             transparent=false;
         }
+        */
 
         translateTransition.setToY(0);
         translateTransition.play();
     }
 
-    @FXML
-    private void hideWelcomeScreen() {
+    public void hideWelcomeScreen() {
         navigateArrow.setRotate(180);
         this.setStyle("-fx-background-color:  transparent;");
-    public void hideWelcomeScreen() {
 
         if(!transparent)
         {

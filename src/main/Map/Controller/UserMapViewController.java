@@ -9,6 +9,8 @@ import javafx.scene.shape.Line;
 import main.Application.ApplicationController;
 import main.Map.Boundary.UserMapBoundary;
 import main.Map.Entity.*;
+import main.Map.Navigation.DirectionFloorStep;
+import main.Map.Navigation.DirectionStep;
 import main.Map.Navigation.Guidance;
 import main.Application.Exceptions.PathFindingException;
 import com.google.common.collect.BiMap;
