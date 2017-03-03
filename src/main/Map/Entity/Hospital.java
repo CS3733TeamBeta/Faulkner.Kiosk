@@ -58,6 +58,7 @@ public class Hospital{
     }
 
     public void addDoctor(Doctor doc) {
+        System.out.println("ADDING DOCTOR******************************************");
         doctors.add(doc);
 
         doc.addObserver((observer, args)->
@@ -65,7 +66,19 @@ public class Hospital{
             int i = doctors.indexOf(doc);
 
             doctors.remove(doc);
+            try {
+                ApplicationController.getCache().getDbManager().delDocFromDB(doc);
+                System.out.println("Removed Doctor");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             doctors.add(i, doc);
+            try {
+                ApplicationController.getCache().getDbManager().addDocToDB(doc);
+                System.out.println("Added Doctor");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         });
     }
 

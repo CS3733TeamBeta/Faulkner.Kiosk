@@ -32,11 +32,11 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
     TranslateTransition directorySlide = new TranslateTransition(Duration.millis(600), this);
     Boolean deptDirectoryUp = false;
     private AdminDeptDirectoryBoundary deptBoundary;
-    ObservableList<Destination> existingLoc;
+    ObservableList<Destination> existingLoc =
+            FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
 
     public AdminDeptDirectoryEditor() {
         deptBoundary = new AdminDeptDirectoryBoundary(ApplicationController.getHospital());
-        existingLoc = FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                 "/directory/AdminDeptDirectoryEditor.fxml"));
@@ -120,6 +120,8 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
 
         directorySlide.setToY(-620);
         directorySlide.play();
+
+        initialize();
     }
 
 
@@ -188,23 +190,19 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
             String deptName = deptNameField.getText();
             Destination assignedDest = new Destination();
 
-            switch (editorButton.getText()) {
-                case "Add":
-                    Office newOffice = new Office(deptName, assignedDest);
-
-                    deptBoundary.addDept(newOffice);
-
-                    break;
-
-                case "Save":
-                    Office o = deptDataTable.getSelectionModel().getSelectedItem();
-
-                    deptBoundary.editDept(o, deptName, assignedDest);
-
-                    break;
-                default:
-                    break;
+            if (deptDataTable.getSelectionModel().getSelectedItem() != null) {
+                deptBoundary.removeDept(deptDataTable.getSelectionModel().getSelectedItem());
             }
+
+            Office newOffice = new Office(deptName, assignedDest);
+
+            deptBoundary.addDept(newOffice);
+
+            deptDataTable.requestFocus();
+            deptDataTable.getSelectionModel().select(newOffice);
+            int i = deptDataTable.getSelectionModel().getSelectedIndex();
+            deptDataTable.getFocusModel().focus(i);
+            deptDataTable.scrollTo(i);
 
             reset();
         }

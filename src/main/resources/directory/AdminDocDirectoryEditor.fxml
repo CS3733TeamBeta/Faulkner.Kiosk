@@ -124,6 +124,6 @@
       </HBox>
       <JFXButton fx:id="mapBuilder" layoutX="750.0" layoutY="564.0" maxHeight="60.0" onAction="#onMapBuilderSwitch" prefHeight="26.0" prefWidth="420.0" style="-fx-background-color: #3F51B5;" text="Go To Map Builder" textFill="WHITE" AnchorPane.bottomAnchor="110.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="564.0" />
       <JFXListView fx:id="locAssigned" layoutX="730.0" layoutY="317.0" prefHeight="185.0" prefWidth="420.0" AnchorPane.rightAnchor="50.0" />
-      <ComboBox fx:id="searchForLoc" editable="true" layoutX="895.0" layoutY="272.0" prefHeight="25.0" prefWidth="200.0" promptText="Add a location" />
+      <ComboBox fx:id="searchForLoc" layoutX="895.0" layoutY="272.0" prefHeight="25.0" prefWidth="200.0" promptText="Add a location" />
    </children>
 </AnchorPane>

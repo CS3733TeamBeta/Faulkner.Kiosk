@@ -233,6 +233,7 @@ public class UserMapViewController extends MapController
     @FXML
     private void clickedDownArrow()
     {
+        int newFloorNum = boundary.changeToPreviousFloor();
 
         Floor oldFloor = boundary.getCurrentFloor();
 
@@ -324,13 +325,13 @@ public class UserMapViewController extends MapController
 
         panel.mainPane.setPrefHeight(mainPane.getPrefHeight());
 
+        mainPane.getChildren().add(panel);
+        panel.toBack();
+        panel.relocate(mainPane.getPrefWidth() - 5, 0);
+
         mainPane.getChildren().add(searchPanel);
         searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
         searchPanel.welcomeScreen();
-
-        mainPane.getChildren().add(panel);
-        panel.toFront();
-        panel.relocate(mainPane.getPrefWidth() - 5, 0);
 
         panel.setCloseHandler(event ->
         {
