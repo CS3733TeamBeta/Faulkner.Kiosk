@@ -178,12 +178,6 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
             Office o = deptDataTable.getSelectionModel().getSelectedItem();
 
             deptBoundary.removeDept(o);
-
-            try {
-                ApplicationController.getCache().getDbManager().delOfficeFromDB(o);
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
         });
 
         ContextMenu options = new ContextMenu();
@@ -199,20 +193,9 @@ public class AdminDeptDirectoryEditor extends AnchorPane {
 
             if (deptDataTable.getSelectionModel().getSelectedItem() != null) {
                 deptBoundary.removeDept(deptDataTable.getSelectionModel().getSelectedItem());
-                try {
-                    ApplicationController.getCache().getDbManager().delOfficeFromDB(deptDataTable.getSelectionModel().getSelectedItem());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
             }
 
             Office newOffice = new Office(deptName, assignedDest);
-
-            try {
-                ApplicationController.getCache().getDbManager().addOfficeToDB(newOffice);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
 
             deptBoundary.addDept(newOffice);
 
