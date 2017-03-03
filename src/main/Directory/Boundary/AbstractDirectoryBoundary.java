@@ -55,9 +55,4 @@ public class AbstractDirectoryBoundary {
     public ObservableList<Office> getDepartments() {
         return h.getOffices();
     }
-
-    // Save to database
-    public void save() {
-        DataCache.getInstance().save();
-    }
 }

@@ -9,7 +9,7 @@ import java.util.UUID;
 public class Doctor extends Observable {
 
     UUID docID;
-    String phoneNum = "N/A";
+    protected String phoneNum = "N/A";
     private String name;
     private String description;
     private ObservableList<Destination> destinations;

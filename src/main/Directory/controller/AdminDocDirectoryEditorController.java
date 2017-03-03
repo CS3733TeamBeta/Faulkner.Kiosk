@@ -128,6 +128,7 @@ public class AdminDocDirectoryEditorController {
             }
         });
 
+
         textField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
             @Override public void handle(KeyEvent keyEvent) {
                 if (!"0123456789".contains(keyEvent.getCharacter())) {
@@ -256,7 +257,7 @@ public class AdminDocDirectoryEditorController {
 
             Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
             newDoc.setPhoneNum(phoneNum);
-            docBoundary.addDoctor(newDoc);
+            docBoundary.addDoc(newDoc);
 
             searchBar.clear();
 

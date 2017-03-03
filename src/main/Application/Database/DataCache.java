@@ -50,7 +50,6 @@ public class DataCache
            if(h==null) h = db.loadData();
 
             h.getDoctors().addListener((ListChangeListener<Doctor>) e-> {
-                    System.out.print("**********************");
                         if (e.wasAdded()) {
                             System.out.println("Added!*******");
                             for (Doctor doc : e.getAddedSubList()) {

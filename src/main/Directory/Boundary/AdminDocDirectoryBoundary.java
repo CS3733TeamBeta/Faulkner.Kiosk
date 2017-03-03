@@ -20,7 +20,7 @@ public class AdminDocDirectoryBoundary extends AbstractDirectoryBoundary
         return setSearchList(h.getDoctors(), newValue);
     }
 
-    public void addDoctor (Doctor d) {
+    public void addDoc (Doctor d) {
         h.addDoctor(d);
     }
 

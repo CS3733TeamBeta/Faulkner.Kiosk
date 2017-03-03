@@ -156,6 +156,7 @@ public class UserSearchPanel extends AnchorPane {
                     } else {
                         loc.setItems(getTableView().getItems().get(this.getIndex()).getDestinations());
                         loc.setMaxWidth(docLocsCol.getMaxWidth());
+                        loc.setPromptText("Select a location");
                         setGraphic(loc);
                     }
                 }
@@ -193,6 +194,7 @@ public class UserSearchPanel extends AnchorPane {
 
                     navigateButton.setOnAction(e -> {
                         selectedDest = candidate;
+                        hideWelcomeScreen();
                     });
 
                     return cell;
@@ -220,6 +222,7 @@ public class UserSearchPanel extends AnchorPane {
 
             navigateButton.setOnAction(e -> {
                 selectedDest = candidate;
+                hideWelcomeScreen();
             });
 
             return cell;
@@ -285,15 +288,8 @@ public class UserSearchPanel extends AnchorPane {
         welcome = true;
         navigateArrow.setRotate(0);
 
-        navigateArrow.setOnMouseClicked(e -> {
-            if (welcome) {
-                hideWelcomeScreen();
-            } else {
-                welcomeScreen();
-            }
-        });
-
-        translateTransition.setToY(350);
+        //translateTransition.setToY(350);
+        translateTransition.setToY(0);
         translateTransition.play();
     }
 
@@ -325,7 +321,7 @@ public class UserSearchPanel extends AnchorPane {
         }
 
 
-        translateTransition.setToY(0);
+        translateTransition.setToY(-350);
         translateTransition.play();
     }
 
@@ -355,8 +351,19 @@ public class UserSearchPanel extends AnchorPane {
 
         welcomeGreeting.setVisible(false);
         welcome = false;
-        translateTransition.setToY(350 + 175);
+        //translateTransition.setToY(350 + 175);
+        translateTransition.setToY(175);
         translateTransition.play();
+    }
+
+    public void addNavigation() {
+        navigateArrow.setOnMouseClicked(e -> {
+            if (welcome) {
+                hideWelcomeScreen();
+            } else {
+                welcomeScreen();
+            }
+        });
     }
 
     private void isDeSelected(int n, ImageView icon) {
