@@ -405,6 +405,10 @@ public class UserMapViewController extends MapController
             curFloorLabel.setText("Floor " + boundary.getCurrentFloor().getFloorNumber());
         });
 
+        if (searchPanel.getSelectedDest() != null) {
+            findPathToNode(searchPanel.getSelectedDest());
+        }
+
     }
 
     private void directionPaneView()
