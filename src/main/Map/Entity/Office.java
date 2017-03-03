@@ -48,16 +48,6 @@ public class Office extends Observable
         return this.id;
     }
 
-    public void setDepartment(String department)
-    {
-        this.department = department;
-    }
-
-    public String getDepartment()
-    {
-        return this.department;
-    }
-
     public void setDestination(Destination d) {
         this.destination = d;
     }

@@ -11,15 +11,6 @@ public class LinkEdge extends NodeEdge
         super(nodeA, nodeB, 0);
     }
 
-    public LinkEdge(NodeEdge e)
-    {
-        this.setSource(e.getSource());
-        this.setTarget(e.getTarget());
-
-        cost = e.getCost();
-    }
-
-
     @Override
     public void updateCost()
     {

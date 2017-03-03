@@ -67,7 +67,7 @@ public class UserMapViewController extends MapController
 
     Stage primaryStage;
 
-    UserDirectionsPanel panel = new UserDirectionsPanel(mapImage);
+    UserDirectionsPanel panel;
     UserSearchPanel searchPanel = new UserSearchPanel();
 
     Group zoomGroup;
@@ -129,8 +129,12 @@ public class UserMapViewController extends MapController
                     edgesOnFloor.getChildren().clear();
                     newRoute=null;
                     portal=null;
-                    portalTimeline.stop();
-                    portalTimeline=null;
+
+                    if(portalTimeline!=null)
+                    {
+                        portalTimeline.stop();
+                        portalTimeline = null;
+                    }
 
                     hideDirections();
                 }
@@ -252,6 +256,14 @@ public class UserMapViewController extends MapController
         mapItems.getChildren().add(mapImage);
         mapItems.getChildren().add(edgesOnFloor);
 
+
+        panel= new UserDirectionsPanel(mapImage);
+
+        panel.addOnStepChangedHandler(h->
+        {
+            boundary.changeFloor(h.getSource().getFloor());
+        });
+
         zoomGroup = new Group(mapItems);
 
         // stackpane for centering the content, in case the ScrollPane viewport
@@ -324,8 +336,9 @@ public class UserMapViewController extends MapController
         panel.mainPane.setPrefHeight(mainPane.getPrefHeight());
 
         mainPane.getChildren().add(panel);
-        panel.toBack();
-        panel.relocate(mainPane.getPrefWidth() - 5, 0);
+
+        panel.toFront();
+        panel.relocate(mainPane.getPrefWidth(), 0);
 
         mainPane.getChildren().add(searchPanel);
         searchPanel.prefWidthProperty().bind(mainPane.widthProperty());
@@ -336,8 +349,7 @@ public class UserMapViewController extends MapController
         panel.setCloseHandler(event ->
         {
             hideDirections();
-            // Ben, you might want to consider reset the direction panel here
-            panel.setVisible(false);
+
             searchPanel.hideWelcomeScreen();
         });
 
@@ -352,12 +364,11 @@ public class UserMapViewController extends MapController
         buildingDropdown.setItems(boundary.getHospital().getBuildings());
         buildingDropdown.toFront();
 
-        buildingDropdown.selectionModelProperty().addListener(
-                (o, oldVal, newVal)->
-                {
-                    boundary.changeBuilding(newVal.getSelectedItem());
-                }
-        );
+        buildingDropdown.setOnAction(e->
+        {
+            System.out.println("Change requested");
+            boundary.changeBuilding(buildingDropdown.getSelectionModel().getSelectedItem());
+        });
 
         Kiosk kiosk = boundary.getHospital().getCurrentKiosk();
 
@@ -386,6 +397,7 @@ public class UserMapViewController extends MapController
                     if (floorStep.getFloor().getFloorNumber() == boundary.getCurrentFloor().getFloorNumber())
                     {
                         playLineDirections(floorStep);
+                        panel.setFloorStep(floorStep);
                     }
                 }
             }
@@ -542,7 +554,6 @@ public class UserMapViewController extends MapController
 
     private void showDirections()
     {
-        panel.setVisible(true);
         searchPanel.setVisible(false);
 
         Timeline slideHideDirections = new Timeline();
@@ -550,8 +561,10 @@ public class UserMapViewController extends MapController
         slideHideDirections.setCycleCount(1);
         slideHideDirections.setAutoReverse(true);
 
-        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), -panel.getWidth() + 5);
+        KeyValue hideDirections = new KeyValue(panel.translateXProperty(), -panel.getWidth());
         keyFrame = new KeyFrame(Duration.millis(600), hideDirections);
+
+        System.out.println("Show directions");
 
         slideHideDirections.getKeyFrames().add(keyFrame);
         slideHideDirections.play();
@@ -568,7 +581,6 @@ public class UserMapViewController extends MapController
         newRoute = userMapBoundary.findPathToNode(endPoint);
         panel.fillGuidance(newRoute);
 
-        showDirections();
         newRoute.printTextDirections();
 
         if(newRoute!=null)

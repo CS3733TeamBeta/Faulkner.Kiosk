@@ -1,14 +1,7 @@
 package main.Directory.controller;
 
-import main.Application.ApplicationController;
-import main.Directory.Boundary.AdminDocDirectoryBoundary;
-import main.Directory.Entity.Doctor;
-import main.Map.Entity.Destination;
-import main.Map.Entity.Hospital;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,9 +11,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import sun.security.krb5.internal.crypto.Des;
+import main.Application.ApplicationController;
+import main.Directory.Boundary.AdminDocDirectoryBoundary;
+import main.Directory.Entity.Doctor;
+import main.Map.Entity.Destination;
+import main.Map.Entity.Hospital;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Created by jw97 on 2/27/2017.
@@ -118,7 +116,6 @@ public class AdminDocDirectoryEditorController {
         deptPane.relocate(mainDirectoryPane.getLayoutX(), mainDirectoryPane.getHeight() + 620);
 
         showDelOption();
-        searchBar.clear();
     }
 
     public void setPhoneNumConstraint(TextField textField, int length) {
@@ -127,7 +124,6 @@ public class AdminDocDirectoryEditorController {
                 e.consume();
             }
         });
-
 
         textField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
             @Override public void handle(KeyEvent keyEvent) {
@@ -170,6 +166,8 @@ public class AdminDocDirectoryEditorController {
         phoneNum1.clear();
         phoneNum2.clear();
         phoneNum3.clear();
+
+        searchBar.clear();
 
         locAssigned.getItems().clear();
 
@@ -253,11 +251,21 @@ public class AdminDocDirectoryEditorController {
 
             if (dataTable.getSelectionModel().getSelectedItem() != null) {
                 docBoundary.removeDoctor(dataTable.getSelectionModel().getSelectedItem());
+                try {
+                    ApplicationController.getCache().getDbManager().delDocFromDB(dataTable.getSelectionModel().getSelectedItem());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
 
             Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
             newDoc.setPhoneNum(phoneNum);
             docBoundary.addDoc(newDoc);
+            try {
+                ApplicationController.getCache().getDbManager().addDocToDB(newDoc);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
             searchBar.clear();
 

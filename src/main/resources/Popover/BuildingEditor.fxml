@@ -6,25 +6,25 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="172.0" prefWidth="143.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="180.0" prefWidth="149.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Text layoutX="25.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Building Editor" wrappingWidth="92.21875" />
-      <JFXTextField layoutX="12.0" layoutY="35.0" prefHeight="17.0" prefWidth="119.0" promptText="Building Name">
+      <Text layoutX="28.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Building Editor" wrappingWidth="92.21875" />
+      <JFXTextField fx:id="buildingNameBox" labelFloat="true" layoutX="15.0" layoutY="50.0" prefHeight="17.0" prefWidth="119.0" promptText="Building Name">
          <font>
             <Font size="11.0" />
          </font>
       </JFXTextField>
-      <JFXButton layoutX="-4.0" layoutY="151.0" prefHeight="21.0" prefWidth="151.0" style="-fx-background-color: rgb(225,0,0);" text="Delete" textFill="WHITE">
+      <JFXButton layoutX="1.0" layoutY="161.0" prefHeight="21.0" prefWidth="147.0" style="-fx-background-color: rgb(225,0,0);" text="Delete" textFill="WHITE">
          <font>
             <Font size="10.0" />
          </font>
       </JFXButton>
-      <JFXButton layoutX="-4.0" layoutY="130.0" prefHeight="21.0" prefWidth="151.0" style="-fx-background-color: rgb(0,160,0);" text="Save" textFill="WHITE">
+      <JFXButton fx:id="saveButton" layoutX="1.0" layoutY="139.0" onAction="#close" prefHeight="21.0" prefWidth="147.0" style="-fx-background-color: rgb(0,160,0);" text="Save" textFill="WHITE">
          <font>
             <Font size="10.0" />
          </font>
       </JFXButton>
-      <JFXButton layoutX="20.0" layoutY="79.0" prefHeight="22.0" prefWidth="103.0" style="-fx-background-color: rgb(0,20,150);" text="Edit Floors" textFill="WHITE">
+      <JFXButton fx:id="editFloors" layoutX="23.0" layoutY="86.0" prefHeight="22.0" prefWidth="103.0" style="-fx-background-color: rgb(0,20,150);" text="Edit Floors" textFill="WHITE">
          <font>
             <Font size="11.0" />
          </font>

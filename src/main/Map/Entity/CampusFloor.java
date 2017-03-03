@@ -1,19 +1,26 @@
 package main.Map.Entity;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * Created by benhylak on 2/23/17.
  */
 public class CampusFloor extends Floor
 {
-    HashSet<MapNode> campusNodes;
+    ObservableList<MapNode> campusNodes;
 
     public CampusFloor()
     {
         super(1); //sorta hacky but should do the trick...
-        campusNodes = new HashSet<MapNode>();
+        campusNodes = FXCollections.observableList(new ArrayList<MapNode>());
+        setFloorUUID(UUID.fromString("00000000-0000-00c1-0000-000000000000"));
+
     }
 
     @Override
@@ -21,6 +28,13 @@ public class CampusFloor extends Floor
     {
         campusNodes.add(n);
         super.addNode(n);
+    }
+
+    @Override
+    public void removeNode(MapNode n)
+    {
+        campusNodes.remove(n);
+        super.removeNode(n);
     }
 
     public void clearBuildings()
@@ -33,7 +47,7 @@ public class CampusFloor extends Floor
         }
     }
 
-    public Collection<MapNode> getCampusNodes()
+    public ObservableList<MapNode> getCampusNodes()
     {
         return campusNodes;
     }
@@ -55,4 +69,9 @@ public class CampusFloor extends Floor
         }
     }
 
+    @Override
+    public String toString()
+    {
+        return "Campus";
+    }
 }

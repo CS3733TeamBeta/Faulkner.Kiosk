@@ -48,22 +48,7 @@ public class Building {
     {
         return hospital;
     }
-
-    public Floor newFloor()
-    {
-        Floor f = new Floor(buildingFloors.size() + 1);
-
-        try
-        {
-            addFloor(f);
-        }
-        catch (Exception e)
-        {
-
-        }
-
-        return f;
-    }
+ 
     /**
      * Adds a floor to this building, throwing an exception if the floor already exists
      * @param f the floor to be added

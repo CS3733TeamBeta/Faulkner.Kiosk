@@ -120,8 +120,7 @@ public class IdleTimer
     }
     public void updateTimeout()
     {
-        /*timer.schedule(ApplicationController.getController().getTimeout(),
-                );   */// notify applicaiton controller
+        initTimer();
     }
 
     public void start()

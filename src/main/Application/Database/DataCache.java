@@ -49,28 +49,32 @@ public class DataCache
         {
            if(h==null) h = db.loadData();
 
-            h.getDoctors().addListener((ListChangeListener<Doctor>) e-> {
-                        if (e.wasAdded()) {
-                            System.out.println("Added!*******");
-                            for (Doctor doc : e.getAddedSubList()) {
-                                try {
-                                    db.addDocToDB(doc);
-                                } catch (SQLException e1) {
-                                    e1.printStackTrace();
-                                }
-                            }
-                        } else if (e.wasRemoved()) {
-
-                            System.out.println("Removed!**********");
-                            for (Doctor doc : e.getRemoved()) {
-                                try {
-                                    db.delDocFromDB(doc);
-                                } catch (SQLException e1) {
-                                    e1.printStackTrace();
-                                }
-                            }
-                        }
-                });
+//            h.getDoctors().addListener((ListChangeListener<Doctor>) e-> {
+//                System.out.println("Here again");
+//                while (e.next()) {
+//                    System.out.println("Stop it");
+//                        if (e.wasAdded()) {
+//                            System.out.println("Added!*******");
+//                            for (Doctor doc : e.getAddedSubList()) {
+//                                try {
+//                                    db.addDocToDB(doc);
+//                                } catch (SQLException e1) {
+//                                    e1.printStackTrace();
+//                                }
+//                            }
+//                        } else if (e.wasRemoved()) {
+//
+//                            System.out.println("Removed!**********");
+//                            for (Doctor doc : e.getRemoved()) {
+//                                try {
+//                                    db.delDocFromDB(doc);
+//                                } catch (SQLException e1) {
+//                                    e1.printStackTrace();
+//                                }
+//                            }
+//                        }
+//                    }
+//                });
         } catch (SQLException e) {
             e.printStackTrace();
         }

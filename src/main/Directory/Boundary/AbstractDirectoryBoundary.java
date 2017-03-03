@@ -20,12 +20,19 @@ public class AbstractDirectoryBoundary {
     }
 
     public FilteredList setSearchList(ObservableList<?> list, String newValue) {
+
         FilteredList filteredList = new FilteredList<>(list);
 
-        if (filteredList.get(0) instanceof Doctor) {
-            filteredList.setPredicate((Predicate<? super Doctor>) d -> filterMatches(d.getName(), newValue));
-        } else if (filteredList.get(0) instanceof Office){
-            filteredList.setPredicate((Predicate<? super Office>) o -> filterMatches(o.getName(), newValue));
+        if(filteredList.size()>0)
+        {
+            if (filteredList.get(0) instanceof Doctor)
+            {
+                filteredList.setPredicate((Predicate<? super Doctor>) d -> filterMatches(d.getName(), newValue));
+            }
+            else if (filteredList.get(0) instanceof Office)
+            {
+                filteredList.setPredicate((Predicate<? super Office>) o -> filterMatches(o.getName(), newValue));
+            }
         }
 
         return filteredList;

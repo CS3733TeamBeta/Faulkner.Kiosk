@@ -41,6 +41,18 @@ repositories {
     }
 }
 
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Beta Faulkner Kiosk',
+                'Implementation-Version': 1.0,
+                'Main-Class': 'main.Application.ApplicationController'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+
 jar {
     manifest {
         attributes 'Main-Class': 'main.Application.ApplicationController'
