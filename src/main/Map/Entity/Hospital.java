@@ -8,6 +8,7 @@ import main.Directory.Entity.Doctor;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 
 /**

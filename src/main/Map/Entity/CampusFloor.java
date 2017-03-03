@@ -17,12 +17,13 @@ public class CampusFloor extends Floor
     {
         super(1); //sorta hacky but should do the trick...
         campusNodes = FXCollections.observableList(new ArrayList<MapNode>());
+        setFloorUUID(UUID.fromString("00000000-0000-00c1-0000-000000000000"));
+
     }
 
     @Override
     public void addNode(MapNode n)
     {
-        n.setFloor(this);
         campusNodes.add(n);
         super.addNode(n);
     }
