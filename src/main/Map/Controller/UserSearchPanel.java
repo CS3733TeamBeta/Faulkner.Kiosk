@@ -1,9 +1,11 @@
 package main.Map.Controller;
 
 import com.jfoenix.controls.JFXButton;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.input.MouseButton;
+import javafx.util.Callback;
 import main.Application.ApplicationController;
 import main.Directory.Boundary.UserDirectoryBoundary;
 import main.Map.Entity.Destination;
@@ -80,7 +82,7 @@ public class UserSearchPanel extends AnchorPane {
     TableColumn<Office, String> deptNameCol;
 
     @FXML
-    TableColumn<Office, Destination> deptLocCol;
+    TableColumn<Office, String> deptLocCol;
 
     @FXML
     TableColumn<Office, Office> deptNavigateCol;
@@ -108,7 +110,12 @@ public class UserSearchPanel extends AnchorPane {
         jobTitleCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
 
         deptNameCol.setCellValueFactory(new PropertyValueFactory<Office, String>("name"));
-        deptLocCol.setCellValueFactory(new PropertyValueFactory<Office, Destination>("destination"));
+        deptLocCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Office, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Office, String> p) {
+                return new ReadOnlyObjectWrapper(p.getValue().getDestination().getName());
+            }
+        });
+
 
         searchBar.textProperty().addListener((observableValue, oldValue, newValue) -> {
             loadSearchMenu();
@@ -137,7 +144,7 @@ public class UserSearchPanel extends AnchorPane {
                     if (empty) {
                         setGraphic(null);
                     } else {
-                        loc.setItems(getTableView().getItems().get(getIndex()).getDestinations());
+                        loc.setItems(getTableView().getItems().get(this.getIndex()).getDestinations());
                         loc.setMaxWidth(docLocsCol.getMaxWidth());
                         setGraphic(loc);
                     }
@@ -155,30 +162,32 @@ public class UserSearchPanel extends AnchorPane {
             return cell;
         });
 
-        if (deptTable.getSelectionModel().getSelectedItem() != null) {
-            deptNavigateCol.setCellFactory(col -> {
-                Button navigateButton = new Button("Go");
-                TableCell<Office, Office> cell = new TableCell<Office, Office>() {
-                    @Override
-                    public void updateItem(Office o, boolean empty) {
-                        super.updateItem(o, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            if (this.getIndex() == deptTable.getSelectionModel().getSelectedIndex()) {
-                                setGraphic(navigateButton);
+        deptTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                deptNavigateCol.setCellFactory(col -> {
+                    Button navigateButton = new Button("Go");
+                    TableCell<Office, Office> cell = new TableCell<Office, Office>() {
+                        @Override
+                        public void updateItem(Office o, boolean empty) {
+                            super.updateItem(o, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                if (this.getIndex() == deptTable.getSelectionModel().getSelectedIndex()) {
+                                    setGraphic(navigateButton);
+                                }
                             }
                         }
-                    }
-                };
+                    };
 
-                navigateButton.setOnAction(e -> {
-                    //findpath method with the destination
+                    navigateButton.setOnAction(e -> {
+                        //findpath method with the destination
+                    });
+
+                    return cell;
                 });
-
-                return cell;
-            });
-        }
+            }
+        });
     }
 
     private void generateButtonCells(int index, Destination selectedDest) {

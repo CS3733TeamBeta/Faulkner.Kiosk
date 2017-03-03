@@ -28,18 +28,6 @@ public class AdminDocDirectoryBoundary extends AbstractDirectoryBoundary
         h.removeDoctor(d);
     }
 
-    public void editDoctor(Doctor d, String name, String description, String hrs,
-                           ObservableList<Destination> destinations, String phoneNum) {
-        if (h.containsDoctor(d)) {
-            d.setName(name);
-            d.setDescription(description);
-            d.setHours(hrs);
-            d.setDestinations(destinations);
-            d.setPhoneNum(phoneNum);
-        }
-
-    }
-
     public ObservableList<Destination> getDocLoc(Doctor d) {
         ObservableList<Destination> locations;
 

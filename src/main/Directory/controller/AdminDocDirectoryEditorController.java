@@ -66,7 +66,6 @@ public class AdminDocDirectoryEditorController {
     ObservableList<Destination> existingLoc =
             FXCollections.observableArrayList(ApplicationController.getHospital().getDestinations());
     AdminDeptDirectoryEditor deptPane = new AdminDeptDirectoryEditor();
-    Boolean editMode = false;
 
     public AdminDocDirectoryEditorController() throws Exception
     {
@@ -111,6 +110,8 @@ public class AdminDocDirectoryEditorController {
         deptPane.prefWidthProperty().bind(mainDirectoryPane.widthProperty());
         deptPane.toFront();
         deptPane.relocate(mainDirectoryPane.getLayoutX(), mainDirectoryPane.getHeight() + 620);
+
+        showDelOption();
     }
 
     public void setPhoneNumConstraint(TextField textField, int length) {
@@ -134,29 +135,25 @@ public class AdminDocDirectoryEditorController {
         MenuItem delete = new MenuItem("Delete");
         ContextMenu options = new ContextMenu();
         options.getItems().add(delete);
-        dataTable.setContextMenu(options);
-        locAssigned.setContextMenu(options);
 
         delete.setOnAction((ActionEvent event) -> {
-            if (event.getSource() == "dataTable") {
-                Doctor d = dataTable.getSelectionModel().getSelectedItem();
+            Doctor d = dataTable.getSelectionModel().getSelectedItem();
 
+            if (d != null) {
                 docBoundary.removeDoctor(d);
-            } else {
-                Destination d = locAssigned.getSelectionModel().getSelectedItem();
-
-                locAssigned.getItems().remove(d);
+                reset();
             }
 
+            Destination dest = locAssigned.getSelectionModel().getSelectedItem();
+            locAssigned.getItems().remove(dest);
         });
+
+        dataTable.setContextMenu(options);
+        locAssigned.setContextMenu(options);
     }
 
     @FXML
     private void reset() {
-        editMode = false;
-
-        dataTable.getSelectionModel().clearSelection();
-
         firstName.clear();
         lastName.clear();
 
@@ -174,7 +171,6 @@ public class AdminDocDirectoryEditorController {
 
         startTime.clear();
         endTime.clear();
-        showDelOption();
     }
 
     private Boolean isProcessable() {
@@ -215,10 +211,11 @@ public class AdminDocDirectoryEditorController {
 
     @FXML
     private void displaySelectedDocInfo() {
+        reset();
+
         Doctor selectedDoc = dataTable.getSelectionModel().getSelectedItem();
 
         if (selectedDoc != null) {
-            editMode = true;
             firstName.setText(selectedDoc.splitName()[1]);
             lastName.setText(selectedDoc.splitName()[0]);
             description.setText(selectedDoc.getDescription());
@@ -248,20 +245,17 @@ public class AdminDocDirectoryEditorController {
                 phoneNum = phoneNum1.getText() + "-" + phoneNum2.getText() + "-" + phoneNum3.getText();
             }
 
-            if (editMode) {
-                Doctor toEdit = dataTable.getSelectionModel().getSelectedItem();
-                docBoundary.editDoctor(toEdit, name, d, hrs, locAssigned.getItems(), phoneNum);
-            } else {
-                Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
-                newDoc.setPhoneNum(phoneNum);
-                docBoundary.addDoctor(newDoc);
+            Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
+            newDoc.setPhoneNum(phoneNum);
+            docBoundary.addDoctor(newDoc);
 
-                dataTable.getSelectionModel().select(newDoc);
-                dataTable.scrollTo(newDoc);
-            }
+            dataTable.requestFocus();
+            dataTable.getSelectionModel().select(newDoc);
+            int i = dataTable.getSelectionModel().getSelectedIndex();
+            dataTable.getFocusModel().focus(i);
+            dataTable.scrollTo(i);
 
             reset();
-
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Not all required fields are filled in.");
             alert.setTitle("Action denied.");
