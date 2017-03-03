@@ -210,6 +210,21 @@ public class View3DController {
         ObservableList<String> timeOuts = FXCollections.observableArrayList();
         timeOuts.addAll("10 seconds", "30 seconds", "1 minute", "2 minutes", "5 minutes");
         selectTimeout.setItems(timeOuts);
+        if (ApplicationController.getController().getTimeout() == 10) {
+            selectTimeout.setPromptText("10 seconds");
+        }
+        if (ApplicationController.getController().getTimeout() == 30) {
+            selectTimeout.setPromptText("30 seconds");
+        }
+        if (ApplicationController.getController().getTimeout() == 60) {
+            selectTimeout.setPromptText("1 minute");
+        }
+        if (ApplicationController.getController().getTimeout() == 120) {
+            selectTimeout.setPromptText("2 minutes");
+        }
+        if (ApplicationController.getController().getTimeout() == 300) {
+            selectTimeout.setPromptText("5 minutes");
+        }
 
         kioskSelection.setItems(getHospital().getKiosks());
 
@@ -238,5 +253,10 @@ public class View3DController {
         if (selectTimeout.getValue().equals("5 minutes")) {
             ApplicationController.getController().setTimeout(300);
         }
+    }
+
+    @FXML
+    public void logOut () throws IOException {
+        ApplicationController.getController().switchToUserMapView();
     }
 }
