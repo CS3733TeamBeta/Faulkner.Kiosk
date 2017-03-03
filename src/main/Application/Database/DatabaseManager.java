@@ -132,6 +132,7 @@ public class DatabaseManager {
         Statement state = conn.createStatement();
 
         for (String s : states) {
+            System.out.println("Here");
             state.executeUpdate(s);
             conn.commit();
         }
