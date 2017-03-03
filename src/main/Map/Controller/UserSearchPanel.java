@@ -1,30 +1,33 @@
 package main.Map.Controller;
 
-import javafx.animation.*;
-import javafx.geometry.Insets;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.Transition;
+import javafx.animation.TranslateTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.util.Callback;
-import main.Application.ApplicationController;
-import main.Directory.Boundary.UserDirectoryBoundary;
-import main.Map.Entity.Destination;
-import main.Map.Entity.Office;
-import main.Directory.Entity.Doctor;
-import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import javafx.util.Duration;
+import main.Application.ApplicationController;
+import main.Application.Exceptions.PathFindingException;
+import main.Directory.Boundary.UserDirectoryBoundary;
+import main.Directory.Entity.Doctor;
+import main.Map.Entity.Destination;
+import main.Map.Entity.Office;
 
 import java.io.IOException;
 
@@ -46,8 +49,11 @@ public class UserSearchPanel extends AnchorPane {
     int numClickBath = -1;
     int numClickHelp = -1;
 
-    public UserSearchPanel() throws Exception {
+    UserMapViewController c;
+
+    public UserSearchPanel(UserMapViewController c) throws Exception {
         boundary = new UserDirectoryBoundary(ApplicationController.getHospital());
+        this.c = c;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                 "/directory/UserSearchPanel.fxml"));
@@ -111,6 +117,7 @@ public class UserSearchPanel extends AnchorPane {
     TableColumn<Doctor, Doctor> docNavigateCol;
 
     Destination selectedDest;
+
     int index;
 
     boolean transparent = false;
@@ -194,7 +201,11 @@ public class UserSearchPanel extends AnchorPane {
 
                     navigateButton.setOnAction(e -> {
                         selectedDest = candidate;
-                        hideWelcomeScreen();
+                        try {
+                            c.setDestination(selectedDest);
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                     });
 
                     return cell;
@@ -224,15 +235,17 @@ public class UserSearchPanel extends AnchorPane {
 
             navigateButton.setOnAction(e -> {
                 selectedDest = candidate;
-                hideWelcomeScreen();
+                try {
+                    c.setDestination(selectedDest);
+                } catch (PathFindingException e1) {
+                    e1.printStackTrace();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
             });
 
             return cell;
         });
-    }
-
-    public Destination getSelectedDest() {
-        return this.selectedDest;
     }
 
     private void selectionMode(ImageView icon) {
