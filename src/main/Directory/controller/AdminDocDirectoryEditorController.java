@@ -1,10 +1,5 @@
 package main.Directory.controller;
 
-import main.Application.ApplicationController;
-import main.Directory.Boundary.AdminDocDirectoryBoundary;
-import main.Directory.Entity.Doctor;
-import main.Map.Entity.Destination;
-import main.Map.Entity.Hospital;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import javafx.collections.FXCollections;
@@ -16,8 +11,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import main.Application.ApplicationController;
+import main.Directory.Boundary.AdminDocDirectoryBoundary;
+import main.Directory.Entity.Doctor;
+import main.Map.Entity.Destination;
+import main.Map.Entity.Hospital;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Created by jw97 on 2/27/2017.
@@ -239,7 +240,6 @@ public class AdminDocDirectoryEditorController {
     @FXML
     private void saveProfile() {
         if (isProcessable()) {
-
             String name = lastName.getText() + ", " + firstName.getText();
             String d = description.getText();
             String phoneNum = "N/A";
@@ -250,11 +250,21 @@ public class AdminDocDirectoryEditorController {
 
             if (dataTable.getSelectionModel().getSelectedItem() != null) {
                 docBoundary.removeDoctor(dataTable.getSelectionModel().getSelectedItem());
+                try {
+                    ApplicationController.getCache().getDbManager().delDocFromDB(dataTable.getSelectionModel().getSelectedItem());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
 
             Doctor newDoc = new Doctor(name, d, hrs, locAssigned.getItems());
             newDoc.setPhoneNum(phoneNum);
             docBoundary.addDoctor(newDoc);
+            try {
+                ApplicationController.getCache().getDbManager().addDocToDB(newDoc);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
             dataTable.requestFocus();
             dataTable.getSelectionModel().select(newDoc);

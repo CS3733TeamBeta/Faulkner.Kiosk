@@ -109,6 +109,7 @@ public class AdminMapBoundary extends MapBoundary
         if (n instanceof Destination) {
             try {
                 ApplicationController.getCache().getDbManager().addDestToDB((Destination)n);
+                h.addDestinations((Destination)n);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
