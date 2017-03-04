@@ -116,7 +116,7 @@ public class GuidanceTextTest extends TestCase{
         myHospital.addBuilding(myBuilding);
     }
 
-    public void testSendText() {
+    /*public void testSendText() {
         try {
             Guidance g1 = new Guidance(nodeA, nodeO, false);
             //Please try not to push with this line uncommented. When gradle or travis builds, it sends me a text. -Ian
@@ -125,5 +125,5 @@ public class GuidanceTextTest extends TestCase{
             e.printStackTrace();
             fail("Threw exception");
         }
-    }
+    }*/
 }
