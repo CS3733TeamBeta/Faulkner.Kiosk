@@ -1,13 +1,11 @@
-package test.java;
-
-import Domain.Map.*;
-import Domain.Navigation.DirectionStep;
-import Domain.Navigation.Guidance;
-import Domain.Navigation.Path;
-import Exceptions.PathFindingNoPathException;
+import main.Map.Entity.Hospital;
+import main.Map.Navigation.Guidance;
+import main.Map.Navigation.Path;
+import main.Map.Entity.Building;
+import main.Map.Entity.Floor;
+import main.Map.Entity.MapNode;
+import main.Map.Entity.NodeEdge;
 import junit.framework.TestCase;
-
-import java.util.LinkedList;
 
 
 /**
@@ -118,8 +116,9 @@ public class GuidanceEmailTest extends TestCase{
 
     public void testSendEmail() {
         try {
-            Guidance g1 = new Guidance(nodeA, nodeO, true);
+            Guidance g1 = new Guidance(nodeA, nodeO, false);
             //Please don't uncomment this line unless you replace the email with your own. I'm getting a lot of spam -Ian
+            g1.sendEmailGuidance("blah3100@aol.com");
             g1.sendEmailGuidance("iancj97@gmail.com");
             assertTrue(true);
         } catch (Exception e) {

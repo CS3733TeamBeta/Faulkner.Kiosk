@@ -5,3 +5,9 @@ addons:
   apt:
     packages:
       - oracle-java8-installer
+notifications:
+    slack:
+      rooms:
+        - cs3733teambeta:fu1hh0sKNiepY7dT8yEPX22v#git
+      on_success: change
+      on_failure: always
