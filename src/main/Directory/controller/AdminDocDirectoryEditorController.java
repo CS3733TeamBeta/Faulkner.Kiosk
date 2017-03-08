@@ -63,7 +63,7 @@ public class AdminDocDirectoryEditorController {
     Hospital hospital;
     AdminDocDirectoryBoundary docBoundary;
     ObservableList<Destination> existingLoc;
-    AdminDeptDirectoryEditor deptPane = new AdminDeptDirectoryEditor();
+    AdminDeptDirectoryEditor deptPane;
 
     public AdminDocDirectoryEditorController() throws Exception
     {
@@ -77,6 +77,7 @@ public class AdminDocDirectoryEditorController {
 
     @FXML
     public void initialize() {
+        deptPane = new AdminDeptDirectoryEditor();
         nameCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
         phoneNumCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("phoneNum"));
