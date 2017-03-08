@@ -86,7 +86,7 @@ public class DatabaseManager {
             */
 
         try {
-                conn = DriverManager.getConnection(protocol + dbName, props);
+                conn = DriverManager.getConnection(protocol + dbName + ";create=true", props);
         }
         catch (SQLException se) {
             System.out.println(se.getMessage());
