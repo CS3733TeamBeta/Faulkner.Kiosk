@@ -267,6 +267,12 @@ public class View3DController {
     }
 
     @FXML
+    public void onDirectoryEditorSwitch() throws IOException
+    {
+        ApplicationController.getController().switchToModifyDirectoryView();
+    }
+
+    @FXML
     public void logOut () throws IOException {
         ApplicationController.getController().switchToUserMapView();
     }
