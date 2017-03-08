@@ -849,10 +849,4 @@ public class MapEditorController extends MapController
 		//DataCache.getInstance().save();
 		ApplicationController.getController().switchToVisualBuildingEditor();
 	}
-
-	@FXML
-	public void onDirectoryEditorSwitch() throws IOException
-	{
-		ApplicationController.getController().switchToModifyDirectoryView();
-	}
 }
