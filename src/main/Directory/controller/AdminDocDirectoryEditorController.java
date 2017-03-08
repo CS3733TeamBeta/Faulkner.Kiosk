@@ -63,7 +63,7 @@ public class AdminDocDirectoryEditorController {
     Hospital hospital;
     AdminDocDirectoryBoundary docBoundary;
     ObservableList<Destination> existingLoc;
-    AdminDeptDirectoryEditor deptPane = new AdminDeptDirectoryEditor();
+    AdminDeptDirectoryEditor deptPane;
 
     public AdminDocDirectoryEditorController() throws Exception
     {
@@ -77,6 +77,7 @@ public class AdminDocDirectoryEditorController {
 
     @FXML
     public void initialize() {
+        deptPane = new AdminDeptDirectoryEditor();
         nameCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("name"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("description"));
         phoneNumCol.setCellValueFactory(new PropertyValueFactory<Doctor, String>("phoneNum"));
@@ -260,6 +261,8 @@ public class AdminDocDirectoryEditorController {
 
             Doctor newDoc = new Doctor(name, d, hrs, destinations);
 
+            newDoc.setDocID(dataTable.getSelectionModel().getSelectedItem().getDocID());
+
             if (phoneNum1.getText().length() > 0) {
                 String phoneNum = phoneNum1.getText() + "-" + phoneNum2.getText() + "-" + phoneNum3.getText();
                 newDoc.setPhoneNum(phoneNum);
@@ -291,7 +294,7 @@ public class AdminDocDirectoryEditorController {
     }
 
     @FXML
-    public void onMapBuilderSwitch(ActionEvent actionEvent) throws IOException {
-        ApplicationController.getController().switchToSavedMapEditorView();
+    public void onBack(ActionEvent actionEvent) throws IOException {
+        ApplicationController.getController().switchToVisualBuildingEditor();
     }
 }

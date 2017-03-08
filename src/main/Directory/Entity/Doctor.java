@@ -54,6 +54,10 @@ public class Doctor extends Observable {
 //        super.hours = hours;
 //    }
 
+    public void setDocID(UUID docID){
+        this.docID = docID;
+    }
+
     public UUID getDocID() {
         return docID;
     }
