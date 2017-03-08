@@ -89,7 +89,7 @@
             <TableColumn fx:id="deptNavigateCol" prefWidth="149.33331298828125" text="Navigate to Here" />
          </columns>
       </TableView>
-      <HBox layoutX="220.0" layoutY="273.0" prefHeight="62.0" prefWidth="792.0" spacing="42.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="290.0">
+      <HBox layoutX="17.0" layoutY="291.0" prefHeight="62.0" prefWidth="792.0" spacing="38.0" AnchorPane.leftAnchor="17.0" AnchorPane.rightAnchor="33.0" AnchorPane.topAnchor="291.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Doctors">
                <font>

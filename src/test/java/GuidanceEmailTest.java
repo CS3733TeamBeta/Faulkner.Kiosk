@@ -1,5 +1,3 @@
-package test.java;
-
 import main.Map.Entity.Hospital;
 import main.Map.Navigation.Guidance;
 import main.Map.Navigation.Path;

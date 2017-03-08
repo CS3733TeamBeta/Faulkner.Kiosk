@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainDirectoryPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Directory.controller.AdminDocDirectoryEditorController">
+<AnchorPane fx:id="onBack" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Directory.controller.AdminDocDirectoryEditorController">
    <children>
       <JFXTextField fx:id="searchBar" layoutX="83.0" layoutY="70.0" prefHeight="20.0" prefWidth="200.0" promptText="Search Directory" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="510.0" AnchorPane.topAnchor="70.0">
          <font>
@@ -119,7 +119,7 @@
             </JFXButton>
          </children>
       </HBox>
-      <JFXButton fx:id="mapBuilder" layoutX="750.0" layoutY="564.0" maxHeight="60.0" onAction="#onMapBuilderSwitch" prefHeight="26.0" prefWidth="420.0" style="-fx-background-color: #3F51B5;" text="Go To Map Builder" textFill="WHITE" AnchorPane.bottomAnchor="110.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="564.0" />
+      <JFXButton fx:id="mapBuilder" layoutX="750.0" layoutY="564.0" maxHeight="60.0" onAction="#onBack" prefHeight="26.0" prefWidth="420.0" style="-fx-background-color: #3F51B5;" text="Back" textFill="WHITE" AnchorPane.bottomAnchor="110.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="564.0" />
       <JFXListView fx:id="locAssigned" layoutX="730.0" layoutY="317.0" prefHeight="185.0" prefWidth="420.0" AnchorPane.rightAnchor="50.0" />
       <ComboBox fx:id="searchForLoc" layoutX="895.0" layoutY="272.0" prefHeight="25.0" prefWidth="200.0" promptText="Add a location" />
       <HBox layoutX="729.0" layoutY="142.0" prefHeight="28.0" prefWidth="421.0" spacing="20.0" AnchorPane.leftAnchor="729.0" AnchorPane.rightAnchor="50.0">
