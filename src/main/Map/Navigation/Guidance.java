@@ -631,6 +631,8 @@ public class Guidance extends Path {
             SendText t = new SendText(address, textMessagebody);
             return true;
         } catch (Exception e) {
+            //@TODO Tell the people that their text failed
+            System.out.println("Text failed to send.");
             e.printStackTrace();
             return false;
         }
